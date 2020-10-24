@@ -1,0 +1,11 @@
+# -*- mode: snippet -*-
+#name : CENTER
+# expand-env: ((yas/indent-line t) (yas/wrap-around-region t))
+#contributor : myuhe
+#key : center
+
+# --
+#+begin_center
+$0
+#+end_center
+

@@ -1,0 +1,82 @@
+## ISO8859_1=DejaVu Sans Mono-iso10646-1;
+## ISO8859_2=DejaVu Sans Mono-iso10646-1;
+## ISO8859_3=DejaVu Sans Mono-iso10646-1;
+## ISO8859_4=DejaVu Sans Mono-iso10646-1;
+## ISO8859_5=DejaVu Sans Mono-iso10646-1;
+## ISO8859_7=DejaVu Sans Mono-iso10646-1;
+## ISO8859_9=DejaVu Sans Mono-iso10646-1;
+## ISO8859_10=DejaVu Sans Mono-iso10646-1;
+## ISO8859_13=DejaVu Sans Mono-iso10646-1;
+## ISO8859_14=DejaVu Sans Mono-iso10646-1;
+## ISO8859_15=DejaVu Sans Mono-iso10646-1;
+## #KOI8_R=DejaVu Sans Mono-iso10646-1;
+## #KOI8_U=DejaVu Sans Mono-iso10646-1;
+## #JISX0208_1978=DejaVu Sans Mono-iso10646-1;
+## #JISX0208_1983=DejaVu Sans Mono-iso10646-1;
+## #JISX0208_1990=DejaVu Sans Mono-iso10646-1;
+## #KSX1001_1997=DejaVu Sans Mono-iso10646-1;
+## BIG5=DejaVu Sans Mono-iso10646-1;
+## GBK=DejaVu Sans Mono-iso10646-1;
+## GB2312_80=DejaVu Sans Mono-iso10646-1;
+
+## ## ISO8859_1=DejaVu Sans Mono-iso10646-1;
+## ## ISO8859_1_BOLD=DejaVu Sans Mono-iso10646-1;
+## ## JISX0201_ROMAN=DejaVu Sans Mono-iso10646-1;
+## ## JISX0201_ROMAN_BOLD=DejaVu Sans Mono-iso10646-1;
+## ## JISX0201_KATA=DejaVu Sans Mono-iso10646-1;
+## ## JISX0201_KATA_BOLD=DejaVu Sans Mono-iso10646-1;
+## ## JISX0208_1983=DejaVu Sans Mono-iso10646-1;
+## ## JISX0208_1983_BOLD=DejaVu Sans Mono-iso10646-1;
+## ## ISO10646_UCS4_1 =DejaVu Sans Mono-iso10646-1;
+## ## ISO10646_UCS4_1_BIWIDTH = DejaVu Sans Mono-iso10646-1;
+
+## ## ISO10646_UCS2_1=DejaVu Sans Mono-iso10646-1:120;
+
+ISO8859_1               = DejaVu Sans Mono-iso10646-1;
+JISX0201_KATA           = VL Gothic-jisx0201.1976-0:100;
+JISX0201_ROMAN          = VL Gothic-jisx0201.1976-0:100;
+JISX0208_1983           = VL Gothic-jisx0208.1983-0:100;
+ISO10646_UCS2_1         = DejaVu Sans Mono-iso10646-1:100;
+ISO10646_UCS2_1_BIWIDTH = DejaVu Sans Mono-iso10646-1:100;
+JISX0201_KATA           = VL Gothic-jisx0201.1976-0:100;
+JISX0201_ROMAN          = VL Gothic-jisx0201.1976-0:100;
+JISX0208_1983           = VL Gothic-jisx0208.1983-0:100;
+ISO8859_1               = DejaVu Sans Mono-iso8859-1:100;
+ISO8859_14              = DejaVu Sans Mono-iso8859-1:100;
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# ISO8859_1=VL Gothic-iso10646-1;
+# JISX0201_ROMAN=VL Gothic-iso10646-1;
+# JISX0201_KATA=VL Gothic-iso10646-1;
+# JISX0208_1978=VL Gothic-iso10646-1;
+# JISX0208_1983=VL Gothic-iso10646-1;
+# JISX0208_1990=VL Gothic-iso10646-1;
+
+# ISO8859_1=M+2VM+IPAG circle:100;
+# ISO8859_1_BOLD=M+2VM+IPAG circle:100;
+# JISX0201_ROMAN=M+2VM+IPAG circle:100;
+# JISX0201_ROMAN_BOLD=M+2VM+IPAG circle:100;
+# JISX0201_KATA=M+2VM+IPAG circle:100;
+# JISX0201_KATA_BOLD=M+2VM+IPAG circle:100;
+# JISX0208_1983=M+2VM+IPAG circle:100;
+# JISX0208_1983_BOLD=M+2VM+IPAG circle:100;
+# ISO10646_UCS4_1 = M+2VM+IPAG circle-iso10646-1:100;
+# ISO10646_UCS4_1_BIWIDTH = M+2VM+IPAG circle-iso10646-1:100;

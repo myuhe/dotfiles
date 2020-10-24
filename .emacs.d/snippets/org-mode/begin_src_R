@@ -1,0 +1,9 @@
+# -*- mode: snippet -*-
+#name : begin_src_R
+#key : begin_src R
+#contributor : myuhe
+# --
+#+begin_src R
+${}
+#+end_src
+

@@ -1,0 +1,638 @@
+Info file: hustler.,    -*-Text-*-
+produced by `texinfo-format-buffer'
+from file `elisplec.texi'
+using `texinfmt.el' version 2.37 of 24 May 1997.
+
+
+
+
+
+
+
+File: hustler., Node: By-talk 7, Prev: Completion Input Functions, Up: Completion Input
+
+余談 7 マクロ
+=============
+
+  検索後に、グルーピングしておいた文字列を取得するために、 
+`(buffer-substring (match-beginning 1) (match-end 1))' などとすることはほ
+とんど定石と言ってよいでしょう。にもかかわらず、これを一気に行う関数があり
+ません(よね?)。そこで、`(buffer-substring (match-beginning n) (match-end
+n))' という機能の関数を定義したいのですが、この程度で関数にするのはちょっ
+と抵抗を感ずるかもしれません。このような場合に、C言語の引数付き `define' 
+のような役割をする「マクロ」を利用すると良いでしょう。
+
+  Cのマクロ定義と違って `Lisp' のマクロの展開のされ方は少し特殊です。次のC
+のマクロの例
+
+     #define inc(x)  ((x)++)
+
+は、定義の引数以外は文字どおりに展開されます。しかし、`Lisp' のマクロは事
+情が違います。`(setq i (1+ i))' のような動作を行うマクロ定義は次のようにな
+ります。
+
+     (defmacro inc(x)
+       (list 'setq x (list '1+ x)))
+
+このような定義を行った場合、`Lisp' プログラム中に `(inc i)' が出現した場合 
+`Lisp' インタプリタはマクロ定義の仮引数 `x' に `i' を代入した上でマクロ定
+義を `Lisp' そのものとして評価します。つまり、上の定義のうち(クォートなし
+の) `x' を `i' とみなし `(list 'setq x (list '1+ x))' を評価します(実際に 
+`(setq x 'i)' してからこの式を評価してみると良いでしょう)。そして、得られ
+た結果が期待したS式と同じになっているか確かめます。
+
+
+* Menu:
+
+* Exercise 4-1::                余談練習小問題
+* completing-read::             
+* Variables Controlling Completion::  補完を制御する関数
+* try-completion::              
+* all-completion display-completion-list::  
+
+
+
+File: hustler., Node: Exercise 4-1, Next: completing-read, Prev: By-talk 7, Up: By-talk 7
+
+余談練習小問題
+--------------
+
+         (buffer-substring (match-beginning 番号) (match-end 番号))
+
+を表わすマクロを定義してみましょう。
+
+
+
+
+File: hustler., Node: completing-read, Next: Variables Controlling Completion, Prev: Exercise 4-1, Up: By-talk 7
+
+completing-read
+---------------
+
+  さて、これまで連想リストの説明をしてきたので、`completing-read' に渡す補
+完テーブルの説明に移ります。`completing-read' の引数を復習しておきましょう。
+
+     (completing-read プロンプト 補完テーブル 選択(述語)関数
+              要マッチ 初期入力)
+
+`completing-read' の第二引数に補完テーブルを `alist' の形で渡します。例え
+ば曜日を読み込む時の補完テーブルは次のような形です。
+
+     '(("Sun.") ("Mon.") ("Tue.") ("Wed.")
+       ("Thu.") ("Fri.") ("Sat."))
+
+今まで説明した `alist' とは少し形が違い、それぞれの(内側の)リストが連想キー
+だけで構成されていて、それに対応する値が存在していません。補完入力をしたい
+だけであれば、このような形で構いません。これを用いた曜日入力モジュールは次
+のようになります。
+
+     (defvar day-alist '(("Sun.") ("Mon.") ("Tue.") ("Wed.")
+                 ("Thu.") ("Fri.") ("Sat.")))
+     (defun read-day-of-the-week ()
+       (interactive)
+       (completing-read "Day of the week?: "
+                day-alist nil t))
+
+  `day-alist' に連想キーとして入っている文字列を補完候補として入力を促し、
+スペースやタブで補完しながら文字を読み込みます。この例では第四引数の「要マッ
+チ」が `t' なので候補以外の文字列は入力することができません。
+
+  さて、ここでは第三引数の「選択関数」のところには `nil' を指定しましたが、
+ここには補完テーブル中の要素のうち、特定の条件を満たすもの`(選択関数の返す
+値が t)'を候補にしたい場合に利用します。「選択関数」には `alist' の各要素
+が`(リストのまま)'渡されます。次の例では、月の名前を読み込む時に、大の月だ
+けを選んで補完候補とします。
+
+     (defvar month-alist
+       '(("Jan." 31) ("Feb." 28) ("Mar." 31) ("Apr." 30)
+         ("May." 31) ("Jun." 30) ("Jul." 31) ("Aug." 31)
+         ("Sep." 30) ("Oct." 31) ("Nov." 30) ("Dec." 31)))
+     (defun read-odd-month ()
+       (interactive)
+       (completing-read "Odd month: " month-alist
+                'check-odd-month t))
+     (defun check-odd-month (list)
+       (eq 31 (car (cdr list))))
+
+関数 `check-odd-month' には `month-alist' の各要素、すなわち `'("Jan."
+31)', `'("Feb." 28)', ..., `''("Dec." 31) が渡されるので、これらの第二要素
+を `(car (cdr list))' によって取り出し、`31' かどうかを判定した結果を返し
+ています。
+
+
+
+
+File: hustler., Node: Variables Controlling Completion, Next: try-completion, Prev: completing-read, Up: By-talk 7
+
+補完を制御する変数
+------------------
+
+  変数 `completion-ignore-case' を `t' にすると、補完文字列の大文字小文字
+を無視します。例えば、月名を読む時に小文字で入力したイニシャルを元に補完し
+て欲しい時は、
+
+     (let ((completion-ignore-case t))
+       :
+       (completing-read ...)...)
+
+のように `completion-ignore-case' に局所的に `t' をセットして補完入力関数
+を呼びます。
+
+
+
+
+File: hustler., Node: try-completion, Next: all-completion display-completion-list, Prev: Variables Controlling Completion, Up: By-talk 7
+
+try-completion
+--------------
+
+  前出の `completing-read' はミニバッファで補完候補を読むものでしたが、バッ
+ファ中にある文字列を元に補完したものを得たい場合などに用いるのが 
+`try-completion' です。`Emacs-lisp' の関数を随時補完してくれる `M-TAB' が
+その代表的なものです。
+
+     (try-completion 文字列 補完テーブル [選択関数])
+
+  第一引数の「文字列」を「補完テーブル」中のすべての候補と比較し、マッチし
+たものがあった場合、マッチしたもの共通部分の先頭からの文字列を返します。も
+しマッチするものがなかった場合は `nil' を返し、「文字列」が「補完テーブル」
+の中のただ一つの候補と完全一致した場合には、`t' を返します。少々分かりにく
+いので例を挙げて説明します。
+
+  例えば補完候補に `foo', `bar', `baz', `bazz', `hoge', `hore' があった場
+合、次のような補完結果が得られます。
+
+     「文字列(第一引数)」    try-completion の結果
+             "f"                 "foo"
+             "b"                 "ba"
+             "ba"                "ba"
+             "bar"               t
+             "baz"               "baz"
+             "h"                 "ho"
+             "ho"                "ho"
+             "hog"               "hoge"
+             "x"                 nil
+
+  これらの結果を考察すると `try-completion' の返り値を次のように判断すると
+良いことがわかります。
+
+   * 結果が t である→補完の必要はなかった
+   * 結果が nil である→一致するものがなかった。
+   * 第一引数とは違う文字列→元の文字列を結果の文字列で置き換えるべき(結果
+     の文字列が唯一の補完結果かどうかは分からないもう一度結果の文字列を第
+     一引数として渡して t が返れば唯一の補完結果である)
+   * 第一引数と同じ文字列→複数候補があるはずなのでそれらを表示する必要が
+     ある
+
+  これより `try-completion' を用いてバッファ中の文字列の随時補完をする手順
+は次のようになります。
+
+     (defun complete-something ()
+       (interactive)
+       (補完文字列の先頭を探す)                      ;;(*1)
+       (先頭からポイントまでの文字列を取得)
+       (setq 結果 (try-completion 文字列 テーブル))
+       (cond
+        ((eq 結果 t) (これ以上補完の必要ないと表示))
+        ((eq 結果 nil) (一致するものがないと表示))
+        ((string= 文字列 結果)
+         (先頭からポイントまでを切り取り、結果で置き換える))
+        (t (候補一覧を表示))))                       ;;(*2)
+
+  (*1)は一般的に、文字列の要素となり得ないものを後方に探します。例えば改行
+文字や、空白文字は補完文字列とならないことがほとんどなので、
+`(skip-chars-backward "^ \t\n")' とすれば十分でしょう。
+
+  続いて(*2)のための関数を紹介します。
+
+
+
+
+File: hustler., Node: all-completion display-completion-list, Prev: try-completion, Up: By-talk 7
+
+all-completions display-completion-list
+---------------------------------------
+
+  関数 `all-completions' は `try-completion' と同じ引数を取り(第二引数まで)、
+一致する文字列候補の全てをリストにして返します。例えば先の例で、文字列 
+`ba' で補完させる場合に一致する候補は、`bar', `baz', `bazz' ですから、これ
+らをリストにした、`'("bar" "baz" "bazz")' が `all-completions' の結果とな
+ります。これをバッファに表示したい時に利用するのが 
+`display-completion-list' で、`all-completions' で得られた結果をカレントバッ
+ファに表示します。
+
+  実際にはカレントバッファに候補一覧を表示しては困るので、隣に新たなバッファ
+を開いて表示します。この方法に関しては、ウィンドウとバッファの取り扱いを覚
+えてから説明します。
+
+
+
+
+File: hustler., Node: Concept Index, Next: Function Index, Prev: Completion Input, Up: Top
+
+Concept Index
+*************
+
+
+* Menu:
+
+* try-completion:               try-completion.         4.
+* completion, controlling variables: Variables Controlling Completion.  4.
+* 変数 補完を制御する[へんすうほかんをせいきよする]: Variables Controlling Completion.  4.
+* 補完 制御する変数[ほかんせいきよするへんすう]: Variables Controlling Completion.  4.
+* Exercise 4-1:                 Exercise 4-1.           4.
+* 練習問題 4-1[れんしゆうもんたい41]: Exercise 4-1.     4.
+* macros:                       By-talk 7.              4.
+* マクロ[まくろ]:               By-talk 7.              4.
+* 余談 7 マクロ[よたん7]:       By-talk 7.              4.
+* list, association:            Association Lists.      4.
+* リスト 連想[りすとれんそう]:  Association Lists.      4.
+* list related predicates:      List Related Predicates.  4.
+* 述語関数[しゆつこかんすう]:   List Related Predicates.  4.
+* list, appending:              Appending lists.        4.
+* リスト 結合[りすとけつこう]:  Appending lists.        4.
+* list, adding elements:        Adding Elements to list.  4.
+* リスト 要素の追加[りすとようそのついか]: Adding Elements to list.  4.
+* ポインタ[ほいんた]:           Accessing list Elements.  12.
+* コンスセル[こんすせる]:       Accessing list Elements.  12.
+* list, accessing elements:     Accessing list Elements.  4.
+* リスト 要素の参照[りすとようそのさんしよう]: Accessing list Elements.  4.
+* list, creating:               Creating lists.         4.
+* リスト 作成[りすとさくせい]:  Creating lists.         4.
+* 関数 リスト処理[かんすうりすとしより]: List Manipulation Functions.  4.
+* リスト 処理関数[りすとしよりかんすう]: List Manipulation Functions.  4.
+* ポインタ[ほいんた]:           List Structure.         59.
+* コンセル[こんせる]:           List Structure.         15.
+* list, structure:              List Structure.         4.
+* リスト 構造[りすとこうそう]:  List Structure.         4.
+* list:                         List.                   4.
+* symbol:                       List.                   4.
+* atom:                         List.                   4.
+* シンボル[しんほる]:           List.                   4.
+* アトム[あとむ]:               List.                   4.
+* リスト[りすと]:               List.                   4.
+* Input Functions:              Completion Input Functions.  4.
+* 関数 補完入力[かんすうほかんにゆうりよく]: Completion Input Functions.  4.
+* Input Functions:              Normal Input Functions.  4.
+* 関数 一般入力[かんすういつはんにゆうりよく]: Normal Input Functions.  4.
+* completion, input:            Completion Input.       4.
+* 補完入力[ほかんにゆうりよく]: Completion Input.       4.
+* Exercise 3-2:                 Exercise 3-2.           4.
+* 練習問題 3-2[れんしゆうもんたい32]: Exercise 3-2.     4.
+* scope, of Emacs-lisp:         By-talk 6.              4.
+* Emacs-Lisp, scope:            By-talk 6.              4.
+* Emacs-Lisp スコープ[いいまくすりすふすこうふ]: By-talk 6.  4.
+* 余談 6 Emacs-Lisp のスコープ[よたん6]: By-talk 6.     4.
+* 関数 雑[かんすうさつ]:        By-talk 5.              4.
+* 余談 5 雑関数[よたん5]:       By-talk 5.              4.
+* 関数 バッファ編集[かんすうはつふあへんしゆう]: Buffer Editing Functions Summary.  4.
+* バッファ編集関数[はつふあへんしゆうかんすう]: Buffer Editing Functions Summary.  4.
+* replacement, strings:         Replacing Strings.      4.
+* strings, replacement:         Replacing Strings.      4.
+* 置換 文字列[ちかんもしれつ]:  Replacing Strings.      4.
+* 文字列 置換[もしれつちかん]:  Replacing Strings.      4.
+* strings, deleting:            Deleting Strings.       4.
+* 削除 文字列[さくしょもしれつ]: Deleting Strings.      4.
+* 文字列 削除[もしれつさくしよ]: Deleting Strings.      4.
+* strings, manipulation functions: String Manipulation Functions.  4.
+* 関数 文字列操作[かんすうもしれつそうさ]: String Manipulation Functions.  4.
+* strings, transformation:      Strings Transformation.  4.
+* transformation, strings:      Strings Transformation.  4.
+* 変換 文字列[へんかんもしれつ]: Strings Transformation.  4.
+* 文字列 変換[もしれつへんかん]: Strings Transformation.  4.
+* transformation, numerical:    Numerical Transformation.  4.
+* numerical transformation:     Numerical Transformation.  4.
+* 変換 数値[へんかんすうち]:    Numerical Transformation.  4.
+* 数値変換[すうちへんかん]:     Numerical Transformation.  4.
+* strings, getting:             Getting Strings.        4.
+* 文字列 取り込み[もしれつとりこみ]: Getting Strings.   4.
+* type transformation:          Type Transformation.    4.
+* transformation, type:         Type Transformation.    4.
+* 変換 型[へんかんかた]:        Type Transformation.    4.
+* 型変換[かたへんかん]:         Type Transformation.    4.
+* strings, transforming to other types: Transforming Types.  4.
+* transforming, strings to other types: Transforming Types.  4.
+* 変換 文字列と他の型[へんかんもしれつとほかのかた]: Transforming Types.  4.
+* 文字列 他の型の変換[もしれつほかのかたのへんかん]: Transforming Types.  4.
+* strings, insert:              Inserting Strings.      4.
+* 挿入 文字列[そうにゆうもしれつ]: Inserting Strings.   4.
+* 文字列 挿入[もしれつそうにゅう]: Inserting Strings.   4.
+* strings, insert/delete:       Inserting and Deleting Strings.  4.
+* 文字列 挿入/削除[もしれつそうにゆうさくしよ]: Inserting and Deleting Strings.  4.
+* point, saving position:       Saving point Position.  4.
+* ポイント 位置の保存[ほいんといちのほそん]: Saving point Position.  4.
+* Exercise 3-1:                 Exercise 3-1.           4.
+* 練習問題 3-1[れんしゆうもんたい31]: Exercise 3-1.     4.
+* 検索 関数[けんさくけつか]:    Search Functions Summary.  4.
+* search, accessing results:    Accessing Search Results.  4.
+* 検索 結果へのアクセス[けんさくけつかへのあくせす]: Accessing Search Results.  4.
+* characters, skipping:         Skipping Characters.    4.
+* skipping characters:          Skipping Characters.    4.
+* 文字(種)スキップ[もしすきふ]: Skipping Characters.    4.
+* Metachars:                    Major Metacharacters.   4.
+* メタキャラクタ[めたきやらくた]: Major Metacharacters.  4.
+* search, regexp:               Regular Expression Search.  4.
+* 検索 正規表現[けんさくせいきひょうけん]: Regular Expression Search.  4.
+* 正規表現検索[せいきひようけんけんさく]: Regular Expression Search.  4.
+* search, word:                 Word Search.            4.
+* 検索 単語[けんさくたんこ]:    Word Search.            4.
+* 単語検索[たんこけんさく]:     Word Search.            4.
+* search, strings:              String Search.          4.
+* 検索, 文字列[けんさくもしれつ]: String Search.        4.
+* 文字列 検索[もしれつけんさく]: String Search.         4.
+* escape characters:            Lisp Escape Characters.  4.
+* エスケープキャラクタ[えすけえふきやらくた]: Lisp Escape Characters.  4.
+* search and move:              Motion by Search.       4.
+* motion, by search:            Motion by Search.       4.
+* 移動 検索[いとうけんさく]:    Motion by Search.       4.
+* 検索移動[けんさくいとう]:     Motion by Search.       4.
+* absolute motion:              Absolute Motion Summary.  4.
+* 絶対移動[せつたいいとう]:     Absolute Motion Summary.  4.
+* motion, boundary check:       Motion Boundary Check.  4.
+* 移動 境界の検査[いとうきようかいのけんさ]: Motion Boundary Check.  4.
+* motion, to a column:          Moving to a Column.     4.
+* 移動 桁[いとうけた]:          Moving to a Column.     4.
+* 桁移動[けたいとう]:           Moving to a Column.     4.
+* motion, to a line:            Moving to a Line.       4.
+* 移動 行[いとうきよう]:        Moving to a Line.       4.
+* 行移動[きよういとう]:         Moving to a Line.       4.
+* motion, point:                Motion by Point.        4.
+* 移動 ポイント[いとうほいんと]: Motion by Point.       4.
+* ポイント移動[ほいんといとう]: Motion by Point.        4.
+* ポイント[ほいんと]:           point.                  4.
+* motion, absolute:             Absolute Motion.        4.
+* 移動 絶対[いとうせつたい]:    Absolute Motion.        4.
+* 絶対移動[せつたいいとう]:     Absolute Motion.        4.
+* motion, by line:              Line Motion.            4.
+* 移動 line[いとうらいん]:      Line Motion.            4.
+* line 移動[らいんいとう]:      Line Motion.            4.
+* motion, by word:              Word Motion.            4.
+* 移動 word 単位[いとうわあとたんい]: Word Motion.      4.
+* word 単位移動[わあとたんいいとう]: Word Motion.       4.
+* motion, by char:              Character Motion.       4.
+* 移動 char 単位[いとうちやあたんい]: Character Motion.  4.
+* char 単位移動[ちやあたんいいとう]: Character Motion.  4.
+* motion, relative:             Relative Motion.        4.
+* relative motion:              Relative Motion.        4.
+* 移動 相対[いとうそうたい]:    Relative Motion.        4.
+* 相対移動[そうたいいとう]:     Relative Motion.        4.
+* motion, cursor:               Cursor Motion.          4.
+* cursor motion:                Cursor Motion.          4.
+* 移動 カーソル[いとうかあそる]: Cursor Motion.         4.
+* カーソル移動[かあそるいとう]: Cursor Motion.          4.
+* functions, must know:         Functions You Must Know.  4.
+* 関数 最低限[かんすうさいていけん]: Functions You Must Know.  4.
+* evaluating programs:          By-talk 4.              4.
+* プログラムの評価[ふろくらむのひようか]: By-talk 4.    4.
+* 余談 4 プログラムの評価[よたん4]: By-talk 4.          4.
+* debugging:                    By-talk 3.              4.
+* デバッギング[てはつきんく]:   By-talk 3.              4.
+* 余談 3 デバッギング[よたん3]: By-talk 3.              4.
+* Functions and Variables:      By-talk 2.              4.
+* 関数・変数[かんすうとへんすう]: By-talk 2.            4.
+* 余談 2 関数・変数[よたん2]:   By-talk 2.              4.
+* Exercise 2:                   Exercise 2.             4.
+* 章末問題 2[しようまつもんたい2]: Exercise 2.          4.
+* 関数 算術[かんすうさんしゆつ]: Arithmetic Functions.  4.
+* 算術関数[さんしゆつかんすう]: Arithmetic Functions.   4.
+* operators:                    Operators.              4.
+* 演算子[えんさんし]:           Operators.              4.
+* arithmetic:                   Arithmetic.             4.
+* 算術[さんしゆつ]:             Arithmetic.             4.
+* control structure:            Control Structure.      4.
+* 制御構造[せいきよこうそう]:   Control Structure.      4.
+* restricting variables:        Restricting Variables.  4.
+* 変数 束縛[へんすうそくはく]:  Restricting Variables.  4.
+* Variables, declaring:         Declaring Variables.    4.
+* 変数 宣言[へんすうせんけん]:  Declaring Variables.    4.
+* Variables:                    Variables.              4.
+* 変数[へんすう]:               Variables.              4.
+* Emacs-Lisp, construction:     Construction of Emacs-Lisp.  4.
+* Emacs-Lisp の構文[いいまくすりすふのこうふん]: Construction of Emacs-Lisp.  4.
+* functions, finding:           By-talk 1.              4.
+* 関数 探す[かんすうさかす]:    By-talk 1.              4.
+* 余談 1 「～関係の関数はないかな?」を探す[よたん1]: By-talk 1.  4.
+* まとめ 1[まとめ1]:            Summary 1.              4.
+* Exercise 1:                   Exercise 1.             4.
+* 章末問題 1[しようまつもんたい1]: Exercise 1.          4.
+* functions, defining:          Defining Functions.     4.
+* defining, functions:          Defining Functions.     4.
+* 関数 定義する[かんすうていきする]: Defining Functions.  4.
+* keys, binding to interactive functions: Binding Interactive Functions to Keys.  4.
+* interactive functions, binding to keys: Binding Interactive Functions to Keys.  4.
+* インタラクティブ関数 キーにバインド[いんたらくてふかんすうきい]: Binding Interactive Functions to Keys.  4.
+* interactive functions:        Interactive Functions.  4.
+* インタラクティブ関数[いんたらくていふかんすう]: Interactive Functions.  4.
+* major mode, defining functions: Defining Major Mode Functions.  4.
+* defining, major mode functions: Defining Major Mode Functions.  4.
+* メジャーモード関数 定義[めしやもおとかんすうていき]: Defining Major Mode Functions.  4.
+* local maps, declaring:        Declaring Local Maps.   4.
+* declaring, local maps:        Declaring Local Maps.   4.
+* ローカルマップ 使用宣言[ろおかるまふしようせんけん]: Declaring Local Maps.  4.
+* setting, keys:                Setting Keys.           4.
+* keys, setting:                Setting Keys.           4.
+* キー 割当て[きいわりあて]:    Setting Keys.           4.
+* setting, keymaps:             Setting Keymaps.        4.
+* keymaps, setting:             Setting Keymaps.        4.
+* キーマップ 設定[きいまつふせつてい]: Setting Keymaps.  4.
+* setting, mode names:          Setting Mode Names.     4.
+* mode name, setting:           Setting Mode Names.     4.
+* モード名 設定[もおとめいせつてい]: Setting Mode Names.  4.
+* major mode, requirements:     Requirements of a Major Mode.  4.
+* メジャーモード 必須条件[めしやもおとひすうしおうけん]: Requirements of a Major Mode.  4.
+* major mode, what:             What is Major Mode?.    4.
+* メジャーモード ってなに[めしやもおとつてなに]: What is Major Mode?.  4.
+* major mode, writing:          Writing Major Modes.    4.
+* メジャーモード を書こう[めしやもおとをかこう]: Writing Major Modes.  4.
+
+
+
+File: hustler., Node: Function Index, Next: Variable Index, Prev: Concept Index, Up: Top
+
+Function Index
+**************
+
+
+* Menu:
+
+* display-completion-list:      all-completion display-completion-list.  4.
+* all-completion:               all-completion display-completion-list.  4.
+* try-completion:               try-completion.         4.
+* completing-read:              completing-read.        4.
+* defmacro:                     By-talk 7.              4.
+* alist:                        Association Lists.      32.
+* assoc:                        Association Lists.      32.
+* length:                       List Related Predicates.  23.
+* atom:                         List Related Predicates.  4.
+* listp:                        List Related Predicates.  4.
+* predicates, list related:     List Related Predicates.  4.
+* list related predicates:      List Related Predicates.  4.
+* append:                       Appending lists.        4.
+* cons:                         Adding Elements to list.  4.
+* nth:                          Accessing list Elements.  4.
+* cdr:                          Accessing list Elements.  4.
+* car:                          Accessing list Elements.  4.
+* list:                         Creating lists.         4.
+* List Manipulation:            List Manipulation Functions.  4.
+* append:                       List Structure.         4.
+* list:                         List Structure.         4.
+* cons:                         List Structure.         4.
+* cdr:                          List Structure.         4.
+* car:                          List Structure.         4.
+* ':                            List.                   24.
+* completing-read:              Completion Input Functions.  4.
+* input, completion:            Completion Input Functions.  4.
+* read-file-name:               Normal Input Functions.  28.
+* read-string:                  Normal Input Functions.  4.
+* input, normal:                Normal Input Functions.  4.
+* ding:                         By-talk 5.              14.
+* sit-for:                      By-talk 5.              14.
+* sleep-for:                    By-talk 5.              14.
+* Misc Functions:               By-talk 5.              4.
+* Buffer Editing Functions:     Buffer Editing Functions Summary.  4.
+* \\:                           Replacing Strings.    
+* \n:                           Replacing Strings.    
+* \&:                           Replacing Strings.    
+* replace-match:                Replacing Strings.      18.
+* kill-region:                  Deleting Strings.       20.
+* erase-buffer:                 Deleting Strings.       11.
+* delete-region:                Deleting Strings.       11.
+* delete-backward-char:         Deleting Strings.       11.
+* delete-char:                  Deleting Strings.       11.
+* substring:                    String Manipulation Functions.  20.
+* stringp:                      String Manipulation Functions.  20.
+* string-match:                 String Manipulation Functions.  20.
+* string>:                      String Manipulation Functions.  20.
+* string<:                      String Manipulation Functions.  20.
+* string-equal:                 String Manipulation Functions.  20.
+* Strings manipulation:         String Manipulation Functions.  4.
+* 文字列操作[もしれつそうさ]:   String Manipulation Functions.  4.
+* int-to-string:                Strings Transformation.  4.
+* string-to-char:               Numerical Transformation.  35.
+* let*:                         Numerical Transformation.  32.
+* string-to-int:                Numerical Transformation.  4.
+* concat:                       Getting Strings.        54.
+* string=:                      Getting Strings.        54.
+* buffer-substring:             Getting Strings.        4.
+* format:                       format.                 4.
+* this-command-keys:            self-insert-command.    14.
+* self-insert-command:          self-insert-command.    4.
+* insert-char:                  insert-char.            4.
+* insert:                       Inserting Strings.      4.
+* save-excursion:               Saving point Position.  4.
+* Search Functions:             Search Functions Summary.  4.
+* match-end:                    Accessing Search Results.  19.
+* match-beginning:              Accessing Search Results.  19.
+* skip-chars-backward:          Skipping Characters.    4.
+* skip-chars-forward:           Skipping Characters.    4.
+* [-^A-Z]:                      Major Metacharacters. 
+* [X-Y]:                        Major Metacharacters. 
+* [^文字リスト]:                Major Metacharacters. 
+* [文字リスト]:                 Major Metacharacters. 
+* $:                            Major Metacharacters. 
+* ^:                            Major Metacharacters. 
+* ?:                            Major Metacharacters. 
+* +:                            Major Metacharacters. 
+* *:                            Major Metacharacters. 
+* .:                            Major Metacharacters. 
+* re-search-backward:           Regular Expression Search.  4.
+* re-search-forward:            Regular Expression Search.  4.
+* word-search-backward:         Word Search.            4.
+* word-search-forward:          Word Search.            4.
+* search-backward:              String Search.          4.
+* search-forward:               String Search.          4.
+* \t:                           Lisp Escape Characters.
+* \f:                           Lisp Escape Characters.
+* \b:                           Lisp Escape Characters.
+* \a:                           Lisp Escape Characters.
+* \r:                           Lisp Escape Characters.
+* \n:                           Lisp Escape Characters.
+* \":                           Lisp Escape Characters.
+* \e:                           Lisp Escape Characters.
+* \C-英字:                      Lisp Escape Characters.
+* \\:                           Lisp Escape Characters.
+* (bolp) / (eolp):              Motion Boundary Check.
+* (bobp) / (eobp):              Motion Boundary Check.
+* end-of-line:                  Moving to a Column.     4.
+* beginning-of-line:            Moving to a Column.     4.
+* move-to-column:               Moving to a Column.     4.
+* count-lines:                  Moving to a Line.       4.
+* goto-line:                    Moving to a Line.       4.
+* end-of-buffer:                Motion by Point.        16.
+* beginning-of-buffer:          Motion by Point.        16.
+* goto-char:                    Motion by Point.        4.
+* point-max:                    point.                  4.
+* point-min:                    point.                  4.
+* point:                        point.                  4.
+* forward-line:                 Line Motion.            4.
+* previous-line:                Line Motion.            4.
+* next-line:                    Line Motion.            4.
+* backward-word:                Word Motion.            4.
+* forward-word:                 Word Motion.            4.
+* backward-char:                Character Motion.       4.
+* forward-char:                 Character Motion.       4.
+* sit-for:                      By-talk 3.              13.
+* message:                      By-talk 3.              8.
+* defun:                        By-talk 2.              24.
+* random:                       Arithmetic Functions. 
+* max, min:                     Arithmetic Functions. 
+* Arithmetic Functions:         Arithmetic Functions.   4.
+* numberp(integerp):            Operators.            
+* <, <=, =, /=, >, >=:          Operators.            
+* 1+, 1-:                       Operators.            
+* %, *, +, -, /:                Operators.            
+* throw:                        catch trow.             4.
+* catch:                        catch trow.             4.
+* while:                        while.                  4.
+* cond:                         cond.                   4.
+* and:                          and.                    4.
+* or:                           or.                     4.
+* progn:                        if.                     17.
+* if:                           if.                     4.
+* let:                          Restricting Variables.  10.
+* Restricting Variables:        Restricting Variables.  4.
+* Declaring Variables:          Declaring Variables.    4.
+* defvar:                       Declaring Variables.    4.
+* setq:                         Variables.              4.
+* set:                          Variables.              4.
+* apropos:                      By-talk 1.              4.
+* Finding Functions:            By-talk 1.              4.
+* make-keymap:                  Defining Functions.     31.
+* Defining Functions:           Defining Functions.     4.
+* interactive:                  Binding Interactive Functions to Keys.  4.
+* Interactive Functions:        Interactive Functions.  4.
+* use-local-map:                Declaring Local Maps.   7.
+* define-key:                   Setting Keys.           9.
+* make-keymap:                  Setting Keymaps.        20.
+
+
+
+File: hustler., Node: Variable Index, Prev: Function Index, Up: Top
+
+Variable Index
+**************
+
+
+* Menu:
+
+* completion-ignore-case:       Variables Controlling Completion.  4.
+* Completion Controlling Variables: Variables Controlling Completion.  4.
+* alist:                        completing-read.        13.
+* kill-ring:                    Saving point Position.  30.
+* current-column:               Moving to a Column.     4.
+* case-fold-search:             Restricting Variables.  17.
+* global-map:                   Setting Keymaps.        11.
+* mode-name:                    Setting Mode Names.     4.
+* auto-mode-alist:              What is Major Mode?.    15.
+
+
+* Menu:
+
+* M-TAB:                        try-completion.         4.
+* C-j:                          By-talk 4.              27.
+* ESC ESC:                      By-talk 4.              22.
+* ESC TAB:                      By-talk 4.              9.
+* ESC C-x:                      By-talk 4.              9.
+
+
+

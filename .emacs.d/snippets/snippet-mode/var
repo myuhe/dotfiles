@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name : var_simple
+# key : var
+#binding : C-x C-x C-v
+#contributor : myuhe 
+# --
+\${${1:num}:${2:block-name}}$0 

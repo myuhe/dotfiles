@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+#contributor: myuhe
+#name: unless
+#key: unless
+# --
+(unless ${1:COND} 
+${2:BODY} )
+$0

@@ -1,0 +1,1078 @@
+これは j-cvsbook.info、j-main.texi より makeinfo バージョン 4.2
+によって作成されました。
+
+START-INFO-DIR-ENTRY
+* CVS Book: (cvsbook).          A CVS tutorial and reference.
+END-INFO-DIR-ENTRY
+
+Copyright (C) 1999 Karl Fogel <kfogel@red-bean.com>
+
+This document is free software; you can redistribute and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation; either version 2, or (at your option) any
+later version.
+
+This document is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+General Public License for more details.
+
+This manual describes how to use and administer CVS (Concurrent Versions
+System).  It is part of a larger work entitled `Open Source Development
+With CVS'; please see the introduction for details.
+
+This is version 1.12 of this manual.
+
+
+File: j-cvsbook.info,  Node: Exporting For Public Distribution,  Next: The Humble Guru,  Prev: Tracking Third-Party Sources (Vendor Branches),  Up: Advanced CVS
+
+Exporting For Public Distribution
+=================================
+
+CVS は開発者にとっては良い配布機構なのですが、大部分のユーザがソフト
+ウェアを取ってくる時にはダウンロードできるパッケージを取ってくると思
+います。このパッケージは一般には CVS の作業コピーではなくただのソー
+スツリーで、ユーザのシステムに合わせて簡単にコンフィギュレーション・
+コンパイルができるようになっているものです。
+
+しかし、CVS はパッケージを作るのに便利な機構を提供しています。
+`cvs export' コマンドです。プロジェクトを"エクスポート"
+するというのは、プロジェクトの作業コピーをチェックアウトするのと同じ
+ようなものですが、`CVS' 管理サブディレクトリを_抜き_にして
+プロジェクトツリーをチェックアウトするというところが違います。これは
+つまり、作業コピーではなくソースツリーだけを取得したということになり
+ます。そのソースツリーはどこから来たものなのか、それらのファイルがど の
+CVS バージョンなのかわかりません。つまり、エクスポートされたコピー
+はダウンロードしてディストリビューションをほどいたときの状態と同じな
+のです。そのプロジェクトが作業コピーから直接コンパイルできるようになっ
+ているとすると(そしてそうなっているべきなのです!)、エクスポートされ
+たコピーもコンパイルできるはずです。
+
+`export' コマンドは `checkout' と同じように動作しますが、
+タグ名か日付を指定しなければいけないというところが違います。プロジェ
+クトにリリース名でタグをつけて、それに基づいてエクスポートしてみましょ
+う:
+
+     floss$ pwd
+     /home/jrandom/myproj
+     floss$ cvs -q tag R_1_0
+     T README.txt
+     T hello.c
+     T a-subdir/whatever.c
+     T a-subdir/subsubdir/fish.c
+     T b-subdir/random.c
+     floss$ cd ..
+     floss$ cvs -d /usr/local/newrepos -q export -r R_1_0 -d myproj-1.0 myproj
+     U myproj-1.0/README.txt
+     U myproj-1.0/hello.c
+     U myproj-1.0/a-subdir/whatever.c
+     U myproj-1.0/a-subdir/subsubdir/fish.c
+     U myproj-1.0/b-subdir/random.c
+     floss$ cd myproj-1.0
+     floss$ ls
+     README.txt  a-subdir  b-subdir  hello.c
+
+`export' コマンドは作業コピーの中ではないところで起動されるので、
+どのリポジトリを使うかを `-d' グローバルオプションで指定してや
+らなければならないことに注意して下さい。またこの例では、ディレクトリ
+名をデフォルトのプロジェクト名ではなく、明示的に指定して
+(`myproj-1.0')エクスポートしています。その名前で作業コピーが既
+に存在しているからです。この状況は珍しいことではないと思います。
+
+上の例のようにエクスポートコピーが作成されたあとは、プロジェクトが単
+純なものの場合、次のようにすればリリースが完了します:
+
+     floss$ tar cf myproj-1.0.tar myproj-1.0
+     floss$ gzip --best myproj-1.0.tar
+     floss$ ls
+     myproj/   myproj-1.0/   myproj-1.0.tar.gz
+     floss$ rm -rf myproj-1.0
+     floss$ mv myproj-1.0.tar.gz /home/ftp/pub/myproj/
+
+もちろん、これらのコマンドを全部手で走らせたりすることはめったにあり
+ません。`cvs export' はリリースやパッケージの処理をするスク
+リプトから呼ばれることが多いでしょう。公のリリースに先立っていくつか
+の「テスト」リリースをするような場合は、リリースパッケージを作成する
+処理は高度に自動化されていることが望ましいと思います。
+
+
+File: j-cvsbook.info,  Node: The Humble Guru,  Prev: Exporting For Public Distribution,  Up: Advanced CVS
+
+The Humble Guru
+===============
+
+この章を全て読んで理解したら(そして実際やってみるとなお良い)、CVS に
+ついてとても驚くようなことはもうなにも残っていないと自信を持ってよい
+でしょう。少なくとも、誰かが新しい機能を CVS に追加するまでは。CVS
+を大きなプロジェクトで使うために知る必要のあることはすべて述べました。
+
+うぬぼれる前に、4章で言ったことを繰り返しますが <info-cvs@gnu.org>
+メーリングリストを購読することをお勧めし
+ます。インターネットのメーリングリストの大部分は S/N 比が低下している
+にもかかわらず、届く情報のほとんどは待つに値するものです。筆者がこの
+章を書いている間ずっと購読していたのですが(実はそれより前の章でもそ
+うだったんですが)、CVS の動作の細部の重要なところについて、他の人の
+投稿から学んだことがどんなにたくさんあるか知ったら、きっと驚くと思い
+ます。CVS を本気で使う気があるのなら、また、開発者グループの CVS 管
+理者の人は特に、他の真面目なユーザの人たちと知識を共有することによっ
+て恩恵をたくさん受けることが出来ると思います。
+
+
+File: j-cvsbook.info,  Node: Tips And Troubleshooting,  Next: CVS Reference,  Prev: Advanced CVS,  Up: Top
+
+Tips And Troubleshooting
+************************
+
+以前の章でわたしは、CVS は「ブラックボックス」ソフトウェアではないと
+いいました。ブラックボックスは中身を覗かせてくれません。内部にアクセ
+スさせてくれないので、直したり(壊したり)はできません。ブラックボック
+スというのは普通、何も直す必要がないという前提に立っています。たいが
+いはちゃんと動いているので、ユーザは内部にアクセスする必要はありません。
+しかし、動かないとなると全く動きません。直すための選択肢はそう多くな
+いので、どんな問題でも showstopper なのです。
+
+CVS はというと、それはもう完璧に透明な箱のようです。箱がないことを除
+けば。部品は密閉されたりせず、環境に直接さらされており、環境の一部
+(予期しないファイルのパーミッションや、中断されたコマンド、競合する
+プロセス、などなど)はその機構に介入してダメにしてしまうこともありま
+す。しかし、たとえ CVS が完璧に動かないとしても、全く動かないという
+ことはまれです。It has the advantage of graceful degradation;
+どのくらい動作しないかというのは通常、その環境における問題の数と深刻
+度に比例します。CVS が何をしようとしているか、またどのようにしようと
+しているかについてよく知っていれば、うまくいかない時に何をすべきかが
+わかるでしょう。
+
+graceful 礼儀正しい degradation 品格を下げる悪くする退化する
+
+遭遇する可能性のある問題をすべて書くことはできませんが、ここでは比較
+的よくあるたぐいのことを書いてみました。この章は2つの部分に分かれて
+います: 1つめでは、環境のうち CVS にとって特にデリケートな部分につい
+て説明します(主にリポジトリのパーミッションと作業コピー中の管理領域
+を扱います)。2つめではよくある問題とその解決法をいくつか説明します。
+これらよくある状況をどう扱うかがわかれば、CVS で予期しない問題が起こっ
+てもどういうアプローチを取ればいいか大体わかるのではないかと思います。
+
+* Menu:
+
+* The Usual Suspects::                       Things that often cause trouble.
+* General Troubleshooting Tips::             General diagnostic techniques.
+* Some Real Life Problems (With Solutions):: A compendium of actual problems.
+
+
+File: j-cvsbook.info,  Node: The Usual Suspects,  Next: General Troubleshooting Tips,  Up: Tips And Troubleshooting
+
+The Usual Suspects
+==================
+
+あなたが CVS の管理者("field doctor"と読んで下さい)なら、ユーザの問
+題の9割は矛盾した作業コピーが原因で、他の9割はリポジトリのパーミッション
+が間違っていることが原因だというのをご存知でしょう。従って、特定の状
+況を見ていく前に作業コピーの管理領域についての概要と、リポジトリのパー
+ミッションについての重要な点をいくつか、手短に見ておくことにします。
+
+* Menu:
+
+* The Working Copy Administrative Area::
+* Repository Permissions::
+
+
+File: j-cvsbook.info,  Node: The Working Copy Administrative Area,  Next: Repository Permissions,  Up: The Usual Suspects
+
+The Working Copy Administrative Area
+------------------------------------
+
+作業コピーの構造の基本的なところについては、*Note An Overview of CVS::
+で既に見てきました。この章ではもう少し詳細のところを見ます。詳細の大
+部分は CVS/ 管理サブディレクトリ中のファイルに関連することです。
+Entries, Root, Repository ファイルについては見てきたと思いますが、 CVS/
+サブディレクトリには状況により他のファイルがあることもあります。
+それらのファイルをここでは説明します。そういうファイルを見つけた時に
+驚かないためであり、それらのファイルが原因の問題が起こった時になおす
+ことができるためです。
+
+`CVS/Entries.Log'
+=================
+
+時々、`CVS/Entries.Log' という名前のファイルが現れることがあり
+ます。このファイルは、Entries ファイルを書き換えるに足るような重要な
+操作をするまで、Entries ファイルへの変更を一時的にキャッシュしておく
+ために使われます。CVS は Entries ファイルの適切な箇所だけを書き換え
+ることができません。変更するには、全部読んでから全部書き戻さなければ
+なりません。これを避けるため、Entries ファイルを書き換える必要が出て
+くるまでの間、少々の変更を Entries.Log に記録することがあるのです。
+
+Entries.Log のフォーマットは Entries とほぼ同じですが、各行の冒頭に
+一文字付け加わっています。`A' は Entries ファイルに追加すべき行
+を意味し、`R' は削除すべき行を意味します。
+
+Entries.Log ファイルは、たいていは無視して構いません; 欠いてある情報
+を人間が理解しなければならないことはめったにありません。しかし、デバッ
+グのため作業コピー中の Entries ファイルを読んでいる場合には
+Entries.Log ファイルも調べるべきでしょう。
+
+`CVS/Entries.Backup'
+====================
+
+CVS/Entries.Backup ファイルは CVS が実際に新しい Entries ファイルを
+書く場所です。書いたあと `Entries' にリネームされます(これは CVS
+がリポジトリ内に RCS ファイルを書く時に、一時的な RCS ファイルを
+書いて、完成したら適切な名前に変える、というやりかたと同じです)。
+完成し次第 Entries にリネームされるので、Entries.Backup ファイルはめっ
+たに見ることはないと思います。もし見ることになったとしたら、それは
+きっと、CVS がオペレーションの最中に中断されたということを意味します。
+
+`CVS/Entries.Static'
+====================
+
+CVS/Entries.Static ファイルが存在している場合、それはそのディレクト
+リ全体はリポジトリから取得されたものではないということを意味します。
+(作業コピーが不完全な状態であるということを CVS がわかっている場合は、
+そのディレクトリの中に余分なファイルを作ったりはしません)
+
+Entries.Static ファイルはチェックアウト中やアップデート中に現われ、
+オペレーションが完了し次第、すぐに削除されます。Entries.Static が見
+えたとしたら、それは CVS が中断されたことを意味します。そのファイル
+があると、CVS は作業ディレクトリに新しいファイルを作ることができません。
+(通常、`cvs update -d' を実行すれば Entries.Static が削除さ
+れ、問題は解決できます)
+
+Entries.Static がなければ、作業コピーはプロジェクトのファイルをすべ
+て持っている、とは必ずしも言えません。プロジェクトのリポジトリ中に新
+しいディレクトリが作成されて、誰かが作業コピーを -d フラグなしでアッ
+プデートした場合は、作業コピーに新しいディレクトリは作成されません。
+この場合 CVS はリポジトリ中に新しいディレクトリがあるということに気
+づかないので、作業コピー中に新しいディレクトリがなくても、アップデー
+トの完了時に Entries.Static ファイルを削除します。
+
+`CVS/Tag'
+=========
+
+CVS/Tag が存在する場合、ある意味、タグ名をディレクトリに関連づける役
+割を果たします。ある意味、と言ったのはつまり、CVS はディレクトリに関
+するリビジョン履歴を保存しませんし、厳密に言えばディレクトリにタグを
+つけることもできないからです。タグというのは通常のファイルのみに、正
+確に言えば通常のファイルの特定のリビジョンにつけられるものなのです。
+
+しかしながら、あるディレクトリ中の全ファイルが特定のタグをつけられて
+いるような状況では、CVS はそのディレクトリ全体にそのタグがつけられて
+いるとも考えるのです。たとえば、あるブランチ上の作業コピーをチェック
+アウトしたとしましょう:
+
+     floss$ cvs co -r Bugfix_Branch_1
+
+ここにファイルを1つ追加する場合、その新しいファイルの最初のリビジョン
+は、そのブランチ上のリビジョンであって欲しいのではないでしょうか。 CVS
+も同じような理由で、そのディレクトリにブランチでないスティッキー
+タグや日付がセットされているかどうかを知る必要があります。
+
+Tag ファイルには1行しかありません。その行の最初の文字はそのタグがどん
+な種類かを1文字で示すようなコードです。残りはタグ名です。現状、CVS
+はその1文字コードを3種類使っています:
+
+   * T - ブランチタグ
+
+   * N - ノンブランチ(通常の)タグ
+
+   * D - スティッキー日付。以下のようなコマンドを実行した場合のものです
+
+          floss$ cvs checkout -D 1999-05-15 myproj
+
+     または
+
+          floss$ cvs update -D 1999-05-15 myproj
+
+     などです。
+
+
+(他の1文字コードがあったとしたらそれは、この章が書かれたより後に CVS
+に新しい種類のタグを追加されたということですね)
+
+Tag ファイルを手で削除したりすべきではありません、かわりに
+`cvs update -A' を使用して下さい。
+
+Rarities
+========
+
+他に CVS/ サブディレクトリ中にあるかもしれないファイルを記します:
+
+   * CVS/Checkin.prog, CVS/Update.prog
+
+   * CVS/Notify, CVS/Notify.tmp
+
+   * CVS/Base/, CVS/Baserev, CVS/Baserev.tmp
+
+   * CVS/Template
+
+これらのファイルが何か問題を起こすことは通常ありません、ただ並べてみ
+ただけです(詳しい説明は *Note CVS Reference:: を参照のこと)。
+
+Portability And Future Extension
+================================
+
+CVS に新しい機能が追加されたとすると、作業コピーの管理領域に新しい
+(ここに書いてない)ファイルが現れるかもしれません。新しいファイルが追
+加されれば、Cederqvist マニュアルの `Working Directory Storage'
+ノードにドキュメントされることと思います。また、コードから何か得たい
+と思ったら、ソースディストリビューション中の src/cvs.h を見てみると
+よいでしょう。
+
+最後に、 全ての CVS/* ファイルは、現時点においても将来においても、作
+業コピーの存在するシステムの改行コードを使用します(たとえば、Unix で は
+LF、Windows では CRLF)。このことは、作業コピーをあるマシンから他
+のマシンへ移すと CVS はそれを扱えなくなるかもしれない、ということを
+意味します(でもそういう時には、リビジョン管理下にあるファイル自体の
+改行コードが新しい環境と不一致を起こすので、別の問題が起きるでしょう)。
+
+
+File: j-cvsbook.info,  Node: Repository Permissions,  Prev: The Working Copy Administrative Area,  Up: The Usual Suspects
+
+Repository Permissions
+----------------------
+
+CVS はリポジトリのパーミッションについてなにか特定の規則を要求したり
+はしません。幅広く、さまざまなパーミッションの配置を扱うことが出来ま
+す。しかし、わけの分からない動作を避けたければ、少なくとも以下に述べ
+る基準を満たすようリポジトリをセットアップするべきです:
+
+   *
+     あるユーザが、リポジトリ内の特定のサブディレクトリにアクセスできるよ
+     うにしたい場合は、どんな種類のアクセスであろうと(読み出し専用アクセ
+     スでも)、そのユーザはそのサブディレクトリにシステムレベルの書込み権
+     限を持つことが必要です。データの一貫性を保つため、CVS
+     がリポジトリ内
+     に一時ロックファイルを生成するので必要なのです。オペレーションが読み
+     出し専用(チェックアウトやアップデートのような)であろうとも、そのオペ
+     レーションが終わるまでデータがあるひとつの状態に留まっている必要があ
+     る、と知らせるためにロックは生成されます。
+
+     *Note Repository Administration::
+     に書いた通り、この書込み権限要求は CVSROOT/config に LockDir
+     パラメータを設定することによって回避するこ とができます:
+
+          LockDir=/usr/local/cvslocks
+
+     当然ですが、/usr/local/cvslocks ディレクトリは全ての CVS ユーザが書
+     き込めるようになっているのを確認しておく必要があります。どちらにしろ、
+     CVS
+     オペレーションの大部分(読み出し専用も含む)は、どこかのディレクト
+     リに書き込めるようになっている必要があります。デフォルトではそのディ
+     レクトリはプロジェクトのリポジトリになっています;
+     セキュリティを非常 に気にするなら、他の場所にすることもできます。
+
+   * CVSROOT/history
+     ファイルがワールドライタブルであることを確認して下さ
+     い(そのファイルが存在していればの話です)。history
+     ファイルが存在して いる場合、 CVS
+     オペレーションの殆どはそこに記録を残そうとします; そ
+     れが失敗するとそのオペレーションはエラーで終了します。
+
+     残念なことに(そして理解不能なことに)、cvs init で新しいリポジトリを
+     作成した時点では、history
+     ファイルはワールドライタブルになっていません。 少なくとも CVS
+     の現在のバージョンでは新しくリポジトリを作成した後に
+     これのパーミッションを変更してやらなければなりません(または、履歴の
+     記録をしないということであれば、ただ削除すればよいです)。
+
+     (この問題はなくなりました。新しいリポジトリを初期化した際に history
+     ファイルをワールドライタブルにするパッチを、筆者が CVS メインテナに
+     送りました。ですから CVS
+     のバージョンが執筆時点(1999年9月)より最新の
+     ものであれば、問題は起こりません。)
+
+   * 大抵はセキュリティ上、殆どの CVS ユーザにはリポジトリ中の CVSROOT
+     ディ レクトリの Unix
+     レベルでの書込み権限を与えたくないと思うでしょう。 CVSROOT
+     に対してチェックインアクセスができる人は、commitinfo, loginfo
+     など、好きなプログラムを起動できるようなトリガファイルを編集
+     できることになります。やりたければ、システムになかったプログラムをコ
+     ミットすることさえ出来てしまいます。従って CVSROOT へコミットアクセ
+     スできる人はシステム上で任意のコマンドを実行することができると思って
+     下さい。
+
+
+
+File: j-cvsbook.info,  Node: General Troubleshooting Tips,  Next: Some Real Life Problems (With Solutions),  Prev: The Usual Suspects,  Up: Tips And Troubleshooting
+
+General Troubleshooting Tips
+============================
+
+この章は問いと答えをつなげていく形式になっています。インターネットの
+FAQ (Frequently Asked Questions; よくある質問集) と同じような感じで
+す。すべて、実際に CVS を使用した経験に基づいたものです。個別の例を
+見ていく前に、もう少し一般的な観点から CVS のトラブルシューティング
+について見ておきましょう。
+
+通常、CVS で起きた問題を解決する最初のステップは、それが作業コピーの
+問題なのか、それともリポジトリの問題なのかを見分けることです。これを
+見分けるには(別に驚くような方法でもないのですが)、最初に問題の起こっ
+た作業コピーとは別の作業コピーで同じ問題が起こるかどうかを見ることで
+す。起こるようならリポジトリの問題で、そうでなければ多分局所的な問題
+なのです。
+
+作業コピーの問題のほうがよく起こりがちです。それは作業コピーがリポジ
+トリに比べてなにか信頼性が落ちるからとかではなくて、各リポジトリに対
+して作業コピーはたくさんあるからです。作業コピーのもつれをほどくのが
+イヤになったら、その作業コピーを消してしまって新しいやつをチェックア
+ウトするほうが時間の無駄にならずに済む場合もあると思います。
+
+もう一度チェックアウトするのにすごく時間がかかるとか、作業コピーにな
+くしたくない未コミットの変更があったり、またはなんでうまくいかないの
+かをただ知りたい場合でも、問題の原因を探る価値はあります。探り始める
+時に最初にみるべきところの1つは CVS/ サブディレクトリです。その中の
+ファイルの内容とパーミッションをチェックして下さい。たまにですが、リー
+ドオンリーになっていたり、または読むことさえできなくなっていたりしま
+す。(これについては、CVS が間違えたというよりもむしろユーザが Unix
+コマンドをミスタイプしたことが原因ではないかと筆者は疑っています)
+
+リポジトリの問題はたいていの場合、ファイルやディレクトリのパーミッション
+が間違っていることが原因です。リポジトリのパーミッションが原因だと思っ
+たら、まずトラブルのあった人の実効リポジトリユーザIDを確認して下さい。
+ローカルユーザ全て及び大部分のリモートユーザに関しては、これは通常の
+ユーザ名か、作業コピーをチェックアウトする時に指定したユーザ名です。
+pserver メソッドのユーザエイリアシング( *Note Repository
+Administration:: の *Note Anonymous Access:: を参照のこ
+と)を使っている場合には、実効ユーザIDは CVSROOT/passwd ファイルの右
+側に書いてあるものになります。早い時期にこれを見つけておかないと、間
+違ったところをデバッグすることになってしまい、時間を無駄にしてしまう
+ことがあります。
+
+さてさて、くだらないことをいうのはこれくらいにして…
+
+
+File: j-cvsbook.info,  Node: Some Real Life Problems (With Solutions),  Prev: General Troubleshooting Tips,  Up: Tips And Troubleshooting
+
+Some Real Life Problems (With Solutions)
+========================================
+
+これらの状況はすべて、筆者が CVS トラブルシューターとして実際に体験
+したものばかりです(それと、実は問題ではないのですがよく訊ねられる質
+問も、答えとともに付け加えておきました)。このリストはとても広範囲に
+渡るもので、以前の章で見たことでももう一度出てきます。
+
+状況は起こりやすい順に並べました、最も一般的なものが初めに来ています。
+
+* Menu:
+
+* CVS says it is waiting for a lock; what does that mean?::
+* CVS claims a file is failing Up-To-Date check; what do I do?::
+* The pserver access method is not working::
+* The pserver access method is STILL not working::
+* My commits seem to happen in pieces instead of atomically::
+* CVS keeps changing file permissions; why does it do that?::
+* CVS on Windows complains it cannot find my .cvspass file; why?::
+* My working copy is on several different branches; help?::
+* When I do export -d I sometimes miss recent commits::
+* I get an error about val-tags; what should I do?::
+* I am having problems with sticky tags; how do I get rid of them?::
+* Checkouts/updates exit with error saying cannot expand modules::
+* I cannot seem to turn off watches::
+* My binary files are messed up::
+* CVS is not doing line-end conversion correctly::
+* I need to remove a subdirectory in my project; how do I do it?::
+* Can I copy .cvspass files or portions of them?::
+* I just committed some files with the wrong log message::
+* I need to move files around without losing revision history::
+* How can I get a list of all tags in a project?::
+* How can I get a list of all projects in a repository?::
+* Some commands fail remotely but not locally; how should I debug?::
+* I do not see my problem covered in this chapter::
+* I think I have discovered a bug in CVS; what do I do?::
+* I have implemented a new feature for CVS; to whom do I send it?::
+* How can I keep up with changes to CVS?::
+
+
+File: j-cvsbook.info,  Node: CVS says it is waiting for a lock; what does that mean?,  Next: CVS claims a file is failing Up-To-Date check; what do I do?,  Up: Some Real Life Problems (With Solutions)
+
+CVS says it is waiting for a lock; what does that mean?
+-------------------------------------------------------
+
+CVS が「ロック待ち中」って言うんですが、どういう意味?
+
+このようなメッセージを見たら
+
+     cvs update: [22:58:26] waiting for qsmith's lock in /usr/local/newrepos/myproj
+
+これは、その時点でほかの CVS プロセスにロックされているリポジトリ中
+のサブディレクトリをアクセスしようとしている、という意味です。そのディ
+レクトリ内でプロセスが実行中なので、他の CVS プロセスが使うには一貫
+性のない状態になっているかもよ、ということです。
+
+しかし、そのメッセージが長い間出ているようなら、何らかの理由で CVS
+プロセスが後始末しないで失敗に終わってしまったことを示します。CVS が
+突然、予期しないでお亡くなりになった時、たとえばリポジトリのあるマシン
+の電源が落ちたとか、そういう時に起こり得ます。
+
+解決法は、問題のリポジトリサブディレクトリから、手でロックファイルを
+取り除くことです。リポジトリの該当部分に移って、`#cvs.lock' と
+いう名前か、`#cvs.wfl' か `#cvs.rfl' で始まる名前のファイ
+ルを探してください。ファイルのタイムスタンプを今実行中の CVS プロセ
+スの起動時刻と比較してください。ファイルがそれらのプロセスに生成され
+たのでないようならば、それを削除しても安全です。待機中の CVS プロセ
+スはロックファイルがなくなったと告げて(30秒ほどかかります)、要求され
+たオペレーションを続行できるようになります。
+
+詳しくは Cederqvist マニュアルの `Locks' ノードを参照してくださ い。
+
+
+File: j-cvsbook.info,  Node: CVS claims a file is failing Up-To-Date check; what do I do?,  Next: The pserver access method is not working,  Prev: CVS says it is waiting for a lock; what does that mean?,  Up: Some Real Life Problems (With Solutions)
+
+CVS claims a file is failing Up-To-Date check; what do I do?
+------------------------------------------------------------
+
+CVS に、あるファイルが Up-To-Date チェックに失敗しましたと言われまし
+た。どうしたらいいの?
+
+パニックにならないで。これは単に、あなたが最後にチェックアウトやアッ
+プデートしたよりあとに、リポジトリ中のそのファイルが変更されたことを
+示しているだけです。そのファイルについて `cvs update' を実
+行し、リポジトリから変更分をマージしてください。受け取った変更がロー
+カルの変更とコンフリクトした場合はファイルを編集してコンフリクトを解
+消してください。そのあと、もう一度コミットしてください。成功するはず
+です。マージするのに忙しくしている間に他の人が別のリビジョンをコミッ
+トする可能性を除けば。
+
+
+File: j-cvsbook.info,  Node: The pserver access method is not working,  Next: The pserver access method is STILL not working,  Prev: CVS claims a file is failing Up-To-Date check; what do I do?,  Up: Some Real Life Problems (With Solutions)
+
+The pserver access method is not working
+----------------------------------------
+
+pserver アクセスメソッドが動きません。
+
+この問題の、最も一般的で、でもちょっとわかりにくい原因は、 inetd
+の設定ファイル中に `--allow-root' オプションでリポジトリ
+を書くのを忘れた、というやつです。
+
+*Note Repository Administration:: で述べた、/etc/inetd.conf のこの例を
+思い出してください:
+
+     cvspserver stream tcp nowait root /usr/local/bin/cvs cvs \
+               --allow-root=/usr/local/newrepos pserver
+
+(実際のファイルではこれはひとつの長い行で、バックスラッシュはありま
+せん)
+
+`--allow-root=/usr/local/newrepos' の部分はセキュリティ上の制限
+で、外部へ提供するつもりのないリポジトリへ pserver アクセスされない
+ようにするためのものです。pserver 経由でアクセスさせるリポジトリは
+全部、`--allow-root' に書いておかなければなりません。
+あなたのシステムのリポジトリを、必要な数だけ `--allow-root' オ
+プションで書いてください(inetd の引数の制限に達するまで、いくらでも
+たくさんかけます)。
+
+パスワード認証サーバについて、詳しくは *Note Repository
+Administration:: を参照してください。
+
+
+File: j-cvsbook.info,  Node: The pserver access method is STILL not working,  Next: My commits seem to happen in pieces instead of atomically,  Prev: The pserver access method is not working,  Up: Some Real Life Problems (With Solutions)
+
+The pserver access method is STILL not working
+----------------------------------------------
+
+pserver アクセスメソッド、まだ動かないんですけど…
+
+はいはい、`--allow-root' を書かなかったのが原因でなかった場合、
+可能性は他にもいくつかあります:
+
+   * そのユーザのエントリが CVSROOT/passwd
+     ファイルになく、CVSROOT/config ファイルに SystemAuth=no
+     と書いてあるので、CVS はシステムパスワード
+     ファイルを見にいかなかった(または、SystemAuth=yes
+     とあるが、システム
+     パスワードファイルにもそのユーザのエントリはなかった)。
+
+   * そのユーザのエントリは CVSROOT/passwd
+     にあるが、その名前のユーザがシ ステム上におらず、そのうえ
+     CVSROOT/passwd のエントリでは有効なシステ
+     ムユーザ名への対応づけがされていない。
+
+   * パスワードファイルが間違っている(CVS は普通、ユーザにそれを知らせて
+     いるのだが、それは答えではない)。
+
+   * passwd ファイルも /etc/inetd.conf もすべて正しく設定されているが、
+     /etc/services にこのエントリを書くのを忘れている:
+
+          cvspserver      2401/tcp
+
+     そのため inetd はそのポートを見ておらず、そのコネクションを CVS
+     に渡 せていない。
+
+
+
+File: j-cvsbook.info,  Node: My commits seem to happen in pieces instead of atomically,  Next: CVS keeps changing file permissions; why does it do that?,  Prev: The pserver access method is STILL not working,  Up: Some Real Life Problems (With Solutions)
+
+My commits seem to happen in pieces instead of atomically
+---------------------------------------------------------
+
+コミットがアトミックにではなく、バラバラにおこなわれるようです
+
+それは CVS がコミットをアトミックにでなく、バラバラにおこなっている
+からです。:-)
+
+もっと言うと、CVS のオペレーションはディレクトリごとにおこなわれます。
+複数のディレクトリにわたるコミットを実行したとき(あるいはアップデー
+トやなんか(or an update, or anything else, for that matter))、CVS は
+順々に各リポジトリディレクトリ中でオペレーションを実行する間、そのディ
+レクトリにロックをかけます。
+
+小〜中サイズのプロジェクトでは、これが問題になることはめったにありま
+せん。CVS は各ディレクトリ中での処理を素早くおこなうので、ユーザはそ
+の非アトミック性に気づいたりはしないでしょう。しかしあいにく大きなプ
+ロジェクトでは次の筋書きのようなきおとが起こり得ます(これが深くてファ
+イルのたくさんあるサブディレクトリを少なくとも2つ(A と B)持つプロジェ
+クトで起こる、と想像してください):
+
+  1. ユーザ qsmith
+     がコミットを始めます。そのコミットには両方のサブディレ
+     クトリ中のファイルを含んでいます。CVS はまず B のなかのファイルをコ
+     ミットします(おそらく qsmith はコマンドライン中でその順にディレクト
+     リを指定したのでしょう)
+
+  2. ユーザ jrandom がアップデートを始めます。アップデートは何らかの理由
+     で作業コピーのディレクトリAから始まりました(CVS
+     はディレクトリやファ
+     イルをどの順で処理するかについては何の保証もしません、if left to
+     its own devices)。qsmith はまだ A
+     では作業していませんので、ロックは問題
+     ではないことに注意してください。
+
+  3. そして qsmith が B のコミットを終え、A に移り、A を終えます。
+
+  4. 最後に jrandom が B に移り、アップデートを終えます。
+
+
+全部終わった時点で、jrandom の作業コピーには qsmith の B の変更は反
+映されている一方 A の変更が反映されていないことは明らかです。qsmith
+がそれらの変更をひとつの単位としてコミットしたつもりだったとしても、
+実際はそのようにはなりませんでした。jrandom の作業コピーは qsmithが
+予想もしない状態になってしまっています。
+
+もちろん、jrandom がもう一度 cvs update して、さっき取って来れなかっ た
+qsmith のコミット分の変更を取って来れば、問題は解決します。しかし
+それは、最初に qsmith の変更のうち一部分しか取って来なかったことを知
+るすべがあれば、の話です。
+
+この quandary に容易な答はありません。ただ、作業コピーが一貫性のない
+状態になっていることがどうにかして明らかになることを祈るほかありませ
+ん(そのソフトウェアがビルドできないかもしれませんし、何が起こったの
+かを認識するまで jrandom と qsmith が混乱した会話をすることになるか
+もしれません)。
+
+一般に、CVS が_アトミック_なトランザクションを保証できていない
+についてはバグだと考えられています。ロックがリポジトリのトップレベル
+に作られないただひとつの理由というのは、開発者が大勢いる大きなプロジェ
+クトではロックの競合が耐えられないくらい頻繁に起こるであろうというこ
+とです。従って、CVS は2つの害のうち小さなほうを選びました。競合の頻
+度を減らすかわりに、とびとびに読んだり書いたりする可能性を許した、と
+いうことです。そのうち誰かが CVS を改良し(たとえばリポジトリオペレー
+ションの速度を上げるなどして)、2つの害のどちらけを選んだりしなくても
+よくなるかもしれません。それまでは、ノンアトミックな動作に甘んじるこ
+とになるでしょう。
+
+より詳しいことを知るためには、 Cederqvist マニュアルの `Concurrency'
+を参照してください。
+
+
+File: j-cvsbook.info,  Node: CVS keeps changing file permissions; why does it do that?,  Next: CVS on Windows complains it cannot find my .cvspass file; why?,  Prev: My commits seem to happen in pieces instead of atomically,  Up: Some Real Life Problems (With Solutions)
+
+CVS keeps changing file permissions; why does it do that?
+---------------------------------------------------------
+
+CVS がファイルのパーミッションを変更しつづけるんです; なんでそんなこ
+とをするんでしょうか?
+
+一般に、 CVS はファイルのパーミッションを保存するについてはあまり良
+い仕事をしません。プロジェクトをインポートしたあと、それをチェックア
+ウトする場合、新しい作業コピーのファイルのパーミッションが、インポー
+トされたときと同じである保証はありません。作業コピー中のファイルが、
+普通にファイルを新しく作ったときの標準パーミッションと同じ、というこ
+とのほうがありそうです。
+
+しかし、例外が少なくともひとつあります。プロジェクト内に実行可能なシェ
+ルスクリプトを保存したい場合には、対応するリポジトリのファイルを実行
+可能にしておけば、全ての作業コピーでそのファイルを実行可能に保つこと
+ができます:
+
+     floss$ ls -l /usr/local/newrepos/someproj
+     total 6
+     -r--r--r--   1 jrandom  users         630 Aug 17 01:10 README.txt,v
+     -r-xr-xr-x   1 jrandom  users        1041 Aug 17 01:10 scrub.pl,v*
+     -r--r--r--   1 jrandom  users         750 Aug 17 01:10 hello.c,v
+
+そのファイルは実行可能ですが、リポジトリ中のファイルがすべてそうであ
+るように、読み出し専用になっているままです(CVS は RCS ファイルの一時
+的なコピーを作って作業し、そのコピーの中ですべてをおこなってから、準
+備ができたらそのコピーをオリジナルと置き換える、ということを思い出し
+てください)。
+
+実行可能ファイルをインポートまたは追加した場合には、CVS は実行可能ビッ
+トを保存しますので、ファイルが最初から正しいパーミッションならばなに
+も心配することはありません。ですがたまたま、実行可能にする前にファイ
+ルを追加してしまったら、リポジトリ内に移って、RCS ファイルのパーミッ
+ションを手で実行可能にしてください。
+
+リポジトリのパーミッションのほうがつねに優先されます。リポジトリ内の
+そのファイルが実行可能ではなくて、作業コピー中では実行可能だった場合、
+アップデート後には作業コピーのそのファイルは実行可能ではなくなってし
+まいます。自分のファイルのパーミッションが黙って変更されてしまうとい
+うのは非常にいらだたしいことです。これが起こったら、まずリポジトリを
+チェックし、対応する RCS ファイルを適切なパーミッションに設定して解
+決するかどうか見てみてください。
+
+最近、CVS に `PreservePermissions' という機能が追加されました。
+この機能はこのような問題を少しは軽減するかもしれません。しかし、この
+機能を使うと、考えもしなかった他の結果をうむことになるかもしれません
+(無条件にこの機能を推薦しなかったのはこれが理由です)。CVSROOT/config に
+`PreservePermissions=yes' を書く前に、Cederqvist マニュアル の `config'
+と `Special Files' のノードをよく読んでくださ いね。
+
+
+File: j-cvsbook.info,  Node: CVS on Windows complains it cannot find my .cvspass file; why?,  Next: My working copy is on several different branches; help?,  Prev: CVS keeps changing file permissions; why does it do that?,  Up: Some Real Life Problems (With Solutions)
+
+CVS on Windows complains it cannot find my .cvspass file; why?
+--------------------------------------------------------------
+
+Windows 上の CVS に、.cvspass ファイルが見つからないといって怒られま
+した。どうして?
+
+pserver 接続時に、クライアント側の CVS はホームディレクトリにある
+.cvspass ファイルを探そうとします。Windows マシンはもともとはホーム
+ディレクトリを持っていないので、CVS は `%HOME%' 環境変数を見に
+いきます。しかし、HOME を設定するについては非常に慎重でなければなり
+ません。これは動きます:
+
+     set HOME=C:
+
+これは動きません:
+
+     set HOME=C:\
+
+最後の余分なバックスラッシュが CVS を混乱させてしまい、 `C:\\.cvspass'
+がオープンできない、ということになってしまうので す。
+
+ですから、すばやくて不変の解決法は、autoexec.bat に
+
+     set HOME=C:
+
+と書いてリブートすることです。こうすれば CVS の pserver は動くでしょう。
+
+
+File: j-cvsbook.info,  Node: My working copy is on several different branches; help?,  Next: When I do export -d I sometimes miss recent commits,  Prev: CVS on Windows complains it cannot find my .cvspass file; why?,  Up: Some Real Life Problems (With Solutions)
+
+My working copy is on several different branches; help?
+-------------------------------------------------------
+
+わたしの作業コピーはいくつかの別々のブランチの上にいます。どうすれば
+いいですか?
+
+作業ディレクトリの別々のサブディレクトリが、どういうわけか別のブラン
+チにある、という意味でしょうか? おそらく作業コピーのトップレベルでは
+ないところで、 -r フラグをつけてアップデートをしてしまったのでしょう
+ね。
+
+たいしたことではありません。トランクに戻りたければ、トップディレクト
+リでこれを実行してください
+
+     cvs update -r HEAD
+
+またはこれです
+
+     cvs update -A
+
+あるいは、作業コピー全体をひとつのブランチ上のものにしたければ、こう
+してください:
+
+     cvs update -r Branch_Name
+
+あるディレクトリをブランチにあげて一時的な作業をする必要があるのなら、
+作業コピーのなかのサブディレクトリが1つ2つ、他と違うブランチになって
+いてもべつに構わないと思います。でも、普通は終わったら元に戻しておい
+たほうがいいでしょう。作業コピー全体が同じ開発ライン上にいるほうが、
+混乱がうんと少ないですから。
+
+
+File: j-cvsbook.info,  Node: When I do export -d I sometimes miss recent commits,  Next: I get an error about val-tags; what should I do?,  Prev: My working copy is on several different branches; help?,  Up: Some Real Life Problems (With Solutions)
+
+When I do export -d I sometimes miss recent commits
+---------------------------------------------------
+
+export -d した時に、最近のコミット分がないことがあるんです。
+
+これはリポジトリマシンとローカルマシンの時計がずれているためです。片
+方あるいは両方の時計を合わせ直すか、-D の引数に日付を指定すれば解決
+します。未来の日付を指定しても(-D tomorrow など)受け付けられますので、
+時刻のずれの分を補正できます。
+
+
+File: j-cvsbook.info,  Node: I get an error about val-tags; what should I do?,  Next: I am having problems with sticky tags; how do I get rid of them?,  Prev: When I do export -d I sometimes miss recent commits,  Up: Some Real Life Problems (With Solutions)
+
+I get an error about val-tags; what should I do?
+------------------------------------------------
+
+val-tags に関するエラーが起きたようなんですが、どうすればいいですか?
+
+このようなエラーが起きたら:
+
+     cvs [export aborted]: cannot write /usr/local/myproj/CVSROOT/val-tags: \
+        Operation not permitted
+
+CVSROOT/val-tags ファイルに書く権限のないユーザが CVS を実行している
+という意味です。このファイルには有効なタグ名が書いてあって、どのタグ
+が有効かを素早く調べるためのものです。あいにく、リポジトリに関して読
+み込み専用(例えばプロジェクトをチェックアウトするなど)のオペレーション
+をした時でも、CVS はこのファイルを変更することがあります。
+
+これは CVS のバグで、これを読んでいる頃には多分解決されていると思い
+ます。それまでは val-tags ファイルをワールドライタブルにするか、それ
+ができなければそのファイルを削除するか、またはオーナを変更して CVS
+オペレーションを実行するユーザにするかしてください。(パーミッション
+を変更するだけでいいと思うかもしれませんが、いくつかの事例ではオーナ
+も変更する必要がありました。)
+
+
+File: j-cvsbook.info,  Node: I am having problems with sticky tags; how do I get rid of them?,  Next: Checkouts/updates exit with error saying cannot expand modules,  Prev: I get an error about val-tags; what should I do?,  Up: Some Real Life Problems (With Solutions)
+
+I am having problems with sticky tags; how do I get rid of them?
+----------------------------------------------------------------
+
+スティッキータグで困っています; どうやって取り除けばよいでしょう?
+
+さまざまな CVS オペレーションが、作業コピーに "スティッキータグ"
+を設定します。各ファイルの各リビジョンに対応しているタグを意味します。
+(ブランチの場合は作業コピーに新しく追加されたファイルすべてにスティッ
+キータグが適用されます。) タグか日付を指定してチェックアウトやアップ
+デートを行った場合、作業コピーにスティッキータグが設定されます。例え ば:
+
+     floss$ cvs update -r Tag_Name
+
+あるいは
+
+     floss$ cvs checkout -D '1999-08-16'
+
+日付かノンブランチタグ名が指定された場合には、作業コピーはプロジェク
+ト履歴中のその時点で凍結したスナップショットになります。ですので当然、
+そこから変更をコミットしたりはできないのです。
+
+スティッキータグを除去するには、-A フラグ付きでアップデートを実行し
+てください
+
+     floss$ cvs update -A
+
+こうすればスティッキータグはすべてクリアされ、各ファイルは最新のトラン
+クのリビジョンに更新されます。
+
+
+File: j-cvsbook.info,  Node: Checkouts/updates exit with error saying cannot expand modules,  Next: I cannot seem to turn off watches,  Prev: I am having problems with sticky tags; how do I get rid of them?,  Up: Some Real Life Problems (With Solutions)
+
+Checkouts/updates exit with error saying cannot expand modules
+--------------------------------------------------------------
+
+チェックアウト/アップデートがモジュールを展開できないと言って、エラー
+で終了します。
+
+これは CVS が悪いエラーメッセージを出す一例ですね。そのうち誰かが直
+すと思いますが、しばらくは困りますね。このエラーメッセージはこのよう
+な感じで出ます:
+
+     floss$ cvs co -d bwf-misc user-space/bwf/writings/misc
+     cvs server: cannot find module `user-space/bwf/writings/misc' - ignored
+     cvs [checkout aborted]: cannot expand modules
+
+CVS は CVSROOT/modules ファイルが何かおかしいといっているように見え
+ます。が、本当はリポジトリ内のパーミッションの問題なのです。チェック
+アウトしようとしたディレクトリか、その親ディレクトリのうちのどれかが
+読み出し可能になっていないのです。今回の場合は親ディレクトリでした:
+
+     floss$ ls -ld /usr/local/cvs/user-space/bwf
+     
+     drwx------  19 bwf      users        1024 Aug 17 01:24 bwf/
+
+ひどく間違ったこのエラーメッセージには惑わされないで下さい、これはリ
+ポジトリのパーミッションの問題なのです。
+
+
+File: j-cvsbook.info,  Node: I cannot seem to turn off watches,  Next: My binary files are messed up,  Prev: Checkouts/updates exit with error saying cannot expand modules,  Up: Some Real Life Problems (With Solutions)
+
+I cannot seem to turn off watches
+---------------------------------
+
+監視をオフにできないみたいなんですけど…。
+
+おそらく、全てのファイルに対して
+
+     floss$ cvs watch remove
+
+とやったのでしょうけれど、これを実行するのを忘れたんじゃないですか:
+
+     floss$ cvs watch off
+
+監視についての問題を診断する時のヒント: リポジトリに移って、
+CVS/fileattr ファイルを直接見れば、なにもかもすっかり明らかになるこ
+とがあります。詳しくは *Note Repository Administration:: を参照してく
+ださい。
+
+
+File: j-cvsbook.info,  Node: My binary files are messed up,  Next: CVS is not doing line-end conversion correctly,  Prev: I cannot seem to turn off watches,  Up: Some Real Life Problems (With Solutions)
+
+My binary files are messed up
+-----------------------------
+
+バイナリファイルがむちゃくちゃになってしまいました。
+
+そのファイルを追加した時に -kb オプションをつけるのを忘れたりしません
+でしたか? 忘れている場合、 CVS はそのファイルに対し改行コード変換や RCS
+キーワード展開を施してしまいます。一番簡単な解決法は通常、そのファ
+イルをバイナリとしてマークして、
+
+     floss$ cvs admin -kb foo.gif
+
+そのあと、直してあるそのファイルをコミットします。CVS はそれがバイナ
+リファイルだということをもう知っているので、新しくコミットしたものや
+それ以降コミットしたものを CVS が台無しにしてしまうことはないでしょ う。
+
+
+File: j-cvsbook.info,  Node: CVS is not doing line-end conversion correctly,  Next: I need to remove a subdirectory in my project; how do I do it?,  Prev: My binary files are messed up,  Up: Some Real Life Problems (With Solutions)
+
+CVS is not doing line-end conversion correctly
+----------------------------------------------
+
+改行コードの変換が正しくおこなわれないようなのですが。
+
+CVS クライアントを Unix でないプラットフォームで実行していて、作業コ
+ピー中のファイルの改行コード変換がおこなわれていないようならば、きっ
+とそれは知らない間に -kb オプションつきで追加されてしまったんじゃな
+いかと思います。リポジトリの問題は以下のコマンドで解決できます。
+
+     floss$ cvs admin -kkv FILE
+
+-kkv というのは、通常のキーワード展開をし、通常の改行コード変換もお
+こなう、という意味です。(内部的な話をすると、 CVS はキーワード展開と
+改行コード変換の違いについて少々混同しているところがあります。-k オ
+プションで両方をコントロールできるあたりにそれが現れています。)
+
+あいにく、admin コマンドではリポジトリ内のファイルしか直せません。作
+業コピーは相変らずそのファイルをバイナリだと思っています。 CVS/Entries
+のそのファイルの行を手で編集して -kb を削除すればよいの
+ですが、それで他の作業コピーの問題まで解決するわけではありません。
+
+
+File: j-cvsbook.info,  Node: I need to remove a subdirectory in my project; how do I do it?,  Next: Can I copy .cvspass files or portions of them?,  Prev: CVS is not doing line-end conversion correctly,  Up: Some Real Life Problems (With Solutions)
+
+I need to remove a subdirectory in my project; how do I do it?
+--------------------------------------------------------------
+
+プロジェクト内のサブディレクトリを削除しなければいけないのですが、ど
+うやればいいですか?
+
+そうですね、サブディレクトリを完全に削除することはできないのですが、
+そのディレクトリの中のファイルをすべて削除することはできますよね(ま
+ずファイルを削除し、cvs remove して、コミットしてください)。ディレク
+トリが空になったら、-P フラグをつけてアップデートすると作業コピー中
+のそのサブディレクトリが自動的に刈り込まれます。
+
+
+File: j-cvsbook.info,  Node: Can I copy .cvspass files or portions of them?,  Next: I just committed some files with the wrong log message,  Prev: I need to remove a subdirectory in my project; how do I do it?,  Up: Some Real Life Problems (With Solutions)
+
+Can I copy .cvspass files or portions of them?
+----------------------------------------------
+
+.cvspass ファイルや、その一部をコピーしても構いませんか?
+
+はい、構いませんよ。`.cvspass' ファイルをマシン間でコピーしても
+構いませんし、各行を個別にコピーしても大丈夫です。サーバの待ち時間が
+大きいような場合には作業コピーマシンから cvs login を実行するより、
+この方法を取るほうが早いと思います。
+
+.cvspass を改行コードの異なる2つのマシン間で転送すると動かないという
+ことに注意してください(もちろん、手で改行コードを変換してもかまいま
+せん、そんなに手間がかかるわけではないでしょうからね)。
+
+
+File: j-cvsbook.info,  Node: I just committed some files with the wrong log message,  Next: I need to move files around without losing revision history,  Prev: Can I copy .cvspass files or portions of them?,  Up: Some Real Life Problems (With Solutions)
+
+I just committed some files with the wrong log message
+------------------------------------------------------
+
+ファイルをいくつか、間違ったログメッセージでコミットしてしまいました。
+
+これを解決するのに、リポジトリを手で編集する必要はありません。admin
+コマンドを -m フラグ付きで実行すれば直ります。-m と引数の間には空白
+を入れないということと、置き換えるログメッセージをクオートで囲むこと
+を忘れないようにして下さい:
+
+     floss$ cvs admin -m1.17:'I take back what I said about the customer.' hello.c
+
+
+File: j-cvsbook.info,  Node: I need to move files around without losing revision history,  Next: How can I get a list of all tags in a project?,  Prev: I just committed some files with the wrong log message,  Up: Some Real Life Problems (With Solutions)
+
+I need to move files around without losing revision history
+-----------------------------------------------------------
+
+リビジョン履歴をなくさないでファイルを移動したいんですが。
+
+リポジトリ内で、プロジェクトの中のお望みの新しい場所に RCS ファイル
+をコピーしてください(移動はしないで下さい)。古いほうの場所にも残して
+おかなければだめです。次に、作業コピー中でこのようにしてください:
+
+     floss$ rm oldfile1 oldfile2 ...
+     floss$ cvs remove oldfile1 oldfile2 ...
+     floss$ cvs commit -m "removed from here" oldfile1 oldfile2 ...
+
+これ以降にアップデートをすると、CVS は古いファイルを消し、通常の方法
+でリポジトリに加えた時と同じように、新しいファイルを作業コピー中に持っ
+てきます(普通よりリビジョン番号が高いところは、新しいファイルを加え
+た時と違います)。
+
+
+File: j-cvsbook.info,  Node: How can I get a list of all tags in a project?,  Next: How can I get a list of all projects in a repository?,  Prev: I need to move files around without losing revision history,  Up: Some Real Life Problems (With Solutions)
+
+How can I get a list of all tags in a project?
+----------------------------------------------
+
+プロジェクト中のタグの一覧が欲しいんですけどどうすればよいですか?
+
+現在の CVS では簡単にこれを実現する方法はありません。ユーザみんなが
+これがないことで困っているので、この機能を実現するべく作業が進行中だ
+と思います。あなたがこれを読んでいる頃までには `cvs tags'
+コマンドかそれに似たようなものが使えるようになっているでしょう。
+
+Until then, there are workarounds. cvs log -h を実行し、結果出力のな
+かの `symbolic names:' のあとを読んでください。あるいは、リポジ
+トリマシン上にログインしているならリポジトリ中の RCS ファイルの冒頭
+を読めばわかると思います。タグが全部(ブランチタグもノンブランチタグ も)
+`symbols' フィールドにリストしてあります:
+
+     floss$ head /usr/local/newrepos/hello.c,v
+     head	2.0;
+     access;
+     symbols
+     	Release_1_0:1.22
+     	Exotic_Greetings-2:1.21
+     	merged-Exotic_Greetings-1:1.21
+     	Exotic_Greetings-1:1.21
+     	merged-Exotic_Greetings:1.21
+     	Exotic_Greetings-branch:1.21.0.2
+     	Root-of-Exotic_Greetings:1.21
+     	start:1.1.1.1
+     	jrandom:1.1.1;
+     locks; strict;
+     comment	@ * @;
+
+
+File: j-cvsbook.info,  Node: How can I get a list of all projects in a repository?,  Next: Some commands fail remotely but not locally; how should I debug?,  Prev: How can I get a list of all tags in a project?,  Up: Some Real Life Problems (With Solutions)
+
+How can I get a list of all projects in a repository?
+-----------------------------------------------------
+
+リポジトリ中のプロジェクト全部の一覧はどうやれば見ることが出来ますか?
+
+タグのリストと同じように、CVS の現在のバージョンでは実装されていません。
+が、多分すぐ実装されるんじゃないかと思います。多分そのコマンドは cvs
+list (省略形式だと cvs ls)で、modules ファイルとリポジトリのサブディ
+レクトリの両方を解釈するようなものになるでしょう。
+
+今のところはとりあえず(直接見るか cvs checkout -c を実行するかして)
+CVSROOT/modules ファイルを調べるのが多分一番いいと思います。ただし、
+誰もプロジェクトに対してモジュールを明示的に指定していない場合には
+そこには何も示されていないでしょう。
+

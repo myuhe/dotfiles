@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+#contributor: Xah Lee (XahLee.org)
+#name: define-key
+#key: define-key
+# --
+(define-key ${1:KEYMAP} (kbd "${2:KEY}")  \'${3:FUNC})$0

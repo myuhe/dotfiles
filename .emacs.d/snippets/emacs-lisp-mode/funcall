@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+#contributor: Xah Lee (XahLee.org)
+#name: funcall
+#key: funcall
+# --
+(funcall $0)

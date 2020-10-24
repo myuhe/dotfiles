@@ -1,0 +1,25 @@
+fg_color=#657b83
+bg_color=#fdf6e3
+sb_fg_color=#c6ccc0
+sb_bg_color=#b6c0b0
+fontsize = 14
+
+##フォントを混在表示する時にtrueにする。
+##iso88591_font_for_usascii=true
+
+use_transbg = false
+wall_picture = 
+scrollbar_view_name = mozmodern
+
+# Metaキーとして使用するキー(none,mod1,mod2,mod3,mod4,meta,alt,super,hyper)
+
+## mod_meta_key = alt
+
+mod_meta_key = mod1
+mod_meta_mode = esc 
+##type_engine = cairo
+use_anti_alias = true
+##use_clipboard = true
+##OSC52に対応させる
+##allow_osc52=true
+

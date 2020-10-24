@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name : choose_value
+# key : choose
+# binding : C-x C-x C-c
+#contributor : myuhe <yuhei.maeda_at_gmail.com>
+# --
+\${${1:num}:\$\$(yas/choose-value \'({"${2:VALUE}"}))})$0

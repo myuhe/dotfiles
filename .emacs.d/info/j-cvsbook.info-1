@@ -1,0 +1,1199 @@
+これは j-cvsbook.info、j-main.texi より makeinfo バージョン 4.2
+によって作成されました。
+
+START-INFO-DIR-ENTRY
+* CVS Book: (cvsbook).          A CVS tutorial and reference.
+END-INFO-DIR-ENTRY
+
+Copyright (C) 1999 Karl Fogel <kfogel@red-bean.com>
+
+This document is free software; you can redistribute and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation; either version 2, or (at your option) any
+later version.
+
+This document is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+General Public License for more details.
+
+This manual describes how to use and administer CVS (Concurrent Versions
+System).  It is part of a larger work entitled `Open Source Development
+With CVS'; please see the introduction for details.
+
+This is version 1.12 of this manual.
+
+
+File: j-cvsbook.info,  Node: Top,  Next: Translation,  Up: (dir)
+
+
+
+Top
+***
+
+* Menu:
+
+* Translation::                日本語訳について
+* Introduction::               What is this book?
+* An Overview of CVS::         Basic CVS usage -- a tutorial.
+* Repository Administration::  How to run a CVS repository.
+* Advanced CVS::               What the gurus know.
+* Tips And Troubleshooting::   FAQs and real-life experiences.
+* CVS Reference::              A reference to CVS commands, variables, etc.
+* Third-Party Tools::          Other tools that work with CVS.
+* Index::
+* GNU General Public License::
+
+
+File: j-cvsbook.info,  Node: Translation,  Next: Introduction,  Prev: Top,  Up: Top
+
+日本語訳について
+****************
+
+これをお読みのかたへ。
+
+こんにちは。日本語訳を作成中のたけうちかほりです。
+
+このドキュメントは Open Software Development with CVS という本の free
+chapters を訳している最中のものです。原書については
+`http://cvsbook.red-bean.com/' を御参照ください。
+
+現時点、この訳は校正や用語統一なんて程遠い、読み返しすらしてないよう
+なひどい訳ですので、書いてあることが正しいかどうか御自分でお確かめく
+ださいましね。まちがってたら即わたくし take-k@secom-sis.co.jp まで
+お知らせください。もとの英語はとても素直でわかりやすいものなので、日
+本語があやしかったら迷わず原文英語を参照してください。
+
+`http://cvsbook.red-bean.com/'
+
+にあります。訳を配るときはいままでメールにつけてたんですけれど、だん
+だん大きくなってきたので仕方なく web に置きました。間違い満載の、迷
+惑千万な訳だと思いますが、間違いを見つけたかたはわたくし たけうちか
+ほり  take-k@secom-sis.co.jp までお知らせください。
+
+下訳が済んでいるのは introduction と 2, 4, 6, 8, 9, 10 章です。それ
+以外(ライセンス等)は英文のままです。
+
+                                たけうちかほり <take-k@secom-sis.co.jp>
+
+この日本語下訳の配布条件
+------------------------
+
+原英文の配布条件に準じます。
+
+以下に原文についている許諾文を付けます。GPL については *Note GNU
+General Public License:: を参照してください。
+
+Copyright (C) 1999 Karl Fogel <kfogel@red-bean.com>
+
+This document is free software; you can redistribute and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation; either version 2, or (at your option) any
+later version.
+
+This document is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+General Public License for more details.
+
+
+File: j-cvsbook.info,  Node: Introduction,  Next: An Overview of CVS,  Prev: Translation,  Up: Top
+
+Introduction
+************
+
+この文書は、共同作業及びバージョン管理に CVS (Concurrent Versions
+System) を使うことについての、無料でオンライン提供された章です。 CVS
+のインストールと基本コンセプトから、進んだ使い方、管理まで全て
+をカバーしています。CVS を使う人、使おうとしている人向けです。
+
+これらの章は `Open Source Development With CVS' (published by The
+Coriolis Group (http://www.coriolis.com/), ISBN 1-57610-490-7)
+からの抜粋です。この文書に収容されていない部分 (第1, 3, 5,
+7章)には、CVS を使ったオープンソースプロジェクトを実
+行する際の問題や考え方について述べてあります。
+
+ここにある無料の章だけでも CVS の本として完結してはいますが、あな
+たがこれらを気に入って、本を買ってくれればよいなあと思います。
+`http://www.coriolis.com/bookstore/bookdetail.cfm?id=1576104907'
+で出版社に直接注文できます。
+
+これらの章は GNU General Public License
+(http://www.gnu.org/copyleft/gpl.html)
+のもとにリリースされています。フリーソフトウェア
+についての情報一般は、`http://www.gnu.org/' を見て下さい。特 に
+`http://www.gnu.org/philosophy/free-sw.html' 。
+
+この文書についてのコメント、あるいは訂正があれば、<bug-cvsb
+ook@red-bean.com> までメールでお知らせ下さい。お知らせや更新情報 は
+`http://cvsbook.red-bean.com/' をご覧ください。
+
+
+File: j-cvsbook.info,  Node: An Overview of CVS,  Next: Repository Administration,  Prev: Introduction,  Up: Top
+
+An Overview of CVS
+******************
+
+     _I can't imagine programming without it... that would be like
+     parachuting without a parachute!_
+
+                        _-Brian Fitzpatrick on CVS_
+
+この章では CVS の基礎を紹介したあと、日常での CVS の使い方を詳しい案内付
+きで見ていきます。概念が順々に示されますので、CVS が初めての人はこの章を
+最初から最後まで飛ばさずに読破するのが一番いいでしょう。
+
+* Menu:
+
+* Basic Concepts::              How to think like CVS.
+* A Day With CVS::              Guided tour through a sample CVS session.
+* Other Useful CVS Commands::   Random useful things.
+* Branches::                    Splitting development into parallel streams.
+
+
+File: j-cvsbook.info,  Node: Basic Concepts,  Next: A Day With CVS,  Up: An Overview of CVS
+
+Basic Concepts
+==============
+
+CVS や他のバージョン管理システムを使ったことがない場合、基本的な仮定がわ
+からないために足を取られてしまうのは目に見えています。CVS を使い始める時
+に最初に混乱するのはだいたいの場合、CVS の使用目的が2つあって(レコード保
+持と共同作業)、その2つが明らかに関連がないから、のように思えます。 結果
+的にその2つの機能は密接に結びついてしまっているのですが。
+
+レコード保持は必須の機能です。プログラムの現在の状態を、以前は同じところ
+がどのようであったか比べたいと思う人が多いからです。例えば、新しい機能を
+実装しようとすると通常、開発者はプログラムを全く動かない壊れた状態にして
+しまい、その機能を大概実装し終わる頃までは壊れたままになるものです。そう
+いう時に限って、以前リリースしたバージョンのバグレポートがやってきます。
+そのバグ(今いじっているバージョンのソースにも多分存在するんでしょうね)を
+どうにかするためには、そのプログラムを使える状態にまで戻してやらなければ
+ならないのです。
+
+ソースコードの履歴を CVS で管理していれば、その状態を元に戻すのに何の苦
+労も要りません。実際、開発者は単に「3週間前の状態のそのプログラムをよこ
+したまえ」、あるいは「最近のリリース時の状態のプログラムをよこしたまえ」
+と言いさえすればいいのです。あなたがもし、履歴へのアクセスをこういう風に
+便利な方法でやったことがないなら、これを使うようになった時そのあまりの素
+早さに驚くと思います。わたしも今コーディング中のプロジェクトでリビジョン
+管理をいつも使っていて、何度も救われました。
+
+共同作業を容易にするために何が必要か理解するためには、ひとつのプロジェク
+ト上で多数の人々が働けるよう CVS が提供している機構について、詳しく見て
+いく必要があるでしょう。まあでもその前に、CVS が提供していない(または少
+なくとも支援していない)機能をちょっと見ましょうか。それはファイルのロッ
+クです。他のバージョン管理システムを使ったことがあるなら、「ロック-更新-
+ロック解除」開発モデルはおなじみだと思います。開発者はまず編集したいファ
+イルの排他的書込みアクセス(ロック)を取得し、次にそれを変更、そしてロック
+を解除して他の開発者がそのファイルにアクセスできるようにします。既に誰か
+がファイルをロックしていれば、あなたがそのファイルを変更する前にまずロッ
+クを「解除」してもらわなければなりません。(いくつかの実装ではロックを
+「盗む」ことができますが、これは時々盗まれた側の悲鳴が上がることになりま
+すね、よくない慣習です)
+
+このようなシステムは、開発者がお互いをよく知っており、任意の時刻に誰が何
+をしようとしているか知っており、アクセスの競合が起こって誰かが作業できな
+い時には素早く連絡できるような状況であればうまく動きます。しかし開発グルー
+プが大きくなり、散らばってくると、ロックのことばかりが時間を取り始め、コー
+ディングする時間を削っていきます。こうなると混乱が定常状態となり、人々か
+ら本来の仕事をやる気を削いでしまいます。
+
+CVS はもう少し成熟したアプローチを取ります。衝突しないよう開発者自身に調
+整させるのではなくて、CVS は開発者が同時に編集できるようにし、変更全てを
+統合する仕事を引き受け、衝突を追跡します。この処理には「コピー変更マージ」
+モデルを用い、次のように動作します:
+
+  1. 開発者Aは CVS
+     から作業コピー(プロジェクトを構成するファイルを含むディレ
+     クトリツリー)を取得します。これは作業コピーを「チェックアウト」するとも
+     言います。図書館から本を借り出す(チェックアウト)ようだからです。
+
+  2.
+     開発者Aは自分の作業コピーを自由に編集します。その頃、別の開発者は各自の
+     作業コピーにて忙しく仕事をしています。それぞれに別のコピーを持っているの
+     で衝突はありません。それはあたかも、開発者全員が図書館の同じ本のコピーを
+     それぞれ持っていて、それぞれ独立にそれの余白にコメントを書き込んだり、あ
+     るページを書き換えたりしている様子のようです。
+
+  3.
+     開発者Aは変更を終え、その変更の性質と目的を説明する「ログメッセージ」と
+     ともに CVS
+     へ変更をコミットします。これは、本の何を変更したか、及びその
+     理由を図書館に知らせることにたとえられると思います。図書館はこれらの変更
+     を「マスタ」コピーへ受け入れ、それを永久に記録します。
+
+  4.
+     一方、他の開発者は最近マスタコピーが変更されたかどうかを図書館に問い合わ
+     せることができます。変更があれば、CVS
+     は自動的に作業コピーをアップデート
+     します。(ここが魅力のある素晴らしいところです、あなたもここを評価すると
+     いいなあ。実際の本もこういう風になっていたら世界はどんなに違うでしょうね!)
+
+
+CVS
+のもとでは、あるプロジェクト上の全ての開発者が平等です。いつアップデー
+トするか、いつコミットするかを決定するのは主に個人の好みまたはプロジェク
+トのポリシーです。コーディングプロジェクトでよく使われるやり方の一つは、
+大きな作業を始める前にアップデートを行い、変更が完了してテストしたときだ
+けコミットするというもので、こうするとマスタコピーはいつも「動く」状態に
+保たれます。
+
+たぶんあなたは、「開発者AとBが、それぞれの作業コピーの同じところで違う変
+更を施し、両者が変更をコミットしたらどうなるの?」と思っているんじゃない
+かと思います。これは "コンフリクト" (conflict, 衝突) と呼ばれるもの
+で、開発者Bは変更をコミットしようとした時点で CVS からコンフリクトを知ら
+されます。開発者Bは次に進む前に、CVS
+から、コンフリクトを検出したことと、
+作業コピーのコンフリクトの起こった箇所にコンフリクトマーカー(見てすぐに
+分かるテキストのフラグ)を挿入したことを知らされます。そこには両者の変更
+が示されており、比較しやすいようになっています。開発者Bはそれを全て整頓
+して、コンフリクトを解消した新しいリビジョンをコミットしなければなりませ
+ん。開発者2人はこの問題を解決するために話す必要があるでしょう。CVS はコ
+ンフリクトが存在することを開発者に警告するだけです。 実際に解消するのは
+人間の役目です。
+
+マスタコピーっていうのは何なのかって? 公式の CVS の用語では、それはプロ
+ジェクトのリポジトリと呼びます。リポジトリというのは単に、中央のサーバに
+あるファイルツリーです。その構造の詳しいところはまあ置いておいて(それは
+*Note Repository Administration::
+を見てね)、チェックアウト-コミット-アッ
+プデートのサイクルの要件を満たすためにリポジトリが何をしなければならない
+かを見ていきましょう。次のシナリオについて考えてみて下さい:
+
+  1.
+     開発者が2人(AとBとします)、プロジェクトの作業コピーを同時にチェックアウ
+     トしたとします。プロジェクトは開始したばかりで、誰も変更をコミットしてお
+     らず、ファイルは全部オリジナルの状態のままです。
+
+  2. 開発者Aはすぐに作業を始め、変更のひとまとまりをコミットします。
+
+  3. その頃、開発者Bはテレビを見ています。
+
+  4.
+     開発者Aはまるで明日がないかのようにハッキングしまくり、2回目のコミットを
+     実行します。この時点で、リポジトリの履歴にはオリジナル、次にAの初回変更、
+     その次に今回の変更が記録されています。
+
+  5. その頃、開発者Bはテレビゲームをしています。
+
+  6.
+     ここで突然、開発者Cがプロジェクトに加わり、リポジトリから作業コピーをチェッ
+     クアウトします。開発者Cの作業コピーにはAの2回分の変更が反映されています。
+     チェックアウトした時にはその変更はもうリポジトリにあったからです。
+
+  7.
+     開発者Aは何かに憑かれたかのようにコーディングを続け、完了して3回目のコミッ
+     トを行います。
+
+  8.
+     開発者Bは、例の狂ったような活動にも気づかないまま(幸せなヤツだ)、ついに
+     「そろそろ始めるか」と決めたようです。作業コピーをわざわざアップデートす
+     るような面倒なことはやらずに、すぐファイルを編集し始めます。そのなかには
+     Aが作業したファイルもいくつかあるかもしれません。そして開発者Bは最初の変
+     更をコミットします。
+
+
+この時点で、次のうちいずれかになります。A が編集したファイルをBが一切編
+集しなかったとしたら、コミットは成功します。しかし、B のファイルがリポジ
+トリの最新に追いついていなくて、しかも B がそれらのファイルを編集してい
+ることを CVS が認識したら、CVS は B に対し、コミットする前にアップデート
+しなくてはならない、と知らせます。
+
+B がアップデートをかけると、CVS は A
+の変更をBの作業コピーにマージします。
+Aの作業分は、Bのまだコミットしていない作業分とコンフリクトするものもある
+し、しないものもあるでしょう。コンフリクトしない分については B の作業コ
+ピーに適用されてそれで終わりです。しかしコンフリクトしている分については、
+コミットする前に B がコンフリクトを解消しなければなりません。
+
+ここで開発者 C がアップデートを行ったとすると、リポジトリから変更をいろ
+いろと受け取ることになるでしょう。A の3回目のコミット分と、B
+の初回コミッ
+トの_成功した_分です(ホントは2回目にコミットしようとした時のやつで
+すね、初回にコンフリクトがあって失敗してるとしたら)。
+
+いろいろな程度に最新に同期していない作業コピーを持っている開発者に対し、
+CVS が正しい順序で変更を提供するためには、リポジトリはプロジェクトの最初
+から全てのコミットを保存しておく必要があります。実際には、CVS リポジトリ
+は連続的に diff を取ってそれを保存しています。ですから、とても古い作業コ
+ピーがあったとしても、それとリポジトリの現状の違いを計算できますし、実際
+その作業コピーを最新にすることもできます。これにより、開発者は任意の時点
+のプロジェクト履歴を見ることができ、非常に古い作業コピーを生き返らせるこ
+とができるのです。
+
+厳密にはリポジトリは別の手段で同様の結果を出せたかもしれないですが、実際、
+diff を保存するというのは必要な機能を実装するにはシンプルで直感的な方法
+です。
+
+この処理により、patch をうまく使えば、CVS はいつのファイルツリーでも再構
+築できて、ある作業コピーの状態を任意の別の状態にすることができる、という
+おまけもついています。任意の特定の時刻のプロジェクトの状態をチェックアウ
+トすることができる、ということです。他の人の作業コピーに影響を与えずに、
+任意の2つの状態の違いを diff のフォーマットで見ることもできます。
+
+つまり、プロジェクト履歴にアクセスしやすくするために必要な機能そのものが、
+分散していて調整しきれないけれど能力のある開発者チームがプロジェクトで共
+同作業するためにも役立っているというわけです。
+
+今はリポジトリのセットアップやユーザアクセス管理、CVS 特有のファイル形式
+の詳しいところは省いていきます(それは*Note Repository
+Administration::で述
+べます)。ここでは作業コピーを変更するときの方法に集中しましょう。
+
+まずは用語だけさっと説明しますね:
+
+   * "リビジョン(revision)" ひとつ、またはひとまとまりのファイルの履歴に
+     コミットされた変更のこと。リビジョンとは、恒常的に変わりゆくプロジェクト
+     におけるひとつの「スナップショット」である。
+
+   * "リポジトリ(repository)" CVS が全てのリビジョン履歴を保存しているマ
+     スタコピーのこと。各プロジェクトはリポジトリを1つだけ持っている。
+
+   * "作業コピー(working copy)" あなたが実際にプロジェクトに変更を加える
+     用のコピー。ひとつのプロジェクトには多数の作業コピーが存在する(一般には
+     各開発者がそれぞれの作業コピーを持っている)。
+
+   * "チェックアウト(check out)"
+     リポジトリに対し作業コピーを要求すること。
+     作業コピーはチェックアウトした時点でのプロジェクトの状態を反映します。あ
+     なたと他の開発者が変更を加えたときには、コミットとアップデートによって自
+     分の変更を「発行」したり、他の人の変更を見なければならない。
+
+   * "コミット(commit)" 自分の作業コピーの変更を中央のリポジトリへ送るこ
+     と。"チェックイン(check-in)" とも呼ばれる。
+
+   * "ログメッセージ(log message)"
+     コミット時にそのリビジョンに添える説明
+     の一言のこと。他の人が、プロジェクトに今まで何が起こったかの要約を知りた
+     い時に、そのログメッセージに目を通す。
+
+   * "アップデート(update)" 他の人の変更をリポジトリから取ってくるため、
+     また自分の作業コピーに未コミットの変更があるかどうか見るために実行する。
+     コミットと混同しないように。アップデートとコミットは相補的な(つまり逆の)
+     操作である。覚え方: update は自分の作業コピーを up to date (最新)
+     にする。
+
+   * "コンフリクト(conflict)" ふたりの開発者が同じファイルの同じ領域を変
+     更して、コミットしようとしたときの状況のこと。CVS
+     はコンフリクトがあるこ
+     ととその場所を示すが、それを解消するのは当事者ふたりの役目である。
+
+
+
+File: j-cvsbook.info,  Node: A Day With CVS,  Next: Other Useful CVS Commands,  Prev: Basic Concepts,  Up: An Overview of CVS
+
+A Day With CVS
+==============
+
+この節では CVS の基本的な操作を説明したあと、よくある CVS
+の使い方をカバー するような例を示します。ツアーが進むにつれて、 CVS
+が内部的にどう動いて いるか見ていくことにします。
+
+CVS を使うだけなら CVS の実装の細かいところまで全部知っている必要はない
+のですが、どう動いているか基本的なところを知っていると、したいことを実現
+するために一番良い方法を選ぶ際、役に立ちます。動作機構が全部丸見えだとい
+う点で、CVS は自動車より自転車に似ています。自転車のようにすぐ飛び乗れま
+すし。でも、ちょっと勉強してギアがどう動いているかわかれば、もっと効率よ
+く乗れるのです。(CVS の場合、その丸見えなところが熟考の末の設計決定なの
+か、たまたまそうなだけなのかわからないですが、フリーのプログラムはよくそ
+うなっています。外から見えるような実装というのはそのシステムが内部的にど
+う動いているか最初からさらすことになり、ユーザが開発者になって貢献してく
+れるようになりやすいという利点があります。)
+
+ツアーの各パートは、それ以前のパートで得た知識を使うことになります。初め
+て読むかたは最初から始めて、飛ばさずに順番に読んでいくことをお勧めします。
+下のメニューは繰り返し読む時の便宜のためにあるので、前のほうの章が分かっ
+ていないあいだに興味のある章へ飛ぶのに使ったりしないほうがいいと思います。
+
+* Menu:
+
+* Conventions Used In This Tour::
+* Invoking CVS::
+* Accessing A Repository::
+* Starting A New Project::
+* Checking Out A Working Copy::
+* Version Versus Revision::
+* Making A Change::
+* Finding Out What You (And Others) Did -- update And diff::
+* CVS And Implied Arguments::
+* Committing::
+* Revision Numbers::
+* Detecting And Resolving Conflicts::
+* Finding Out Who Did What (Browsing Log Messages)::
+* Examining And Reverting Changes::
+* The Slow Method Of Reverting::
+* The Fast Method Of Reverting::
+
+
+File: j-cvsbook.info,  Node: Conventions Used In This Tour,  Next: Invoking CVS,  Up: A Day With CVS
+
+Conventions Used In This Tour
+-----------------------------
+
+ツアーの舞台は Unix 環境です。CVS は Windows や Macintosh
+でも動きますし、 Ice Engineering の Tim Endres によって書かれた Java
+のクライアントもあり ますから Java
+の動くところならどこででも動きます。しかしここでは、現時点 及び潜在的な
+CVS ユーザの大部分が Unix のコマンドライン環境で作業してい
+ると仮定します、少々乱暴かもしれませんが。あなたがもしそうでなかったとし
+ても、ツアーのなかの例は簡単に他のインタフェースに読み替えることができる
+と思います。コンセプトさえ理解すればどんな CVS フロントエンドでも使いこ
+なせると思いますよ。(信じてください、わたしは何度もやってきたんです)
+
+ツアー中の例はプログラミングのプロジェクトを追跡するために CVS を使う人
+を対象に書きましたが、CVS の操作はソースコードだけでなくテキストドキュメ
+ントを扱う際にも適用できます。
+
+また、すでに CVS がインストールされていて(フリーの Unix システムにはたい
+がいデフォルトで入っているので、あなたの知らないうちにインストールされて
+いることが多いでしょう)、リポジトリにアクセスできると仮定しています。環
+境が整っていなくても、読むだけでも学ぶことは多いと思います。 *Note
+Repository Administration:: を読めば CVS のインストールとリポジトリ
+のセットアップについて勉強できます。
+
+CVS がインストール済みとして、オンラインマニュアルを探してみて下さい。著
+者の Per Cederqvist にちなんで「Cederqvist」として親しまれているマニュア
+ルはソースディストリビューションに付属していて、普通だいたい最新のリファ
+レンスがあります。Texinfo 形式で書かれていて、Unix では Info ドキュメン
+トの構造のが読めると思います。コマンドラインの info プログラムで読めます
+し、
+
+     floss$ info cvs
+
+Emacs のなかで Ctrl+H のあとに "i" をタイプしても読めます。どっちも動か
+ない場合はあなたのまわりの Unix グルに相談してください(または *Note
+Repository Administration:: を参照してください、インストールについて
+書いてあります)。 CVS をよく使うようになりたいなら、Cederqvist に詳しく
+なりたいと思うに違いありません。
+
+
+File: j-cvsbook.info,  Node: Invoking CVS,  Next: Accessing A Repository,  Prev: Conventions Used In This Tour,  Up: A Day With CVS
+
+Invoking CVS
+------------
+
+CVS はひとつのプログラムですが、様々な動作をします: アップデート、コミッ
+ト、ブランチ、diff 取り、などなど。CVS を起動する時はどの動作をさせるか
+指定します。起動時の形式は次の通りです:
+
+     floss$ cvs command
+
+例えば
+
+     floss$ cvs update
+     floss$ cvs diff
+     floss$ cvs commit
+
+などなど。(まだ上のコマンドを実行しちゃいけませんよ、作業コピーの中じゃ
+なくちゃ意味ありませんから。すぐに出てきますからガマンしてください)
+
+CVS もコマンドもオプションが書けます。CVS の振舞いに影響のあるオプション
+(コマンドの動作とは独立)は「グローバルオプション」と呼ばれます。コマンド
+用のオプションは「コマンドオプション」と呼ばれます。グローバルオプション
+は常にコマンドより左側に書かれ、コマンドオプションはコマンドの右側に書か
+れます。つまり
+
+     floss$ cvs -Q update -p
+
+-Q はグローバルオプションで、-p はコマンドオプションですね。(好奇心旺盛
+なアナタのために: -Q は「quietly」という意味で、お知らせ出力を抑制し、何
+らかの理由でコマンドが完了しなかった場合のエラーメッセージのみを表示しま
+す。-p は update の結果をファイルではなく標準出力に送るという意味です)
+
+
+File: j-cvsbook.info,  Node: Accessing A Repository,  Next: Starting A New Project,  Prev: Invoking CVS,  Up: A Day With CVS
+
+Accessing A Repository
+----------------------
+
+CVS
+にはアクセスしたいリポジトリを前もって知らせてやらなければなりません。
+もうチェックアウトしたんなら関係ないです - 作業コピーはすべて、自分がど
+のリポジトリからチェックアウトされたものかがわかっていますから、CVS はそ
+の作業コピーのリポジトリを自動的に推定します。ここではとりあえずまだ作業
+コピーを作っていないと仮定しましょう、そうすると CVS に明示的にどこを見
+に行けばいいか指定する必要があるのです。これはグローバルオプション -d で
+指定できます(-d は directory を意味します、歴史的経緯があってこの略称な
+のですが、「repository」の -r のほうがよかったと思いますよね)。そのあと
+にリポジトリのパスを書きます。リポジトリがローカルの /usr/local/cvs (標
+準的な場所です)にあるとすると、こうです:
+
+     floss$ cvs -d /usr/local/cvs command
+
+しかし、リポジトリはネットワーク越しの別のマシン上にあることが多いです。
+CVS ではネットワーク経由でアクセスする方法を選択できます。どれを使えばい
+いかはリポジトリマシン(以降「サーバ」と呼びます)がどの程度セキュリティを
+必要としているかによります。サーバのいろいろなリモートアクセス方法を設定
+するについては *Note Repository Administration:: に述べてあります。
+ここで はクライアント側についてだけ話しましょう。
+
+幸い、リモートアクセスを起動するにはすべて共通の文法を使います。ローカル
+のリポジトリでなくリモートのリポジトリを指定するには、長めのリポジトリパ
+スを使えばよいのです。まずアクセス方法の名前をコロンで囲んだものを書き、
+次にユーザ名とサーバ名を @ でつなげて書きます。またコロンを書き、最後に
+サーバ上のリポジトリのパスを書きます。
+
+"pserver" (password-authenticated server) アクセスについてみてみましょ
+う。
+
+     floss$ cvs -d :pserver:jrandom@cvs.foobar.com:/usr/local/cvs login
+     (Logging in to jrandom@cvs.foobar.com)
+     CVS password: (enter your CVS password here)
+     floss$
+
+-d に続く長いリポジトリパスは、「pserver アクセスを使って、ユーザ名
+jrandom、サーバは cvs.foobar.com で /usr/local/cvs
+というリポジトリを持っ ているからね」ということをCVS
+に知らせています。ホスト名は別に "cvs.something.com"
+である必要はありません、ただの慣習です。but it could just as easily
+have been:
+
+     floss$ cvs -d :pserver:jrandom@fish.foobar.org:/usr/local/cvs command
+
+このコマンドはログインを実行し、あなたがこのリポジトリで作業する権限があ
+るかどうか確認します。パスワードプロンプトを出し、次にパスワードが正しい
+かどうかサーバにたずねます。Unix の慣習に従い、ログインが成功したら何の
+メッセージもなしに終わります。失敗したら(たとえばパスワードが間違ってい
+るなどの理由で)、エラーメッセージを表示します。
+
+ある CVS サーバに対しては、ログインは一度しかする必要がありません。ログ
+インが成功すると、CVS はホームディレクトリの .cvspass というファイルにパ
+スワードを保存します。pserver メソッドを経由してリポジトリにアクセスする
+際にはそのファイルからパスワードを持ってくるので、初回 CVS サーバにアク
+セスする時のみログインすればよいのです(各クライアント毎)。もちろんパスワー
+ドが変更になった時にはいつでも再度 cvs login を走らせることができます。
+
+Note: pserver はこのような初回ログインが必要な唯一のアクセス方法です。
+他の方法は普通の CVS コマンドを即実行することができます。
+
+いったん .cvspass に認証情報を保存すれば、他の CVS コマンドも同じ文法で
+動きます:
+
+     floss$ cvs -d :pserver:jrandom@cvs.foobar.com:/usr/local/cvs command
+
+Windows で pserver を使うには手順をもう一つ踏みます。Windows ではホーム
+ディレクトリの概念がないため、CVS はどこに .cvspass を置いてよいか分かり
+ません。場所を教えてあげましょう。C: ドライブのルートを指定するのが普通
+です:
+
+     C:\WINDOWS> set HOME=C:
+     C:\WINDOWS> cvs -d :pserver:jrandom@cvs.foobar.com:/usr/local/cvs login
+     (Logging in to jrandom@cvs.foobar.com)
+     CVS password: (enter password here)
+     C:\WINDOWS>
+
+ファイルシステム中のどこでも構いません。ネットワークドライブを使うのは避
+けたいと思うかもしれませんね、そのドライブにアクセスできる人に .cvspass
+を見られてしまいますから。
+
+CVS では pserver のほかに ext (外部接続プログラム利用)、kserver(ケルベロ
+スセキュリティシステムバージョン4利用)、gserver(GSSAPI(Generic Security
+Services API、ケルベロスバージョン5以上を扱う)利用)の各方法をサポートし
+ています。これらは pserver と同じように使えますが、それぞれに特質があり
+ます。
+
+このなかでは `ext' が最もよく使われている方法でしょう。サーバに rsh か
+ssh でログインできるなら、`ext' が使えます。次のようにテストでき ます:
+
+     floss$ rsh -l jrandom cvs.foobar.com
+     Password: enter your login password here
+
+はい、rsh でログインログアウトができるとします。クライアントマシンに戻っ
+て次をどうぞ:
+
+     floss$ CVS_RSH=rsh; export CVS_RSH
+     floss$ cvs -d :ext:jrandom@cvs.foobar.com:/usr/local/cvs command
+
+最初の行は(Unix のボーンシェルで書いてあります)、CVS_RSH 環境変数に rsh
+を設定して、接続に rsh を使うことを CVS に指示します。2番目の行は任意の
+CVS コマンドが書けます。パスワードを入力するよう促され、CVS はサーバにロ
+グインします。
+
+Cシェルを使っている人はこれをやってみて下さい:
+
+     floss% setenv CVS_RSH rsh
+
+and for Windows, try this:
+
+     C:\WINDOWS> set CVS_RSH=rsh
+
+これ以降ツアーではボーンシェルで書きますので、あなたの環境に合わせて読み
+替えて下さい。
+
+rsh のかわりに ssh (セキュアシェル)を使う場合、 CVS_RSH を適切に設定する
+だけです:
+
+     floss$ CVS_RSH=ssh; export CVS_RSH
+
+設定する値が ssh にもかかわらず変数名が CVS_RSH だというのを見過ごさない
+ように。歴史的な理由でこうなっているのです(Unix ではこれさえ言えば何でも
+許されるんですよネ)。CVS_RSH には、リモートサーバにログインできて、コマ
+ンドを走らせることができて、出力を受け取ることができるプログラムなら何で
+も指定できます。rsh 以降、この手のプログラムはほかにもありますが、ssh が
+最もポピュラーです。注意点として、このプログラムはデータストリームを書き
+換えてはならないということが挙げられます。この点で Windows NT の rsh は
+不合格です。DOS と Unix の改行コードを変換してしまうからです。 Windows
+用のほかの rsh を使うか、その他のアクセス方法を使って下さい。
+
+gserver と kserver は他に比べてあまり使われませんのでここでは説明しませ
+ん。今までに説明した方法とよく似ています。詳しくは Cederqvist を参照のこ
+と。
+
+ひとつのリポジトリしか使わないのなら毎回 -d リポジトリ とか打つのはイヤ
+でしょう、CVSROOT 環境変数を設定してください(これも CVSREPOS という名前
+のほうがよかったと思いますが、今となってはもう遅いです):
+
+     floss$ CVSROOT=/usr/local/cvs
+     floss$ export CVSROOT
+     floss$ echo $CVSROOT
+     /usr/local/cvs
+     floss$
+
+またはこんな感じです:
+
+     floss$ CVSROOT=:pserver:jrandom@cvs.foobar.com:/usr/local/cvs
+     floss$ export CVSROOT
+     floss$ echo $CVSROOT
+     :pserver:jrandom@cvs.foobar.com:/usr/local/cvs
+     floss$
+
+以降では CVSROOT にリポジトリの場所を指定していると仮定しますので、例に
+は -d オプションは書きません。いろいろなリポジトリを使う場合は、CVSROOT
+を設定せずに -d リポジトリ と指定して下さい。
+
+
+File: j-cvsbook.info,  Node: Starting A New Project,  Next: Checking Out A Working Copy,  Prev: Accessing A Repository,  Up: A Day With CVS
+
+Starting A New Project
+----------------------
+
+既に CVS の管理下にあるプロジェクト(もうそのプロジェクトがリポジトリのど
+こかにあるということです)で作業するために CVS を勉強中のあなたはきっと、
+この節を飛ばして次の「Checking Out A Working Copy」を読みたいだろうと思
+います。この節は、ソースコードがあって、それを CVS の管理下に置きたいあ
+なたにぴったりです。既にリポジトリにアクセスできると仮定して進めます、リ
+ポジトリ自体の設定をするには *Note Repository Administration::
+を参照して 下さい。
+
+CVS に新しいプロジェクトを入れるのは "インポート(import)" といいます。
+CVS コマンドは、今あなたが考えた通り、こうです:
+
+     floss$ cvs import
+
+コマンドが成功するためにはもう少しオプションが必要ですけれど(あと、正し
+い場所で実行する必要があります)。さて、まずあなたのプロジェクトのトップ
+レベルディレクトリに移って下さい:
+
+     floss$ cd myproj
+     floss$ ls
+     README.txt  a-subdir/   b-subdir/   hello.c
+     floss$
+
+プロジェクトには、トップレベルにファイルが2つ - README.txt と hello.c -
+と、サブディレクトリが2つ - a-subdir と b-subdir - と、それらの下
+のファイルがいくつか(例には示されていませんが)あります。プロジェクトを
+インポートする時、CVS はカレントディレクトリから始めて、ツリーのなかの
+全てをインポートします。ですから、プロジェクトのパーツになるファイルだ
+けがツリーのなかにあることを確認して下さい。バックアップファイルとか走
+り書きのファイルとかは全部掃除しておいてください。
+
+import コマンドの一般的な書き方はこうです:
+
+     floss$ cvs import -m "log msg" projname vendortag releasetag
+
+-m
+フラグ(message)にはそのインポートを説明する短いメッセージを指定します。
+プロジェクト全体の最初のログメッセージになります。以降のコミット毎にそれ
+ぞれログメッセージが追加されます。これらのメッセージは必須です。- m フラ
+グを指定しない場合 CVS は自動的にエディタを立上げて(EDITOR 環境変数を見
+ます)、ログメッセージをタイプさせられます。ログメッセージを保存してエディ
+タを抜けてから import は続行します。
+
+次の引数はプロジェクトの名前です(ここでは "myproj" を使います)。チェック
+アウトする時に、この名前でもってリポジトリからプロジェクトをチェックアウ
+トします。(実際に何が起こるかというと、リポジトリの中にこの名前のディレ
+クトリが作成されるのですが、詳しくは *Note Repository Administration::
+を 参照のこと)
+カレントディレクトリと同じ名前である必要はありません。まあ、
+そうするのが普通みたいですけども。
+
+vendortag と releasetag 引数は CVS の図書管理に必要なのですが、今はきに
+しないで下さい。あなたが使うにはほとんど関係ありませんから。これらが重要
+になる情況について(ほとんどないですが)は *Note Advanced CVS::
+を読んで下さ い。いまはとりあえず、この引数にはユーザ名と "start"
+を使うことにします。
+
+さて、import を起動する準備ができました:
+
+     floss$ cvs import -m "initial import into CVS" myproj jrandom start
+     N myproj/hello.c
+     N myproj/README.txt
+     cvs import: Importing /usr/local/cvs/myproj/a-subdir
+     N myproj/a-subdir/whatever.c
+     cvs import: Importing /usr/local/cvs/myproj/a-subdir/subsubdir
+     N myproj/a-subdir/subsubdir/fish.c
+     cvs import: Importing /usr/local/cvs/myproj/b-subdir
+     N myproj/b-subdir/random.c
+     
+     No conflicts created by this import
+     floss$
+
+おめでとう! このコマンドを走らせたことで、リポジトリに実際に影響のあるこ
+とをついになしとげたことになるわけです。
+
+import コマンドの出力を読むと、CVS がファイル名の前に何か1文字を出力して
+いることに気づきますね。この場合、"N" は「新しいファイル (new file)」と
+いう意味です。左側に1文字つけてステータスを表すのは、CVS の出力では一般
+的なパターンです。あとで、チェックアウトとアップデートのときにも見ること
+になると思います。
+
+たぶんあなたはこう考えるでしょう、さてプロジェクトをインポートしたわけだ、
+すぐ作業を始めてもいいんだよね、と。いえいえ違うんです、ハズレ。カレント
+ディレクトリはまだ CVS の作業コピーではありません。これがインポートの元
+になったのは事実ですが、インポートされただけで CVS
+の作業コピーにヘンシー
+ン、するわけではないのです。作業コピーを手に入れるためにはリポジトリから
+チェックアウトする必要があります。
+
+でも、まずは今のそのプロジェクトツリーを保存しておきたいんじゃないかと思
+います。いったん CVS にソースを入れたら、バージョン管理していないコピー
+を間違えて編集してしまって混乱するのはイヤでしょうからね(そういう変更は
+プロジェクト履歴に格納されませんから)。現時点以降の編集は全部作業コピー
+でやりたいだろうと思います。しかしリポジトリにちゃんと入っているかどうか
+を確認もせずに、インポートしたツリーをいきなり削除するのは不安でしょう。
+もちろん 99.999% 確実だとは思うけれども(だって import コマンドはエラーも
+返さなかったし)、だからって危ない橋をわざわざ渡らなくてもいいですよね。
+注意しすぎても損はない、というのは、どんなプログラマだって知っていること
+です。こういう風にしてください:
+
+     floss$ ls
+     README.txt  a-subdir/   b-subdir/   hello.c
+     floss$ cd ..
+     floss$ ls
+     myproj/
+     floss$ mv myproj was_myproj
+     floss$ ls
+     was_myproj/
+     floss$
+
+はい、これでどうでしょう。オリジナルのファイルは保存されているし、もう使
+われないバージョンだというのが名前から明らかに分かりますから作業コピーと
+間違えることもないでしょう。これでチェックアウトの用意ができました。
+
+
+File: j-cvsbook.info,  Node: Checking Out A Working Copy,  Next: Version Versus Revision,  Prev: Starting A New Project,  Up: A Day With CVS
+
+Checking Out A Working Copy
+---------------------------
+
+プロジェクトをチェックアウトするコマンドは、そう、今あなたが考えているの
+で合っています:
+
+     floss$ cvs checkout myproj
+     cvs checkout: Updating myproj
+     U myproj/README.txt
+     U myproj/hello.c
+     cvs checkout: Updating myproj/a-subdir
+     U myproj/a-subdir/whatever.c
+     cvs checkout: Updating myproj/a-subdir/subsubdir
+     U myproj/a-subdir/subsubdir/fish.c
+     cvs checkout: Updating myproj/b-subdir
+     U myproj/b-subdir/random.c
+     
+     floss$ ls
+     myproj/      was_myproj/
+     floss$ cd myproj
+     floss$ ls
+     CVS/        README.txt  a-subdir/   b-subdir/   hello.c
+     floss$
+
+ほら、初めての作業コピーですよ! 中身はインポートした時と全く同じ、ただし
+CVS という名前のサブディレクトリができています。CVS がバージョン管理情報
+を格納しているのです。実際、プロジェクト中の各ディレクトリがそれぞれ CVS
+サブディレクトリを持っています:
+
+     floss$ ls a-subdir
+     CVS/        subsubdir/  whatever.c
+     floss$ ls a-subdir/subsubdir/
+     CVS/    fish.c
+     floss$ ls b-subdir
+     CVS/      random.c
+
+CVS が CVS という名前のサブディレクトリの中にリビジョン情報を格納してい
+るということは、プロジェクトの中に CVS という名前のサブディレクトリを含
+めることができないということです。実用上これが問題になったという話は聞い
+たことがありません。
+
+ファイルを編集する前に、ブラックボックスの中身を覗いてみましょう:
+
+     floss$ cd CVS
+     floss$ ls
+     Entries     Repository  Root
+     floss$ cat Root
+     /usr/local/cvs
+     floss$ cat Repository
+     myproj
+     floss$
+
+ナゾなことはなにもありませんね。Root ファイルはリポジトリの場所を示し、
+Repository ファイルはプロジェクトがリポジトリ内のどこにあるかを示してい
+ます。ちょっと混乱するかもしれません、説明します。
+
+CVS の用語はもう長いこと混乱しています。「リポジトリ」という語は違う2つ
+のものを指すのに使われます。ある時はリポジトリのルートディレクトリ(例え
+ば /usr/locla/cvs)を意味します。これはたくさんのプロジェクトを含んでいま
+す。Root
+ファイルはこちらを指しています。しかし他の場合は、リポジトリルー
+ト内にある、特定のプロジェクトのサブディレクトリ(例えば /u
+sr/local/cvs/myproj, /usr/local/cvs/yourproj, /usr/local/cvs/fish)を意味
+することもあります。CVS サブディレクトリ内の Repository ファイルは後者の
+意味をとるわけです。
+
+この本で「リポジトリ」というとき、普通は Root(トップレベルリポジトリ) を
+意味しますが、時々はプロジェクトのサブディレクトリという意味で使う時もあ
+ります。文脈からその意味が読み取れない場合には、文章で明らかにします。
+Repository ファイルに書かれているパスは時々、相対パスではなくプロジェク
+トの絶対パスになっていることがあるので注意して下さい。この場合、Root
+ファ イルが少し冗長になります:
+
+     floss$ cd CVS
+     floss$ cat Root
+     :pserver:jrandom@cvs.foobar.com:/usr/local/cvs
+     floss$ cat Repository
+     /usr/local/cvs/myproj
+     floss$
+
+Entries ファイルはプロジェクト内の各ファイルについての情報を保持していま
+す。1行につき1ファイルで、直下のファイルとサブディレクトリの情報だけが書
+いてあります。myproj にある CVS/Entries ファイルを示します:
+
+     floss$ cat Entries
+     /README.txt/1.1.1.1/Sun Apr 18 18:18:22 1999//
+     /hello.c/1.1.1.1/Sun Apr 18 18:18:22 1999//
+     D/a-subdir////
+     D/b-subdir////
+
+各行のフォーマットはこうです:
+
+     /filename/revision number/last modification date//
+
+ディレクトリの行は最初に "D" とあります。(CVS はディレクトリの変更履歴は
+保存しないので、その行のリビジョン番号とタイムスタンプは空になります)
+
+タイムスタンプは最終更新の日付と時刻を記録します(地方時ではなく
+Universal Time)。CVS はこれのおかげで、最後のチェックアウト、アップデー
+ト、またはコミットの時点以降に、あるファイルが更新されたかどうかをすぐ知
+らせられるわけです。ファイルシステム中のタイムスタンプが CVS/Entries
+ファ
+イル中のタイムスタンプと違っていれば(わざわざリポジトリを見に行かなくと
+も)、そのファイルが更新されたんだろうというのがわかるのです。
+
+サブディレクトリ中の CVS/* ファイルを見てみましょう。
+
+     floss$ cd a-subdir/CVS
+     floss$ cat Root
+     /usr/local/cvs
+     floss$ cat Repository
+     myproj/a-subdir
+     floss$ cat Entries
+     /whatever.c/1.1.1.1/Sun Apr 18 18:18:22 1999//
+     D/subsubdir////
+     floss$
+
+ルートリポジトリは変わっていませんが、Repository ファイルにはプロジェク
+トのこのサブディレクトリの場所が書いてあって、Entries ファイルの内容も違
+うのが分かります。
+
+インポートの直後は、プロジェクト中のどのファイルのリビジョン番号も全部
+1.1.1.1 です。最初のリビジョン番号はちょっと特殊なので、そのへんはあとに
+しましょう、変更してコミットしてみてからリビジョン番号についてみていく予
+定です。
+
+
+File: j-cvsbook.info,  Node: Version Versus Revision,  Next: Making A Change,  Prev: Checking Out A Working Copy,  Up: A Day With CVS
+
+Version Versus Revision
+-----------------------
+
+CVS が各ファイル用に保持している内部リビジョン番号は、そのファイルが構成
+するソフトウェアのバージョン番号とは関係がありません。例えばあなたのプロ
+ジェクトにファイルが3つあるとして、その内部リビジョン番号は 1999/5/3 の
+時点で 1.2, 1.7, 2.48 だとします。その日、そのソフトをパッケージングして
+SlickoSoft バージョン3としてリリースします。これは純粋にマーケティングの
+決定であり、CVS のリビジョンには全く影響しません。CVS のリビジョン番号は
+お客様には見えないものです(リポジトリを見せない限り)。公に見える番号は
+「バージョン3」の「3」だけです。CVS
+に関してのみ言えば、それをたとえばバー
+ジョン1729と呼んだって構わないわけです。バージョン番号(リリース番号でも
+いいですが)は CVS の内部の変更追跡には何の影響もありません。
+
+混乱を避けるため、「リビジョン」という単語は CVS 管理下にあるファイルの
+内部リビジョン番号だけを指すために使います。ああ、CVS のことは「バージョ
+ン管理システム」と呼ぶかもしれません、「リビジョン管理システム」っていう
+のはなんだかかっこわるいですからね。
+
+
+File: j-cvsbook.info,  Node: Making A Change,  Next: Finding Out What You (And Others) Did -- update And diff,  Prev: Version Versus Revision,  Up: A Day With CVS
+
+Making A Change
+---------------
+
+このプロジェクトは特にたいしたことはできません。hello.c
+の内容を示します:
+
+     floss$ cat hello.c
+     #include <stdio.h>
+     
+     void
+     main ()
+     {
+        printf ("Hello, world!\n");
+     }
+
+プロジェクトをインポートして以来、初の変更を加えましょう。次の行を加えま
+す:
+
+     printf ("Goodbye, world!\n");
+
+Hello, world! のあとにです。お好みのエディタを起動して変更してください:
+
+     floss$ emacs hello.c
+       ...
+
+今回のこれはしごく単純な変更ですからまあ忘れたりしないと思います。でも、
+もっと大きくて複雑なプロジェクトになると、ファイルを編集したあとに他のこ
+とにジャマされて、数日後に戻ってきた時にはもう何をやったか思い出せないで
+しょうし、ひょっとすると、何も変更してないと思ってしまうかもしれません。
+このときにリポジトリと作業コピーを比べてみて初めて、「CVS
+は命の恩人です」 という状況になるのです。
+
+
+File: j-cvsbook.info,  Node: Finding Out What You (And Others) Did -- update And diff,  Next: CVS And Implied Arguments,  Prev: Making A Change,  Up: A Day With CVS
+
+Finding Out What You (And Others) Did - update And diff
+-------------------------------------------------------
+
+前に、リポジトリから作業コピーへ変更を持ってくる方法として、アップデート
+のことを述べました。これは他の人の変更を取得する方法です。でもアップデー
+トというのは本当はもう少し複雑なことをしています:
+作業コピーの状態全てを、
+リポジトリ内のプロジェクトの状態と比較します。チェックアウト時以降、リポ
+ジトリに何も変更がなくても作業コピーが変更されていれば、アップデートはそ
+れも表示します:
+
+     floss$ cvs update
+     cvs update: Updating .
+     M hello.c
+     cvs update: Updating a-subdir
+     cvs update: Updating a-subdir/subsubdir
+     cvs update: Updating b-subdir
+
+hello.c の隣にある「M」は、最後のチェックアウト以降このファイルが変更さ
+れました、そしてその変更はまだリポジトリへはコミットされていません、とい
+う意味です。
+
+どのファイルを編集したんだったかをただ知りたいなと思うだけのこともあるで
+しょう。しかしどんな変更を施したのか詳しく見たいときには、diff 形式のフ
+ルレポートを取得することもできます。diff コマンドは作業ファイル中の変更
+されたであろうファイルと、対応するリポジトリ中のファイルを比較し、全ての
+相違を表示します:
+
+     floss$ cvs diff
+     cvs diff: Diffing .
+     Index: hello.c
+     ===================================================================
+     RCS file: /usr/local/cvs/myproj/hello.c,v
+     retrieving revision 1.1.1.1
+     diff -r1.1.1.1 hello.c
+     6a7
+     >   printf ("Goodbye, world!\n");
+     cvs diff: Diffing a-subdir
+     cvs diff: Diffing a-subdir/subsubdir
+     cvs diff: Diffing b-subdir
+
+That's helpful, if a bit obscure, but there's still a lot of cruft in
+the output.
+ビギナーの人は最初の数行は無視して構いません。リポジトリ内のファ
+イル名と、最後にチェックインされたリビジョンの番号が書かれています。 他
+の状況では役に立つ情報なんですが(あとで少し詳しく見ていきます)、作業コピー
+にどんな変更があったかを知りたいだけなら必要のないものです。
+
+diff を読む時にもっと障害になっているのは、CVS がアップデート中に各ディ
+レクトリに入ったことを知らせている部分です。そのコマンドがどのくらい長く
+かかったかわかるので、大きいプロジェクトの長いアップデートでなら役に立ち
+ますが、今回の場合、ただ diff を読みにくくしているだけです。-Q グローバ
+ルオプションで CVS に静かに仕事しろと言ってみましょう。
+
+     floss$ cvs -Q diff
+     Index: hello.c
+     ===================================================================
+     RCS file: /usr/local/cvs/myproj/hello.c,v
+     retrieving revision 1.1.1.1
+     diff -r1.1.1.1 hello.c
+     6a7
+     >   printf ("Goodbye, world!\n");
+
+いいカンジ、少なくとも cruft はいくつかなくなりました。でも、この diff
+はまだ見にくいですね。6行目に新しい行が追加されて(7行目になって)、内容は
+次のようです:
+
+     printf ("Goodbye, world!\n");
+
+diff の最初の「>」は、この行は新しいほうのバージョンにあって、古いほうに
+はない、ということを示します。
+
+でも、このフォーマットはもう少し読みやすいようにできるんじゃないでしょう
+か。多くの人はコンテキスト diff のほうが読みやすいというのを知っていると
+思います。あれは変更の周りの文脈を数行示してくれますからね。コンテキスト
+diff は diff コマンドに -c フラグを渡せば生成できます:
+
+     floss$ cvs -Q diff -c
+     Index: hello.c
+     ===================================================================
+     RCS file: /usr/local/cvs/myproj/hello.c,v
+     retrieving revision 1.1.1.1
+     diff -c -r1.1.1.1 hello.c
+     *** hello.c     1999/04/18 18:18:22     1.1.1.1
+     --- hello.c     1999/04/19 02:17:07
+     ***************
+     *** 4,7 ****
+     ---4,8 --
+       main ()
+       {
+         printf ("Hello, world!\n");
+     +   printf ("Goodbye, world!\n");
+       }
+
+やっと分かり易くなった! コンテキスト diff を読み慣れていなくてもこの出力
+を見れば一目で何が起こったか分かると思います。新しい行が(最初の行の + は
+追加行を示します)、Hello, world! と最後の中括弧の間に追加されたのです。
+
+コンテキスト diff を完璧に読みこなす必要はありませんが(それは patch コマ
+ンドがやることです)、そのフォーマットにちょっと親しむだけの時間を取ったっ
+て少なくとも損はないでしょう。cruft は飛ばして、最初の2行は
+
+     *** hello.c     1999/04/18 18:18:22     1.1.1.1
+     --- hello.c     1999/04/19 02:17:07
+
+何と何の diff を取ったかを書いてあります。この場合は hello.c のリビジョ
+ン 1.1.1.1 と、同じファイルの変更されたバージョンです(2行目のほうにはリ
+ビジョン番号はありませんが、これは作業ファイルだけに施された変更であって
+リポジトリにはまだコミットされていないからです) 。これ以降 diff 内に出て
+くるアスタリスクとダッシュの行はセクションを識別しています。行番号範囲を
+埋め込んであるアスタリスクの行はオリジナルファイルのセクションを示します。
+ダッシュの行、さっきとは違う行範囲が埋め込んであると思いますが、これは変
+更されたファイルのセクションを示します。これらのセクションは対比されて
+「hunk」というペアになり、一方は古いファイル、他方は新しいファイルになり
+ます。
+
+今回の diff には hunk がひとつだけあります:
+
+     ***************
+     *** 4,7 ****
+     --- 4,8 --
+       main ()
+       {
+         printf ("Hello, world!\n");
+     +   printf ("Goodbye, world!\n");
+       }
+
+hunk の最初のセクションは空で、オリジナルのファイルからは何も削除されて
+いないことを意味します。2番目のセクションは、新しいファイルの対応する場
+所に1行追加されたことを示します。「+」という印がつけてあります。(diff が
+ファイルから抜粋をする時は、最初の2カラムは「+」とかの特別なコードのため
+に空けてあります。そのため、ただ抜粋しているだけの行は空白2つでインデン
+トされているように見えます。この余分なインデントは diff が適用される時に
+は削除されます、当たり前ですけど)
+
+行番号範囲は、その hunk
+がカバーする範囲です(コンテキストを示す行を含む)。
+オリジナルファイルではその hunk は4行目から7行目までだったのに対し、新し
+いファイルでは4行目から8行目になっています(1行追加されましたからね)。オ
+リジナルファイルから何も削除されていない場合、diff はオリジナルファイル
+の行を出力する必要がないことに注意して下さい。行範囲と hunk の後半からわ
+かることです。
+
+わたしの実際のプロジェクトから、他のコンテキスト diff
+をお見せしましょう:
+
+     floss$ cvs -Q diff -c
+     Index: cvs2cl.pl
+     ===================================================================
+     RCS file: /usr/local/cvs/kfogel/code/cvs2cl/cvs2cl.pl,v
+     retrieving revision 1.76
+     diff -c -r1.76 cvs2cl.pl
+     *** cvs2cl.pl   1999/04/13 22:29:44     1.76
+     --- cvs2cl.pl   1999/04/19 05:41:37
+     ***************
+     *** 212,218 ****
+               # can contain uppercase and lowercase letters, digits, '-',
+               # and '_'. However, it's not our place to enforce that, so
+               # we'll allow anything CVS hands us to be a tag:
+     !         /^\s([^:]+): ([0=9.]+)$/;
+               push (@{$symbolic_names{$2}}, $1);
+             }
+           }
+     -- 212,218 --
+               # can contain uppercase and lowercase letters, digits, '-',
+               # and '_'. However, it's not our place to enforce that, so
+               # we'll allow anything CVS hands us to be a tag:
+     !         /^\s([^:]+): ([\d.]+)$/;
+               push (@{$symbolic_names{$2}}, $1);
+             }
+           }
+
+びっくりマーク(「!」)は、その行が古いファイルと新しいファイルで違うこと
+を示します。「+」も「-」もないことから、ファイルの行数は変わらなかったこ
+とが分かります。
+
+同じプロジェクトからもう一つ別のコンテキスト diff を。今回はもう少し複雑
+です:
+
+     floss$ cvs -Q diff -c
+     Index: cvs2cl.pl
+     ===================================================================
+     RCS file: /usr/local/cvs/kfogel/code/cvs2cl/cvs2cl.pl,v
+     retrieving revision 1.76
+     diff -c -r1.76 cvs2cl.pl
+     *** cvs2cl.pl   1999/04/13 22:29:44     1.76
+     --- cvs2cl.pl   1999/04/19 05:58:51
+     ***************
+     *** 207,217 ****
+     }
+             else    # we're looking at a tag name, so parse & store it
+             {
+     -         # According to the Cederqvist manual, in node "Tags", "Tag
+     -         # names must start with an uppercase or lowercase letter and
+     -         # can contain uppercase and lowercase letters, digits, '-',
+     -         # and '_'. However, it's not our place to enforce that, so
+     -         # we'll allow anything CVS hands us to be a tag:
+               /^\s([^:]+): ([0-9.]+)$/;
+               push (@{$symbolic_names{$2}}, $1);
+             }
+     - 207,212 --
+     ***************
+     *** 223,228 ****
+     --- 218,225 --
+           if (/^revision (\d\.[0-9.]+)$/) {
+             $revision = "$1";
+           }
+     +
+     +     # This line was added, I admit, solely for the sake of a diff example.
+     
+           # If have file name but not time and author, and see date or
+           # author, then grab them:
+
+この diff には hunk が2つあります。最初のやつは5行削除です(これらの行は
+hunk の最初のセクションだけに示されていて、2番目のセクションの行番号は5
+行少なくなっています)。途切れていないアスタリスクの行は hunk
+の区切りで、 2番目の hunk
+では2行追加されたことが分かります。空行ひとつと無意味なコメ
+ントが1行ですね。一つ前の hunk を受けて行番号がどう変わっているか、注意
+して下さい。オリジナルファイルにおいては2番目の hunk は223行目から228行
+目、最初の hunk
+で5行削除されたので新しいファイルでは218から225行目になっ ています。
+
+おめでとう、これでもうあなたも diff を読むことにかけてはエキスパートです
+ね。
+

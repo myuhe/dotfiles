@@ -1,0 +1,116 @@
+Info file: hustler.,    -*-Text-*-
+produced by `texinfo-format-buffer'
+from file `elisplec.texi'
+using `texinfmt.el' version 2.37 of 24 May 1997.
+
+
+
+
+
+
+
+Indirect:
+hustler.-1: 152
+hustler.-2: 51238
+hustler.-3: 101893
+
+Tag table:
+(Indirect)
+Node: Top152
+Node: Writing Major Modes5598
+Node: What is Major Mode?6276
+Node: Requirements of a Major Mode7268
+Node: Setting Mode Names8070
+Node: Setting Keymaps8672
+Node: Setting Keys9927
+Node: Declaring Local Maps10600
+Node: Defining Major Mode Functions11008
+Node: Interactive Functions11491
+Node: Binding Interactive Functions to Keys12825
+Node: Defining Functions13615
+Node: Exercise 114717
+Node: Summary 115421
+Node: By-talk 116578
+Node: Construction of Emacs-Lisp17382
+Node: Variables18043
+Node: Declaring Variables18695
+Node: Restricting Variables19290
+Node: Control Structure21132
+Node: if21540
+Node: or22223
+Node: and22861
+Node: cond23180
+Node: while24257
+Node: catch trow25161
+Node: Arithmetic27276
+Node: Operators27498
+Node: Arithmetic Functions28290
+Node: Exercise 228654
+Node: By-talk 229055
+Node: By-talk 330272
+Node: By-talk 430989
+Node: Functions You Must Know32398
+Node: Cursor Motion33107
+Node: Relative Motion33884
+Node: Character Motion34304
+Node: Word Motion34719
+Node: Line Motion35004
+Node: Absolute Motion35618
+Node: point35944
+Node: Motion by Point36482
+Node: Moving to a Line37341
+Node: Moving to a Column37755
+Node: Motion Boundary Check38193
+Node: Absolute Motion Summary39166
+Node: Motion by Search39883
+Node: Lisp Escape Characters41074
+Node: String Search42538
+Node: Word Search44079
+Node: Regular Expression Search44480
+Node: Major Metacharacters45018
+Node: Skipping Characters45989
+Node: Accessing Search Results47101
+Node: Search Functions Summary49155
+Node: Exercise 3-149707
+Node: Saving point Position51238
+Node: Inserting and Deleting Strings52677
+Node: Inserting Strings53177
+Node: insert-char53700
+Node: self-insert-command54099
+Node: Transforming Types55031
+Node: format55260
+Node: Type Transformation57780
+Node: Getting Strings58647
+Node: Numerical Transformation61994
+Node: Strings Transformation63805
+Node: String Manipulation Functions64290
+Node: Deleting Strings65555
+Node: Deleting Strings-Footnotes67260
+Node: Replacing Strings67423
+Node: Buffer Editing Functions Summary69037
+Node: By-talk 569791
+Node: By-talk 670277
+Node: Exercise 3-276080
+Node: Completion Input78990
+Node: Normal Input Functions79665
+Node: Completion Input Functions81786
+Node: List83258
+Node: List Structure84930
+Node: List Manipulation Functions89312
+Node: Creating lists89772
+Node: Accessing list Elements90948
+Node: Adding Elements to list93974
+Node: Appending lists96733
+Node: List Related Predicates98793
+Node: Association Lists99683
+Node: By-talk 7101893
+Node: Exercise 4-1103945
+Node: completing-read104207
+Node: Variables Controlling Completion107032
+Node: try-completion107626
+Node: all-completion display-completion-list110957
+Node: Concept Index111989
+Node: Function Index126784
+Node: Variable Index135844
+
+End tag table

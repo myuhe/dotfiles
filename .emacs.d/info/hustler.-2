@@ -1,0 +1,1186 @@
+Info file: hustler.,    -*-Text-*-
+produced by `texinfo-format-buffer'
+from file `elisplec.texi'
+using `texinfmt.el' version 2.37 of 24 May 1997.
+
+
+
+
+
+
+
+File: hustler., Node: Saving point Position, Prev: Search Functions Summary, Up: Cursor Motion
+
+ポイント位置の保存
+------------------
+
+  カーソル移動のための関数を書く場合を除き、`Emacs-Lisp' 中でポイント移動
+を行った場合には、ユーザのその後の編集の事を考慮し、ポイント位置を復帰して
+おく必要があります。そのための関数が `save-excursion' です。
+
+     (save-excursion 実行部...)
+
+のようにポイント移動を伴う部分を `save-excursion' の中に閉じこめることによ
+り、「実行部...」でいかなる場所にポイントを移動しようと、 `save-excursion' 
+を抜けると同時に、ポイントは元の位置に復帰します。さらに、マーク位置も保存
+されるので、「実行部...」でマーク位置にアクセスする関数を書いた場合も、ユー
+ザのその後の編集操作に支障を来しません。
+
+  次の例は、ポイントのある行を `kill-ring' に入れつつ二重化します。
+
+     (defun duplicate-line ()
+       (interactive)
+       (save-excursion
+         (beginning-of-line)
+         (copy-region-as-kill (point)
+                  (progn (end-of-line) (point)))
+         (forward-line 1)
+         (yank)))
+
+関数中でポイントを移動していますが、実行が終わると関数起動時のポイント位置
+に復帰します。
+
+
+
+
+File: hustler., Node: Inserting and Deleting Strings, Next: By-talk 5, Prev: Cursor Motion, Up: Functions You Must Know
+
+文字列挿入/削除
+===============
+
+
+* Menu:
+
+* Inserting Strings::           文字列挿入
+* Transforming Types::          文字列と他の型の変換
+* Type Transformation::         型変換
+* Deleting Strings::            文字列削除
+* Replacing Strings::           文字列置換
+* Buffer Editing Functions Summary::  バッファ編集関数のまとめ
+
+
+
+
+File: hustler., Node: Inserting Strings, Next: Transforming Types, Prev: Inserting and Deleting Strings, Up: Inserting and Deleting Strings
+
+文字列挿入
+----------
+
+  既にメジャーモードの練習関数で、文字列を挿入する関数 `insert' は使用済み
+です。ほとんどの文字列操作は `insert' 関数で用が足りますが、次のものを知っ
+ておくと便利な場合が有ります。
+
+* Menu:
+
+* insert-char::                 文字の挿入
+* self-insert-command::         
+
+
+
+File: hustler., Node: insert-char, Next: self-insert-command, Prev: Inserting Strings, Up: Inserting Strings
+
+insert-char
+...........
+
+  同じ文字をたくさん入れたい時に使用できます。引数を二つ取り、最初の引数は
+文字コード、二つ目の引数は個数です。文字 `a' を100個入れたい時は次のように
+します。
+
+     (insert-char ?a 100)
+
+
+
+
+File: hustler., Node: self-insert-command, Prev: insert-char, Up: Inserting Strings
+
+self-insert-command
+...................
+
+  `A-Z', `a-z', `0-9', など一般のキーに割当てられている関数がこれです。
+`define-key' などでキーに結び付けられた関数中で、押したキーそのものを挿入
+したいときにこの関数を利用します。この関数も、繰り返し挿入回数を指定する引
+数を取るので通常は`(self-insert-command 1)' のように呼び出します。(*Note
+define-code: Setting Keys.)
+
+  ちなみに、キーバインドされた関数から、その関数が起動されたキーを知るため
+には、関数`(this-command-keys)'を参照します。次のような関数をいろいろなキー
+に割当てて実行してみるとおもしろいでしょう。
+
+     (defun show-my-key ()
+       (interactive)
+       (insert (this-command-keys)))
+
+
+
+
+File: hustler., Node: Transforming Types, Next: Type Transformation, Prev: Inserting Strings, Up: Inserting and Deleting Strings
+
+文字列と他の型の変換
+--------------------
+
+* Menu:
+
+* format::                      
+
+
+
+File: hustler., Node: format, Prev: Transforming Types, Up: Transforming Types
+
+format
+......
+
+  バッファ中に挿入したいのは文字列だけとは限りません。なにかの計算によって
+選られた数値を文字列化して挿入したいことがあります。このような時に用いるの
+が `format' 関数で、Cの `printf' でのフォーマットとほぼ同じものが利用でき
+ます。ここで `Emacs-Lisp' で扱うことのできる型には、以下のものがあります。
+
+`シンボル'
+     'foo, 'bar
+`数値(整数)'
+     1, 2, 3, -50, 65537 (24bits)
+`char型'
+     0 ～ 127
+`文字列'
+     "foo", "こんにちは"
+
+これらの型のものが単体で用いられる場合、それを「アトム `atom' 」と言います。
+逆に様々な型のアトムが集合したものに、「リスト `list' 」と「配列 `array' 
+」があります。これらの概念については、一般の `Lisp' の参考書などを見ると説
+明が載っています。それを理解していると複雑な処理が効率的に書けるようになる
+ことがあるかもしれませんが、とくに理解していなくてもメジャーモードの作成に
+は支障ありません。余裕ができたら覚えましょう。(*Note atom list array:
+List.)
+
+
+  さて、関数 `format' には、すべての型の値を文字列に変換するためのキーワー
+ドが三種類有ります。
+
+`%s'
+     シンボル、または文字列
+`%d,%o,%x'
+     数値(10,8,16進数表示)
+`%c'
+     char型数値を文字コードとみなし文字を表示
+
+`format' 関数は第一引数に上記の `%' を含むフォーマット文字列を、第二引数以
+降に文字列中の `%?' に対応する変数/定数を受け取ります。そして、それらの引
+数を文字列化したもので元の `%?' を置き換え、すべて置き換えることで出来上がっ
+た文字列を返します。
+
+  これを用いて各種の値を表示させてみます。
+
+     (setq   foo 50
+         bar ?x
+         baz "hoge")
+     (insert (format "%d, %o, %x  %s   %c  %s\n"
+              foo foo foo 'foo bar baz ))
+
+`format' 関数の第一引数中、`%?' が文字列に変換される様子は次のようになりま
+す。
+
+     %d  →  "50"
+     %o  →  "62"
+     %x  →  "32"
+     %s  →  "foo"
+     %c  →  "x"
+     %s  →  "hoge"
+
+従って format 関数が返す文字列は
+
+     "50, 62, 32  foo   x  hero"
+
+となります。
+
+
+
+
+File: hustler., Node: Type Transformation, Next: Deleting Strings, Prev: Transforming Types, Up: Inserting and Deleting Strings
+
+型変換
+------
+
+  バッファ中に存在する数値文字列を読み込みその値をもとになにかを計算し結果
+を返すという処理を想定してみましょう。必要な処理内容は以下のものとなります。
+
+   * バッファ中の文字列の取り込み (バッファ→変数変換)
+   * 文字列から数値への変換
+   * 数値の計算
+   * 数値から文字列への変換
+
+ここでは、これらの処理に必要な関数をすべて覚えてしまいましょう。
+
+* Menu:
+
+* Getting Strings::             文字列の取込み
+* Numerical Transformation::    数値変換
+* Strings Transformation::      文字列変換
+* String Manipulation Functions::  文字列操作関数
+
+
+
+File: hustler., Node: Getting Strings, Next: Numerical Transformation, Prev: Type Transformation, Up: Type Transformation
+
+文字列の取り込み
+................
+
+  バッファの内容を文字列として返す関数は `buffer-substring' です。この関数
+は非常によく使うので、いやでも覚えてしまうでしょう。
+
+     (buffer-substring ポイント値1 ポイント値2)
+
+第一引数と第二引数の間の内容を文字列として返します。通常この関数は、検索結
+果を保持している関数 `match-beginning', `match-end' と共に用いられます。
+(*Note match-beginning: Accessing Search Results.)
+
+  例として
+
+     Bytes: 67 Date : 10:23pm  6/28/93 Author:net66331 (luneえもん)
+
+という行から時刻を抽出する関数を定義してみましょう。そのためには、このフォー
+マットで書かれている行を表現する正規表現を考える必要があります。簡単のため、
+ここでは「行頭が `Bytes:' で始まり、時刻文字列があり、(ハンドル)で終わる行」
+というものにします。これをそのまま正規表現にすると、
+
+     ^Bytes:.*[0-9 ][0-9]:[0-9][0-9][ap]m.*(.*)$
+              ~~~~~~~~~~~|~~~~~~~~~~|~~~~
+
+となるでしょう。しかし今回の場合時刻を取り出したいので、この部分をグループ
+化して、
+
+     ^Bytes:.*\([0-9 ][0-9]\):\([0-9][0-9]\)\([ap]m\).*(.*)$
+
+とします。検索が成功した場合、`(match-beginning 1)'と `(match-end 1)' に 
+`時' の部分の先頭と末尾のポイント値が入るはずです(以下も同様)。これを Lisp 
+中に書くときは `\' を `\\' でエスケープすることを忘れないようにしましょう。
+
+     (defun access-time ()
+       (interactive)
+       (re-search-forward
+        "^Bytes:.*\\([0-9 ][0-9]\\):\\([0-9][0-9]\\)\\([ap]m\\).*(.*)$"
+        nil t)
+       (message
+        (concat
+         (if (string= (buffer-substring (match-beginning 3) (match-end 3))
+              "am")
+         "午前" "午後")
+         (buffer-substring (match-beginning 1) (match-end 1)) "時"
+         (buffer-substring (match-beginning 2) (match-end 2)) "分")))
+
+関数 `string=' は文字列どうしが等しいかどうかを比較します。この例では、グ
+ルーピングした3番目の部分、つまり `am' か `pm' の部分が、 `am' だったら 
+`午前' を返し、そうでなかったら `午後' を返しています。さらに、グルーピン
+グの1番目と2番目、つまり「時」と「分」の部分にそれぞれ `時' 、`分' を添え
+ています。そしてそれらを `concat' で全て結合したものを `message' 関数に渡
+しています。
+
+  次の節に進む前に、もう少し分かり易く書き直しておきましょう。全く同じ動作
+をします。
+
+     (defun access-time ()
+       (interactive)
+       (re-search-forward
+        "^Bytes:.*\\([0-9 ][0-9]\\):\\([0-9][0-9]\\)\\([ap]m\\).*(.*)$"
+        nil t)
+       (let((h  (buffer-substring (match-beginning 1) (match-end 1)))
+            (m  (buffer-substring (match-beginning 2) (match-end 2)))
+            (ap (buffer-substring (match-beginning 3) (match-end 3))))
+         (message
+          "%s%s時%s分" (if (string= ap "am") "午前" "午後") h m)))
+
+
+
+
+File: hustler., Node: Numerical Transformation, Next: Strings Transformation, Prev: Getting Strings, Up: Type Transformation
+
+数値変換
+........
+
+  数値を表わす文字列を実際の数値に変換するための関数は、 `string-to-int' 
+です。
+
+     (string-to-int "数値文字列")
+
+もし、文字列が数値として意味のない文字列である場合は0を返します。では、早
+速この関数を使って先程の例を24時間制で表示するように書き換えてみましょう
+(展開が予想できましたね?)。先の例では、`h' と `m' に時刻を表わす数値文字列
+が入っているので、これを `string-to-int' で数値に変換し、もじ `pm' だった
+ら「時」に12を足しましょう。
+
+     (defun access-time ()
+       (interactive)
+       (re-search-forward
+        "^Bytes:.*\\([0-9 ][0-9]\\):\\([0-9][0-9]\\)\\([ap]m\\).*(.*)$"
+        nil t)
+       (let*((h  (buffer-substring (match-beginning 1) (match-end 1)))
+             (m  (buffer-substring (match-beginning 2) (match-end 2)))
+         (ap (buffer-substring (match-beginning 3) (match-end 3)))
+         (hour (string-to-int h))
+         (min  (string-to-int m)))
+         (if (string= ap "pm") (setq hour (+ 12 hour)))
+         (message "%d時%d分" hour min)))
+
+新しい形 `let*' が出てきました。`let' との違いは、変数の初期化にそれ以前の
+ローカル変数の値を利用できる点です。上の例では、変数 `hour' の初期化に `h' 
+の値を利用しているので、`let*' を使う必要があります。
+
+  余談となりますが、文字コードを返す関数として、`string-to-char' がありま
+す。これは、引数として与えた文字列の先頭の一文字の文字コードを返します。
+
+
+
+
+File: hustler., Node: Strings Transformation, Next: String Manipulation Functions, Prev: Numerical Transformation, Up: Type Transformation
+
+文字列変換
+..........
+
+  今回の例では `%s' による(出力時の)文字列への変換を用いたので、数値→文字
+列(変数間)の型変換は用いませんでしたが、`string-to-int' の逆の仕事をする 
+`int-to-string' という関数があります。必要に応じて利用すると良いでしょう。
+
+
+
+
+File: hustler., Node: String Manipulation Functions, Prev: Strings Transformation, Up: Type Transformation
+
+文字列操作関数
+..............
+
+  ついでに文字列に対する種々の操作関数を覚えておきましょう。 `M-x apropos' 
+で `string' をキーに探せばいろいろ出てきますが、ここでは主なものを取り上げ
+ます。
+
+     (string-equal "文字列1" "文字列2")  ;string= と同じ
+     (string< 文字列1 文字列2)
+     (string> 文字列1 文字列2)           ;文字列の大小比較
+     (string-match 正規表現 文字列)      ;第一引数の正規表現が第二引数の文
+                                         ;字列中の何文字目にマッチするか。
+                                         ;マッチしなければ nil
+     (stringp 変数)                      ;変数の値が文字列かどうか
+     (substring 文字列 開始 終了)        ;文字列の「開始」～「終了」の部分
+                                         ;文字列。第三引数を省略すると開始
+                                         ;位置から文字列末尾まで。位置を負
+                                         ;で与えると文字列の後ろから数える。
+
+
+
+
+File: hustler., Node: Deleting Strings, Next: Replacing Strings, Prev: Type Transformation, Up: Inserting and Deleting Strings
+
+文字列削除
+----------
+
+  バッファの一部を削除する関数で `Emacs-Lisp' 中から主に用いるのは以下のも
+のでしょう。
+
+   * delete-char, delete-backward-char
+   * delete-region
+   * erase-buffer
+
+`delete-char' と `delete-backward-char' は引数として削除する文字数を指定し
+ます。しかし複数文字を削除する時は通常 `delete-region' を用います。
+
+     (delete-region 削除開始ポイント値 削除終了ポイント値)
+
+手で編集する時の関数 `kill-region' は、`kill-ring' を変えてしまうので、
+*`Emacs-Lisp' 中から利用してはいけません* (1) (*Note Deleting
+Strings-Footnotes::)。
+
+  なにかのパターンを検索して該当部分を削除するということが多いので、 
+`delete-region' も `match-beginning', `match-end' と共に用いられることがほ
+とんどです。
+
+  バッファ中に出現する特定のパターンを削除するというケースは非常に多くあり
+ます。たとえば、
+
+     [Continued] 
+
+というパターンを全て削除するコードは以下のようになります。
+
+     (defun kill-more ()
+       (interactive)
+       (goto-char (point-min))
+       (while (re-search-forward
+         (delete-region (match-beginning 0) (match-end 0))))
+
+このような、
+
+     (while (検索関数 パターン nil t)
+       (delete-region (match-beginning ??) (match-end ??)))
+
+という関数の組み合わせは特定のパターンを全て削除する時の定石として覚えてお
+きましょう。
+
+
+File: hustler.  Node: Deleting Strings-Footnotes, Up: Deleting Strings
+
+(1) kill-ring を変えることが目的のプログラムはこの限りでない。
+
+
+
+File: hustler., Node: Replacing Strings, Next: Buffer Editing Functions Summary, Prev: Deleting Strings, Up: Inserting and Deleting Strings
+
+文字列置換
+----------
+
+  単純な文字列の置換は、対話的に済ませることが多いのであまりプログラムでは
+必要とはなりません。やはり、正規表現検索と組み合わせる ことが多くなります。
+特定のパターンを一括置換する場合は次のように なります。次の例は、コントロー
+ルコードの `^L' を `山記号' と `L' に置換します。
+
+     (defun replace-C-l ()
+       (interactive)
+       (goto-char (point-min))
+       (while (search-forward "\C-l" nil t)
+         (replace-match "^L")))
+
+この例の場合は、マッチした部分全体を置換していますがそのような時に使う関数
+が `replace-match' で、`sed' の `s/old/new/' の後半にあたります。
+
+     (replace-match  置換文字列
+             大小文字を保存するかのフラグ
+             \を特別扱いしないかのフラグ)
+
+第二引数以降は省略可能です。また `\' を特別扱いしないフラグをセットしない
+場合は「置換文字列」の部分に次の表記が利用できます。
+
+`\&'
+     直前の検索でマッチした部分全体
+`\n'
+     `\(\)' で指定したグループの内容(nは1-9)
+`\\'
+     `\' 自身
+
+既にお気付きでしょうが、前節の一括削除は `replace-match' を使うと
+
+     (while (検索関数 パターン nil t)
+       (replace-match ""))
+
+と簡単に書くことができます。
+
+
+
+
+File: hustler., Node: Buffer Editing Functions Summary, Prev: Replacing Strings, Up: Inserting and Deleting Strings
+
+バッファ編集関数のまとめ
+------------------------
+
+     ・文字列挿入        insert, insert-char, self-insert-command
+                         this-command-keys(関連)
+     ・文字列の取り込み  buffer-substring
+     ・型変換            format, string-to-int, int-to-string
+                         string-to-char, char-to-string
+     ・文字列比較等      string=, string<, string>, string-match
+                         stringp, substring
+     ・削除              delete-char, delete-backward-char
+                         delete-region, erase-buffer
+     ・置換              replace-match
+
+
+
+
+File: hustler., Node: By-talk 5, Next: By-talk 6, Prev: Inserting and Deleting Strings, Up: Functions You Must Know
+
+余談 5 雑関数
+=============
+
+  既に多くの人が利用しているので、次の関数は既習としましょう。
+
+`(sleep-for 秒数)'
+     「秒数」だけ休止する。
+`(sit-for 秒数)'
+     「秒数」だけ休止する。
+     ただし、既にキー入力が行われていた場合は先に進む。
+`(ding)'
+     beep音を鳴らす。
+
+
+
+
+File: hustler., Node: By-talk 6, Prev: By-talk 5, Up: Functions You Must Know
+
+余談 6 Emacs-Lisp のスコープ
+============================
+
+  `Emacs-Lisp' ではダイナミックスコープ(動的スコープ)を採用しています。こ
+れは、C言語などのスタティックスコープとは異なり、実行時に参照する変数の実
+体が決定するものです。具体例を見てみましょう。次のプログラムの実行結果を予
+想し、実際に確かめて見て下さい。
+
+     /*---- C言語 ----*/
+     char *s = "外側のs";
+     sub()
+     {
+         printf("sub: s = %s\n", s);
+     }
+     main()
+     {
+         printf("main(外): s = %s\n", s);
+         {
+         char *s = "mainの中のs";
+         printf("main(中): s = %s\n", s);
+         sub();
+         }
+         sub();
+     }
+
+     ;;; -*- Emacs-Lisp -*-
+     (defvar s "外側のs")
+     (defun sub ()
+       (insert (format "sub: s = %s\n" s)))
+     (defun main ()
+       (insert (format "main(外): s = %s\n" s))
+       (let ((s "mainの中のs"))
+         (insert (format "main(中): s = %s\n" s))
+         (sub))
+       (sub))
+
+C言語では、あらゆるシンボルのスコープ(通用範囲)は、コンパイル時に決定され
+ます。先程のCのプログラムでは、次の図のような入れ子構造のスコープが形成さ
+れています。
+
+     +-----------------globalな箱----------------------+
+     |    char *s = "外側のs";                         |
+     |+---------------- subの箱 ----------------------+|
+     ||   sub()                                       ||
+     ||   {                                           ||
+     ||       printf("sub: s = %s\n", s);             ||
+     ||   }                                           ||
+     |+-----------------------------------------------+|
+     |+---------------- mainの箱 ---------------------+|
+     ||   main()                                      ||
+     ||   {                                           ||
+     ||      printf("main(外): s = %s\n", s);         ||
+     ||+----------- local-blockの箱 -----------------+||
+     |||      {                                      |||
+     |||          char *s = "mainの中のs";           |||
+     |||          printf("main(中): s = %s\n", s);   |||
+     |||          sub();                             |||
+     |||      }                                      |||
+     ||+---------------------------------------------+||
+     ||       sub();                                  ||
+     ||   }                                           ||
+     |+-----------------------------------------------+|
+     +-------------------------------------------------+
+
+  それぞれの箱の壁は、内側から外側しか見ることのできないマジックミラーになっ
+ていると考えると分かり易いかもしれません。なにかのシンボルが参照されている
+場合、もしその箱の内部でそのシンボルが宣言されていた場合(例えば 
+`local-block' の箱の中の`s')、そのシンボルが最優先で結合されます。逆に箱の
+内部でシンボルが宣言されていない場合 (例えば `sub'の箱の `s')、コンパイラ
+は箱をどんどん外側に見ていき、見つかった場合そのシンボル(ここでは `global' 
+な箱に存在する `s')と結合します。
+
+  つまり `sub()' では、変数 `s' は `global' な箱で宣言されている `s' と結
+合され、これは `sub()' がいつ何時どこから呼ばれようと変わることはありませ
+ん。常に `外側のs' の格納されているアドレスを差しています。
+
+  スタティックスコープでは、シンボルとその実体との結合は、シンボルの参照が
+行われている箇所の、ソースプログラムでの位置によって決定されます。
+
+  ところが、ダイナミックスコープでは、変数とその実体との結合は実行時に行わ
+れます。先程の `Emacs-Lisp' プログラムの例を評価順に追って考える必要があり
+ます。
+
+     (defvar s "外側のs")                            ;これはロード時に評価される
+     →main
+       (insert (format "main(外): s = %s\n" s))      ;外側のsが有効
+       (let ((s "mainの中のs"))                      ;ここでローカルなsが発生
+         (insert (format "main(中): s = %s\n" s))    ;let中のsは"mainの中のs"
+         (sub)                                       ;letを抜けると同時に
+       )                                             ;ローカルなsは消滅
+       (sub)                                         ;外側のsが再び有効
+     →main 終わり
+
+極端な例として、次のものの評価を追ってみると良いでしょう。
+
+     (defun hoge ()
+       (message "x = %d" x))
+     (defun foo ()
+       (let ((x 1)) (hoge)))
+     (defun bar ()
+       (let ((x 2)) (hoge)))
+     (defun baz ()
+       (hoge))
+
+`(foo)', `(bar)', `(baz)' と順に評価してみて下さい。
+
+  ダイナミックスコープの性質を利用すると、ある関数から下請関数を呼ぶする場
+合、引数の受け渡しを省略することができます。
+
+     (defun natural-rand (n)
+       (let ((r (random t)))
+         (abs-r)
+         (% r n)))
+     (defun abs-r ()
+       (if (< r 0) (setq r (- r))))
+
+  しかし、このような利用法は関数の汎用性を損なうだけでなく、どの変数を参照
+しているのかが分かりにくく、可読性を落とすことになるので、特殊な処理でスピー
+ドを重視するようなもの以外では、利用しない方が良いでしょう。
+
+* Menu:
+
+* Exercise 3-2::                練習問題 3-2
+
+
+
+File: hustler., Node: Exercise 3-2, Prev: By-talk 6, Up: By-talk 6
+
+練習問題 3-2
+------------
+
+(1),(2)の好きな方を作成せよ。
+
+選択問題(1) ASCII-NET のログを解析し、直前の書き込みとの時間的間隔が
+     一番大きい書き込みを発見せよ。
+
+       つまり、以下のような書き込みがあった場合、
+     |Bytes: 3001 Date :  6:46am  7/12/93 Author:net92851 (ほんまたける)
+     |   やっと出来ました。いまから学校か。結構辛い！
+     |
+     |Bytes: 36 Date : 12:14pm  7/12/93 Author:pcs39334 (はすらあ)
+     |   おおついに!
+     |
+     |Bytes: 33 Date :  3:19pm  7/12/93 Author:net66331 (luneきち)
+     |   バイトはどうなさったのでしょう
+
+           の場合、6:46am→12:14pm→3:19pm
+                        5h28m    3h05m
+         なので、二番目の書き込みが該当する。
+
+     ヒント:
+             match-beginning, match-end, buffer-substring, string-to-int
+
+
+
+選択問題(2)先のるねきちモードのメッセージ「僕るねえもんXyyなりよ」は
+     ちょっと長いので、「るねXyyなりよ」に変更し、次の機能を付加せよ。
+
+     「るねXyyなりよ」をたくさん表示させた状態で、
+  1. `2',`4',`6',`8を押すと'、それぞれ 下/左/右/上 の `[A-Z][0-9]*' (以後
+     これを「るね番号」と呼ぶ)に移動。
+  2. スペースキーを押すと、1. 行末かバッファ末なら `(self-insert-command)'
+     2. るね番号 の上なら、1. 直前に押したキーが `26' なら、行末までのすべ
+     てのるね番号を「自爆」に置換する2. 直前に押したキーが `24' なら、行頭
+     までのすべてのるね番号を「自爆」に置換するそれ以外なら 
+     `(call-interactively 'fill-paragraph)'
+     ヒント:
+             cond, looking-at, (substring (recent-keys) 負の数),
+             string=
+             「delete-region & insert」または「replace-match」
+             (註: 関数 recent-keys は最近押されたキーを文字列として返す)
+
+       余裕があれば、
+
+     (1')2,4,6,8 のキーは一回押しただけでは動かず、二
+     回目以降から動く。
+        (つまり `(recent-keys)' の末尾二文字が同じ時に動く)
+
+           かなり暇なら、
+
+     るね番号を縦に結んだ線がなんとなく揃うように `fill-column' を調整する。
+
+     (b3)直前キーが 626 なら、一つ右のるね番号に移動してからその真上にある
+         (8で移動できる)るね番号全てを「自爆」に置換
+
+     (b4)直前キーが 424 なら、一つ左のるね番号に移動してからその真上にある
+         (8 で移動できる)るね番号全てを「自爆」に置換
+
+     なお、以後これを「るねきちモードII」と呼ぶ。
+
+
+
+
+
+File: hustler., Node: Completion Input, Next: Concept Index, Prev: Functions You Must Know, Up: Top
+
+補完入力とその周辺
+******************
+
+  `Emacs' の持っている機能のうち最も強力なものの一つが文字列やファイル名の
+補完入力で、入力支援のためのメジャーモードには必須の機能と言っても過言では
+ないでしょう。本章では、補完入力機能を実装するために必要な知識とその方法に
+ついて説明します。
+
+* Menu:
+
+* Normal Input Functions::      一般入力関数
+* Completion Input Functions::  補完入力関数
+* By-talk 7::                   余談 7 マクロ
+
+
+
+File: hustler., Node: Normal Input Functions, Next: Completion Input Functions, Prev: Completion Input, Up: Completion Input
+
+一般入力関数
+============
+
+  補完入力関数の前に、通常の入力関数について説明します。文字列入力は、
+`read-string' という関数によって行います。
+
+     (read-string プロンプト文字列 [初期入力])
+
+第一引数の文字列をプロンプトとして出し、ミニバッファから文字列を読み込んで
+その結果を返します。この時に第二引数を与えると、それを読み込み時に既に入力
+されていた文字列であるかのようにミニバッファに挿入します。
+
+  日本語文字列やスペースを含む文字列を読み込む場合などは補完が有効に働かな
+いので、`read-string' 関数が役に立ちます。次の例は、天候を読み込み日付と共
+にバッファ中に挿入します。
+
+     (defun insert-date-weather ()
+       (interactive)
+       (insert
+        (substring (current-time-string) 0 10)
+        "\t"
+        (read-string "Weather: ")
+        "\n"))
+
+  もうひとつ、ファイル名を読み込む `read-file-name' を紹介します。第二引数
+以降は省略可能です。
+
+     (read-file-name プロンプト文字列
+             [ディレクトリ [デフォルト名 [要マッチ]]])
+
+「ディレクトリ」はファイル名を入力するデフォルトのディレクトリ名を指定しま
+すが、これを省略するとカレントバッファの属するディレクトリとなります。「デ
+フォルト名」を指定すると、ユーザ自身が何も入力せずにリターンキーを押した場
+合に、この値が `read-file-name' の結果として返されます。「要マッチ」に `t' 
+を指定した場合は実際に存在するファイル名以外の入力を認めません。`t' でも 
+`nil' でもない値を指定した場合は、補完入力の途中でリターンキーを押した場合
+に本当にそのファイルでよいかどうかの確認をします。
+
+
+
+
+File: hustler., Node: Completion Input Functions, Next: By-talk 7, Prev: Normal Input Functions, Up: Completion Input
+
+補完入力関数
+============
+
+  ミニバッファで補完入力を行う関数が `completing-read' です。
+
+     (completing-read プロンプト 補完テーブル 選択(述語)関数
+              要マッチ 初期入力)
+
+第一引数の「プロンプト」はミニバッファに出すプロンプト文字列、第四引数の
+「要マッチ」は `read-file-name' のものと同様補完候補と必ず一致すべきかどう
+かを指定するフラグ、第五引数はミニバッファに最初から入力されている文字列で、
+それぞれ特に説明の必要はないでしょう。
+
+  第二引数の「補完テーブル」はスペースキーやタブキーを押した時に補完される
+単語を格納した変数です。このテーブルの構造は連想リスト `(association
+list)'(通称 `alist')と呼ばれるもので、`Lisp' 言語では非常に良く使われます。
+`alist' に限らず「リスト」は、`Lisp' の機能を最大限に活かした `Emacs-Lisp' 
+プログラムを書くためには必須の概念ですから、この機会に覚えておきましょう。
+
+* Menu:
+
+* List::                        リスト
+* List Structure::              リストの構造
+* List Manipulation Functions::  リスト処理関数
+* Association Lists::           連想リスト
+
+
+
+
+File: hustler., Node: List, Next: List Structure, Prev: Completion Input Functions, Up: Completion Input Functions
+
+リスト
+------
+
+  `Lisp' で扱う対象の最小単位は「アトム」といい、今までに出てきた関数や変
+数などの名前を表わす「シンボル」や、数値、文字列、`t'、`nil' などは全てこ
+れに属します。
+
+  「リスト」とは、「アトムまたはリスト、の集合体」です。`Lisp' ではアトム、
+リストを括弧で括って並べることで集合体を表現します。つまり、それぞれのアト
+ム `foo', `t', `"bar"' `5' を
+
+     (foo t "bar" 5)
+
+のように並べたものがリストとなります。ではこれを変数 `x' にセットしてみま
+しょう。
+
+     (setq x (foo t "bar" 5))        ;×間違い
+
+これでは期待通りになりません。`(foo ...)' という形は、「関数`fooの' 評価」
+という意味なので、`Lisp' インタプリタは関数 `foo' に幾つかの引数を渡した結
+果を `x' に代入しようとします(たいていは未定義エラーとなるでしょう)。リス
+トの形で渡したい時は、次のように ' をつけてクォートする必要があります。
+
+     (setq x '(foo t "bar" 5))
+
+  ' は、次のオブジェクトを評価しない、つまり「後続するものを変数や関数の参
+照だと思わずにそのまま渡してくれ」と `Lisp' インタプリタに指示する働きを持っ
+ています。
+
+  なお、本稿ではリストを表記する時は、関数評価との混乱を避けるため、' で
+クォートして表わすことにします。
+
+
+
+
+File: hustler., Node: List Structure, Next: List Manipulation Functions, Prev: List, Up: Completion Input Functions
+
+リストの構造
+------------
+
+  `car', `cdr', `cons', `list', `append' などのリスト処理関数を覚える時に
+は、リストがどういう構造で格納されているかについて理解しておくと非常にスムー
+ズに関数の働きが理解できます。(*Note list: Creating lists.)(*Note car cdr:
+Accessing list Elements.)(*Note cons: Adding Elements to list.)(*Note
+append: Appending lists.)
+
+  リスト中の各要素は「コンスセル」と呼ばれる記憶領域に格納されます。たとえ
+ば前述のリストの例 `'(foo t "bar" 5)' はみかけから分かるように四つの要素か
+ら成っていますが、これらの各要素はそれぞれコンスセルに格納されています。コ
+ンスセルは次のような構造をとっています。
+
+             +--------------+--------------+
+             |              |     次の     |
+             |     要素     | コンスセルの |
+             |              |   アドレス   |
+             +--------------+--------------+
+
+これにしたがって `'(foo t "bar" 5)' の格納されている様子を図にしてみましょ
+う。記号Λは、それが最後のコンスセルであることを意味します。通常はΛを表わ
+す `Lisp' シンボルとしては `nil' が入っています。
+
+             +---------+---------+      +---------+---------+
+             |         |         |      |         |         |
+             |   foo   |    *----+----→|    t    |    *    |
+             |         |         |      |         |    |    |
+             +---------+---------+      +---------+----+----+
+             +---------+---------+  +-----------------/
+             |         |         |  |   +---------+---------+
+             |    5    |   Λ    |  |   |         |         |
+             |         |         |  +-→|  "bar"  |    *    |
+             +---------+---------+      |         |    |    |
+                  ↑                    +---------+----+----+
+                   ＼----------------------------------/
+
+`(setq x '(foo t "bar" 5))' はシンボル `x' にこれらのリスト(コンスセルの連
+結)の先頭のアドレスを代入します。
+
+             +--x--+
+             |  *  |
+             +-----+
+                ↓
+             +-----+-----+  +-----+-----+  +-----+-----+  +-----+-----+
+             | foo |  *--+→|  t  |  *--+→|"bar"|  *--+→|  5  | Λ  |
+             +-----+-----+  +-----+-----+  +-----+-----+  +-----+-----+
+
+また、概念的に、`'(foo t "bar" 5)' の各要素を次のように把握しておくのも良
+いでしょう。
+
+             '(foo              t          "bar"           5)
+               ↓              ↓           ↓            ↓
+              fooと            tと         "bar"と         5と
+             '(t "bar" 5)      '("bar" 5)      '(5)            Λ
+               へのポインタ    へのポインタ   へのポインタ    のペア
+                 のペア          のペア         のペア
+
+  次に、リストの要素にリストがある場合について考えてみましょう。 `nil' と、
+これまで例として用いた `'(foo t "bar" 5)' と `hoge' からなるリストは次のよ
+うに表現できます。
+
+     '(nil (foo t "bar" 5) hoge)
+
+リストの要素として、リストをそのままの形で書くだけで良いのです。
+
+  もう一つ、要素が一つもないリスト「空リスト」の存在も知っておく必要があり
+ます。空リストはリストの要素に何もないので、リストを括る括弧の中に何も書か
+ずに `'()' と表現します。空リストは常に `nil' を値として持っています。
+`Emacs-Lisp' では空リストと `nil' は全く同じ意味を持ちます。
+
+  さて `(setq x '(foo t "bar" 5))' について理解しておくべき重要な事項は次
+のものです。
+
+   * `x' はコンスセルの鎖の先頭(ここでは `foo' )のアドレスを指す
+   * 第二要素以降はポインタを辿って行くことで順次得られる
+   * あるリストの先頭のコンスセルへのポインタはリストそのものを指している
+     ことにほかならない
+
+
+
+
+File: hustler., Node: List Manipulation Functions, Next: Association Lists, Prev: List Structure, Up: Completion Input Functions
+
+リスト処理関数
+--------------
+
+* Menu:
+
+* Creating lists::              リストの作成
+* Accessing list Elements::     リストの要素の参照
+* Adding Elements to list::     リストの要素の追加
+* Appending lists::             リストどうしの結合
+* List Related Predicates::     述語関数等
+
+
+
+File: hustler., Node: Creating lists, Next: Accessing list Elements, Prev: List Manipulation Functions, Up: List Manipulation Functions
+
+リスト作成
+..........
+
+  これまでは、リストの内容そのものを `'' でクォートして並べましたが、各要
+素を列挙してそれらから構成されるリストを作成することができます。関数 
+`list' がそれです。引数は任意の個数だけ書けます。
+
+     (list 'foo t "bar" baz)
+
+のように書くことで、`foo t "bar" [bazの値]' からなるリストを作成し、このリ
+ストへのポインタを返します。引数を全て評価したものを連結するので、`baz' は 
+`シンボル baz' ではなく `baz の値' になることに注意して下さい。例えばこの
+場合、`(setq baz 5)' としていた場合、
+
+     '(foo t "bar" 5)
+
+というリストが生成されます。
+
+  リストの中にリストがある場合も、要素の部分に `list' 関数で内側のリストを
+書けば良く、前述の
+
+     '(nil (foo t "bar" 5) hoge)
+
+は
+     (list nil (list 'foo t "bar" baz) 'hoge)
+
+で作成することができます。
+
+
+
+
+File: hustler., Node: Accessing list Elements, Next: Adding Elements to list, Prev: Creating lists, Up: List Manipulation Functions
+
+リストの要素の参照
+..................
+
+  要素の連結した形であるリストから、要素そのものを取り出す時に利用する関数
+に `car'(かあ), `cdr'(くだー), `nth'(えぬす) があります。
+
+  リストは複数のコンスセルから成っていますが、`car' と `cdr' は引数として
+与えられたリストの先頭のコンスセルの、要素部分(`car部')とポインタ部分(`cdr
+部')をそれぞれ返します。つまり、`'(foo t "bar" 5)'の先頭のコンスセル(`foo' 
+が入っているもの)は
+
+             +--------------+--------------+
+             |              | tの入っている|
+             |     foo      | コンスセル   |
+             |              | へのポインタ |
+             +--------------+--------------+
+
+となっているので、`(car '(foo t "bar" 5))' は `foo' を返し、 `(cdr '(foo t
+"bar" 5))' は次のコンスセルへのポインタ、すなわち `t' を先頭とするリスト 
+`'(t "bar" 5)' を返します。 (*Note pointer cons: List Structure.)
+
+  では、`'(foo t "bar" 5)' の `cdr' をどんどん辿って行くとどうなるでしょう。
+次の例では、変数 `x' に `cdr' の結果を入れて行きます。
+
+     (setq x '(foo t "bar" 5));x は '(foo t "bar" 5) ---(A)
+     (setq x (cdr x))         ;x は '(t "bar" 5)     ---(B)
+     (setq x (cdr x))         ;x は '("bar" 5)       ---(C)
+     (setq x (cdr x))         ;x は '(5)             ---(D)
+     (setq x (cdr x))         ;x は 'nil             ---(E)
+
+(A)～(E)の代入により変数 `x' の指し示すものは次のように変動します。
+
+           (A)            (B)            (C)            (D)      (E)  
+         +--x--+        +--x--+        +--x--+        +--x--+  +--x--+
+         |  *  |        |  *  |        |  *  |        |  *  |  |  *  |
+         +-----+        +-----+        +-----+        +-----+  +-----+
+            ↓             ↓             ↓             ↓       +→ nil
+         +-----+-----+  +-----+-----+  +-----+-----+  +-----+-----+
+         | foo |  *--+→|  t  |  *--+→|"bar"|  *--+→|  5  | Λ  |
+         |     | (B) |  |     | (C) |  |     | (D) |  |     | (E) |
+         +-----+-----+  +-----+-----+  +-----+-----+  +-----+-----+
+
+  `car' と `cdr' を組み合わせると、リストの二番目三番目……の要素を取り出
+すことができます。
+
+     (car (cdr '(foo t "bar" 5)))            ;t
+     (car (cdr (cdr '(foo t "bar" 5))))      ;"bar"
+     (car (cdr (cdr (cdr '(foo t "bar" 5)))))    ;5
+
+しかしこの方法ではもっと後ろの要素を取り出すのが大変なので、そのような時は 
+`nth' を使います。`nth' は
+
+     (nth n番目 リスト)      ;「n番目」は0から始まる
+
+のように用いることで、リストの「n番目」の要素を返します。
+
+
+
+
+File: hustler., Node: Adding Elements to list, Next: Appending lists, Prev: Accessing list Elements, Up: List Manipulation Functions
+
+リストの要素の追加
+..................
+
+  `(setq x (cdr x))' のようにすることで、リストの先頭を順次切り捨てて行く
+ことができます。これとは逆にリストに要素を追加する関数が、 `cons' です。
+
+     (cons 要素 リスト)
+
+は、「リスト」に「要素」を追加したリストを返します。`list' 関数もリストを
+生成して返しますが、`list' は引数全てを要素とするリストを新規に作成して返
+すのに対し、`cons' は既存のリストの先頭に新たな一つの要素を追加したリスト
+を返します。それではリストの逆の手順をとりつつ `'(foo t "bar" 5)' を構築し
+て行きましょう。(*Note following cdr: Accessing list Elements.)
+
+     (setq x (cons 5 '()))       ;(setq x (cons 5 nil))と同じ (5)
+     (setq x (cons "bar" x))     ;x は ("bar" 5)
+     (setq x (cons t x))         ;x は (t "bar" 5)
+     (setq x (cons 'foo x))      ;x は (foo "bar" 5)
+
+最後の行を評価する前の `x' は次のようになっています。
+
+                            +--x--+
+                            |  *  |
+                            +-----+
+                              ↓
+                            +-----+-----+  +-----+-----+  +-----+-----+
+                            |  t  |  *--+→|"bar"|  *--+→|  5  | Λ  |
+                            +-----+-----+  +-----+-----+  +-----+-----+
+
+`(cons 'foo x)' により、`cons' はまず、`'foo' を `car' 部とするコンスセル
+を新たに作成します。そして、その `cdr' 部にそれまで `x' が指していたリスト
+へのポインタを格納します。上の図は次のように変化します。
+
+                            +--x--+
+                            |  *  |
+                            +-----+
+                              ↓
+             +-----+-----+  +-----+-----+  +-----+-----+  +-----+-----+
+             | foo |  *--+→|  t  |  *--+→|"bar"|  *--+→|  5  | Λ  |
+             +-----+-----+  +-----+-----+  +-----+-----+  +-----+-----+
+             \________________これ全体が(cons 'foo x)________________/
+
+そして最後に `(setq x (cons 'foo x))' により `x' が `(cons 'foo x)' で生成
+されたリストを指し示すこととなります。
+
+             +--x--+
+             |  *  |
+             +-----+
+                ↓
+             +-----+-----+  +-----+-----+  +-----+-----+  +-----+-----+
+             | foo |  *--+→|  t  |  *--+→|"bar"|  *--+→|  5  | Λ  |
+             +-----+-----+  +-----+-----+  +-----+-----+  +-----+-----+
+
+
+
+
+File: hustler., Node: Appending lists, Next: List Related Predicates, Prev: Adding Elements to list, Up: List Manipulation Functions
+
+リストどうしの結合
+..................
+
+  たくさんの要素を一つのリストに組み上げる `list'、一つのリストに一つの要
+素を追加する `cons' は既に覚えました。つまり、「要素だけ」と「リスト対要素」
+のリスト合成関数は覚えたので、「リスト対リスト」の結合関数 `append' を覚え
+ましょう。`append' は引数として与えられたリストを全て結合します。
+
+     (append リスト1 リスト2 リスト3 ... リストn)
+
+のようにした場合、「リスト1」から「リストn」のコンスセルを順次コピーしそれ
+らの全てをつなげます。つまり、「リスト1」の最後のコンスセルのコピーの`cdr
+部'(`nil'が入っている)に「リスト2」の最初のコンスセルのコピーへのポインタ
+を格納し、「リスト2」の最後のコンスセルのコピーの`cdr部'に「リスト3」の最
+初のコンスセルへのポインタを格納し、...という手順を繰り返すことで、「リス
+ト1」から「リストn」までのすべての要素(コンスセル)が一つの鎖に連結されます。
+そして `append' は連結されたリストを返します。
+
+  この `append' の動作が、`cons' のものとは少し違うことに気付いたでしょう
+か。`cons' では第二引数として与えられたリストを構成するコンスセルのいずれ
+も変化していません。`cons' の第一引数の要素を`car部'とするコンスセルを生成
+し、その`cdr部' が第二引数のリストを指し示すようにしただけにすぎません。こ
+れに対し `append' は第一引数から第 (n-1)引数までのリストのコンスセルをすべ
+てコピーし直します。 `append' によって返されたリストは、どの部分も新たな領
+域に確保されたものです。
+
+
+
+
+File: hustler., Node: List Related Predicates, Prev: Appending lists, Up: List Manipulation Functions
+
+述語関数等
+..........
+
+  ある対象物がリストなのか、あるいはアトムなのかを判定するための関数はそれ
+ぞれ `listp', `atom' です。
+
+     (listp 引数)
+     (atom 引数)
+
+は「引数」が リスト/アトム である場合に `t' を返し、そうでない場合に `nil' 
+を返します。
+
+  また、リストに要素がいくつ含まれるかを返す関数に `length' があります。
+`length' はリストの要素としてリストがあった場合はそれを一つと数えます。つ
+まり、
+
+     '(a b c)
+     '(1 '(a (b c) x) 4)
+
+は、どちらも長さ3と数えます。`length' は、リストの他に、文字列や (ここでは
+述べませんが)配列の長さを数える時にも利用できます。
+
+
+
+
+File: hustler., Node: Association Lists, Prev: List Manipulation Functions, Up: Completion Input Functions
+
+連想リスト
+----------
+
+`association list' は
+
+     '(連想キー  値1  値2  ...  値n)
+
+というリストが、一個以上集まってさらにリストになったもので、
+
+     '((連想キー1  値1..値n) (連想キー2 ..) ...)
+
+という形式をとっているもののことです。このリストを利用して検索キーが一つだ
+けの簡単なデータベースを作ることができます。たとえば、
+
+     隆          波動拳、昇龍拳、竜巻旋風脚
+     拳          昇龍拳、波動拳、竜巻旋風脚
+     春麗        スピニングバードキック、百烈キック
+     E.本田      スーパー頭付き、百烈張り手
+
+
+という必殺技データベースを作りたい時に、
+
+     (setq winning-shot-alist
+           '(("隆"   "波動拳" "昇龍拳" "竜巻旋風脚")
+             ("拳"   "昇龍拳" "波動拳" "竜巻旋風脚")
+             ("春麗" "スピニングバードキック" "百烈キック")
+             ("E.本田" "スーパー頭付き" "百烈張り手")))
+
+などとして `alist' を作っておきます。この `alist' から連想キーを持っている 
+`list' を取り出す関数が `assoc' で、
+
+     (assoc  連想キー  連想リスト)
+
+とすることで、「連想リスト」の中から「連想キー」を持っているリスト一つを見
+つけだしそのリストを返します。もし該当するキーを持つリストが見つからなかっ
+た場合は `nil' を返します。今回の `winning-shot-alist' に対して、キーボー
+ドから読み込んだものをキーとして該当するものを探す場合は次のようにします。
+
+     (let ((key (read-string "誰のわざ? ")) list)
+       (setq list (assoc key winning-shot-alist))
+       (if list
+           (message "%sの必殺技は%sです。" key (cdr list))
+         (message "%sって誰?" key)))
+
+`assoc' で得られるリストは、連想キーを含めたリストですから、値だけを取り出
+したい時は、その `cdr' 部を取る必要があります。
+
+
+
+

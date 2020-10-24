@@ -1,0 +1,53 @@
+
+;; ----- smex-history -----
+(
+ menu-bar--display-line-numbers-mode-absolute
+ el-get-list-packages
+ bf-mode
+ eval-buffer
+ skk-toggle-katakana
+ set-input-method
+ magit-status
+)
+
+;; ----- smex-data -----
+(
+ (helm-find . 1)
+ (emacs-version . 2)
+ (toggle-debug-on-error . 11)
+ (skk-menu . 1)
+ (skk-mode . 12)
+ (byte-recompile-directory . 4)
+ (eval-buffer . 57)
+ (show-paren-mode . 2)
+ (emacs-lisp-mode . 4)
+ (skk-bayesian-save-history . 5)
+ (python-mode . 2)
+ (helm-yank-selection . 1)
+ (helm-yank-text-at-point . 1)
+ (ido-migemo-mode . 3)
+ (migemo-forward . 1)
+ (pr-txt-mode . 2)
+ (ac-skk-enable . 1)
+ (auto-complete . 1)
+ (auto-complete-mode . 4)
+ (twit . 2)
+ (my-helm . 1)
+ (dired-async-mode . 1)
+ (text-mode . 1)
+ (set-input-method . 10)
+ (info . 1)
+ (el-get-list-packages . 37)
+ (dired-up-directory . 3)
+ (helm-push-mark-mode . 1)
+ (package-install . 4)
+ (eval-region . 1)
+ (package-install-file . 3)
+ (svg-clock . 1)
+ (helm-yas-complete . 1)
+ (magit-stash . 1)
+ (magit-status . 3)
+ (skk-toggle-katakana . 4)
+ (bf-mode . 1)
+ (menu-bar--display-line-numbers-mode-absolute . 1)
+)

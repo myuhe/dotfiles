@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+#contributor: myuhe
+#name: setq
+#key: setq
+# --
+(setq $0 )

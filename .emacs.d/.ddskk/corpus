@@ -1,0 +1,6 @@
+;; + means positive
+;; m means modified after henkan
+;; - menas wrong inference
+;; m and - are usually negative.
+;; However, in some cases, m data would be correct henkan
+;; because we might delete correct henkan.

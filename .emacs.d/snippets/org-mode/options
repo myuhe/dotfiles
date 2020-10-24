@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+#name : OPTIONS
+#key : opt
+#contributor : Yuhei Maeda 
+# --
+#+OPTIONS: toc:${1:$$(yas/choose-value '("t" "nil"))} num:${2:$$(yas/choose-value '("t" "nil"))}
+

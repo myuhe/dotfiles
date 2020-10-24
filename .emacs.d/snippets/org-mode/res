@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+#name : Org-Babel RESNAME Block
+#key : resname
+#contributor : Rick Moynihan
+# --
+#+RESNAME:
+

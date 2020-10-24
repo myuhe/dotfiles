@@ -1,0 +1,2131 @@
+Info file: fileutils-ja.info,    -*-Text-*-
+produced by `texinfo-format-buffer'
+from file `fileutils-ja.texi'
+using `texinfmt.el' version 2.38 of 3 July 1998.
+
+
+
+
+
+
+START-INFO-DIR-ENTRY
+* File utilities(ja): (fileutils-ja).  GNU file utilities.
+* chgrp(ja): (fileutils-ja)chgrp invocation.         Change file groups.
+* chown(ja): (fileutils-ja)chown invocation.         Change file owners/groups.
+* chmod(ja): (fileutils-ja)chmod invocation.         Change file permissions.
+* cp(ja): (fileutils-ja)cp invocation.               Copy files.
+* dd(ja): (fileutils-ja)dd invocation.               Copy and convert a file.
+* df(ja): (fileutils-ja)df invocation.               Report filesystem disk usage.
+* dir(ja): (fileutils-ja)dir invocation.             List directories briefly.
+* dircolors(ja): (fileutils-ja)dircolors invocation. Color setup for ls.
+* du(ja): (fileutils-ja)du invocation.               Report on disk usage.
+* install(ja): (fileutils-ja)install invocation.     Copy and change attributes.
+* ln(ja): (fileutils-ja)ln invocation.               Make links between files.
+* ls(ja): (fileutils-ja)ls invocation.               List directory contents.
+* mkdir(ja): (fileutils-ja)mkdir invocation.         Create directories.
+* mkfifo(ja): (fileutils-ja)mkfifo invocation.       Create FIFOs (named pipes).
+* mknod(ja): (fileutils-ja)mknod invocation.         Create special files.
+* mv(ja): (fileutils-ja)mv invocation.               Rename files.
+* rm(ja): (fileutils-ja)rm invocation.               Remove files.
+* rmdir(ja): (fileutils-ja)rmdir invocation.         Remove empty directories.
+* shred(ja): (fileutils-ja)shred invocation.         Remove files more securely.
+* sync(ja): (fileutils-ja)sync invocation.           Synchronize memory and disk.
+* touch(ja): (fileutils-ja)touch invocation.         Change file timestamps.
+* vdir(ja): (fileutils-ja)vdir invocation.           List directories verbosely.
+END-INFO-DIR-ENTRY
+
+This file documents the GNU set of file utilities.
+
+Copyright 1994, 95, 96, 1999, 2001 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.1 or
+any later version published by the Free Software Foundation; with no
+Invariant Sections, with no Front-Cover Texts, and with no Back-Cover
+Texts.  A copy of the license is included in the section entitled "GNU
+Free Documentation License".
+
+
+
+
+
+
+
+File: fileutils-ja.info, Node: mv invocation, Next: rm invocation, Prev: install invocation, Up: Basic operations
+
+`mv': ファイルの移動(名前の変更)
+================================
+
+
+`mv'は，ファイル(やディレクトリ)を移動したり名前を変更したりします．構
+文は以下のとおりです．
+
+     mv [OPTION]... SOURCE DEST
+     mv [OPTION]... SOURCE... DIRECTORY
+
+最後の引数が，既存のディレクトリを示す場合，`mv'は，それ以外の与えられ
+たそれぞれのファイルを，同じファイル名で，そのディレクトリに移動します．
+それ以外では，2つのファイルが与えられた場合，1番目の名前を2番目に変更
+します．最後の引数がディレクトリではなく，2つ以上のファイルが与えられ
+た場合，エラーとなります．
+
+`mv'は，一つのファイルシステムから別のものへ，あらゆる形式のファイル移
+動が可能です．fileutilsのバージョン`4.0'以前では，`mv'は通常のファイル
+のみファイルシステム間で移動が可能でした．例えば，現在の`mv'は，一つの
+パーティションから別のものへ，特殊なデバイスファイルを含むディレクトリ
+階層全体を移動可能です．それは最初に，要求されたディレクトリとファイル
+をコピーする`cp -a'で使用されているものと同じコードを使用し，それから
+(コピーが成功したと仮定して)それは元を削除します．コピーが失敗した場合，
+コピー先のパーティションにコピーされた部分が削除されます．一つのパーティ
+ションから3つのディレクトリを別のものにコピーし，最初のディレクトリが
+成功し，2番目が失敗した場合，最初のものはコピー先のパーティションにの
+こり，2番目と3番目は元のパーティションに残ります．
+
+コピー先のファイルが存在し通常の書き込みが不可で，標準入力が端末で，
+`-f'や`--force'オプションが与えられていない場合，`mv'はファイルを置換
+するかどうか，ユーザにプロンプトを表示します．(自分が所有するファイル，
+または，そのディレクトリに書き込み許可がある必要があります．) 応答が
+`y'または`Y'で始まらない場合，ファイルはスキップされます．
+
+*警告*：ディレクトリを示すシンボリックリンクを移動しようとし，スラッシュ
+を後置したシンボリックリンクを指定した場合，`mv'はシンボリックリンクを
+移動しませんが，その代わりにシンボリックリンクが参照するディレクトリを
+移動します．*Note Trailing slashes::.
+
+プログラムは以下のオプションも受け入れます．*Note Common options::,も
+参照してください．
+
+
+`-b'
+``--backup'[=METHOD]'
+     *Note Backup options::. 上書きされたり削除されたりするファイルの
+     バックアップを作成します．
+
+`-f'
+`--force'
+     コピー先のファイルを削除したり上書きしたりする前に，ユーザにプロ
+     ンプトを表示しません．
+
+`-i'
+`--interactive'
+     許可に因らず，それぞれの既存のコピー先のファイルを上書きするかど
+     うかプロンプトを表示します．`y'や`Y'で始まらない返答の場合，ファ
+     イルは省略されます．
+
+`-u'
+`--update'
+     同じまたは新しい編集時間を持つ既存のコピー先にディレクトリ以外の
+     ものを移動しません．
+
+`-v'
+`--verbose'
+     移動する前にそれぞれのファイル名を出力します．
+
+``--strip-trailing-slashes''
+     それぞれのSOURCE引数から後置されるスラッシュを削除します．*Note
+     Trailing slashes::.
+
+`-S SUFFIX'
+`--suffix=SUFFIX'
+     `-b'で作成されるそれぞれのバックアップファイルに，SUFFIXを追加し
+     ます．*Note Backup options::.
+
+``--target-directory'=DIRECTORY'
+     コピー先のDIRECTORYを指定します．*Note Target directory::.
+
+`-V METHOD'
+`--version-control=METHOD'
+     `-b'で作成されるバックアップの形式を変更します．METHOD引数は，
+     `none' (または`off')，`numbered' (または`t')，`existing' (または
+     `nil')，または，`never' (または`simple')が可能です．*Note Backup
+     options::.
+
+
+
+
+
+File: fileutils-ja.info, Node: rm invocation, Next: shred invocation, Prev: mv invocation, Up: Basic operations
+
+`rm': ファイルやディレクトリの削除
+==================================
+
+
+`rm'は与えられたFILEを削除します．デフォルトでそれはディレクトリを削除
+しません．構文は以下のとおりです．
+
+     rm [OPTION]... [FILE]...
+
+ファイルに書き込みができない，標準入力が端末，そして`-f'または
+`--force'オプションが与えられていない場合，または，`-i'または
+`--interactive'オプションが与えられて*いる*場合，`rm'はユーザにファイ
+ルを削除するかどうかを促すプロンプトを表示します．`y' や`Y'で始まらな
+い返答の場合，ファイルは省略されます．
+
+プログラムは以下のオプションも受け入れます．*Note Common options::,も
+参照してください．
+
+
+`-d'
+`--directory'
+     `rmdir'の代わりに`unlink'を用いてディレクトリの削除を試み，アンリ
+     ンクを試みる前にディレクトリが空である必要はありません．適切な特
+     権を持ち，オペレーティングシステムがディレクトリに対する`unlink'
+     をサポートしている場合のみ，これは動作します．ディレクトリのアン
+     リンクはディレクトリ内のあらゆるファイルを参照できなくするため，
+     この後でファイルシステムに`fsck' した方が賢明です．
+
+`-f'
+`--force'
+     存在しないファイルを無視し，ユーザにプロンプトを表示しません．前
+     にある`--interactive' (`-i')オプションを無視します．
+
+`-i'
+`--interactive'
+     それぞれのファイルを削除するかどうかプロンプトを表示します．`y'や
+     `Y'で始まらない返答の場合，ファイルは省略されます．前にある
+     `--force' (`-f')オプションを無視します．
+
+`-r'
+`-R'
+`--recursive'
+     ディレクトリの内容を再帰的に削除します．
+
+`-v'
+`--verbose'
+     削除する前にそれぞれのファイル名を出力します．
+
+
+よくある問題の一つは，`-'で始まる名前を持つファイルの削除の方法です．
+GNU `rm'では，引数を解析する`getopt'関数を使用するすべてのプログラムに
+似て，以下のすべての引数はオプションでないことを示す`--'オプションを使
+用します．現在のディレクトリの`-f'というファイル名を削除するため，以下
+のどちらかを入力できます．
+
+     rm -- -f
+
+または，
+
+     rm ./-f
+
+この目的に対する，Unix `rm'プログラムの単一の`-'の使用は，getoptの標準
+構文の開発以前のものです．
+
+
+
+
+File: fileutils-ja.info, Node: shred invocation, Prev: rm invocation, Up: Basic operations
+
+`shred': より安全なファイルの削除
+=================================
+
+
+`shred'は，非常に高価なハードディスクでのデータの回復を妨げを助けるた
+め，デバイスやファイルを上書きします．
+
+通常，ファイルを削除するとき(*Note rm invocation::)，データは実際には
+破壊されません．ファイルが保存されている場所をリストアップしている索引
+のみ破壊し，記憶装置は再利用可能になります．索引の再構築を試み，その部
+分が再利用されていない場合，ファイルを元に戻すことが可能な，アンデリー
+トユーティリティがあります．
+
+ほとんど満タンのドライブを使用している忙しいシステムでは，スペースは数
+秒で再利用可能になります．しかし，それが確かであることを知る方法はあり
+ません．機密データがあり，機密でないデータでファイルを実際に上書きする
+ことでリカバリが不可能だということを確かめたいかもしれません．
+
+しかし，そうした後でも，研究所へディスクを持っていき，上書きされたデー
+タの下の元データのかすかな"残響"を探すために感度の高い(そして高価な)多
+くの機器を使用することが可能です．データが一度上書きされただけでは，そ
+れはさほど難しくありません．
+
+取り返しができないように何かを削除する最前の方法は，メディアに酸をかけ
+て破壊する，溶かしてしまう，またはそれに似たことをすることです．フロッ
+ピーディスクのような，安い着脱可能なメディアに対しては，これは好ましい
+方法です．しかし，ハードドライブは高価で，溶かすのが難しいため，
+`shred'ユーティリティは破壊することなく類似の効果を達成しようとします．
+
+これは，古いデータに対するダメージを最大にするように選ばれたデータパター
+ンで，上書き動作を何回も使用します．これがフロッピーディスクで動作して
+いる間，パターンはハードドライブで最適な効果があるよう設計されています．
+詳細は，ソースコードと，Sixth USENIX Security Symposium (San Jose,
+California, 22--25 July, 1996)の予稿から，Peter Gutmannの論文`Secure
+Deletion of Data from Magnetic and Solid-State Memory'を参照してくださ
+い．論文は`http://www.cs.auckland.ac.nz/~pgut001/pubs/secure_del.html'
+で，オンラインでも利用可能です．
+
+`shred'は非常に重要な仮定に依存していることに*注意してください*．それ
+は，ファイルシステムがその場所のデータを上書きするということです．これ
+はそうするための伝統的な方法ですが，現代の多くのファイルシステムはこの
+仮定を満足するように設計されていません．例外は以下を含みます．
+
+
+   * AIXとSolarisが提供するような，Log-structureまたはjournalファイル
+     システム．
+
+   * RAIDベースのファイルシステムのように，重複したデータを書き込み，
+     書き込みで失敗した場合でも続けるファイルシステム．
+
+   * Network ApplianceのNFSサーバのような，スナップショットを作成する
+     ファイルシステム．
+
+   * NFSのバージョン３のクライアントのような，一時的な位置にキャッシュ
+     を作成するファイルシステム．
+
+   * 圧縮されているファイルシステム．
+
+ファイルシステムがどのように動作しているかよく分からない場合，その場所
+に上書きされないと仮定すべきで，それは，そのファイルシステムの通常のファ
+イルで，`shred'が信頼できる動作を行うことができないことを意味します．
+
+一般的にいって，これは，上記の意味で設計されたファイルシステムの問題を
+バイパスするため，ファイルではなくデバイスに`shred'することはより信頼
+できます．しかし，デバイスを`shred'してさえ，常に完全に信頼することは
+できません．例えば，ほとんどのディスクは，不良セクタがアプリケーション
+に見えないようにをマッピングします．不良セクタが機密データを含む場合，
+`shred'はそれを破壊することは不可能です．
+
+`shred'は，バックアップについて何もしないように，これらの問題の検出も
+報告も試みません．しかし，ファイルではなくデバイスに`shred'する方がよ
+り信頼できるので，`shred'はデフォルトで出力ファイルを切り詰めたり削除
+したりしません．このデフォルトはデバイスに対しより適していて，それは通
+常切り詰めもできませんし，削除もすべきではありません．
+
+     shred [OPTION]... FILE[...]
+
+プログラムは以下のオプションも受け入れます．*Note Common options::,も
+参照してください．
+
+
+`-f'
+`--force'
+     上書き可能が必要な場合，ファイルの許可に優先させます．
+
+`-NUMBER'
+`-n NUMBER'
+`--iterations=NUMBER'
+     デフォルトで，`shred'は25回の上書きを使用します．これで，少なくと
+     も1回の使用で使用される有用な上書きパターンの全てに対して十分にな
+     ります．時間の節約のため減らしたり，時間の無駄遣いをする場合に増
+     やすことが可能です．
+
+`-s BYTES'
+`--size=BYTES'
+     ファイルの最初のBYTESバイトを`shred'します．デフォルトはファイル
+     全体を`shred'します．BYTESは乗数を指定するために，`k'，`M'，また
+     は`G'のようなサイズ指定を続けることができます．*Note Block
+     size::.
+
+`-u'
+`--remove'
+     ファイルを`shred'した後，(可能な場合は)それを切り詰め，そして削除
+     します．ファイルが複数のリンクを持つ場合，指名されたリンクのみ削
+     除されます．
+
+`-v'
+`--verbose'
+     バイ菌の増殖のようにステータスの表示を更新します．
+
+`-x'
+`--exact'
+     通常，`shred'は，ファイルの最後のブロックまで完全に消去するため，
+     ファイルのサイズを，ファイルシステムのブロックサイズの次の乗数ま
+     で増加します．このオプションは，その動作を抑制します．このため，
+     デフォルトでは，512バイトのブロックを持つファイルシステム上の，10
+     バイトのファイルを`shred'する場合，結果としてファイルは512バイト
+     になります．このオプションを用いると，`shred'はファイルのサイズを
+     増加させません．
+
+`-z'
+`--zero'
+     通常，`shred'の書き込みの最終動作は，ランダムデータの作成です．こ
+     れが(例えば，暗号化されたデータのように見えるため)ハードディスク
+     上で目立つ場合や，より整然としたいと考える場合，`--zero'オプショ
+     ンは全てをゼロビットを用いる上書き動作を追加します．これは，
+     `--iterations'オプションで指定した動作の数に追加します．
+
+`-'
+     標準出力を`shred'します．
+
+     この引数はオプションと見なされます．一般的な`--'オプションはコマ
+     ンドラインのオプションの終りを示すために使用されますが，`-'は普通
+     のファイルとして解釈されます．
+
+     この使用目的は，削除された一時ファイルを`shred'することです．例で
+     す．
+
+          i=`tempfile -m 0600`
+          exec 3<>"$i"
+          rm -- "$i"
+          echo "Hello, world" >&3
+          shred - >&3
+          exec 3>-
+
+     シェルコマンド`shred - >file'は，`shred'の呼び出しの前に，それが
+     FILEを切り詰めるため，FILEの内容を`shred'しないことに注意してくだ
+     さい．コマンド`shred file'，または(Bourne互換シェルを使用している
+     場合は)コマンド`shred - 1<>file'を代わりに使用してください．
+
+
+最初のドライブのフロッピーディスクに作成されたファイルシステムの，全て
+の記録を消去するために，以下のコマンドを使用するかもしれません．そのコ
+マンドは，1.44MBフロッピーを消去するために，約20分かかります．
+
+     shred --verbose /dev/fd0
+
+同様に，ハードディスクの選択されたパーティションの全てのデータを消去す
+るために，以下のようなコマンドを与えることが可能です．
+
+     shred --verbose /dev/sda5
+
+
+
+
+File: fileutils-ja.info, Node: Special file types, Next: Changing file attributes, Prev: Basic operations, Up: Top
+
+特殊ファイルの形式
+******************
+
+
+この章は，特殊な形式のファイルを作成する方法(と，特殊なファイル形式の
+一つのディレクトリを削除する`rmdir'方法)を記述します．
+
+Unixのようなオペレーティングシステムには，特殊なファイル形式は，他より
+著しく少ないのですが，*すべて*が"通常のファイル"と差のないバイトストリー
+ムのみとして扱うことはできません．例えば，ファイルを作成したり削除した
+りするとき，システムはこの情報を記録する必要があり，それは"ディレクト
+リ"---特殊な形式のファイル--で行います．ディレクトリを通常のファイルと
+して読み込むこともできますが，気になる場合は，システムがその仕事を行う
+ために，ファイルのバイト上で構造，特定の順序を強制する必要があります．
+このためそれは"特殊な"形式のファイルとなります．
+
+ディレクトリ以外では，特殊なファイル形式は，名前付きパイプ(FIFO)，シン
+ボリックリンク，ソケット，そして"特殊ファイル"と呼ばれるものを含みます．
+
+* Menu:
+
+* ln invocation::               Make links between files.
+* mkdir invocation::            Make directories.
+* mkfifo invocation::           Make FIFOs (named pipes).
+* mknod invocation::            Make block or character special files.
+* rmdir invocation::            Remove empty directories.
+
+
+
+
+File: fileutils-ja.info, Node: ln invocation, Next: mkdir invocation, Prev: Special file types, Up: Special file types
+
+`ln': ファイル間にリンクを作成
+==============================
+
+
+`ln'は，ファイル間のリンクを作成します．デフォルトで，それはハードリン
+クを作成します．`-s'を用いると，シンボリック(または"ソフト") リンクを
+作成します．構文は以下のとおりです．
+
+     ln [OPTION]... TARGET [LINKNAME]
+     ln [OPTION]... TARGET... DIRECTORY
+
+
+   * 最後の引数が既存のディレクトリを示す場合，`ln'はそのディレクトリ
+     内のそれぞれのTARGETファイルに，TARGETの名前を使用しながらリンク
+     を作成します．(しかし，以下の`--no-dereference'オプションの記述を
+     参照してください．)
+
+   * 2つのファイル名が与えられた場合，`ln'は2番目から1番目へのリンクを
+     作成します．
+
+   * 一つのTARGETが与えられた場合，`ln'は，現在のディレクトリのそのファ
+     イルにリンクを作成します．
+
+   * 最後の引数がディレクトリでなく，2つ以上のファイルが与えられた場合
+     はエラーとなります．`-f'や`-i' (以下を参照)を用いない場合, `ln'は
+     既存のファイルを削除しません．`ln'に既存のファイルの名前を変えさ
+     せるために，`--backup'オプションを使用してください．
+
+
+"ハードリンク"は，既存のファイルの別名です．リンクとオリジナルは区別で
+きません．技術的には，それらは同じinodeを共有し，inodeはファイルに関す
+る必要な情報をすべて含みます--実際，inodeがファイル*である*と言っても
+間違いではありません．既存のすべての実装では，ディレクトリにハードリン
+クを作成できず，ハードリンクはファイルシステム間をまたぐことができませ
+ん．(しかしながら，これらの制限はPOSIXと一致しません．)
+
+一方，"シンボリックリンク" (短く言うと"symlinks")は，リンクファイルが
+実際には名前の異なるファイルを参照する特殊なファイル形式です(すべての
+カーネルがサポートしているわけではありません．System V release 3(とそ
+れより古いもの)はsymlinkがありません)．ほとんどの処理(開く，読み込む，
+書き出す等)は，シンボリックリンクを通じて行われ，カーネルは自動的にリ
+ンクを"dereferences"し，リンク先を処理します．しかし，リンク先ではなく
+リンクファイル自身に作用する(例えば削除)処理もあります．*Note Symbolic
+Links: (library)Symbolic Links.
+
+プログラムは以下のオプションも受け入れます．*Note Common options::,も
+参照してください．
+
+
+`-b'
+``--backup'[=METHOD]'
+     *Note Backup options::. 上書きされたり削除されたりするそれぞれの
+     ファイルのバックアップを作成します．
+
+`-d'
+`-F'
+`--directory'
+     スーパーユーザがディレクトリのハードリンクを作成できるようにしま
+     す．
+
+`-f'
+`--force'
+     既存のリンク先ファイルを削除します．
+
+`-i'
+`--interactive'
+     既存リンク先ファイルを削除するかどうか，プロンプトを表示します．
+
+`-n'
+`--no-dereference'
+     明示的な，ディレクトリへのシンボリックリンクとなるリンク先が与え
+     られたとき，リンク先を通常のファイルとして扱います．
+
+     リンク先が(シンボリックリンクではない)実際のディレクトリのとき，
+     不明瞭なものはありません．しかし，指定されたリンク先がディレクト
+     リへのシンボリックリンクの時，ユーザの要求の扱い方は，二通りあり
+     ます．`ln'は，リンク先を通常のディレクトリとして扱い，それに対す
+     るリンクを作成することができます．一方，リンク先を非ディレクトリ--
+     シンボリックリンク--として見ることもできます．その場合，`ln'は，
+     新しいリンクを作成する前に，そのシンボリックリンクを削除またはバッ
+     クアップする必要があります．デフォルトでは，ディレクトリへのシン
+     ボリックリンクであるリンク先を，ディレクトリと同様に扱います．
+
+`-s'
+`--symbolic'
+     ハードリンクの代わりにシンボリックリンクを作成します．このオプショ
+     ンは，シンボリックリンクをサポートしていないシステムでは，単にエ
+     ラーメッセージを生成します．
+
+`-S SUFFIX'
+`--suffix=SUFFIX'
+     `-b'を用いて生成されるそれぞれのバックアップファイルにSUFFIX を追
+     加します．*Note Backup options::.
+
+``--target-directory'=DIRECTORY'
+     リンク先DIRECTORYを指定します．*Note Target directory::.
+
+`-v'
+`--verbose'
+     リンクする前にそれぞれのファイル名を出力します．
+
+`-V METHOD'
+`--version-control=METHOD'
+     `-b'で作成されるバックアップの形式を変更します．METHOD引数は，
+     `none' (または`off')，`numbered' (または`t')，`existing' (または
+     `nil')，または，`never' (または`simple')が可能です．*Note Backup
+     options::.
+
+
+以下は例です．
+
+     ln -s /some/name  # creates link ./name pointing to /some/name
+     ln -s /some/name myname  # creates link ./myname pointing to /some/name
+     ln -s a b ..      # creates links ../a and ../b pointing to ./a and ./b
+
+
+
+
+File: fileutils-ja.info, Node: mkdir invocation, Next: mkfifo invocation, Prev: ln invocation, Up: Special file types
+
+`mkdir': ディレクトリの作成
+===========================
+
+
+`mkdir'は指定された名前でディレクトリを作成します．構文は以下のとおり
+です．
+
+     mkdir [OPTION]... NAME...
+
+NAMEが既存のファイルでディレクトリではない場合，`mkdir'は標準エラー出
+力に警告メッセージを出力し，残っているNAMEを処理した後，1 のステータス
+で終了します．NAMEが既存のディレクトリで，-p オプションが与えられてい
+ないときも同じです．NAMEが既存のディレクトリで，-p オプションが与えら
+れている場合，`mkdir'はそれを無視します．すなわち，`mkdir'は警告の出力
+も，エラーの発生も，(-m オプションが与えられていても)ディレクトリのモー
+ドの変更もせず，残りのNAMEの処理を続けます．
+
+プログラムは以下のオプションも受け入れます．*Note Common options::,も
+参照してください．
+
+
+`-m MODE'
+`--mode=MODE'
+     作成されるディレクトリのモードをMODEで設定し，それは`chmod'で設定
+     する抽象的なもので，(読み書きと実行を全員に許可する)`a=rwx'から目
+     的のポイントのためにumaskのビットセットを引いたものを使用します．
+     *Note File permissions::.
+
+`-p'
+`--parents'
+     それぞれの引数に対し，足りない親ディレクトリを作成します．親ディ
+     レクトリのモードは`u+wx'で編集されたumaskに設定します．既存のディ
+     レクトリに対する引数は無視します．
+
+`-v'
+`--verbose'
+     作成されるそれぞれのディレクトリに対しメッセージを出力します．こ
+     れは`--parents'とともに用いると最も便利です．
+
+
+
+
+File: fileutils-ja.info, Node: mkfifo invocation, Next: mknod invocation, Prev: mkdir invocation, Up: Special file types
+
+`mkfifo': FIFO(名前付きパイプ)の作成
+====================================
+
+
+`mkfifo'はFIFO("名前付きパイプ"とも呼ばれる)を指定された名前で作成しま
+す．構文は以下のとおりです．
+
+     mkfifo [OPTION] NAME...
+
+"FIFO"は，通信に依存するプロセスを可能にする特殊なファイル形式です．一
+つのプロセスは書き込みで，もう一つは読み込みでFIFOを開き，データは，シェ
+ルやその他の通常の名前なしパイプのように流れます．
+
+プログラムは以下のオプションも受け入れます．*Note Common options::,も
+参照してください．
+
+
+`-m MODE'
+`--mode=MODE'
+     作成されるFIFOのモードをMODEに設定し，それは`chmod'で設定する抽象
+     的なもので，(読み込みと書き出しを全員に許可する)`a=rw'から目的の
+     ポイントのためにumaskのビットセットを引いたものを使用します．
+     *Note File permissions::.
+
+
+
+
+
+File: fileutils-ja.info, Node: mknod invocation, Next: rmdir invocation, Prev: mkfifo invocation, Up: Special file types
+
+`mknod': ブロックやキャラクタ特殊ファイルの作成
+===============================================
+
+
+`mknod'は，FIFO，キャラクタ特殊ファイルや，ブロック特殊ファイルを指定
+された名前で作成します．構文は以下のとおりです．
+
+     mknod [OPTION]... NAME TYPE [MAJOR MINOR]
+
+上記の"特殊ファイル形式"と異なり，"特殊ファイル"という用語は，Unix 上
+で技術的な意味があります．それはデータを生成または受信するものです．こ
+れは通常，ハードウェアの物理的な部分に対応します．(これらのファイルは
+通常システム設定時に作成されます．) `mknod'コマンドは，この形式のファ
+イルを作成するものです．そのようなデバイスは，一度に一文字または一度に
+一"ブロック"(多くの文字)読み込むことができ，そのため，"ブロック特殊" 
+ファイルと"キャラクタ特殊"ファイルがあると言っているのです．
+
+NAMEの後の引数は作成するファイルの形式を指定します．
+
+
+`p'
+     FIFOに対応します．
+
+`b'
+     ブロック特殊ファイルに対応します．
+
+`c'
+     キャラクタ特殊ファイルに対応します．
+
+
+ブロックやキャラクタ特殊ファイルを作成しているとき，メジャーとマイナー
+デバイス番号をファイル形式の後に与える必要があります．
+
+プログラムは以下のオプションも受け入れます．*Note Common options::,も
+参照してください．
+
+
+
+`-m MODE'
+`--mode=MODE'
+     作成されるファイルのモードをMODEに設定し，それは`chmod'で設定する
+     抽象的なもので，`a=rw'から目的のポイントのためにumaskのビットセッ
+     トを引いたものを使用します．*Note File permissions::.
+
+
+
+
+
+File: fileutils-ja.info, Node: rmdir invocation, Prev: mknod invocation, Up: Special file types
+
+`rmdir': 空のディレクトリの削除
+===============================
+
+
+`rmdir'は空のディレクトリを削除します．構文は以下のとおりです．
+
+     rmdir [OPTION]... DIRECTORY...
+
+DIRECTORY引数が既存の空のディレクトリを参照していない場合，エラーとな
+ります．
+
+プログラムは以下のオプションも受け入れます．*Note Common options::,も
+参照してください．
+
+
+`--ignore-fail-on-non-empty'
+     ディレクトリが空でないため，それぞれ単独であるディレクトリ削除の
+     失敗を無視します．
+
+`-p'
+`--parents'
+     DIRECTORYを削除し，それぞれのDIRECTORYの構成要素の削除を試みます．
+     そのため，例えば，`rmdir -p a/b/c'は`rmdir a/b/c a/b a' ににてい
+     ます．同様に，これらのディレクトリが空でないと判明した場合は失敗
+     します．そのような失敗で，診断を引き起こし，`rmdir'を失敗で終了さ
+     せないため，`--ignore-fail-on-non-empty'オプションを使用してくだ
+     さい．
+
+`-v'
+`--verbose'
+     削除に成功したそれぞれの診断を与えます．DIRECTORYは削除されます．
+
+
+空でないディレクトリの(再帰的な)削除方法は，*Note rm invocation::.
+
+
+
+
+File: fileutils-ja.info, Node: Changing file attributes, Next: Disk usage, Prev: Special file types, Up: Top
+
+ファイル属性の変更
+******************
+
+
+ファイルは，その内容，名前，そしてファイル形式(*Note Special file
+types::)のみではありません．ファイルには，所有者(ユーザID)，グループ
+(グループID)，許可(所有者がファイルに行えること，グループの人ができる
+こと，そして，その他誰でもできること)，様々なタイムスタンプ，そしてそ
+の他の情報があります．まとめて，これらをファイルの"属性"と呼びます．
+
+これらのコマンドはファイルの属性を変更します．
+
+* Menu:
+
+* chown invocation::            Change file owners and groups.
+* chgrp invocation::            Change file groups.
+* chmod invocation::            Change access permissions.
+* touch invocation::            Change file timestamps.
+
+
+
+
+File: fileutils-ja.info, Node: chown invocation, Next: chgrp invocation, Prev: Changing file attributes, Up: Changing file attributes
+
+`chown': ファイルの所有者とグループの変更
+=========================================
+
+
+`chown'は，与えられたそれぞれのFILEのユーザと/やグループの所有権を，
+NEW-OWNERや，既存の参照ファイルのユーザとグループに変更します，構文は
+以下のとおりです．
+
+     chown [OPTION]... {NEW-OWNER | --reference=REF_FILE} FILE...
+
+NEW-OWNERが使用された場合，新しい所有者と/やグループを以下のように指定
+します(空白は含みません)．
+
+     [OWNER] [ [:] [GROUP] ]
+
+具体例です．
+
+OWNER
+     OWNER (ユーザ名または数値的なユーザID)のみ与えられた場合，そのユー
+     ザが与えられたそれぞれのファイルの所有者になり，ファイルのグルー
+     プは変更されません．
+
+OWNER`:'GROUP
+     OWNERにコロンとGROUP (グループ名または数値的なグループID)が，それ
+     ら間にスペースを置かずに続く場合，ファイルのグループ所有権を
+     (GROUPに)同様に変更します．
+
+OWNER`:'
+     コロンはあるが，グループ名がOWNERに続かない場合，ユーザがファイル
+     の所有者になり，ファイルのグループはOWNERのログイングループに変更
+     されます．
+
+`:'GROUP
+     コロンとそれに続くGROUPが与えられているが所有者が省略された場合，
+     ファイルのグループのみ変更されます．この場合，`chown'は`chgrp' と
+     同じ機能を果たします．
+
+
+`:'セパレータの場所に`.'を使用することが可能です．これは古いスクリプト
+への互換性のためのGNUの拡張です．GNU `chown'は，OWNERが`.'文字を含む場
+合は失敗する可能性があるので，新しいスクリプトでは`.'の使用を避けるべ
+きです．
+
+プログラムは以下のオプションも受け入れます．*Note Common options::,も
+参照してください．
+
+
+`-c'
+`--changes'
+     所有権が実際に変更されるそれぞれのFILEに対する動作を，冗長に記述
+     します．
+
+`-f'
+`--silent'
+`--quiet'
+     所有権を変更できないファイルについてのエラーメッセージを出力しま
+     せん．
+
+``--from'=OLD-OWNER'
+     OLD-OWNERで指定されている現在の属性がある場合，FILEの所有権を変更
+     します．OLD-OWNERは，上記のNEW-OWNERの記述と同じ形式です．このオ
+     プションは，潜在的な悪習の窓をかなり狭めるという点で，セキュリティ
+     の立場から主に役に立ちます．例えば，以下のように，このオプション
+     を使用しないで，ユーザのファイルに対してUIDの変更を反映させるため
+     に，`root'が実行したとします．
+
+          find / -owner OLDUSER -print0 | xargs -0 chown NEWUSER
+
+     しかし，`find'が既存のファイルの所有者をテストしたときと，`chown'
+     が実際に事項したときの間が非常に長い可能性があるので，それは危険
+     です．ギャップを小さくするひとつの方法は，それぞれのファイルに対
+     し見つかったときに`chown'を呼び出すことです．
+
+          find / -owner OLDUSER -exec chown NEWUSER {} \;
+
+     しかし，影響されるファイルが多い場合は，それは非常に遅くなります．
+     このオプションを用いると，(ギャップを狭めたままで)完全ではありま
+     せんが，それは安全になります．
+
+          chown -R --from=OLDUSER NEWUSER /
+
+`--dereference'
+     シンボリックリンク自身に動作せず，それが示すものに動作します．
+
+`-h'
+`--no-dereference'
+     シンボリックリンクが示すものではなく，それ自身に動作します．これ
+     はデフォルトです．このモードは`lchown'システムコールに依存します．
+     `lchown'システムコールが提供されていないシステムでは，コマンドラ
+     インで指定されるファイルがシンボリックリンクの時，`chown'は失敗し
+     ます．デフォルトで，再帰的な処理の間に発見されるシンボリックリン
+     クに対する診断結果は発行されませんが，それについては`--verbose'は
+     参照してください．
+
+`--reference=REF_FILE'
+     それぞれのFILEのユーザとグループを，REF_FILEと同じになるように変
+     更します．REF_FILEがシンボリックリンクの場合，シンボリックリンク
+     のユーザとグループではなく，それが参照するファイルのものを使用し
+     ます．
+
+`-v'
+`--verbose'
+     処理された全てのファイルに対し，診断結果を出力します．`lchown'シ
+     ステムコールがないシステムで，再帰的な処理の間にシンボリックリン
+     クが見つかり，`--no-dereference'の影響がある場合，シンボリックリ
+     ンクもその参照先も変更されないことを告げる診断結果を発行します．
+
+`-R'
+`--recursive'
+     ディレクトリとその内容の所有権を再帰的に変更します．
+
+
+
+
+
+File: fileutils-ja.info, Node: chgrp invocation, Next: chmod invocation, Prev: chown invocation, Up: Changing file attributes
+
+`chgrp': グループの所有権の変更
+===============================
+
+
+`chgrp'は，それぞれの与えられたFILEのグループ所有権をGROUP(グループ名
+またはグループIDのどちらかで与えられるはずです)，または，既存の参照ファ
+イルのグループに変更します．構文は以下のとおりです．
+
+     chgrp [OPTION]... {GROUP | --reference=REF_FILE} FILE...
+
+プログラムは以下のオプションも受け入れます．*Note Common options::,も
+参照してください．
+
+
+`-c'
+`--changes'
+     グループが実際に変更されているそれぞれのFILEに対し，動作を冗長に
+     記述します．
+
+`-f'
+`--silent'
+`--quiet'
+     グループを変更できなかったファイルに関するエラーメッセージを出力
+     しません．
+
+`--dereference'
+     シンボリックリンク自身に作用するのではなく，それが指し示すものに
+     作用します．
+
+`-h'
+`--no-dereference'
+     シンボリックリンクを，それが指し示すものの代わりにそれ自身に動作
+     します．これはデフォルトです．このモードは`lchown'システムコール
+     に依存します．コマンドラインで指定されているファイルがシンボリッ
+     クリンクの時，`chgrp'は失敗します．デフォルトで，再帰的な変換の間
+     に見つかったシンボリックリンクに対し診断結果は発行されませんが，
+     それについては`--verbose'を参照してください．
+
+`--reference=REF_FILE'
+     それぞれのFILEのグループを，REF_FILEと同じになるように変更します．
+     REF_FILEがシンボリックリンクの場合，シンボリックリンクのグループ
+     ではなく，それが参照するファイルのものを使用します．
+
+`-v'
+`--verbose'
+     処理した全てのファイルに対し，診断結果を出力します．`lchown'シス
+     テムコールがないシステムで，再帰的な変換の間にシンボリックリンク
+     が見つかり，`--no-dereference'が有効でない場合，シンボリックリン
+     クも参照するものも変更されないことを告げる診断結果を発行します．
+
+`-R'
+`--recursive'
+     ディレクトリとその内容のグループ所有権を再帰的に変更します．
+
+
+
+
+
+File: fileutils-ja.info, Node: chmod invocation, Next: touch invocation, Prev: chgrp invocation, Up: Changing file attributes
+
+`chmod': アクセス許可の変更
+===========================
+
+
+`chmod'は指名されたファイルのアクセス許可を変更します．構文は以下のと
+おりです．
+
+     chmod [OPTION]... {MODE | --reference=REF_FILE} FILE...
+
+`chmod'システムコールはシンボリックリンクの許可を変更できないため，
+`chmod'はそれらのの許可を決して変更しません．シンボリックリンクの許可
+は決して使用されないので，これは問題ではありません．しかし，コマンドラ
+インでリストアップされたそれぞれのシンボリックリンクに対し，`chmod' は
+指し示されたファイルの許可を変更します．そのかわり，再帰的にディレクト
+リを横断している間，`chmod'は，遭遇したシンボリックリンクを無視します．
+
+MODEが使用された場合，それは新しい許可を指定します．詳細は*Note File
+permissions::,のセクションを参照してください．
+
+プログラムは以下のオプションも受け入れます．*Note Common options::,も
+参照してください．
+
+
+`-c'
+`--changes'
+     許可が実際に変更されているそれぞれのFILEに対し，動作を冗長に記述
+     します．
+
+`-f'
+`--silent'
+`--quiet'
+     許可を変更できなかったファイルに関するエラーメッセージを出力しま
+     せん．
+
+`-v'
+`--verbose'
+     与えられたすべてのFILEに対し，動作，非動作の冗長な記述を行います．
+
+`--reference=REF_FILE'
+     それぞれのFILEのモードを，REF_FILEと同じになるように変更します．
+     *Note File permissions::. REF_FILEがシンボリックリンクの場合，シ
+     ンボリックリンクのモードではなく，それが参照するファイルのものを
+     使用します．
+
+`-R'
+`--recursive'
+     ディレクトリとその内容の許可を再帰的に変更します．
+
+
+
+
+
+File: fileutils-ja.info, Node: touch invocation, Prev: chmod invocation, Up: Changing file attributes
+
+`touch': ファイルのタイプスタンプの変更
+=======================================
+
+
+`touch'は，指定されたファイルのアクセスと/や編集された時間を変更します．
+構文は以下のとおりです．
+
+     touch [OPTION]... FILE...
+
+最初のFILEが`-t'オプションの有効な引数で，タイムスタンプが`-d'，`-r'や，
+`-t'オプションで全く与えられておらず，`--'引数が与えられていない場合，
+その引数はその他のファイルに対するファイル名としてではなく，時間として
+解釈されます．警告：この使用方法は時代遅れで，POSIXの将来のバージョン
+ではそれを取り消したサポートが要求されるでしょう．代わりに`-t'を使用し
+てください．
+
+存在しないFILEはすべて空として作成されます．
+
+アクセスと編集の時間の両方を現在の時間に変更するとき，`touch'は実行し
+ているユーザがファイルの所有者で無いが，書き込み許可があるもののタイム
+スタンプを変更することができます．それ以外では，ユーザはそのファイルの
+所有者である必要があります．
+
+`touch'は，ファイルの２つの時間 -- 最後のアクセスと編集 -- を変更する
+オプションを提供しますが，実際には3番目のinodeの変更時間も同じです．こ
+れはファイルの`ctime'としてよく参照されます．inodeの変更時間は，ファイ
+ルのメタ情報を最後に変更された時間を表現します．一般的な例の一つは，ファ
+イルの許可を変更したときです．許可の変更はファイルにアクセスしないので，
+atimeを変更しませんし，ファイルも編集しないので，mtimeも変更しません．
+依然としてファイル自身の何かは変っていますが，これはどこかに記録する必
+要があります．これはctimeフィールドの仕事です．例えば，バックアッププ
+ログラムが新しい許可値まで含めてファイルの新しいコピーを作成することを
+可能にするために，これは必要です．他に影響しないようにファイルのctime
+を編集するもう一つの処理は，名前の変更です．通常の処理では，ユーザが
+ctimeフィールドをユーザが指定した値に変更することは，いかなる場合でも
+不可能です．
+
+プログラムは以下のオプションも受け入れます．*Note Common options::,も
+参照して下さい．
+
+
+`-a'
+`--time=atime'
+`--time=access'
+`--time=use'
+     アクセス時間のみ変更します．
+
+`-c'
+`--no-create'
+     存在していないファイルを作成しません．
+
+`-d'
+`--date=time'
+     現在の時間の代わりにTIMEを指定します．それは，月名，タイムゾーン，
+     `am'と`pm'等を含むことができます．*Note Date input formats::.
+
+`-f'
+     無視されます．BSD版の`touch'の互換性のためです．
+
+`-m'
+`--time=mtime'
+`--time=modify'
+     編集時間のみ変更します．
+
+`-r FILE'
+`--reference=FILE'
+     現在の時間の代わりに参照FILEの時間を使用します．
+
+`-t [[CC]YY]MMDDhhmm[.ss]'
+     現在の時間の代わりに引数(オプションの4桁または2桁の年，月，日，時間，分，
+     オプションの秒)を使用します．年が2桁のみで指定された場合，CCは，0
+     ... 68に対し20，69 ... 99に対し19になります．年の数字が指定され
+     ない場合，今年の日付として解釈されます．
+
+
+
+
+
+File: fileutils-ja.info, Node: Disk usage, Next: Index, Prev: Changing file attributes, Up: Top
+
+ディクスの使用
+**************
+
+
+無限の量のデータを保てるディスクはありません．これらのコマンドは，ディ
+スクストレージの使用や利用可能な量を報告します．(これは*メインメモリ*，
+すなわち，プログラムが実行時に使用するRAMの量に対しては重要なことはし
+ません．そのため，`ps'や`pstat'や`swap'やそのようなコマンドが必要です．)
+
+* Menu:
+
+* df invocation::               Report filesystem disk space usage.
+* du invocation::               Estimate file space usage.
+* sync invocation::             Synchronize memory and disk.
+
+
+
+
+File: fileutils-ja.info, Node: df invocation, Next: du invocation, Prev: Disk usage, Up: Disk usage
+
+`df': ファイルシステムのディスクスペースの使用の報告
+====================================================
+
+
+`df'は，ファイルシステムの使用されているディスクスペースと利用可能なディ
+スクスペースの量を報告します．構文は以下のとおりです．
+
+     df [OPTION]... [FILE]...
+
+引数を用いない場合，`df'は現在マウントされている(すべての形式の)すべて
+のファイルシステムの使用されている，そして利用可能な空間を報告します．
+それ以外では，`df'はそれぞれの引数のFILEを含むファイルシステム上の内容
+を報告します．
+
+通常ディスクスペースは1024単位で出力されますが，これに優先することもで
+きます(*Note Block size::)．
+
+引数のFILEがマウントされているファイルシステムを含むディスクデバイスファ
+イルの場合，`df'はデバイスノードを含むファイルシステム(すなわちルート
+ファイルシステム)ではなく，そのファイルシステムの利用可能な空間を表示
+します．GNU `df'は，マウントしていないファイルシステムのディスクの使用
+を決定することは，ほとんどのシステムでファイルシステム構造の極めて移植
+性のない緻密な知識を必要とするため，そうしようとしません．
+
+プログラムは以下のオプションも受け入れます．*Note Common options::,も
+参照してください．
+
+
+`-a'
+`--all'
+     0ブロックの大きさのファイルシステムをリストに含め，それはデフォル
+     トでは省略されます．そのようなファイルシステムは，通常は自動マウ
+     ントエントリーのような，特定の目的の疑似ファイルシステムです．ま
+     た，サポートされているシステムもある"ignore"や"auto"形式のファイ
+     ルシステムは，このオプションが指定されたときのみ含まれます．
+
+`-h'
+`--human-readable'
+     それぞれのサイズに，メガバイトに対する`M'のようなサイズ文字を追加
+     します．1024倍が使用され，1000ではありません．`M'は1,048,576バイ
+     トを意味します．1000倍を好む場合は`-H'や`--si'オプションを使用し
+     てください．
+
+`-H'
+`--si'
+     それぞれのサイズに，メガバイトに対する`M'のようなサイズ文字を追加
+     します．(SIは国際単位系で，それはこれらの文字をの接頭辞として定義
+     しています．)1000倍が使用され，1024ではありません．`M'は1,000,000
+     バイトを意味します．1024倍を好む場合は`-h'や`--human-readable'オ
+     プションを使用してください．
+
+`-i'
+`--inodes'
+     ブロックの使用の代わりに，inode使用の情報をリストアップします．
+     inode(index nodeの省略)は，ファイルに関する，所有者，許可，タイム
+     スタンプ，そしてディスクの位置のような情報を含みます．
+
+`-k'
+`--kilobytes'
+     1024バイトブロックで出力し，デフォルトのブロックサイズに優先しま
+     す(*Note Block size::)．
+
+`-l'
+`--local'
+     ローカルファイルシステムのリストに制限します．デフォルトではリモー
+     トファイルシステムもリストアップされます．
+
+`-m'
+`--megabytes'
+     メガバイト(すなわち1,048,576バイト)ブロックでサイズを出力します．
+
+`--no-sync'
+     あらゆる使用データの取得前に`sync'システムコールを呼び出しません．
+     これは多くのディスクを持つシステム上で`df'の実行をかなり速くする
+     かもしれませんが，システム(特にSunOS)によっては，結果がわずかに時
+     代遅れになるかもしれません．これはデフォルトです．
+
+`-P'
+`--portability'
+     POSIX出力形式を使用します．これは，以下を除いてデフォルトの書式に
+     似ています．
+
+       1. それぞれのファイルシステムの情報は常に正確に1行で出力されま
+          す．マウントデバイスはその行に置かれません．これはマウントデ
+          バイスの名前が20文字以上(例えば，いくつかのネットワークマウ
+          ント)の場合，列がきちんと並ばないことを意味します．
+
+       2. 整数でない値は，切り捨てや，最も近い整数にされるのではなく，
+          切り上げられます．
+
+       3. ヘッダ出力行のラベルは，POSIXに従い変更されます．
+
+`--sync'
+     あらゆる使用データの取得前に`sync'システムコールを呼び出します．
+     システム(特にSunOS)によっては，こうすることで結果がより最新のもの
+     になりますが，一般的に言って，特に多くのまたは非常に忙しいファイ
+     ルシステムがあるとき，このオプションで`df'はかなり遅くなります．
+
+`-t FSTYPE'
+`--type=FSTYPE'
+     FSTYPE形式のファイルシステムのリストに制限します．複数のファイル
+     システム形式は，複数の`-t'オプションを与えることで指定できます．
+     デフォルトでは何も省略されません．
+
+`-T'
+`--print-type'
+     それぞれのファイルシステムの形式を出力します．ここで出力される形
+     式は，`-t'と`-x'オプションで含めたり除外したりできるものと同じで
+     す．出力される特定の形式は，システムでサポートしているものすべて
+     です．ここに共通の名前がいくつかあります(このリストはもちろん網羅
+     的なものではありません)．
+
+
+     `nfs'
+          NFSファイルシステム，すなわち，他のマシンからネットワークで
+          マウントされたものです．これは，すべてのシステムで同じように
+          使用されると思われる，一つの形式の名前です．
+
+     `4.2, ufs, efs...'
+          ローカルにマウントされたハードディスクのファイルシステムです．
+          (システムはこれらの一つ以上のものをサポートするかもしれませ
+          ん．Linuxはそうです．)
+
+     `hsfs, cdfs'
+          CD-ROMドライブのファイルシステムです．HP-UXは`cdfs'を使用し，
+          その他のほとんどのシステムは`hsfs' (`hs'は"High Sierra"です)
+          を使用します．
+
+     `pcfs'
+          MS-DOSのファイルシステムで，通常ディスケット上です．
+
+
+`-x FSTYPE'
+`--exclude-type=FSTYPE'
+     FSTYPE形式でないファイルシステムにリストを制限します．複数のファ
+     イルシステムの形式は，複数の`-x'オプションを使用することで排除で
+     きます．デフォルトでは省略されるファイルシステム形式はありません．
+
+`-v'
+     無視されます．System V版の`df'への互換性のためです．
+
+
+
+
+
+File: fileutils-ja.info, Node: du invocation, Next: sync invocation, Prev: df invocation, Up: Disk usage
+
+`du': ファイルスペースの使用を推定
+==================================
+
+
+`du'は，指定されたファイルとそれぞれの(ディレクトリ引数の)サブディレク
+トリが使用しているディスクスペースの量を報告します．構文は以下のとおり
+です．
+
+     du [OPTION]... [FILE]...
+
+引数を用いない場合，`du'は現在のディレクトリのディスクスペースを報告し
+ます．通常，ディスクスペースは1024バイト単位で出力されますが，これに優
+先することもできます(*Note Block size::)．
+
+プログラムは以下のオプションも受け入れます．*Note Common options::,も
+参照してください．
+
+
+`-a'
+`--all'
+     ディレクトリだけでなく，すべてのファイルを数えたものを表示します．
+
+`-b'
+`--bytes'
+     バイトで大きさを出力し，それはデフォルトのブロックサイズに優先し
+     ます(*Note Block size::)．
+
+`-c'
+`--total'
+     すべての引数を処理した後，すべての引数の合計を出力します．これは，
+     与えられたファイルやディレクトリの集合の，ディスク使用の合計を知
+     るために使用可能です．
+
+`-D'
+`--dereference-args'
+     コマンドライン引数のシンボリックリンク自身を参照しません．その他
+     のシンボリックリンクには影響しません．これは，`/usr/tmp'のように
+     シンボリックリンクにされることが多いディレクトリのディスク使用を
+     知りたいとき，役に立ちます．
+
+`-h'
+`--human-readable'
+     それぞれのサイズに，メガバイトに対する`M'のようなサイズ文字を追加
+     します．1024倍が使用され，1000ではありません．`M'は1,048,576バイ
+     トを意味します．1000倍を好む場合は`-H'や`--si'オプションを使用し
+     てください．
+
+`-H'
+`--si'
+     それぞれのサイズに，メガバイトに対する`M'のようなサイズ文字を追加
+     します．(SIは国際単位系で，それはこれらの文字をの接頭辞として定義
+     しています．)1000倍が使用され，1024ではありません．`M'は1,000,000
+     バイトを意味します．1024倍を好む場合は`-h'や`--human-readable'オ
+     プションを使用してください．
+
+`-k'
+`--kilobytes'
+     1024バイトブロックで出力し，デフォルトのブロックサイズに優先しま
+     す(*Note Block size::)．
+
+`-l'
+`--count-links'
+     すでに(ハードリンクとして)現れていた場合でも，すべてのファイルの
+     サイズを計算します．
+
+`-L'
+`--dereference'
+     シンボリックリンク自身を参照しません(リンクで使用しているスペース
+     の代わりに，リンクが示すファイルやディレクトリが使用しているディ
+     スクスペースを表示します)．
+
+`--max-depth=DEPTH'
+     階層のルートから最大MAX_DEPTHレベルまで降りて，それぞれのディレクトリ(と--
+     allの場合はファイル)の合計を表示します．ルートはレベル０なので，`du
+     --max-depth=0'は`du -s'と同じです．
+
+`-m'
+`--megabytes'
+     メガバイト(すなわち1,048,576バイト)ブロックでサイズを出力します．
+
+
+`-s'
+`--summarize'
+     それぞれの引数の合計のみ表示します．
+
+`-S'
+`--separate-dirs'
+     サブディレクトリのサイズを含めず，それぞれのディレクトリのサイズ
+     を別々に報告します．
+
+`-x'
+`--one-file-system'
+     処理を開始した引数のディレクトリと異なるファイルシステムを省略し
+     ます．
+
+`--exclude=PAT'
+     循環しているとき，PATに一致するサブディレクトリやファイルを省略し
+     ます．例えば，`du --exclude='*.o''は`.o'で終わる名前のファイルを
+     除外します．
+
+`-X FILE'
+`--exclude-from=FILE'
+     除外するパターンをFILEから受け取る以外，`--exclude'に似ています．
+     FILEが`-'の場合，標準入力からパターンを受け取ります．
+
+
+BSDシステムでは，HP-UXシステムからのNFSマウントされているファイルの正
+しい値の半分のサイズを，`du'は報告します．HP-UXシステムでは，BSDシステ
+ムからのNFSマウントされているファイルの正しい値の２倍のサイズを報告し
+ます．これはHP-UXの欠陥です．それはHP-UX `du'プログラムにも影響します．
+
+
+
+
+File: fileutils-ja.info, Node: sync invocation, Prev: du invocation, Up: Disk usage
+
+`sync': ディスクのデータとメモリの同期
+======================================
+
+
+`sync'は，メモリに蓄えられたあらゆるデータをディスクに書き出します．こ
+れは，(制限はあるものの)編集されたスーパーブロック，編集されたinode，
+そして遅延された読み書きを含むはずです．これはカーネルで実装されている
+必要があります．`sync'プログラムは，`sync'システムコールの行使以外，何
+もしません．
+
+カーネルは，(相対的に遅い)ディクスの読み書きを避けるため，メモリのデー
+タをそのままにします．これはパフォーマンスを改善しますが，コンピュータ
+が壊れた場合，結果としてデータが失われたり，ファイルシステムが壊れるか
+もしれません．`sync'は，メモリにあるものすべてがディスクに書かれること
+を確実にします．
+
+単独の`--help'や`--version' (*Note Common options::)以外のあらゆるオプ
+ションは無視されます．
+
+
+
+
+File: fileutils-ja.info, Node: Index, Prev: Disk usage, Up: Top
+
+索引
+****
+
+
+* Menu:
+
+* -1:                           General output formatting.  12.
+* 4.2 filesystem type:          df invocation.          145.
+* -A:                           Which files are listed.  21.
+* -B:                           Which files are listed.  27.
+* BLOCK_SIZE:                   Block size.             14.
+* BSD `touch' compatibility:    touch invocation.       68.
+* Bellovin, Steven M.:          Authors of getdate.     6.
+* Berets, Jim:                  Authors of getdate.     6.
+* Berry, K.:                    Authors of getdate.     13.
+* Bourne shell syntax for color setup: dircolors invocation.  29.
+* -C:                           General output formatting.  19.
+* C shell syntax for color setup: dircolors invocation.  38.
+* CD-ROM filesystem type:       df invocation.          151.
+* COLUMNS:                      General output formatting.  122.
+* -D:                           What information is listed.  13.
+* -D:                           du invocation.          45.
+* DF_BLOCK_SIZE:                Block size.             14.
+* DOS filesystem:               df invocation.          157.
+* DU_BLOCK_SIZE:                Block size.             14.
+* Eggert, Paul:                 Authors of getdate.     6.
+* -F:                           General output formatting.  40.
+* -F:                           ln invocation.          64.
+* FIFOs, creating:              mkfifo invocation.      5.
+* -G:                           What information is listed.  35.
+* -H:                           What information is listed.  52.
+* -H:                           cp invocation.          92.
+* -H:                           df invocation.          53.
+* -H:                           du invocation.          63.
+* High Sierra filesystem:       df invocation.          151.
+* -I:                           Which files are listed.  41.
+* ISO 8601 date format:         Calendar date items.    30.
+* -L:                           Which files are listed.  57.
+* -L:                           cp invocation.          114.
+* -L:                           du invocation.          87.
+* LS_BLOCK_SIZE:                Block size.             14.
+* LS_COLORS:                    dircolors invocation.   16.
+* Linux filesystem types:       df invocation.          145.
+* MS-DOS filesystem:            df invocation.          157.
+* MacKenzie, David:             Authors of getdate.     6.
+* Makefiles, installing programs in: install invocation.  18.
+* Meyering, Jim:                Authors of getdate.     6.
+* -N:                           Formatting the file names.  21.
+* NFS filesystem type:          df invocation.          139.
+* NFS mounts from BSD to HP-UX: What information is listed.  140.
+* NFS mounts from BSD to HP-UX: du invocation.          108.
+* -P:                           cp invocation.          129.
+* -P:                           df invocation.          98.
+* PC filesystem:                df invocation.          157.
+* POSIX.2:                      Introduction.           11.
+* POSIX output format:          df invocation.          98.
+* POSIXLY_CORRECT, and block size: Block size.          14.
+* Pinard, F.:                   Authors of getdate.     13.
+* -Q:                           Formatting the file names.  36.
+* -R:                           Which files are listed.  64.
+* -R:                           chgrp invocation.       67.
+* -R:                           chmod invocation.       58.
+* -R:                           chown invocation.       125.
+* -R:                           cp invocation.          161.
+* -R:                           rm invocation.          53.
+* -S:                           Backup options.         54.
+* -S:                           Sorting the output.     42.
+* -S:                           cp invocation.          214.
+* -S:                           du invocation.          114.
+* -S:                           install invocation.     96.
+* -S:                           ln invocation.          108.
+* -S:                           mv invocation.          89.
+* SHELL environment variable, and color: dircolors invocation.  16.
+* SI output:                    Block size.             37.
+* SI output:                    What information is listed.  52.
+* SI output:                    df invocation.          53.
+* SI output:                    du invocation.          63.
+* SIMPLE_BACKUP_SUFFIX:         Backup options.         54.
+* Salz, Rich:                   Authors of getdate.     6.
+* -T:                           General output formatting.  114.
+* -T:                           df invocation.          130.
+* -U:                           Sorting the output.     65.
+* -V:                           cp invocation.          231.
+* -V:                           install invocation.     113.
+* -V:                           ln invocation.          125.
+* -V:                           mv invocation.          100.
+* VERSION_CONTROL:              Backup options.         16.
+* VERSION_CONTROL:              cp invocation.          56.
+* VERSION_CONTROL:              install invocation.     31.
+* VERSION_CONTROL:              ln invocation.          55.
+* VERSION_CONTROL:              mv invocation.          49.
+* -X FILE:                      du invocation.          134.
+* -X:                           Sorting the output.     83.
+* -a:                           Which files are listed.  14.
+* -a:                           cp invocation.          47.
+* -a:                           df invocation.          34.
+* -a:                           du invocation.          24.
+* -a:                           touch invocation.       51.
+* abbreviations for months:     Calendar date items.    37.
+* access permissions, changing: chmod invocation.       5.
+* access time, changing:        touch invocation.       51.
+* access time, printing or sorting files by: Sorting the output.  56.
+* across, listing files:        General output formatting.  108.
+* adding permissions:           Setting Permissions.    33.
+* ago in date strings:          Relative items in date strings.  21.
+* --all:                        Which files are listed.  14.
+* --all:                        df invocation.          34.
+* --all:                        du invocation.          24.
+* --almost-all:                 Which files are listed.  21.
+* alternate ebcdic, converting to: dd invocation.       93.
+* always color option:          General output formatting.  36.
+* am in date strings:           Time of day items.      18.
+* - and Unix `rm':              rm invocation.          63.
+* appropriate privileges:       install invocation.     69.
+* --archive:                    cp invocation.          47.
+* ascii, converting to:         dd invocation.          85.
+* atime, changing:              touch invocation.       51.
+* atime, printing or sorting files by: Sorting the output.  56.
+* attributes, file:             Changing file attributes.  5.
+* authors of `getdate':         Authors of getdate.     5.
+* auto color option:            General output formatting.  33.
+* automounter filesystems:      df invocation.          34.
+* -b:                           Backup options.         16.
+* -b:                           Formatting the file names.  14.
+* -b:                           cp invocation.          56.
+* -b:                           dircolors invocation.   29.
+* -b:                           du invocation.          30.
+* b for block special file:     mknod invocation.       28.
+* -b:                           install invocation.     31.
+* -b:                           ln invocation.          55.
+* -b:                           mv invocation.          49.
+* backslash sequences for file names: Formatting the file names.  14.
+* --backup:                     Backup options.         16.
+* --backup:                     cp invocation.          56.
+* backup files, ignoring:       Which files are listed.  27.
+* --backup:                     install invocation.     31.
+* --backup:                     ln invocation.          55.
+* --backup:                     mv invocation.          49.
+* backup options:               Backup options.         5.
+* backup suffix:                Backup options.         54.
+* backups, making:              Backup options.         16.
+* backups, making:              cp invocation.          56.
+* backups, making:              install invocation.     31.
+* backups, making:              ln invocation.          55.
+* backups, making:              mv invocation.          49.
+* backups, making only:         cp invocation.          33.
+* beginning of time, for POSIX: Date input formats.     35.
+* block size:                   Block size.             5.
+* --block-size=SIZE:            Block size.             14.
+* block size:                   dd invocation.          54.
+* block size of conversion:     dd invocation.          58.
+* block size of input:          dd invocation.          46.
+* block size of output:         dd invocation.          50.
+* block (space-padding):        dd invocation.          97.
+* block special files, creating: mknod invocation.      5.
+* block special files:          mknod invocation.       11.
+* --bourne-shell:               dircolors invocation.   29.
+* bs:                           dd invocation.          54.
+* bugs, reporting:              Introduction.           13.
+* byte-swapping:                dd invocation.          115.
+* --bytes:                      du invocation.          30.
+* -c:                           Sorting the output.     18.
+* -c:                           chgrp invocation.       20.
+* -c:                           chmod invocation.       29.
+* -c:                           chown invocation.       53.
+* -c:                           dircolors invocation.   38.
+* -c:                           du invocation.          37.
+* c for character special file: mknod invocation.       32.
+* -c:                           install invocation.     36.
+* --c-shell:                    dircolors invocation.   38.
+* -c:                           touch invocation.       57.
+* calendar date item:           Calendar date items.    5.
+* case, ignored in dates:       General date syntax.    52.
+* cbs:                          dd invocation.          58.
+* cdfs filesystem type:         df invocation.          151.
+* changed files, verbosely describing: chgrp invocation.  20.
+* changed owners, verbosely describing: chown invocation.  53.
+* --changes:                    chgrp invocation.       20.
+* --changes:                    chmod invocation.       29.
+* --changes:                    chown invocation.       53.
+* changing access permissions:  chmod invocation.       5.
+* changing file attributes:     Changing file attributes.  5.
+* changing file ownership:      chown invocation.       5.
+* changing file timestamps:     touch invocation.       5.
+* changing group ownership:     chgrp invocation.       5.
+* changing group ownership:     chown invocation.       5.
+* changing special permissions: Changing Special Permissions.  5.
+* character special files, creating: mknod invocation.  5.
+* character special files:      mknod invocation.       11.
+* chgrp:                        chgrp invocation.       5.
+* chmod:                        chmod invocation.       5.
+* chown:                        chown invocation.       5.
+* --classify:                   General output formatting.  40.
+* --color:                      General output formatting.  26.
+* color database, printing:     dircolors invocation.   45.
+* color, distinguishing file types with: General output formatting.  26.
+* color setup:                  dircolors invocation.   5.
+* commas, outputting between files: General output formatting.  84.
+* comments, in dates:           General date syntax.    52.
+* common options:               Common options.         5.
+* conditional executability:    Conditional Executability.  5.
+* conv:                         dd invocation.          77.
+* conversion block size:        dd invocation.          58.
+* converting while copying a file: dd invocation.       5.
+* copying directories recursively: cp invocation.       145.
+* copying existing permissions: Copying Permissions.    5.
+* copying files and directories: cp invocation.         5.
+* copying files and setting attributes: install invocation.  5.
+* count:                        dd invocation.          72.
+* --count-links:                du invocation.          80.
+* cp:                           cp invocation.          5.
+* crashes and corruption:       sync invocation.        12.
+* creating FIFOs (named pipes): mkfifo invocation.      5.
+* creating directories:         mkdir invocation.       5.
+* creating links (hard or soft): ln invocation.         5.
+* --csh:                        dircolors invocation.   38.
+* `csh' syntax for color setup: dircolors invocation.   38.
+* ctime, printing or sorting by: Sorting the output.    18.
+* -d:                           Which files are listed.  34.
+* -d:                           cp invocation.          74.
+* -d:                           install invocation.     42.
+* -d:                           ln invocation.          64.
+* -d:                           rm invocation.          25.
+* -d:                           touch invocation.       63.
+* data, erasing:                shred invocation.       5.
+* database for color setup, printing: dircolors invocation.  45.
+* date format, ISO 8601:        Calendar date items.    30.
+* date input formats:           Date input formats.     5.
+* --date:                       touch invocation.       63.
+* day in date strings:          Relative items in date strings.  14.
+* day in date strings:          Relative items in date strings.  26.
+* day of week item:             Day of week items.      5.
+* dd:                           dd invocation.          5.
+* --dereference:                Which files are listed.  57.
+* --dereference-args:           du invocation.          45.
+* --dereference:                chgrp invocation.       34.
+* --dereference:                chown invocation.       91.
+* --dereference:                cp invocation.          114.
+* --dereference:                du invocation.          87.
+* dereferencing symbolic links: ln invocation.          38.
+* destination directory:        Target directory.       13.
+* destination directory:        cp invocation.          219.
+* destination directory:        install invocation.     101.
+* destination directory:        ln invocation.          113.
+* destination directory:        mv invocation.          94.
+* device file, disk:            df invocation.          19.
+* df:                           df invocation.          5.
+* dir:                          dir invocation.         5.
+* dircolors:                    dircolors invocation.   5.
+* directories, copying:         cp invocation.          5.
+* directories, copying recursively: cp invocation.      145.
+* directories, creating:        mkdir invocation.       5.
+* directories, creating with given attributes: install invocation.  42.
+* directories, removing empty:  rmdir invocation.       5.
+* directories, removing (recursively): rm invocation.   53.
+* directories, removing with `unlink': rm invocation.   25.
+* --directory:                  Which files are listed.  34.
+* directory deletion, ignoring failures: rmdir invocation.  19.
+* directory deletion, reporting: rmdir invocation.      37.
+* --directory:                  install invocation.     42.
+* directory listing, brief:     dir invocation.         5.
+* directory listing:            ls invocation.          5.
+* directory listing, recursive: Which files are listed.  64.
+* directory listing, verbose:   vdir invocation.        5.
+* --directory:                  ln invocation.          64.
+* directory order, listing by:  Sorting the output.     25.
+* --directory:                  rm invocation.          25.
+* dired Emacs mode support:     What information is listed.  13.
+* --dired:                      What information is listed.  13.
+* disk allocation:              What information is listed.  132.
+* disk device file:             df invocation.          19.
+* disk usage:                   Disk usage.             5.
+* disk usage by filesystem:     df invocation.          5.
+* disk usage for files:         du invocation.          5.
+* diskette filesystem:          df invocation.          157.
+* displacement of dates:        Relative items in date strings.  5.
+* du:                           du invocation.          5.
+* ebcdic, converting to:        dd invocation.          89.
+* efs filesystem type:          df invocation.          145.
+* empty files, creating:        touch invocation.       18.
+* epoch, for POSIX:             Date input formats.     35.
+* erasing data:                 shred invocation.       5.
+* error messages, omitting:     chgrp invocation.       29.
+* error messages, omitting:     chmod invocation.       38.
+* error messages, omitting:     chown invocation.       62.
+* --escape:                     Formatting the file names.  14.
+* --exact:                      shred invocation.       127.
+* --exclude=PAT:                du invocation.          126.
+* --exclude-from=FILE:          du invocation.          134.
+* --exclude-type:               df invocation.          160.
+* excluding files from `du':    du invocation.          126.
+* excluding files from `du':    du invocation.          134.
+* executables and file type, marking: General output formatting.  40.
+* execute permission:           Mode Structure.         14.
+* execute permission, symbolic: Setting Permissions.    54.
+* existing backup method:       Backup options.         48.
+* extension, sorting files by:  Sorting the output.     83.
+* -f:                           Sorting the output.     25.
+* -f:                           chgrp invocation.       29.
+* -f:                           chmod invocation.       38.
+* -f:                           chown invocation.       62.
+* -f:                           cp invocation.          82.
+* -f:                           ln invocation.          71.
+* -f:                           mv invocation.          56.
+* -f:                           rm invocation.          36.
+* -f:                           shred invocation.       87.
+* -f:                           touch invocation.       68.
+* file attributes, changing:    Changing file attributes.  5.
+* file information, preserving: cp invocation.          120.
+* file ownership, changing:     chown invocation.       5.
+* file permissions:             File permissions.       5.
+* file permissions, numeric:    Numeric Modes.          5.
+* file space usage:             du invocation.          5.
+* file timestamps, changing:    touch invocation.       5.
+* --file-type:                  General output formatting.  99.
+* file type and executables, marking: General output formatting.  40.
+* file type, marking:           General output formatting.  99.
+* file types:                   Special file types.     9.
+* file types, special:          Special file types.     5.
+* file utilities:               Top.                    5.
+* files beginning with `-', removing: rm invocation.    51.
+* files, copying:               cp invocation.          5.
+* filesystem disk usage:        df invocation.          5.
+* filesystem space, retrieving current data more slowly: df invocation.  113.
+* filesystem space, retrieving old data more quickly: df invocation.  89.
+* filesystem types, limiting output to certain: df invocation.  122.
+* filesystem types, limiting output to certain: df invocation.  78.
+* filesystem types, printing:   df invocation.          130.
+* filesystems and hard links:   ln invocation.          6.
+* filesystems, omitting copying to different: cp invocation.  240.
+* first in date strings:        General date syntax.    20.
+* --force:                      cp invocation.          82.
+* force deletion:               shred invocation.       87.
+* --force:                      ln invocation.          71.
+* --force:                      mv invocation.          56.
+* --force:                      rm invocation.          36.
+* --force:                      shred invocation.       87.
+* --format:                     General output formatting.  108.
+* --format:                     General output formatting.  12.
+* --format:                     General output formatting.  19.
+* --format:                     General output formatting.  84.
+* --format:                     What information is listed.  76.
+* fortnight in date strings:    Relative items in date strings.  14.
+* --from:                       chown invocation.       67.
+* fsck:                         rm invocation.          25.
+* --full-time:                  General output formatting.  47.
+* -g (ignored):                 ls invocation.          28.
+* -g:                           install invocation.     52.
+* general date syntax:          General date syntax.    5.
+* getdate:                      Date input formats.     5.
+* giving away permissions:      Umask and Protection.   10.
+* grand total of disk space:    du invocation.          37.
+* --group:                      install invocation.     52.
+* group owner, default:         Mode Structure.         22.
+* group ownership, changing:    chgrp invocation.       5.
+* group ownership, changing:    chown invocation.       5.
+* group ownership of installed files, setting: install invocation.  52.
+* group, permissions for:       Setting Permissions.    24.
+* -h:                           Block size.             84.
+* -h:                           What information is listed.  43.
+* -h:                           chgrp invocation.       41.
+* -h:                           chown invocation.       97.
+* -h:                           df invocation.          44.
+* -h:                           du invocation.          54.
+* hard link, defined:           ln invocation.          31.
+* hard links, counting in `du': du invocation.          80.
+* hard links, creating:         ln invocation.          5.
+* hard links, preserving:       cp invocation.          74.
+* hard links to directories:    ln invocation.          64.
+* --help:                       Common options.         12.
+* help, online:                 Common options.         12.
+* --hide-control-chars:         Formatting the file names.  27.
+* history:                      Introduction.           19.
+* holes, copying files with:    cp invocation.          171.
+* horizontal, listing files:    General output formatting.  108.
+* hour in date strings:         Relative items in date strings.  14.
+* hsfs filesystem type:         df invocation.          151.
+* --human-readable:             Block size.             84.
+* --human-readable:             What information is listed.  43.
+* --human-readable:             df invocation.          44.
+* --human-readable:             du invocation.          54.
+* human-readable output:        Block size.             37.
+* human-readable output:        What information is listed.  43.
+* human-readable output:        df invocation.          44.
+* human-readable output:        du invocation.          54.
+* -i:                           What information is listed.  65.
+* -i:                           cp invocation.          101.
+* -i:                           df invocation.          63.
+* -i:                           ln invocation.          77.
+* -i:                           mv invocation.          63.
+* -i:                           rm invocation.          43.
+* ibs:                          dd invocation.          46.
+* if:                           dd invocation.          36.
+* --ignore=PATTERN:             Which files are listed.  41.
+* --ignore-backups:             Which files are listed.  27.
+* --ignore-fail-on-non-empty:   rmdir invocation.       19.
+* ignore filesystems:           df invocation.          34.
+* --indicator-style:            General output formatting.  40.
+* --indicator-style:            General output formatting.  62.
+* --indicator-style:            General output formatting.  99.
+* --inode:                      What information is listed.  65.
+* inode, and hard links:        ln invocation.          31.
+* inode number, printing:       What information is listed.  65.
+* inode usage:                  df invocation.          63.
+* --inodes:                     df invocation.          63.
+* inodes, written buffered:     sync invocation.        6.
+* input block size:             dd invocation.          46.
+* install:                      install invocation.     5.
+* --interactive:                cp invocation.          101.
+* --interactive:                ln invocation.          77.
+* --interactive:                mv invocation.          63.
+* --interactive:                rm invocation.          43.
+* introduction:                 Introduction.           5.
+* items in date strings:        General date syntax.    6.
+* --iterations=NUMBER:          shred invocation.       95.
+* iterations, selecting the number of: shred invocation.  95.
+* -k:                           Block size.             84.
+* -k:                           General output formatting.  77.
+* -k:                           df invocation.          71.
+* -k:                           du invocation.          73.
+* --kilobytes:                  Block size.             84.
+* --kilobytes:                  General output formatting.  77.
+* --kilobytes:                  df invocation.          71.
+* --kilobytes:                  du invocation.          73.
+* kilobytes for filesystem sizes: df invocation.        71.
+* -l:                           What information is listed.  76.
+* -l:                           cp invocation.          108.
+* -l:                           df invocation.          78.
+* -l:                           du invocation.          80.
+* language, in dates:           General date syntax.    31.
+* language, in dates:           General date syntax.    35.
+* last DAY:                     Day of week items.      15.
+* last in date strings:         General date syntax.    20.
+* lcase, converting to:         dd invocation.          107.
+* lchown:                       chgrp invocation.       34.
+* lchown:                       chgrp invocation.       41.
+* lchown:                       chown invocation.       91.
+* lchown:                       chown invocation.       97.
+* leading directories, creating missing: install invocation.  42.
+* limiting output of `du':      du invocation.          93.
+* --link:                       cp invocation.          108.
+* links, creating:              ln invocation.          5.
+* --literal:                    Formatting the file names.  21.
+* ln:                           ln invocation.          5.
+* --local:                      df invocation.          78.
+* local filesystem types:       df invocation.          145.
+* long ls format:               What information is listed.  76.
+* ls:                           ls invocation.          5.
+* -m:                           General output formatting.  84.
+* -m:                           df invocation.          85.
+* -m:                           du invocation.          101.
+* -m:                           install invocation.     60.
+* -m:                           mkdir invocation.       27.
+* -m:                           mkfifo invocation.      23.
+* -m:                           mknod invocation.       44.
+* -m:                           touch invocation.       76.
+* manipulating files:           Basic operations.       5.
+* --max-depth=DEPTH:            du invocation.          93.
+* --megabytes:                  df invocation.          85.
+* --megabytes:                  du invocation.          101.
+* megabytes for filesystem sizes: df invocation.        85.
+* megabytes for filesystem sizes: du invocation.        101.
+* midnight in date strings:     Time of day items.      18.
+* minute in date strings:       Relative items in date strings.  14.
+* minutes, time zone correction by: Time of day items.  25.
+* mkdir:                        mkdir invocation.       5.
+* mkfifo:                       mkfifo invocation.      5.
+* mknod:                        mknod invocation.       5.
+* --mode:                       install invocation.     60.
+* --mode:                       mkdir invocation.       27.
+* --mode:                       mkfifo invocation.      23.
+* --mode:                       mknod invocation.       44.
+* modes and umask:              Umask and Protection.   5.
+* modes of created FIFOs, setting: mkfifo invocation.   23.
+* modes of created directories, setting: mkdir invocation.  27.
+* modification time, sorting files by: Sorting the output.  48.
+* modify time, changing:        touch invocation.       76.
+* month in date strings:        Relative items in date strings.  14.
+* month names in date strings:  Calendar date items.    37.
+* months, written-out:          General date syntax.    28.
+* mtime, changing:              touch invocation.       76.
+* multiple changes to permissions: Multiple Changes.    5.
+* multipliers after numbers:    dd invocation.          15.
+* mv:                           mv invocation.          5.
+* -n:                           General output formatting.  91.
+* -n NUMBER:                    shred invocation.       95.
+* -n:                           ln invocation.          83.
+* named pipes, creating:        mkfifo invocation.      5.
+* newer files, moving only:     mv invocation.          71.
+* next DAY:                     Day of week items.      15.
+* next in date strings:         General date syntax.    20.
+* --no-create:                  touch invocation.       57.
+* --no-dereference:             chgrp invocation.       41.
+* --no-dereference:             chown invocation.       97.
+* --no-dereference:             cp invocation.          74.
+* --no-dereference:             ln invocation.          83.
+* --no-group:                   What information is listed.  35.
+* --no-sync:                    df invocation.          89.
+* noerror:                      dd invocation.          121.
+* non-directories, copying as special files: cp invocation.  145.
+* none backup method:           Backup options.         36.
+* none color option:            General output formatting.  30.
+* none, sorting option for `ls': Sorting the output.    65.
+* noon in date strings:         Time of day items.      18.
+* notrunc:                      dd invocation.          125.
+* now in date strings:          Relative items in date strings.  29.
+* numbered backup method:       Backup options.         42.
+* numbers, written-out:         General date syntax.    20.
+* numeric modes:                Numeric Modes.          5.
+* numeric uid and gid:          General output formatting.  91.
+* --numeric-uid-gid:            General output formatting.  91.
+* -o:                           What information is listed.  123.
+* -o:                           install invocation.     69.
+* obs:                          dd invocation.          50.
+* octal numbers for file modes: Numeric Modes.          5.
+* of:                           dd invocation.          40.
+* --one-file-system:            cp invocation.          240.
+* --one-file-system:            du invocation.          121.
+* one filesystem, restricting `du' to: du invocation.   121.
+* one-line output format:       df invocation.          98.
+* ordinal numbers:              General date syntax.    20.
+* other permissions:            Setting Permissions.    27.
+* output block size:            dd invocation.          50.
+* output format, portable:      df invocation.          98.
+* owner, default:               Mode Structure.         22.
+* --owner:                      install invocation.     69.
+* owner of file, permissions for: Setting Permissions.  21.
+* ownership of installed files, setting: install invocation.  69.
+* -p:                           cp invocation.          120.
+* -p:                           dircolors invocation.   45.
+* p for FIFO file:              mknod invocation.       24.
+* -p:                           install invocation.     77.
+* -p:                           mkdir invocation.       36.
+* -p:                           rmdir invocation.       26.
+* parent directories and `cp':  cp invocation.          129.
+* parent directories, creating missing: install invocation.  42.
+* parent directories, creating: mkdir invocation.       36.
+* parent directories, removing: rmdir invocation.       26.
+* --parents:                    cp invocation.          129.
+* --parents:                    mkdir invocation.       36.
+* --parents:                    rmdir invocation.       26.
+* pcfs:                         df invocation.          157.
+* permissions, changing access: chmod invocation.       5.
+* permissions, copying existing: Copying Permissions.   5.
+* permissions, for changing file timestamps: touch invocation.  20.
+* permissions of files:         File permissions.       5.
+* permissions of installed files, setting: install invocation.  60.
+* permissions, output by `ls':  What information is listed.  92.
+* pm in date strings:           Time of day items.      18.
+* --portability:                df invocation.          98.
+* portable output format:       df invocation.          98.
+* --preserve:                   cp invocation.          120.
+* --preserve-timestamps:        install invocation.     77.
+* --print-database:             dircolors invocation.   45.
+* --print-type:                 df invocation.          130.
+* printing color database:      dircolors invocation.   45.
+* prompting, and `ln':          ln invocation.          77.
+* prompting, and `mv':          mv invocation.          30.
+* prompting, and `rm':          rm invocation.          11.
+* prompts, forcing:             mv invocation.          63.
+* prompts, omitting:            mv invocation.          56.
+* pure numbers in date strings: Pure numbers in date strings.  5.
+* -q:                           Formatting the file names.  27.
+* --quiet:                      chgrp invocation.       29.
+* --quiet:                      chmod invocation.       38.
+* --quiet:                      chown invocation.       62.
+* --quote-name:                 Formatting the file names.  36.
+* --quoting-style:              Formatting the file names.  14.
+* --quoting-style:              Formatting the file names.  36.
+* quoting style:                Formatting the file names.  41.
+* --quoting-style:              Formatting the file names.  41.
+* -r:                           Sorting the output.     34.
+* -r:                           rm invocation.          53.
+* -r:                           touch invocation.       82.
+* read errors, ignoring:        dd invocation.          121.
+* read permission:              Mode Structure.         8.
+* read permission, symbolic:    Setting Permissions.    48.
+* read system call, and holes:  cp invocation.          171.
+* --recursive:                  Which files are listed.  64.
+* --recursive:                  chgrp invocation.       67.
+* --recursive:                  chmod invocation.       58.
+* --recursive:                  chown invocation.       125.
+* --recursive:                  cp invocation.          161.
+* recursive directory listing:  Which files are listed.  64.
+* --recursive:                  rm invocation.          53.
+* recursively changing access permissions: chmod invocation.  58.
+* recursively changing file ownership: chown invocation.  125.
+* recursively changing group ownership: chgrp invocation.  67.
+* recursively copying directories: cp invocation.       145.
+* --reference:                  chgrp invocation.       50.
+* --reference:                  chmod invocation.       49.
+* --reference:                  chown invocation.       107.
+* --reference:                  touch invocation.       82.
+* relative items in date strings: Relative items in date strings.  5.
+* --remove-destination:         cp invocation.          166.
+* --remove:                     shred invocation.       113.
+* removing empty directories:   rmdir invocation.       5.
+* removing files after shredding: shred invocation.     113.
+* `-', removing files beginning with: rm invocation.    51.
+* removing files or directories: rm invocation.         5.
+* removing permissions:         Setting Permissions.    37.
+* restricted deletion flag:     Mode Structure.         42.
+* --reverse:                    Sorting the output.     34.
+* reverse sorting:              Sorting the output.     34.
+* rm:                           rm invocation.          5.
+* rmdir:                        rmdir invocation.       5.
+* root as default owner:        install invocation.     69.
+* -s BYTES:                     shred invocation.       104.
+* -s:                           What information is listed.  132.
+* -s:                           cp invocation.          204.
+* -s:                           du invocation.          108.
+* -s:                           install invocation.     89.
+* -s:                           ln invocation.          100.
+* seek:                         dd invocation.          67.
+* self-backups:                 cp invocation.          33.
+* --separate-dirs:              du invocation.          114.
+* setgid:                       Mode Structure.         36.
+* setting permissions:          Setting Permissions.    41.
+* setuid:                       Mode Structure.         33.
+* setup for color:              dircolors invocation.   5.
+* --sh:                         dircolors invocation.   29.
+* `sh' syntax for color setup:  dircolors invocation.   29.
+* --show-control-chars:         Formatting the file names.  71.
+* -:                            shred invocation.       147.
+* shred:                        shred invocation.       5.
+* --si:                         Block size.             84.
+* --si:                         What information is listed.  52.
+* --si:                         df invocation.          53.
+* --si:                         du invocation.          63.
+* --silent:                     chgrp invocation.       29.
+* --silent:                     chmod invocation.       38.
+* --silent:                     chown invocation.       62.
+* simple backup method:         Backup options.         55.
+* single-column output of files: General output formatting.  12.
+* --size=BYTES:                 shred invocation.       104.
+* --size:                       What information is listed.  132.
+* size of file to shred:        shred invocation.       104.
+* size of files, reporting:     What information is listed.  132.
+* size of files, sorting files by: Sorting the output.  42.
+* skip:                         dd invocation.          62.
+* --sort:                       Sorting the output.     42.
+* --sort:                       Sorting the output.     48.
+* --sort:                       Sorting the output.     65.
+* --sort:                       Sorting the output.     74.
+* --sort:                       Sorting the output.     83.
+* sorting `ls' output:          Sorting the output.     5.
+* --sparse=WHEN:                cp invocation.          171.
+* sparse files, copying:        cp invocation.          171.
+* special file types:           Special file types.     5.
+* special file types:           Special file types.     9.
+* special files:                mknod invocation.       11.
+* status time, printing or sorting by: Sorting the output.  18.
+* sticky:                       Mode Structure.         42.
+* --strip:                      install invocation.     89.
+* --strip-trailing-slashes:     cp invocation.          197.
+* --strip-trailing-slashes:     mv invocation.          82.
+* stripping symbol table information: install invocation.  89.
+* stripping trailing slashes:   cp invocation.          197.
+* stripping trailing slashes:   mv invocation.          82.
+* subtracting permissions:      Setting Permissions.    37.
+* --suffix:                     Backup options.         54.
+* --suffix:                     cp invocation.          214.
+* --suffix:                     install invocation.     96.
+* --suffix:                     ln invocation.          108.
+* --suffix:                     mv invocation.          89.
+* --summarize:                  du invocation.          108.
+* superblock, writing:          sync invocation.        6.
+* swab (byte-swapping):         dd invocation.          115.
+* swap space, saving text image in: Mode Structure.     42.
+* symbol table information, stripping: install invocation.  89.
+* --symbolic-link:              cp invocation.          204.
+* symbolic link, defined:       ln invocation.          38.
+* symbolic links, changing group: chgrp invocation.     41.
+* symbolic links, changing owner: chgrp invocation.     34.
+* symbolic links, changing owner: chown invocation.     67.
+* symbolic links, changing owner: chown invocation.     91.
+* symbolic links, changing owner: chown invocation.     97.
+* symbolic links, copying:      cp invocation.          74.
+* symbolic links, copying with: cp invocation.          204.
+* symbolic links, dereferencing: Which files are listed.  57.
+* symbolic links, dereferencing in `du': du invocation.  87.
+* symbolic links, permissions of: chmod invocation.     11.
+* --symbolic:                   ln invocation.          100.
+* symbolic modes:               Symbolic Modes.         5.
+* symbolic (soft) links, creating: ln invocation.       5.
+* --sync:                       df invocation.          113.
+* sync (padding with nulls):    dd invocation.          129.
+* sync:                         sync invocation.        5.
+* synchronize disk and memory:  sync invocation.        5.
+* -t:                           Sorting the output.     48.
+* -t:                           df invocation.          122.
+* --tabsize:                    General output formatting.  114.
+* target directory:             Target directory.       13.
+* --target-directory:           Target directory.       13.
+* target directory:             Target directory.       5.
+* target directory:             cp invocation.          219.
+* --target-directory:           cp invocation.          219.
+* target directory:             install invocation.     101.
+* --target-directory:           install invocation.     101.
+* target directory:             ln invocation.          113.
+* --target-directory:           ln invocation.          113.
+* target directory:             mv invocation.          94.
+* --target-directory:           mv invocation.          94.
+* terminal, using color iff:    General output formatting.  33.
+* text image, saving in swap space: Mode Structure.     42.
+* this in date strings:         Relative items in date strings.  29.
+* --time:                       Sorting the output.     18.
+* --time:                       Sorting the output.     56.
+* time of day item:             Time of day items.      5.
+* --time:                       touch invocation.       51.
+* time:                         touch invocation.       63.
+* --time:                       touch invocation.       76.
+* time zone correction:         Time of day items.      25.
+* time zone item:               General date syntax.    35.
+* time zone item:               Time zone items.        5.
+* timestamps, changing file:    touch invocation.       5.
+* timestamps of installed files, preserving: install invocation.  77.
+* today in date strings:        Relative items in date strings.  29.
+* tomorrow in date strings:     Relative items in date strings.  26.
+* --total:                      du invocation.          37.
+* touch:                        touch invocation.       5.
+* trailing slashes:             Trailing slashes.       5.
+* truncating output file, avoiding: dd invocation.      125.
+* --type:                       df invocation.          122.
+* -u:                           Sorting the output.     56.
+* -u:                           mv invocation.          71.
+* -u:                           shred invocation.       113.
+* ucase, converting to:         dd invocation.          111.
+* ufs filesystem type:          df invocation.          145.
+* umask and modes:              Umask and Protection.   5.
+* unblock:                      dd invocation.          102.
+* unlink:                       rm invocation.          25.
+* unsorted directory listing:   Sorting the output.     25.
+* --update:                     mv invocation.          71.
+* use time, changing:           touch invocation.       51.
+* use time, printing or sorting files by: Sorting the output.  18.
+* use time, printing or sorting files by: Sorting the output.  56.
+* utilities for file handling:  Top.                    5.
+* -v:                           Sorting the output.     74.
+* -v:                           chgrp invocation.       58.
+* -v:                           chmod invocation.       45.
+* -v:                           chown invocation.       116.
+* -v:                           cp invocation.          225.
+* -v:                           install invocation.     107.
+* -v:                           ln invocation.          119.
+* -v:                           mkdir invocation.       44.
+* -v:                           mv invocation.          78.
+* -v:                           rm invocation.          59.
+* -v:                           rmdir invocation.       37.
+* -v:                           shred invocation.       121.
+* vdir:                         vdir invocation.        5.
+* --verbose:                    chgrp invocation.       58.
+* --verbose:                    chmod invocation.       45.
+* --verbose:                    chown invocation.       116.
+* --verbose:                    cp invocation.          225.
+* --verbose:                    install invocation.     107.
+* --verbose:                    ln invocation.          119.
+* verbose ls format:            What information is listed.  76.
+* --verbose:                    mkdir invocation.       44.
+* --verbose:                    mv invocation.          78.
+* --verbose:                    rm invocation.          59.
+* --verbose:                    rmdir invocation.       37.
+* --verbose:                    shred invocation.       121.
+* --version:                    Common options.         17.
+* --version-control:            Backup options.         61.
+* version-control Emacs variable: Backup options.       27.
+* --version-control:            cp invocation.          231.
+* --version-control:            install invocation.     113.
+* --version-control:            ln invocation.          125.
+* --version-control:            mv invocation.          100.
+* version number, finding:      Common options.         17.
+* version, sorting option for `ls': Sorting the output.  74.
+* vertical sorted files in columns: General output formatting.  19.
+* -w:                           General output formatting.  122.
+* week in date strings:         Relative items in date strings.  14.
+* --width:                      General output formatting.  122.
+* write permission:             Mode Structure.         11.
+* write permission, symbolic:   Setting Permissions.    51.
+* -x:                           General output formatting.  108.
+* -x:                           cp invocation.          240.
+* -x:                           df invocation.          160.
+* -x:                           du invocation.          121.
+* -x:                           shred invocation.       127.
+* year in date strings:         Relative items in date strings.  14.
+* yesterday in date strings:    Relative items in date strings.  26.
+* -z:                           shred invocation.       139.
+* --zero:                       shred invocation.       139.
+
+

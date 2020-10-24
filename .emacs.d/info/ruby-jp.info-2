@@ -1,0 +1,1545 @@
+This is ruby-jp.info, produced by makeinfo version 3.12o (+ Japanese
+Patch 0.61) from Ruby.texi.
+
+INFO-DIR-SECTION Languages
+START-INFO-DIR-ENTRY
+* ruby-jp: (ruby-jp).           Ruby Language Reference Manual (Japanese)
+END-INFO-DIR-ENTRY
+
+     このinfoファイルは、Rubyリファレンスマニュアル(HTML版)
+
+     <http://www.netlab.co.jp/ruby/jp/man-1.3/>
+     for `Ruby' Version 1.4.0
+     written by まつもと ゆきひろ <matz@netlab.co.jp>
+     Last modified: Mon Aug 16 15:46:22 1999
+
+     を元に機械的にTexinfo形式へ変換して作成しました。したがって、本文
+     に対する著作権はまつもと ゆきひろ氏にあるものとします。
+
+
+File: ruby-jp.info,  Node: syntax_break,  Next: syntax_next,  Prev: syntax_return,  Up: Ruby Syntax
+
+`break'
+.......
+
+  例:
+
+             i=0
+             while i<3
+               print i, "\n"
+               break
+             end
+
+  文法:
+
+             break
+
+  `break' はもっとも内側のループを脱出します．ループとは
+
+   * while
+
+   * until
+
+   * for
+
+   * イテレータ
+
+  のいずれかを指します．Cと違い，`break'はループを脱出する作用だけを
+持ち，`case' を抜ける作用は持ちません．
+
+
+File: ruby-jp.info,  Node: syntax_next,  Next: syntax_redo,  Prev: syntax_break,  Up: Ruby Syntax
+
+`next'
+......
+
+  例:
+
+             next
+
+  文法:
+
+             next
+
+  `next'はもっとも内側のループの次の繰り返しにジャンプします．
+
+
+File: ruby-jp.info,  Node: syntax_redo,  Next: syntax_BEGIN_proc,  Prev: syntax_next,  Up: Ruby Syntax
+
+`redo'
+......
+
+  例:
+
+             redo
+
+  文法:
+
+             redo
+
+  ループ条件のチェックを行なわず，現在の繰り返しをやり直します．
+
+
+File: ruby-jp.info,  Node: syntax_BEGIN_proc,  Next: syntax_END_proc,  Prev: syntax_redo,  Up: Ruby Syntax
+
+BEGIN
+.....
+
+  例:
+
+             BEGIN {
+               ...
+             }
+
+  文法:
+
+             BEGIN '{' 文.. '}'
+
+  初期化ルーチンを登録します．`BEGIN'直後の`{ }'内部(`BEGIN'ブロック
+)で指定した文は当該ファイルのどの文が実行されるより前に実行されます．
+複数の`BEGIN'が指定された場合には指定された順に実行されます．
+
+  `BEGIN'ブロックは独立したローカル変数のスコープを導入するため，ロー
+カル変数を外部と共有する事はありません．情報の伝達にはグローバル変数
+を使う必要があります．
+
+  `BEGIN'はトップレベルにしか置く事はできません．
+
+
+File: ruby-jp.info,  Node: syntax_END_proc,  Next: syntax_cdef,  Prev: syntax_BEGIN_proc,  Up: Ruby Syntax
+
+END
+...
+
+  例:
+
+             END {
+               ...
+             }
+
+  文法:
+
+             END '{' 文.. '}'
+
+  「後始末」ルーチンを登録します．`END'ブロックで指定した文はインタプ
+リタが終了する時に実行されます．`END'ブロックは，`BEGIN'ブロックとは
+異なり，イテレータと同様のスコープを持ち，周囲とスコープを共有します．
+`END'ブロックは一番最初に評価された時に1 回だけ登録を行います．複数登
+録する必要がある場合にはat_exit (*note 組込み関数: Ruby Functions.)を
+使ってください．
+
+  `END'もトップレベルにしか置く事はできません．それと，`END'で登録さ
+れた実行文を取り除く事はできません．
+
+
+File: ruby-jp.info,  Node: syntax_cdef,  Next: syntax_scdef,  Prev: syntax_END_proc,  Up: Ruby Syntax
+
+クラス定義
+----------
+
+  例:
+
+             class Foo < Super
+               def test
+                  :
+               end
+                  :
+             end
+
+  文法:
+
+             class 識別子 [`<' superclass ]
+               式..
+             end
+
+
+File: ruby-jp.info,  Node: syntax_scdef,  Next: syntax_mdef,  Prev: syntax_cdef,  Up: Ruby Syntax
+
+特異クラス定義
+--------------
+
+  例:
+
+             class << obj
+               def test
+                  :
+               end
+                  :
+             end
+
+  文法:
+
+             class `<<' expr
+               式..
+             end
+
+  クラス定義と同じ構文で特定のオブジェクトの機能を定義します．この構
+文の内部で定義したメソッドや定数は指定したオブジェクトに対してだけ有
+効になります．
+
+
+File: ruby-jp.info,  Node: syntax_mdef,  Next: syntax_method-def,  Prev: syntax_scdef,  Up: Ruby Syntax
+
+モジュール定義
+--------------
+
+  例:
+
+             module Foo
+               def test
+                  :
+               end
+                  :
+             end
+
+  文法:
+
+             module 識別子
+               式..
+             end
+
+  モジュールを定義します．モジュール名はアルファベットの大文字で始ま
+る識別子です．
+
+
+File: ruby-jp.info,  Node: syntax_method-def,  Next: syntax_singleton-def,  Prev: syntax_mdef,  Up: Ruby Syntax
+
+メソッド定義
+------------
+
+  例:
+
+             def fact(n)
+               if n == 1 then
+                  1
+               else
+                 n * fact(n-1)
+               end
+             end
+
+  文法:
+
+             def メソッド名 [`(' [arg ['=' default]]...[`,' `*' arg ]`)']
+               式..
+             end
+
+  メソッドを定義します．メソッド名としては通常の識別子の他に，再定義
+可能な演算子(例: ==, +, -など)も指定できます．メソッドは定義する前に
+呼び出すことはできません．例えば
+
+             foo
+             def foo
+               print "foo\n"
+             end
+
+  は未定義メソッドの呼び出しで例外が発生します．
+
+  仮引数にデフォルト式が与えられた場合，メソッド呼び出し時に実引数が
+与えられなかった場合にはデフォルト式を評価した結果で初期化されます(デ
+フォルト式の評価は呼び出し時に行われます)．最後の仮引数の直前に`*'が
+ある場合には残りの実引数はみな配列としてこの引数に格納されます．
+
+  また最後の仮引数の直前に`&'があるとこのメソッドに与えられているブロッ
+クが手続きオブジェクトとしてこの引数に格納されます．`*'と`&'が同時に
+指定される場合には`&'が後ろに来ます．
+
+  メソッド定義はネストできません．
+
+  メソッドの戻り値は`return' (*note Rubyの文法: Ruby Syntax.)で与えた
+値か，または本体の最後で評価した式の値です．
+
+  メソッドには呼び出し制限を加えることができ，制限を加えられたメソッ
+ドは，関数形式でしか呼び出せません(privateメソッド)．
+
+  メソッドを定義する場合，クラス定義の外にあるdef式はデフォルトでは
+privateメソッドを定義し，クラス定義の中にあるdef式はpublicメソッドを
+定義します．これはデフォルトであって，`Module' (*note Module::)クラス
+で定義されている`public' (*note Module::), `private' (*note
+Module::)を用いて変更できます．
+
+  また，`initialize'という名前のメソッドは常にprivateとして定義されま
+す．
+
+
+File: ruby-jp.info,  Node: syntax_singleton-def,  Next: syntax_alias,  Prev: syntax_method-def,  Up: Ruby Syntax
+
+特異メソッド定義
+----------------
+
+  例:
+
+             def foo.test
+               print "this is foo\n"
+             end
+
+  文法:
+
+             def 式 `.' 識別子 [`(' [引数 [`=' default]]...[`,' `*' 引数 ]`)']
+               式..
+             end
+
+  特異メソッドとはある特定のオブジェクトに固有のメソッドです．特異メ
+ソッドの定義はネストできます．
+
+  クラスの特異メソッドはそのサブクラスにも継承されます．言い替えれば
+クラスの特異メソッドは他のオブジェクト指向システムにおけるクラスメソッ
+ドの働きをすることになります．
+
+
+File: ruby-jp.info,  Node: syntax_alias,  Next: syntax_undef,  Prev: syntax_singleton-def,  Up: Ruby Syntax
+
+`alias'
+-------
+
+  例:
+
+             alias foo bar
+             alias $MATCH $&
+
+  文法:
+
+             alias 新メソッド名 旧メソッド名
+             alias 新変数名 旧変数名
+
+  メソッドあるいは大域変数に別名をつけます．メソッドの定義内で別名を
+付けるにはModule (*note Module::)クラスのメソッドalias_method (*note
+Module::) を利用して下さい．
+
+  別名を付けられたメソッドは，その時点でのメソッド定義を引き継ぎ，元
+のメソッドが再定義されても，再定義前の古いメソッドと同じ働きをします．
+
+  正規表現の部分文字列に対応する変数`$1',`$2',...には別名を付けること
+ができません．また，インタプリタに対して重要な意味のある大域変数を再
+定義すると動作に支障を来す場合があります．
+
+
+File: ruby-jp.info,  Node: syntax_undef,  Next: syntax_defined_p,  Prev: syntax_alias,  Up: Ruby Syntax
+
+`undef'
+-------
+
+  例:
+
+             undef bar
+
+  文法:
+
+             undef メソッド名
+
+  メソッドの定義を取り消します．メソッドの定義内で定義を取り消すには
+Module (*note Module::)クラスのメソッドundef_method (*note Module::)
+を利用して下さい．`alias'による別名定義と`undef'による定義取り消しに
+よってクラスのインタフェースをスーパークラスと独立に変更することがで
+きます．ただし，メソッドがselfにメッセージを送っている場合もあるので，
+よく注意しないと既存のメソッドが動作しなくなる可能性があります．
+
+
+File: ruby-jp.info,  Node: syntax_defined_p,  Prev: syntax_undef,  Up: Ruby Syntax
+
+`defined?'
+----------
+
+  例:
+
+             defined? print
+             defined? File.print
+             defined?(foobar)
+             defined?($foobar)
+             defined?(@foobar)
+             defined?(Foobar)
+
+  文法:
+
+             defined? 式
+
+  式が定義されていなければ，偽を返します．定義されていれば式の種別を
+表す文字列を返します．
+
+
+File: ruby-jp.info,  Node: Ruby Functions,  Next: Pre-defined variables and constants,  Prev: Ruby Syntax,  Up: Top
+
+組込み関数
+**********
+
+  Rubyには厳密な意味では関数はありませんが，`Kernel' (*note Kernel::)
+モジュールで定義されているメソッドの一部は(全ての通常クラスから関数形
+式で呼び出せるので)一般の言語における関数のように用いられます．これら
+のメソッドを再定義する際には互換性を考えて行なう必要があります．
+
+ - Function: ` STR
+     STRをコマンドとして実行し，その出力を文字列として返します．この
+     メソッドは``str`'の形式で呼ばれます．
+
+
+ - Function: Array (ARG)
+     引数を配列に変換します．
+
+
+ - Function: Float (ARG)
+     引数を浮動小数点数に変換します．
+
+
+ - Function: Integer (ARG)
+     引数を整数に変換します．引数が文字列であった場合には，0x, 0b,
+     0などのprefixに応じてそれぞれ16進，2進，8進数として変換します．
+
+
+ - Function: String (ARG)
+     `Kernel#to_s' (*note Kernel::)を用いて，引数を文字列に変換します．
+
+
+ - Function: at_exit
+     与えられたブロックをインタプリタ終了時に実行します．
+
+
+ - Function: autoload (MODULE, FILE)
+     MODULEに最初にアクセスした時にFILEを`require' (*note 組込み関数
+     : Ruby Functions.)するように設定します．MODULEは文字列またはシン
+     ボルで指定します．
+
+
+ - Function: binding
+     `eval'の第2引数として指定できる変数とメソッドの結合情報を含むデー
+     タ構造を返します．
+
+
+ - Function: caller ([LEVEL])
+     LEVEL段上の呼出し元の情報を`$@'の形式のバックトレース(文字列の配
+     列)として返します．トップレベルでは空の配列を返します．callerの
+     戻り値を`$@'に代入することで例外の発生位置を設定できます．以下の
+     ようなコードで呼出し関係のスタックトレースを表示できます．
+
+          for c in caller(0)
+            print c, "\n"
+          end
+
+
+ - Function: catch (TAG){...}
+     ブロックを実行してその値を返します．ブロックの実行中にTAG で指定
+     されたのと同じ名前の`throw' (*note 組込み関数: Ruby Functions.)
+     が行われた場合は，その`throw'の値を戻り値とします．
+
+     例えば以下のコードは10ではなく，25を返して，SOME_PROCESSは呼び出
+     されません．
+
+          def throw_exit
+            throw :exit, 25
+          end
+          
+          catch(:exit) {
+             throw_exit
+             some_process;
+             10;
+          }
+
+
+ - Function: chop
+ - Function: chop!
+     システム変数`$_'を最後の文字を取り除いたものにします(終端が
+     "\r\n"であれば2文字取り除きます)．`chop!'は文字列そのものを変更
+     します．
+
+
+ - Function: chomp ([RS])
+ - Function: chomp! ([RS])
+     システム変数`$_'をRSで指定される末尾の文字列を取り除いたものにし
+     ます．String#chomp (*note String::)参照．
+
+
+ - Function: eval (EXPR[,BINDING])
+     EXPRとして与えられた文字列をrubyプログラムとして解釈，実行します．
+     省略可能な第2引数として`Proc'オブジェクトまたは`binding'の戻り値
+     である束縛情報を与えた場合，文字列をその環境で解釈，実行します．
+
+
+ - Function: exec (COMMAND)
+     COMMANDで指定されたコマンドを子プロセスとして起動します．起動に
+     成功した場合，この関数からは戻りません．
+
+     複数の引数を指定した場合は，shellを経由せずに実行されます．この
+     場合には空白やshellのメタキャラクタもそのまま渡されます．
+
+     先頭の引数が2要素の配列であった場合，第1要素の文字列が実際に起動
+     するプログラムのパスであり，第2要素が「みせかけ」のプログラム名
+     になります．
+
+
+ - Function: exit ([STATUS])
+     rubyプログラムの実行を終了します．STATUSとして整数が与えられた場
+     合，その値をrubyコマンドの終了ステータスとします．デフォルトはの
+     終了ステータスは0です．
+
+     `exit'は大域脱出 `SystemExit' を発行することによってプログラムの
+     実行を終了させますので，必要に応じて`rescue'節で捕捉することがで
+     きます．
+
+
+ - Function: exit! ([STATUS])
+     整数STATUSを終了ステータスとして，rubyプログラムの実行を終了しま
+     す．`exit!'は`exit'とは違って，例外処理などは一切行ないません．
+     `fork' (*note 組込み関数: Ruby Functions.)の後，子プロセスを終了
+     させる時などに用いられます．
+
+
+ - Function: fork
+     `fork(2)'システムコールを使ってプロセスの複製を作ります．親プロ
+     セスでは子プロセスのプロセスIDを，子プロセスでは`nil'を返します．
+     ブロックを指定してとして呼び出された場合には，生成した子プロセス
+     で，ブロックを評価します．
+
+
+ - Function: gets ([RS])
+ - Function: readline ([RS])
+     引数として与えられたファイル(なければ標準入力)をつなげた仮想的な
+     ファイル(システム変数`$<'でアクセスできる) から一行読み込んで，文
+     字列を返します．ファイルの終りに到達した時には`nil'を返します．
+     行の区切りは引数RSで指定した文字列になります．RSのデフォルト値
+     はシステム変数`$/'の値です．読み込んだ文字列はシステム変数`$_'に
+     もセットされます．
+
+     `readline'は`gets'と同じ働きをしますが，EOFで例外`EOFError'を発
+     生させます．
+
+
+ - Function: global_variables
+     プログラム中で定義されている大域変数名の配列を返します．
+
+
+ - Function: gsub (PATTERN[, REPLACE])
+ - Function: gsub! (PATTERN[, REPLACE])
+     システム変数`$_'の指す文字列内でPATTERNにマッチする部分を全て
+     REPLACEに置き換えた文字列を返します．引数REPLACEが省略された時
+     にはイテレータとして動作し，ブロックを評価した結果で置換を行いま
+     す．`gsub!'は`$_'の指している文字列そのものを書き換えます．
+     `gsub'メソッドは`$_'の値をコピーして，コピーの方を更新し，
+     `$_'に代入します．
+
+
+ - Function: iterator?
+     メソッドにブロックが与えられている時には真，そうでない時に偽を返
+     します．
+
+
+ - Function: load (FILE[, PRIV])
+     FILEから ruby プログラムをロード・実行します．FILEをロードするパ
+     スはシステム変数`$:' で決定されます．パス先頭の``~''はユーザのホー
+     ムディレクトリに展開されます．
+
+     省略可能な引数PRIVが真のとき、ロード・実行は内部的に生成される無
+     名モジュールをトップレベルとして行われ，グローバルな名前空間を汚
+     染しません．
+
+
+ - Function: local_variables
+     現在のスコープで定義されているローカル変数名の配列を返します．
+
+
+ - Function: loop
+     (中断されない限り)永遠にブロックの評価を繰り返します．
+
+
+ - Function: open (FILE[, MODE])
+ - Function: open (FILE[, MODE]){...}
+     FILEをオープンして，`File' (*note File::)オブジェクトを返します．
+     MODEは，`"r"', `"r+"', `"w"', `"w+"', `"a"', `"a+"'のいずれかでファ
+     イルのアクセスモードを指定します．`fopen(3)'を参照してください．
+
+     ファイル名が`|'で始まる時には続く文字列をコマンドとして起動し，
+     コマンドの標準入出力に対してパイプラインを生成します．
+
+     *注意*: perlと異なりコマンドは常に``|''で始まります．
+
+     コマンド名が`"-"'である時，`open'はrubyの子プロセスを生成し，そ
+     の子プロセスとの間のパイプを返します．
+
+     `open'がブロックとともに呼び出された時，`open' はファイルをオープ
+     ンしてブロックを実行し，ブロックの実行が終了するとファイルをクロー
+     ズします．つまり，以下のようになります．
+
+          open(path, mode) do |f|
+            ...
+          end
+          
+          # 上記とほぼ同じコード
+          f = open(path, mode)
+          begin
+            ...
+          ensure
+            f.close
+          end
+
+
+ - Function: p (OBJ)
+     OBJを人間に読みやすい形で出力します．以下のコードと同じです．
+
+          print obj.inspect, "\n"
+
+
+ - Function: print (ARG1...)
+     引数を順に出力します．引数が与えられない時には変数`$_'の値を出力
+     します．文字列以外のオブジェクトが引数として与えられた場合には，
+     当該オブジェクトを文字列に変換してから出力します．
+
+     変数`$;'(出力フィールドセパレータ)に`nil'でない値がセットされて
+     いる時には，各引数の間にその文字列を出力します．変数`$\'(出力レ
+     コードセパレータ)に`nil'でない値がセットされている時には，最後
+     にそれを出力します．
+
+
+ - Function: printf ([PORT, ]FORMAT, ARG...)
+     C言語のprintfと同じようにFORMATに従い引数を文字列に変換して出力
+     します．第1引数がIO (*note IO::)のサブクラスのインスタンスであっ
+     た場合はそのオブジェクトに対して出力を行ないます．デフォルトは
+     `$stdout'に出力します．Rubyにおけるformat指定子の拡張については
+     `sprintf' (*note 組込み関数: Ruby Functions.)の項を参照してくださ
+     い．
+
+
+ - Function: proc
+ - Function: lambda
+     与えられたブロックから手続きオブジェクト(クラス`Proc' (*note
+     Proc::) のインスタンス)を生成して返します．
+
+
+ - Function: putc (CH)
+     文字CHをデフォルト出力($>)に出力します．
+
+
+ - Function: puts (OBJ...)
+     各OBJをデフォルト出力($>)に出力した後，改行します．
+
+
+ - Function: raise ([ERROR_TYPE,][MESSAGE][,TRACEBACK])
+ - Function: fail ([ERROR_TYPE,][MESSAGE][,TRACEBACK])
+     例外を発生させます．引数が無い場合，直前の例外を再発生させます．
+     引数が一つの場合，引数が文字列であれば，その文字列をメッセージと
+     する `RuntimeError' 例外を発生させ，引数が例外オブジェクトであっ
+     た場合にはその例外を発生させます．引数が二つの場合，第一引数で指
+     定された例外を，第二引数をメッセージとして発生させます．この場合，
+     例外は例外クラスまたは例外オブジェクトで指定します．
+
+     第三引数が指定された場合にはそれは`$@'または`caller' (*note 組込
+     み関数: Ruby Functions.)で得られるスタック情報です．
+
+     発生した例外は変数 $! に格納されます．また例外が発生したソースコー
+     ド上の位置は変数 $@ に格納されます．
+
+     `raise' には `fail' という別名が定義されています．
+
+
+ - Function: rand (MAX)
+     0からMAXを越えない範囲の整数の乱数を発生します(`max'は正の整数)．
+     `srand' (*note 組込み関数: Ruby Functions.)が呼ばれない限り，こ
+     の関数はプログラムを実行するたびに毎回同じ乱数の並びを返します．
+
+     MAXとして0を指定すると0から1を越えない範囲の実数値で乱数を与えま
+     す．
+
+
+ - Function: readlines ([RS])
+     コマンドライン引数として与えられたファイル(なければ標準入力) をつ
+     なげた仮想的なファイルを全て読み込んで，その各行を要素としてもつ
+     配列を返します．
+
+     行の区切りは引数RSで指定した文字列になります．RSのデフォルト値は
+     システム変数`$/' (*note 組込み変数と組込み定数: Pre-defined
+     variables and constants.)の値です．
+
+
+ - Function: require (FEATURE)
+     FEATUREで指定される ruby ライブラリを必要に応じてロードします．
+     FEATUREはロードするライブラリを指定する文字列で，拡張子`.rb'が指
+     定されている時はruby スクリプト，拡張子`.o'が指定されている時は，
+     バイナリモジュールをロードします．ただし，いくつかのアーキテクチャ
+     ではバイナリモジュールのロードは提供されません．バイナリモジュー
+     ルの拡張子はアーキテクチャ毎に `".so"'などと異なっていますが，
+     FEATURE名の拡張子はいつも`.so'を用います．
+
+     requireは実際にロードした時には `true'，既にロードされている時に
+     は`false'を返します．またロードしたFEATUREの名前を(拡張子も含め
+     て)，変数`$"'に追加します．
+
+
+ - Function: select (READS[, WRITES[, EXCEPTS[, TIMEOUT]]])
+     `select(2)'を実行します．READS/WRITES/EXECPTSには入力待ちする
+     IO (*note IO::) (またはそのサブクラス)のインスタンスの配列をわた
+     します．
+
+     TIMEOUTは整数，`Float' (*note Float::), `Time' (*note Time::),
+     または`nil' を指定します．`nil' を指定した時にはIOがレディ状態
+     になるまで待ち続けます．
+
+     戻り値はTIMEOUTした時には`nil'を，そうでないときは3要素の配列を
+     返し，その各要素が入力/出力/例外待ちのオブジェクトの配列です(指
+     定した配列のサブセット)．
+
+
+ - Function: sleep ([SEC])
+     SEC秒だけプログラムの実行を停止します．SECに浮動小数点数を指定し
+     て1秒以下の指定もできます．SECが省略された場合，明示的に起こさな
+     い限り(`SIGALRM'または他threadからの`run')，永久にスリープしま
+     す．戻り値は実際にスリープした秒数です．
+
+
+ - Function: split ([SEP[, LIMIT]])
+     変数$_に格納された文字列をSEPで指定されたパターンによってLIMIT個
+     の要素に分割して配列に格納します．詳細は`String#split' (*note
+     String::) を参照してください．
+
+
+ - Function: sprintf (FORMAT...)
+ - Function: format (FORMAT...)
+     FORMAT文字列をC言語の`sprintf'と同じように解釈し，引数をフォーマッ
+     トした文字列を返します．FORMAT指定子はC言語の`sprintf'が受け付
+     けるものに加えて, %bを使うことができます．%bは数値の2進表示を行
+     ないます．Rubyには整数の大きさに上限がないので，`%b, %o, %x'に負
+     の数を与えると(左側に無限に1が続くとみなせるので)`..f'のような表
+     示をします．絶対値に符号を付けた形式で出力するためには`%-x'，
+     `%+x'，`% x'のように指定します．
+
+
+ - Function: srand ([SEED])
+     `rand' (*note 組込み関数: Ruby Functions.)の乱数のSEEDを設定し，
+     古い初期値を返します．初期値が省略された時には現在の時間を種にし
+     ます．
+
+
+ - Function: sub (PATTERN[, REPLACE])
+ - Function: sub! (PATTERN[, REPLACE])
+     システム変数`$_'の指す文字列内でPATTERNにマッチする最初の部分を
+     REPLACEに置き換えた文字列を返します．引数REPLACEが省略された時
+     にはイテレータとして動作し，ブロックを評価した結果で置換を行いま
+     す．`sub!'は`$_'の指している文字列そのものを書き換えます．
+     `sub'は`$_'の値をコピーして，コピーの方を更新し，`$_'に代入しま
+     す．
+
+
+ - Function: syscall (NUM, ARG...)
+     NUMで指定された番号のシステムコールを実行します．第2引数以降をシ
+     ステムコールの引数として渡します．引数は文字列または整数でなけれ
+     ばなりません．
+
+
+ - Function: system (COMMAND...)
+     COMMANDを実行して，成功した時(サブプロセスがstatus 0で終了した時
+     )には真を，失敗した時には偽を返します．終了ステータスは変数`$?'
+     で参照できます．
+
+     複数の引数を指定した場合は，shellを経由せずに実行されます．この
+     場合には空白やshellのメタキャラクタもそのまま渡されます．
+
+     その他の挙動に関しては`exec' (*note 組込み関数: Ruby Functions.)
+     を参照してください．
+
+
+ - Function: test (CMD, FILE [, FILE])
+     ファイルテストを行います．CMDは以下に示す文字リテラルです．
+
+        * 1つの引数を取るもの
+
+         `?r'
+               ファイルを実効 uid で読むことができる
+
+         `?w'
+               ファイルに実効 uid で書くことができる
+
+         `?x'
+               ファイルを実効 uid で実行することができる
+
+         `?o'
+               ファイルの所有者が実効 uid である
+
+         `?R'
+               ファイルを実 uid で読むことができる
+
+         `?W'
+               ファイルに実 uid で書くことができる
+
+         `?X'
+               ファイルを実 uid で実行することができる
+
+         `?O'
+               ファイルの所有者が実 uid である
+
+         `?e'
+               ファイルが存在する
+
+         `?z'
+               ファイルサイズが 0 である
+
+         `?s'
+               ファイルサイズが 0 でない(ファイルサイズを返す)
+
+         `?f'
+               ファイルはプレーンファイルである
+
+         `?d'
+               ファイルはディレクトリである
+
+         `?l'
+               ファイルはシンボリックリンクである
+
+         `?p'
+               ファイルは名前つきパイプ(FIFO)である
+
+         `?S'
+               ファイルはソケットである
+
+         `?b'
+               ファイルはブロック特殊ファイルである
+
+         `?c'
+               ファイルはキャラクター特殊ファイルである
+
+         `?u'
+               ファイルに setuid ビットがセットされている
+
+         `?g'
+               ファイルに setgid ビットがセットされている
+
+         `?k'
+               ファイルに sticky ビットがセットされている
+
+
+         `?M'
+               ファイルの最終更新時間
+
+         `?A'
+               ファイルの最終アクセス時間
+
+         `?C'
+               ファイルの inode 変更時間
+
+        * 2つの引数を取るもの
+
+         `?='
+               ファイル1とファイル2のタイムスタンプが等しい
+
+         `?>'
+               ファイル1の方がファイル2より更新時間が新しい
+
+         `?<'
+               ファイル1の方がファイル2より更新時間が古い
+
+         `?-'
+               ファイル1がファイル2にハードリンクされている
+
+
+ - Function: throw (TAG[, VALUE])
+     同じTAGを指定した`catch' (*note 組込み関数: Ruby Functions.)  ま
+     で一気に脱出します．もし，そのような`catch'がない時にはプログラ
+     ムの実行を終了させます．TAGは文字列またはシンボルで指定します．
+     `catch'は同じメソッド内に存在する必要はありません．VALUE は
+     `catch'の戻り値になります．省略された時のVALUEは`nil'になります．
+
+
+ - Function: trace_var (VARIABLE, COMMAND)
+ - Function: trace_var (VARIABLE) {...}
+     VARで指定された大域変数の値が変更された時に評価される文字列，ま
+     たは手続きオブジェクトをCOMMANDで指定します．traceを解除するため
+     にはCOMMANDに`nil'を指定するか，`untrace_var' (*note 組込み関数
+     : Ruby Functions.)を用います．
+
+
+ - Function: trap (SIGNAL, COMMAND)
+ - Function: trap (SIGNAL) {...}
+     SIGNALで指定された割り込みにたいするハンドラとしてCOMMANDを指定
+     します．SIGNALはシグナル名かシグナルの番号，COMMANDは文字列，ま
+     たはブロックで指定します．commandとして`"SIG_IGN"'または
+     `"IGNORE"'を指定した時にはそのシグナルを無視します(可能ならば)．
+     `"SIG_DFL"'または`"DEFAULT"'を指定した時はデフォルトの動作を行な
+     います．`"EXIT"'を指定した時はシグナルを受け取ると(終了処理を行っ
+     た後)，exit status 0で終了します．
+
+     シグナル `0' または `"EXIT"' はプログラムの終了を表しています．
+     `"EXIT"' のハンドラはインタプリタの実行終了直前に呼び出されます．
+
+
+ - Function: untrace_var (VARIABLE[, COMMAND])
+     VARIABLEに対するCOMMANDで指定したtrace を解除します．COMMANDを省
+     略した場合やCOMMANDとして`nil'を指定した場合にはVARに対する全て
+     のtraceを解除します．削除されたtraceとして指定されていたオブジェ
+     クトを配列にいれて返します．
+
+
+File: ruby-jp.info,  Node: Pre-defined variables and constants,  Next: Pre-defined classes and modules,  Prev: Ruby Functions,  Up: Top
+
+組込み変数と組込み定数
+**********************
+
+* Menu:
+
+* variables::
+* constants::
+*   ENV::
+
+
+File: ruby-jp.info,  Node: variables,  Next: constants,  Up: Pre-defined variables and constants
+
+組込み変数
+==========
+
+ - Variable: $!
+     最も最近の例外に関する情報．`raise' (*note 組込み関数: Ruby
+     Functions.) によって設定されます．
+
+
+ - Variable: $@
+     例外が発生した時バックトレースが配列としてが格納されます．配列の
+     各要素はメソッドの呼び出し位置を示す文字列で形式は
+
+          "filename:line"
+
+     または
+
+          "filename:line:in `methodname'"
+
+     です．(覚え方: where exception occurred *at*.)
+
+
+ - Variable: $&
+     現在のスコープで最も最近の正規表現のパターンマッチでマッチした文
+     字列．(覚え方: いくつかのエディタでの`&' と同じ)
+
+
+ - Variable: $`
+     現在のスコープで最も最近の正規表現のパターンマッチでマッチした部
+     分より前の文字列．(覚え方: ``'は文字列の前に置かれる)
+
+
+ - Variable: $'
+     現在のスコープで最も最近の正規表現のパターンマッチでマッチした部
+     分より後ろの文字列．(覚え方: `''は文字列の後ろに置かれる)
+
+
+ - Variable: $+
+     現在のスコープで最も最近の正規表現のパターンマッチでマッチした中
+     で最後の括弧に対応する部分文字列．いくつかある選択型のパターンの
+     どれがマッチしたのか分からない時に便利(覚え方: be positive and
+     forward looking.)
+
+
+ - Variable: $1, $2...
+     最後に成功したパターンマッチでn番目の括弧にマッチした値が格納さ
+     れます．該当する括弧がなければ`nil'が入っています．(覚え方: \数
+     字 のようなもの)
+
+
+ - Variable: $~
+     現在のスコープで最後に成功したマッチに関する情報．これを設定する
+     と`$&'や`$1...$9'などの値が変化します．このデータからn番目のマッ
+     チ($n)を取り出すためには`$~[n]'で参照できます．(覚え方: ~ はマッ
+     チに使われる)
+
+     この変数はローカルスコープです．
+
+
+ - Variable: $=
+     パターンマッチや文字列の比較でアルファベットの大文字小文字を区別
+     するかどうかのフラグ．デフォルトは偽．(覚え方: = は比較に使われ
+     る)
+
+
+ - Variable: $/
+     入力レコードセパレータ．デフォルトは`"\n"'．`awk'のRS変数のよう
+     に働きます．この変数にnilを設定するとファイル全体を一度に読み込
+     みます．`$/'には正規表現は使えません．(覚え方: 詩では / を行の区
+     切りに使います)
+
+
+ - Variable: $\
+     出力レコードセパレータ．この変数に文字列を指定すると`IO#write'
+     (*note IO::)や`print' (*note 組込み関数: Ruby Functions.)の度に
+     最後にこの文字列を付加して出力します．デフォルトは`nil'でこの場
+     合なにも追加しません．(覚え方: It's just like /, but it's what
+     you get "back" from Ruby.)
+
+
+ - Variable: $,
+     `Array#join' (*note Array::)のデフォルトの区切り文字列．
+
+     `print' (*note 組込み関数: Ruby Functions.)の各引数の間に出力さ
+     れる文字列．(覚え方: print で , があるところで出力される)
+
+
+ - Variable: $;
+     `String#split' (*note String::).  のデフォルトの区切り文字．
+
+
+ - Variable: $.
+     最後に読んだ入力ファイルの行番号．
+
+
+ - Variable: $<
+     引数(なければ標準入力)で構成される仮想ファイル．つまり定数ARGF
+     (*note 組込み変数と組込み定数: Pre-defined variables and
+     constants.)の別名．(覚え方: `<'はシェルの入力元指定)
+
+
+ - Variable: $>
+     `print' (*note 組込み関数: Ruby Functions.)や`printf' (*note 組
+     込み関数: Ruby Functions.)のデフォルトの出力先．初期値は`STDOUT'．
+     `-i'オプションを指定した場合には読み込み元と同じ名前のファイル．
+     (覚え方: `>'はシェルの出力先指定)
+
+
+ - Variable: $_
+     最後に`gets'または`readline'で読み込んだ文字列．EOF に達した場合
+     には、nil．この変数はローカルスコープです．(覚え方: Perlと同じ)
+
+
+ - Variable: $0
+     現在実行中のrubyスクリプトの名前．OSによってはこの変数に代入する
+     と`ps(1)'の出力が変化します．この機能はプログラムの現在の状態を
+     表示するのに便利です．(覚え方: sh や kshと同じ)
+
+
+ - Variable: $*
+     rubyスクリプトに与えられた引数．ruby自身に対する引数は取り除かれ
+     ています．(覚え方: sh や kshと同じ)
+
+
+ - Variable: $$
+     現在実行中のrubyプロセスのpid．(覚え方: シェルと同じ)
+
+
+ - Variable: $?
+     (このthreadで)最後に実行した子プロセスのstatus．
+
+
+ - Variable: $:
+     `load' (*note 組込み関数: Ruby Functions.)や`require' (*note 組
+     込み関数: Ruby Functions.)  がファイルをロードする時に検索するディ
+     レクトリのリストを含む配列．
+
+     起動時には，`-I (*note コマンドラインオプション: Options.)'オプ
+     ションで指定したディレクトリ，環境変数RUBYLIBの値，デフォルト値
+     (コンパイル時に指定する，多くの場合 "/usr/local/lib/ruby")，
+     "."(カレントディレクトリ)を値として持ちます．(覚え方: コロンは環
+     境変数PATHの区切り文字である)
+
+
+ - Variable: $"
+     `require' (*note 組込み関数: Ruby Functions.)でロードされたファ
+     イル名を含む配列．`require' (*note 組込み関数: Ruby
+     Functions.)で同じファイルを2回ロードしないために用いられています．
+     (覚え方: prevent files to be doubly quoted(loaded))
+
+
+ - Variable: $DEBUG
+     `-d (*note コマンドラインオプション: Options.)'フラグの状態(真偽
+     値)．
+
+
+ - Variable: $FILENAME
+     仮想ファイル`ARGF' (*note 組込み変数と組込み定数: Pre-defined
+     variables and constants.)で現在読み込み中の(メソッドgetsが今読ん
+     でいる)ファイル名．`ARGF.filename' と同じ．
+
+
+ - Variable: $LOAD_PATH
+     `$:' (*note 組込み変数と組込み定数: Pre-defined variables and
+     constants.)の別名
+
+
+ - Variable: $stdin
+     標準入力
+
+
+ - Variable: $stdout
+     標準出力
+
+
+ - Variable: $stderr
+     標準エラー出力
+
+
+ - Variable: $VERBOSE
+     冗長メッセージフラグ．rubyインタプリタへの`-v (*note コマンドラ
+     インオプション: Options.)'オプションでセットされます．
+
+
+ - Variable: $KCODE
+     rubyの処理する文字コード． 文字列で指定し，`E'または`e'の場合は
+     文字列やアクセスするファイルの内容のコードがEUCであると仮定しま
+     す．同様に`S'または`s'の場合はSJISとして処理します．`U'または
+     `u'の場合はUTF-8として処理します．`N'は漢字を処理しません．デフォ
+     ルトはEUCです．
+
+     この変数は日本語化ruby固有の変数です．
+
+
+オプション変数
+--------------
+
+  rubyインタプリタのコマンドライン情報を示す一連の変数があります．形
+式は`$-?'で？の部分にオプションの一文字が入ります．
+
+ - Variable: $-0
+     `$/' (*note 組込み変数と組込み定数: Pre-defined variables and
+     constants.)の別名．
+
+
+ - Variable: $-a
+     `-a'が指定されている時，真．リードオンリー変数．
+
+
+ - Variable: $-d
+     `$DEBUG' (*note 組込み変数と組込み定数: Pre-defined variables
+     and constants.)の別名．
+
+
+ - Variable: $-F
+     `$;' (*note 組込み変数と組込み定数: Pre-defined variables and
+     constants.)の別名．
+
+
+ - Variable: $-i
+     `-i'が指定されている時，拡張子を表す文字列を格納します．指定され
+     ていない時の値は`nil'です．スクリプト内で代入することもでき，そ
+     の場合はARGV (*note 組込み変数と組込み定数: Pre-defined
+     variables and constants.)の次のファイルを読み込み始めるタイミン
+     グでin-place置換を開始します．
+
+
+ - Variable: $-I
+     `$:' (*note 組込み変数と組込み定数: Pre-defined variables and
+     constants.)の別名
+
+
+ - Variable: $-K
+     `$KCODE' (*note 組込み変数と組込み定数: Pre-defined variables
+     and constants.)の別名
+
+
+ - Variable: $-l
+     `-l'が指定されている時，真．リードオンリー変数．
+
+
+ - Variable: $-p
+     `-p'が指定されている時，真．リードオンリー変数．
+
+
+ - Variable: $-v
+     `$VERBOSE' (*note 組込み変数と組込み定数: Pre-defined variables
+     and constants.)の別名．
+
+
+
+File: ruby-jp.info,  Node: constants,  Next: ENV,  Prev: variables,  Up: Pre-defined variables and constants
+
+組込み定数
+==========
+
+ - Variable: TRUE
+     代表的な真の値．rubyでは偽でない値(falseでもnilでもない値)は全て
+     真とみなされます．
+
+
+ - Variable: FALSE
+     偽の値
+
+
+ - Variable: NIL
+     nil．
+
+
+ - Variable: STDIN
+     標準入力．`$stdin' (*note 組込み変数と組込み定数: Pre-defined
+     variables and constants.)のデフォルト値
+
+
+ - Variable: STDOUT
+     標準出力．`$stdout' (*note 組込み変数と組込み定数: Pre-defined
+     variables and constants.)のデフォルト値
+
+
+ - Variable: STDERR
+     標準エラー出力．`$stderrr' (*note 組込み変数と組込み定数:
+     Pre-defined variables and constants.)  のデフォルト値
+
+
+ - Variable: ENV
+     環境変数を表す(疑似)連想配列 (*note ENV::)．この連想配列の値を変
+     更すると子プロセスの環境として引き継がれます．
+
+
+ - Variable: ARGF
+     引数(なければ標準入力)で構成される仮想ファイル．つまり`gets'は
+     `ARGF.gets'と同じ意味です．`ARGF.file'で現在読み込み中のファイル
+     オブジェクトが，`ARGF.filename'で現在読み込み中のファイル名が得
+     られます．
+
+
+ - Variable: ARGV
+     `$*' (*note 組込み変数と組込み定数: Pre-defined variables and
+     constants.)と同じ
+
+
+ - Variable: DATA
+     スクリプトの`__END__'以降をアクセスするファイルオブジェクト．ス
+     クリプトがファイルに格納されていない時には定義されない．
+
+
+ - Variable: RUBY_VERSION
+     Rubyのバージョンを示す文字列
+
+
+ - Variable: RUBY_RELEASE_DATE
+     Rubyのリリース日を示す文字列
+
+
+ - Variable: RUBY_PLATFORM
+     プラットフォームを示す文字列
+
+
+File: ruby-jp.info,  Node: ENV,  Next: Pre-defined classes and modules,  Prev: constants,  Up: Pre-defined variables and constants
+
+ENV
+---
+
+  環境変数を表すオブジェクト．Hash (*note Hash::)と同様のインターフェー
+スを持ちます．ただし，Hashと異なり，`ENV'のキーと値には文字列しかとる
+ことができません．
+
+インクルードされているモジュール:
+.................................
+
+   - `Enumerable' (*note Enumerable::)
+
+メソッド:
+.........
+
+ - Method on `ENV': self [KEY]
+     KEYに対応する環境変数の値を返します．該当する環境変数が存在しな
+     い時には`nil'を返します．
+
+
+ - Method on `ENV': self [KEY]= VALUE
+     KEYに対応する環境変数の値をVALUEにします．VALUEが`nil'の時，
+     KEYに対応する環境変数を取り除きます．
+
+
+ - Method on `ENV': delete (KEY)
+     KEYに対応する環境変数を取り除きます．取り除かれた環境変数の値を
+     返 しますが，KEYに対応する環境変数が存在しない時には`nil'を返し
+     ます．
+
+     ブロックが与えられた時にはKEYにマッチするものがなかった時に評価
+     されます．
+
+
+ - Method on `ENV': delete_if {|KEY, VALUE|...}
+ - Method on `ENV': reject! {|KEY, VALUE|...}
+     KEYとVALUEを引数としてブロックを評価した値が真である時，環境変数
+     を削除します．
+
+
+ - Method on `ENV': each {|KEY, VALUE|...}
+ - Method on `ENV': each_pair {|KEY, VALUE|...}
+     KEYとVALUEを引数としてブロックを評価します．
+
+
+ - Method on `ENV': each_key {|KEY|...}
+     KEYを引数としてブロックを評価します．
+
+
+ - Method on `ENV': each_value {|VALUE|...}
+     VALUEを引数としてブロックを評価します．
+
+
+ - Method on `ENV': empty?
+     環境変数がひとつも定義されていない時真を返します．
+
+
+ - Method on `ENV': has_key? (VAL)
+ - Method on `ENV': key? (VAL)
+ - Method on `ENV': include? (VAL)
+     VALで指定される環境変数が存在する時真を返します．
+
+
+ - Method on `ENV': has_value? (VALUE)
+ - Method on `ENV': value? (VALUE)
+     ハッシュがVALUEを値として持つ時真を返します．
+
+
+ - Method on `ENV': indexes (KEY_1,..., KEY_N)
+     引数で指定された名前の環境変数の値の配列を返します．
+
+
+ - Method on `ENV': keys
+     全環境変数の名前の配列を返します．
+
+
+ - Method on `ENV': length
+ - Method on `ENV': size
+     環境変数の数を返します．
+
+
+ - Method on `ENV': to_a
+     環境変数から`[key,value]'なる2要素の配列の配列を生成します．
+
+
+ - Method on `ENV': values
+     環境変数の全値の配列を返します．
+
+
+File: ruby-jp.info,  Node: Pre-defined classes and modules,  Next: Bundled Libraries,  Prev: Pre-defined variables and constants,  Up: Top
+
+組込みクラスと組込みモジュール
+******************************
+
+* Menu:
+
+* classes::                   組込みクラス
+* modules::                   組込みモジュール
+
+
+File: ruby-jp.info,  Node: classes,  Next: modules,  Up: Pre-defined classes and modules
+
+組込みクラス
+============
+
+* Menu:
+
+* Object::                      Object
+*   Array::                     Array
+*   Dir::                       Dir
+*   Hash::                      Hash
+*   IO::                        IO
+*     File::                    File
+*   Module::                    Module
+*     Class::                   Class
+*   Numeric::                   Numeric
+*     Integer::                 Integer
+*       Bignum::                Bignum
+*       Fixnum::                Fixnum
+*     Float::                   Float
+*   Proc::                      Proc
+*   Range::                     Range
+*   Regexp::                    Regexp
+*   String::                    String
+*   Struct::                    Struct
+*   Time::                      Time
+*   NilClass::                  NilClass
+
+
+File: ruby-jp.info,  Node: Object,  Next: Array,  Up: Pre-defined classes and modules
+
+Object
+------
+
+  全てのクラスのスーパクラス．このクラスはオブジェクトの一般的な振舞
+いを定義しています．
+
+スーパークラス:
+...............
+
+   - `Kernel' (*note Kernel::)
+
+メソッド:
+.........
+
+ - Method on `Object': self == OTHER
+     二つのオブジェクトが等しいかどうかを判定します．`Kernel'クラスで
+     の定義は二つのオブジェクトが同じオブジェクトIDを持つかどうかで判
+     定しています．このメソッドはそれぞれのクラスでその性質に合わせて
+     再定義されるべきです．
+
+
+ - Method on `Object': self =~ OTHER
+     古いタイプの正規表現比較`obj =~ /RE/'をサポートするためのメソッ
+     ドです．デフォルトは`==' (*note Object::)と同じ働きをします．
+
+
+ - Method on `Object': self === OTHER
+     このメソッドは`case' (*note Rubyの文法: Ruby Syntax.)  文での比較
+     に用いられます．デフォルトは`==' (*note Object::)と同じ働きをし
+     ますが，この挙動はサブクラスで所属性のチェックを実現するため適
+     宜再定義されます．
+
+
+ - Method on `Object': clone
+ - Method on `Object': dup
+     オブジェクトの複製を作ります．複製については
+
+          obj == obj.clone
+
+     はいつも成立しますが，
+
+          obj.equal?(obj.clone)
+
+     は一般的には成立しません．
+
+     `dup'は
+
+          def dup
+            self.clone
+          end
+
+     と定義されています．
+
+     `clone'や`dup'はオブジェクトをコピーしますが，オブジェクトの指し
+     ている先まではコピーしません(つまりshallow copy)．
+
+
+ - Method on `Object': display ([OUT])
+     オブジェクトをOUTに出力します．OUTの省略値は`$>'です．
+
+          def display(out=$>)
+            out.print self
+          end
+          public :display
+
+
+ - Method on `Object': eql? (OTHER)
+     二つのオブジェクトが等しいかどうかを判定します．このメソッドは
+     `Hash' (*note Hash::)でふたつのキーが等しいかどうかを判定するの
+     に使われます．このメソッドを再定義した時には `hash' (*note
+     Object::) メソッドも再定義しなければなりません．
+
+     `eql?'のデフォルトの定義は`eqaul?'と同じくオブジェクトの同一性判
+     定になっています．
+
+
+ - Method on `Object': equal? (OTHER)
+     二つのオブジェクトが同じオブジェクトIDをとっている時真を返します．
+     このメソッドを再定義するべきではありません．
+
+
+ - Method on `Object': extend (module...)
+     引数で指定したモジュールをで定義されているメソッドが`self'の特異
+     メソッドとして追加されます．
+
+
+ - Method on `Object': hash
+     オブジェクトのハッシュ値を返します．`Hash' (*note Hash::)クラス
+     でオブジェクトを格納するのに用いられています．`A.eql?(B)'が成立
+     する時は必ず`A.hash == B.hash'が成立する必要があるので，`eql?'を
+     再定義した時には必ずこちらもそれに合わせて再定義してください．
+
+
+ - Method on `Object': id
+     各オブジェクトについて一意の整数値を返します．
+
+
+ - Method on `Object': initialize (...)
+     ユーザ定義クラスのオブジェクト初期化メソッド．このメソッドは
+     `Class#new' (*note Class::)から新しく生成されたオブジェクトの初
+     期化のために呼び出されます．デフォルトの動作ではなにもしません．
+     サブクラスではこのメソッドを必要に応じて再定義されることが期待さ
+     れています．`initialize'には`Class#new' (*note Class::)に与えら
+     れた引数がそのまま渡されます．
+
+     `initialize'という名前を持つメソッドは自動的にprivateに設定され
+     ます．
+
+
+ - Method on `Object': inspect
+     オブジェクトを人間が読める形式の文字列に変換します．
+
+
+ - Method on `Object': instance_eval (EXPR)
+ - Method on `Object': instance_eval {...}
+     オブジェクトのコンテキスト(`self'がオブジェクトに設定されている
+     メソッド内と同じコンテキスト)でEXPR として与えられた文字列を評価
+     します．ブロックが与えられた場合には文字列ではなくブロックをオブ
+     ジェクトのコンテキストで評価しますので，毎回文字列をコンパイルす
+     る必要がありません．
+
+     `self'が置き換えられるので呼び出されるメソッドやインスタンス変数
+     も変わってしまうことに注意してください．
+
+
+ - Method on `Object': instance_of? (CLASS)
+     オブジェクト`self'がクラスCLASSのインスタンスである時，真を返し
+     ます．`obj.instance_of?(c)'が成立する時には，いつも
+     `obj.kind_of? (*note Object::)(c)'も成立します．
+
+
+ - Method on `Object': instance_variables ()
+     オブジェクト`self'のインスタンス変数の一覧を配列として返します．
+     オブジェクトがインスタンス変数を持てない時には`nil'を返します．
+
+
+ - Method on `Object': kind_of? (CLASS)
+ - Method on `Object': is_a? (CLASS)
+     オブジェクト`self'がクラスCLASSかそのサブクラスのインスタンスで
+     ある時，真を返します．
+
+
+ - Method on `Object': method_missing (MSG_ID, ...)
+     メソッドが定義されていなかった時，このメソッドが呼び出されます．
+     MSG_IDはメソッド名(シンボル)で，引数が残りの引数として渡されます．
+
+
+ - Method on `Object': methods
+     そのオブジェクトが理解できるpublicメソッド名の一覧を配列として返
+     します．
+
+
+ - Method on `Object': nil?
+     レシーバが `nil' かどうかをチェックします．
+
+
+ - Method on `Object': private_methods
+     そのオブジェクトが理解できるprivateメソッド名の一覧を配列として
+     返します．
+
+
+ - Method on `Object': remove_instance_variable (VAR)
+     そのオブジェクトから指定した名前のインスタンス変数を取り除きます．
+     そのオブジェクトがその名前のインスタンス変数を持っていなくても例
+     外などを発生させません．
+
+
+ - Method on `Object': respond_to? (MESG[,PRIV])
+     オブジェクトがMESGで指定される public メソッドを持つ時，真を返し
+     ます．MESGはシンボル(Fixnum)または文字列です．省略可能な引数
+     PRIVが与えられ，その値が真である時，private メソッドに対しても真
+     を返します．
+
+
+ - Method on `Object': send (SYMBOL[, ARGS...])
+     SYMBOLで指定されるメソッドを引数ARGSとともに呼び出します．イテレー
+     タとして呼び出された時には指定されたメソッドをイテレータ呼出しし
+     ます．
+
+
+ - Method on `Object': singleton_method_added (ID)
+     特異メソッドが追加された時にインタプリタから呼び出されます．
+
+
+ - Method on `Object': singleton_methods
+     そのオブジェクトに対して定義されている特異メソッド名の一覧を配列
+     として返します．
+
+
+ - Method on `Object': taint
+     オブジェクトの「汚染マーク」をセットします．
+
+
+ - Method on `Object': tainted?
+     オブジェクトの「汚染マーク」がセットされている時真を返します．
+
+
+ - Method on `Object': to_s
+     オブジェクトの文字列表現を返します．このメソッドは`print'
+     (*note 組込み関数: Ruby Functions.) や`sprintf' (*note 組込み関
+     数: Ruby Functions.)の内部で使われています．
+
+
+ - Method on `Object': to_a
+     オブジェクトを配列に変換します．普通に配列に変換できないようなオ
+     ブジェクトは自身を含む1要素の配列に変換されます．
+
+
+ - Method on `Object': type
+     レシーバのクラスを返します．
+
+
+ - Method on `Object': untaint
+     オブジェクトの「汚染マーク」を取り除きます．汚染マークを取り除く
+     ことによる危険性はプログラマが責任を負う必要があります．セキュリ
+     ティレベルが3以上の場合は取り除くことができません．
+

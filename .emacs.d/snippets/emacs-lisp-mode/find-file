@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+#contributor: Xah Lee (XahLee.org)
+#name: find-file
+#key: find-file
+# --
+(find-file $0 )

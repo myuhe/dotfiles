@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+#name : BEGIN
+#key : begin
+#expand-env: ((yas/indent-line 'fixed) (yas/wrap-around-region 't))
+# --
+#+begin_$1 $2
+  $0
+#+end_$1

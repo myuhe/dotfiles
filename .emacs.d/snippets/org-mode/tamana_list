@@ -1,0 +1,12 @@
+# -*- mode: snippet -*-
+#name : TAMANA_LIST
+#key : tamana_list
+#contributor : Yuhei Maeda 
+# --
+
+    - [ ] 玉名市 
+    - [ ] 荒尾市 
+    - [ ] 玉東町
+    - [ ] 和水町 
+    - [ ] 南関町 
+    - [ ] 長洲町

@@ -1,0 +1,149 @@
+Info file: hurd-ja.info,    -*-Text-*-
+produced by `texinfo-format-buffer'
+from file `hurd-ja.texi'
+using `texinfmt.el' version 2.38 of 3 July 1998.
+
+
+
+
+INFO-DIR-SECTION Kernel
+START-INFO-DIR-ENTRY
+* Hurd: (hurd).                 Using and programming the Hurd kernel servers.
+END-INFO-DIR-ENTRY
+
+
+Copyright (C) 1994-1998 Free Software Foundation, Inc.
+
+Permission is granted to make and distribute verbatim copies of this
+manual provided the copyright notice and this permission notice are
+preserved on all copies.
+
+
+Permission is granted to copy and distribute modified versions of this
+manual under the conditions for verbatim copying, provided also that
+the entire resulting derived work is distributed under the terms of a
+permission notice identical to this one.
+
+Permission is granted to copy and distribute translations of this
+manual into another language, under the above conditions for modified
+versions.
+
+
+
+
+
+Indirect:
+hurd-ja.info-1: 920
+hurd-ja.info-2: 50589
+hurd-ja.info-3: 101804
+hurd-ja.info-4: 153438
+
+Tag table:
+(Indirect)
+Node: Top923
+Node: Introduction8082
+Node: Audience8828
+Node: Features10144
+Node: Overview11466
+Node: History11626
+Node: Copying13074
+Node: Installing32240
+Node: Binary Distributions33146
+Node: Cross-Compiling35297
+Node: Bootstrap36551
+Node: Bootloader37309
+Node: Server Bootstrap38464
+Node: Invoking serverboot39323
+Node: Boot Scripts40624
+Node: Invoking boot40780
+Node: Shutdown43621
+Node: Foundations43734
+Node: Threads Library44722
+Node: Microkernel Object Library45231
+Node: Ports Library45881
+Node: Buckets and Classes46749
+Node: Port Rights48541
+Node: Port Metadata49740
+Node: Port References50592
+Node: RPC Management51920
+Node: Integer Hash Library55796
+Node: Misc Library57616
+Node: Bug Address Library58171
+Node: Input and Output58542
+Node: Iohelp Library58959
+Node: I/O Users59364
+Node: Conch Management60421
+Node: Pager Library60748
+Node: Pager Management61361
+Node: Pager Callbacks66046
+Node: I/O Interface67876
+Node: I/O Object Ports68962
+Node: Simple Operations72409
+Node: Open Modes74986
+Node: Asynchronous I/O76768
+Node: Information Queries79537
+Node: Mapped Data81695
+Node: Files82306
+Node: Translators83206
+Node: Invoking settrans86032
+Node: Invoking showtrans89145
+Node: Invoking mount89303
+Node: Invoking fsysopts89425
+Node: Trivfs Library89554
+Node: Trivfs Startup90289
+Node: Trivfs Callbacks95740
+Node: Trivfs Options97454
+Node: Trivfs Ports100021
+Node: Fshelp Library101807
+Node: Passive Translator Linkage102565
+Node: Active Translator Linkage104333
+Node: Fshelp Locking107889
+Node: Fshelp Permissions108194
+Node: Fshelp Misc109481
+Node: File Interface112467
+Node: File Overview113248
+Node: Changing Status115104
+Node: Program Execution117041
+Node: File Locking119102
+Node: File Frobbing119505
+Node: Opening Files119894
+Node: Modifying Directories120106
+Node: Notifications120381
+Node: File Translators120701
+Node: Filesystem Interface120938
+Node: Special Files121183
+Node: Stores122174
+Node: Store Library122768
+Node: Store Arguments123444
+Node: Store Management125144
+Node: Store I/O129359
+Node: Store Classes130317
+Node: Store RPC Encoding142803
+Node: Stored Filesystems147319
+Node: Repairing Filesystems148016
+Node: Linux Extended 2 FS148197
+Node: BSD Unix FS148376
+Node: ISO-9660 CD-ROM FS148536
+Node: Diskfs Library148705
+Node: Diskfs Startup149908
+Node: Diskfs Arguments151630
+Node: Diskfs Globals153441
+Node: Diskfs Node Management156282
+Node: Diskfs Callbacks160897
+Node: Diskfs Options173284
+Node: Diskfs Internals178135
+Node: Twisted Filesystems180256
+Node: Distributed Filesystems181022
+Node: File Transfer Protocol181556
+Node: FTP Connection Library181883
+Node: Network File System182057
+Node: Networking182244
+Node: Socket Interface182536
+Node: Terminal Handling182708
+Node: Running Programs182893
+Node: Authentication183109
+Node: Auth Interface183454
+Node: Auth Protocol183659
+Node: Index183790
+
+End tag table

@@ -1,0 +1,1806 @@
+This is ruby-jp.info, produced by makeinfo version 3.12o (+ Japanese
+Patch 0.61) from Ruby.texi.
+
+INFO-DIR-SECTION Languages
+START-INFO-DIR-ENTRY
+* ruby-jp: (ruby-jp).           Ruby Language Reference Manual (Japanese)
+END-INFO-DIR-ENTRY
+
+     このinfoファイルは、Rubyリファレンスマニュアル(HTML版)
+
+     <http://www.netlab.co.jp/ruby/jp/man-1.3/>
+     for `Ruby' Version 1.4.0
+     written by まつもと ゆきひろ <matz@netlab.co.jp>
+     Last modified: Mon Aug 16 15:46:22 1999
+
+     を元に機械的にTexinfo形式へ変換して作成しました。したがって、本文
+     に対する著作権はまつもと ゆきひろ氏にあるものとします。
+
+
+File: ruby-jp.info,  Node: Array,  Next: Dir,  Prev: Object,  Up: Pre-defined classes and modules
+
+Array
+-----
+
+  配列クラス．配列の要素は任意のrubyオブジェクトです．配列は一般的に
+は配列式:
+
+     [1, 2, 3]
+
+  で行なわれます．
+
+スーパークラス:
+...............
+
+   - `Object' (*note Object::)
+
+インクルードしているモジュール:
+...............................
+
+   - Enumerable (*note Enumerable::)
+
+クラスメソッド:
+...............
+
+ - Class Method on `Array': Array [ITEM...]
+     引数を要素として持つ配列を生成します．
+
+
+ - Class Method on `Array': new ([SIZE[, VAL]])
+     配列を生成します．SIZEを指定したときにはその大きさの配列を生成し
+     ます．VALを指定したときには内容をその値で初期化します．VALのデフォ
+     ルトは`nil' です．
+
+
+メソッド:
+.........
+
+ - Method on `Array': self [NTH]
+     NTH番目の要素を返します．先頭の要素が0番目になります．NTHの値が
+     負の時には末尾からのインデックスと見倣します(末尾の要素が -1 番
+     目)．NTH番目の要素が存在しない時には`nil'を返します．
+
+
+ - Method on `Array': self [START..END]
+     START番目の要素からEND番目の要素までの部分配列を返します．
+     STARTの値が負の時には末尾からのインデックスと見倣します(末尾の要
+     素が -1 番目)．STARTの値が配列の範囲に収まらない場合`nil'を返し
+     ます．ENDの値が配列の長さを越える時には，越えた分の長さは無視さ
+     れます．また，範囲の始点が終点よりも大きい時にはnilを返します．
+
+
+ - Method on `Array': self [START, LENGTH]
+     START番目からLENGTH個の要素を含む部分配列を返します．STARTの値が
+     負の時には末尾からのインデックスと見倣します(末尾の要素が -1 番
+     目)．LENGTHがSTART 番目からの配列の長さより長い時には，越えた分の
+     長さは無視されます．LENGTHが負の時にはnilを返します．
+
+
+ - Method on `Array': self [NTH] = VAL
+     NTH番目の要素をVALに設定します．NTHが配列の範囲を越える時には配
+     列が自動的に拡張されます．拡張されたものの代入されなかった要素は
+     `nil' に初期化されます．
+
+
+ - Method on `Array': self [START..END] = VAL
+     START番目の要素からEND番目の要素までを配列VALの内容に置換します．
+     VALの値が配列でないときには`to_a'メソッドを使って配列に変換しま
+     す．VALの要素の数の方が多い時には，後ろの要素がずれます．
+
+
+ - Method on `Array': self [START, LENGTH] = VAL
+     START番目からLENGTH個の要素を配列VALの内容で置き換えます．VALが
+     配列でないときには`to_a'メソッドを使って配列に変換します．VALの
+     要素の数の方が多い時には，後ろの要素がずれます．ですから，
+     LENGTHが0の時にはインデックス直前の位置への挿入になります．
+
+     例:
+
+          ary = [1, 2, 3, 4, 5]
+          ary[0..2] = [0, 0] # 配列の内容は [0, 0, 4, 5]
+          ary[1, 0] = [7]    # 配列の内容は [0, 7, 0, 4, 5]
+
+
+ - Method on `Array': self + OTHER
+     配列の連結を行います．`self'とOTHERの両方の配列の内容を繋げた新
+     しい配列を返します．
+
+
+ - Method on `Array': self * TIMES
+     配列の繰り返し．
+
+
+ - Method on `Array': self - OTHER
+     集合の差演算．`self'からOTHERの要素を取り除いた内容の新しい配列
+     を返します．重複する要素取り除かれます．
+
+
+ - Method on `Array': self & OTHER
+     集合の積演算．両方の配列に含まれる要素からなる新しい配列を返しま
+     す．重複する要素は取り除かれます．
+
+
+ - Method on `Array': self | OTHER
+     集合の和演算．両方の配列にいずれかに含まれる要素を全て含む新しい
+     配列を返します．重複する要素は取り除かれます．
+
+
+ - Method on `Array': self << OBJ
+     objを配列の末尾に追加します．このメソッドは配列そのものを返すの
+     で，以下のように連鎖できます．
+
+          array << obj1 << obj2
+
+     この場合ARRAYの値は`[obj1, obj2]'になります．
+
+
+ - Method on `Array': self <=> other
+     `self'と`other'の各要素をそれぞれ順に`<=>'で比較して，`self'が大
+     きい時に正，等しい時に０，小さい時に負の整数を返します．各要素が
+     等しいまま，一方だけ配列の末尾に達した時は，より短い配列の方が大
+     きいとみなします．
+
+
+ - Method on `Array': assoc (KEY)
+     配列の配列を検索して，その0番目の要素がKEYに等しいものを返します．
+     比較は`=='演算子を使って行われます．
+
+          a = [[1,2],[2,4],[3,6]]
+          a.assoc(2)              # => [2, 4]
+
+
+ - Method on `Array': clear
+     配列の大きさを0にします．
+
+
+ - Method on `Array': concat (OTHER)
+     配列OTHERの要素を配列の末尾に(破壊的に)追加します．OTHERが配列で
+     ない時には変換されます．
+
+
+ - Method on `Array': compact
+ - Method on `Array': compact!
+     配列から`nil'を取り除きます．`compact!'は削除を破壊的に行います．
+
+
+ - Method on `Array': delete (VAL)
+ - Method on `Array': delete (VAL){ ... }
+     配列から要素VALを削除します．ブロックを指定して呼び出された時に
+     は，削除する要素がなかった時にブロックを評価します．
+
+
+ - Method on `Array': delete_at (POS)
+     POSで指定された位置にある要素を取り除きます．取り除かれた要素を
+     返します．取り除く要素が存在しない時には`nil'を返します．
+
+
+ - Method on `Array': delete_if {|X|...}
+ - Method on `Array': reject! {|X|...}
+     要素に対してブロックを評価し，ブロックが真を返した要素を削除しま
+     す．
+
+
+ - Method on `Array': dup
+     レシーバと同じ内容を持つ新しい配列を返します．フリーズした配列の
+     `clone'は同様にフリーズされた配列を返しますが，`dup'は内容の等し
+     いフリーズされていない配列を返します．
+
+
+ - Method on `Array': each {...}
+     各要素に対してブロックを評価します．
+
+
+ - Method on `Array': each_index {...}
+     各要素のインデックスに対してブロックを評価します．つまり，
+     `(0..(ary.size-1)).each {}'と同じです．
+
+
+ - Method on `Array': empty?
+     配列が空の時真を返します．
+
+
+ - Method on `Array': fill (VAL)
+ - Method on `Array': fill (VAL, START[, LENGTH])
+ - Method on `Array': fill (VAL, START..END)
+     配列(の指定された部分)の要素の値をVALに設定します．2番めの形式で
+     LENGTHが省略された時は配列の終りまでの長さを意味します．指定され
+     た部分配列が元の配列の範囲を越える時は自動的に拡張され，拡張され
+     た部分は`nil'に初期化されます．
+
+
+ - Method on `Array': filter {|ITEM| ..}
+     配列の各要素内容を，その要素を引数にしてブロックを評価した値に置
+     き換えます．
+
+
+ - Method on `Array': flatten
+ - Method on `Array': flatten!
+     ネストした配列を平滑化します．`flatten!'は配列を破壊的に平滑化し
+     ますが，配列がネストしていないときには`nil'を返します．
+
+
+ - Method on `Array': freeze
+     配列の内容の変更を禁止します．
+
+
+ - Method on `Array': frozen?
+     配列の内容の更新が禁止されている時真を返します．
+
+
+ - Method on `Array': include? (VAL)
+     配列がVALと等しい要素を持つ時に真を返します．
+
+
+ - Method on `Array': index (VAL)
+     VALと等しい最初の要素の位置を返します．等しい要素がひとつもなかっ
+     た時には`nil'を返します．
+
+
+ - Method on `Array': indexes (INDEX_1,..., INDEX_N)
+ - Method on `Array': indices (INDEX_1,..., INDEX_N)
+     各引数の値をインデックスとする要素の配列を返します．配列に含まれ
+     ない要素が指定されても無視されます．
+
+
+ - Method on `Array': join ([SEP])
+     配列の要素をSEPを間に挟んで連結した文字列を返します．SEP各が省略
+     された場合には変数`$,' の値が使われます．
+
+
+ - Method on `Array': length
+ - Method on `Array': size
+     配列の長さを返します．
+
+
+ - Method on `Array': nitems
+     `nil'でない要素の数を返します．
+
+
+ - Method on `Array': pack (TEMPLATE)
+     配列の内容をTEMPLATEで指定された文字列にしたがって，バイナリとし
+     てパックした文字列を返します．テンプレートは型指定文字列とその長
+     さ(省略時は1)を並べたものです．長さとして`*'が指定された時は「残
+     りのデータ全て」の長さを表します．型指定文字は以下の通りです．
+
+    `a'
+          ASCII文字列(nullを詰める)
+
+    `A'
+          ASCII文字列(スペースを詰める)
+
+    `b'
+          ビットストリング(下位ビットから上位ビット)
+
+    `B'
+          ビットストリング(上位ビットから下位ビット)
+
+    `h'
+          16進文字列(下位ニブルが先)
+
+    `H'
+          16進文字列(上位ニブルが先)
+
+    `c'
+          char
+
+    `C'
+          unsigned char
+
+    `s'
+          short
+
+    `S'
+          unsigned short
+
+    `i'
+          int
+
+    `I'
+          unsigned int
+
+    `l'
+          long
+
+    `L'
+          unsigned long
+
+    `m'
+          base64された文字列
+
+    `n'
+          ネットワークバイトオーダーのshort
+
+    `N'
+          ネットワークバイトオーダーのlong
+
+    `v'
+          "VAX"バイトオーダー（リトルエンディアン)のshort
+
+    `V'
+          "VAX"バイトオーダー（リトルエンディアン)のlong
+
+    `f'
+          単精度浮動小数点数(機種依存)
+
+    `d'
+          倍精度浮動小数点数(機種依存)
+
+    `p'
+          ナル終端の文字列へのポインタ
+
+    `P'
+          構造体(固定長文字列)へのポインタ
+
+    `u'
+          uuencodedされた文字列
+
+    `x'
+          ナルバイト
+
+    `X'
+          1バイト後退
+
+    `@'
+          絶対位置への移動
+
+
+ - Method on `Array': pop
+     配列の末尾の要素を取り除いて，それを返します．要素がない時には
+     `nil'を返します．
+
+
+ - Method on `Array': push (OBJ...)
+     OBJを配列の末尾に追加します．
+
+
+ - Method on `Array': rassoc (VALUE)
+     配列の配列を検索して，その1番目の要素がVALUEに等しいものを返しま
+     す．比較は`=='演算子を使って行われます．
+
+          a = [[1,2],[2,4],[3,6]]
+          a.rassoc(2)             # => [1, 2]
+
+
+ - Method on `Array': replace (OTHER)
+     配列の内容をOTHERの内容で置き換えます．
+
+
+ - Method on `Array': reverse
+     `reverse'は全ての要素を逆順に並べた配列を返します．`reverse!'は
+     配列の要素を逆順に(破壊的に)並べ替えます．
+
+
+ - Method on `Array': reverse!
+
+ - Method on `Array': reverse_each {...}
+     各要素に対して逆順にブロックを評価します．
+
+
+ - Method on `Array': rindex (VAL)
+     VALと等しい最後の要素の位置を返します．等しい要素がひとつもなかっ
+     た時には`nil'を返します．
+
+
+ - Method on `Array': shift
+     配列の先頭の要素を取り除き，取り除かれた要素を返します．残りの要
+     素はひとつずつ前に詰められます．空配列に対しては`nil'を返します．
+
+
+ - Method on `Array': sort
+ - Method on `Array': sort!
+ - Method on `Array': sort {|A, B|...}
+ - Method on `Array': sort! {|A, B|...}
+     配列の内容をソートします．ブロックを与えて呼び出された時にはブロッ
+     クを2引数を与えて評価し，その結果で比較します．ブロックがない時
+     には`<=>'演算子を使って比較します．`sort'はソートされた新しい配
+     列を返し，`sort!'は配列の内容をその場でソートします．
+
+
+ - Method on `Array': uniq
+ - Method on `Array': uniq!
+     配列から重複した要素を取り除きます．取り除かれた要素の部分は前に
+     詰められます．`uniq!'は削除を破壊的に行います．
+
+
+ - Method on `Array': unshift (OBJ)
+     OBJを配列の先頭に追加します．各要素はひとつずつ後ろにずれます．
+     OBJを返します．
+
+
+File: ruby-jp.info,  Node: Dir,  Next: Hash,  Prev: Array,  Up: Pre-defined classes and modules
+
+Dir
+---
+
+  ディレクトリ内の要素を順に返すディレクトリストリーム操作のためのクラ
+ス．
+
+スーパークラス:
+...............
+
+   - `Object' (*note Object::)
+
+インクルードしているモジュール:
+...............................
+
+   - `Enumerable' (*note Enumerable::)
+
+クラスメソッド:
+...............
+
+ - Class Method on `Dir': self [PATTERN]
+ - Class Method on `Dir': glob (PATTERN)
+     ワイルドカードの展開を行った結果を文字列の配列として返します．
+
+     ワイルドカードには以下のものがあります．
+
+    `*'
+          空文字列を含む任意の文字列と一致します．
+
+    `?'
+          任意の一文字と一致します．
+
+    `[ ]'
+          鈎括弧内のいずれかの文字と一致します．`-'でつながれた文字は
+          範囲を表します．鈎括弧の中の最初の文字が`^'である時には含ま
+          れない文字と一致します．
+
+    `{ }'
+          コンマで区切られた文字列の組合せに展開します．例えば，
+          `foo{a,b,c}'は`fooa', `foob', `fooc'に展開されます．他のワイ
+          ルドカードと異なり，展開結果のファイルが存在している必要は
+          ありません．
+
+
+ - Class Method on `Dir': chdir (PATH)
+     カレントディレクトリをPATHに変更します．
+
+
+ - Class Method on `Dir': chroot (PATH)
+     ルートディレクトリをPATHに変更します．`chroot(2)'を参照のこと．
+     スーパーユーザだけがルートディレクトリを変更できます．
+
+     元のルートディレクトリに戻る方法はありません．
+
+
+ - Class Method on `Dir': pwd
+ - Class Method on `Dir': getwd
+     カレントディレクトリのフルパスを返します．
+
+
+ - Class Method on `Dir': foreach (PATH)
+     PATHのディレクトリの要素に対して繰り返すイテレータ．このメソッド
+     は以下と同じ働きをします．
+
+          dir = Dir.open(PATH)
+          begin
+            dir.each {
+              ...
+            }
+          ensure
+            dir.close
+          end
+
+
+ - Class Method on `Dir': mkdir (PATH[, MODE])
+     PATHという新しいディレクトリを作ります．パーミッションはMODEで指
+     定された値(デフォルトは0777)にumaskをかけた(`mode & ~umask')値に
+     なります．
+
+
+ - Class Method on `Dir': open (PATH)
+     PATHに対するディレクトリストリームをオープンします．
+
+
+ - Class Method on `Dir': delete (PATH)
+ - Class Method on `Dir': rmdir (PATH)
+ - Class Method on `Dir': unlink (PATH)
+     ディレクトリを削除します．ディレクトリは空でなければいけません．
+
+
+メソッド:
+.........
+
+ - Method on `Dir': close
+     ディレクトリストリームをクローズします．以降のディレクトリに対す
+     る操作は例外を発生させます．
+
+
+ - Method on `Dir': each {|ITEM|...}
+     ディレクトリの各要素に対してブロックを評価します．
+
+
+ - Method on `Dir': read
+     ディレクトリストリームから次の要素を読み出します．
+
+
+ - Method on `Dir': rewind
+     ディレクトリストリームの読み込み位置を先頭に移動させます．
+
+
+ - Method on `Dir': seek (POS)
+     ディレクトリストリームの読み込み位置をPOSに移動させます．POSは
+     `Dir#tell' (*note Dir::)で与えられた値でなければなりません．
+
+
+ - Method on `Dir': tell
+     ディレクトリストリームの現在の位置を返します．
+
+
+File: ruby-jp.info,  Node: Hash,  Next: IO,  Prev: Dir,  Up: Pre-defined classes and modules
+
+Hash
+----
+
+  ハッシュテーブル(連想配列とも呼ぶ)のクラス．ハッシュは任意の種類の
+オブジェクトから任意の種類のオブジェクトへの関連づけを行うことができ
+ます．ハッシュ生成は以下のようなハッシュ式で行われます．
+
+     {a=>b,...}
+
+  ハッシュの格納に用いられるハッシュ値の計算には，`hash' (*note
+Kernel::)メソッドが使われます．
+
+  キーとして与えたオブジェクトの内容が変化し，メソッド`hash'の返す値
+が変わるとハッシュから値が取り出せなくなりますから，`Array' (*note
+Array::), `Hash' (*note Hash::)などのインスタンスはキーに向きません．
+文字列をキーとして与えると，文字列をコピーし，コピーを更新不可に設定
+してキーとして使用します．キーとして使われている文字列を更新しようと
+すると例外が発生します．
+
+スーパークラス:
+...............
+
+   - `Object' (*note Object::)
+
+インクルードされているモジュール:
+.................................
+
+   - `Enumerable' (*note Enumerable::)
+
+クラスメソッド:
+...............
+
+ - Class Method on `Hash': Hash [KEY, VALUE...]
+     新しいハッシュを生成します．引数は必ず偶数個指定しなければなりま
+     せん(奇数番目がキー，偶数番目が値)．
+
+
+ - Class Method on `Hash': new ([IFNONE])
+     空の新しいハッシュを生成します．IFNONEはキーに対応する値が存在し
+     ない時のデフォルト値です．
+
+
+メソッド:
+.........
+
+ - Method on `Hash': self [KEY]
+     KEYに関連づけられた値を返します．該当するキーが登録されていない
+     時には，デフォルト値(設定されていない時には`nil')を返します．
+
+
+ - Method on `Hash': self [KEY]= VALUE
+     KEYに対してVALUEを関連づけます．VALUEが`nil'の時，KEYに対する関
+     連を取り除きます．つまり，ハッシュは`nil'を値にとることができま
+     せん．
+
+
+ - Method on `Hash': clear
+     ハッシュの中身を空にします．
+
+
+ - Method on `Hash': default
+     ハッシュのデフォルト値をVALUEを返します．
+
+
+ - Method on `Hash': default =(VALUE)
+     ハッシュのデフォルト値をVALUEに設定します．対応する値が存在しな
+     いキーで検索した時にはこの値を返します．
+
+
+ - Method on `Hash': delete (KEY)
+     KEYに対する関連を取り除きます．取り除かれた値を返しますが，KEYに
+     対応する値が存在しない時には`nil'を返します．
+
+     ブロックが与えられた時にはKEYにマッチするものがなかった時に評価
+     されます．
+
+
+ - Method on `Hash': delete_if {|KEY, VALUE|...}
+ - Method on `Hash': reject! {|KEY, VALUE|...}
+     KEYとVALUEを引数としてブロックを評価した値が真である時，要素を削
+     除します．
+
+
+ - Method on `Hash': clone
+ - Method on `Hash': dup
+     レシーバと同じ内容を持つ新しいハッシュを返します．フリーズしたハッ
+     シュの`clone'は同様にフリーズされたハッシュを返しますが，`dup'は
+     内容の等しいフリーズされていないハッシュを返します．
+
+
+ - Method on `Hash': each {|KEY, VALUE|...}
+ - Method on `Hash': each_pair {|KEY, VALUE|...}
+     KEYとVALUEを引数としてブロックを評価します．
+
+
+ - Method on `Hash': each_key {|KEY|...}
+     KEYを引数としてブロックを評価します．
+
+
+ - Method on `Hash': each_value {|VALUE|...}
+     VALUEを引数としてブロックを評価します．
+
+
+ - Method on `Hash': empty?
+     ハッシュが空の時真を返します．
+
+
+ - Method on `Hash': fetch (KEY[,DEFAULT])
+     KEYに関連づけられた値を返します．該当するキーが登録されていない
+     時にはDEFAULTを返します．ブロックが与えられた時には該当するキー
+     が登 録されていない時にそのブロックを評価した値を返します．
+
+
+ - Method on `Hash': freeze
+     ハッシュの内容の変更を禁止します．
+
+
+ - Method on `Hash': frozen?
+     ハッシュの内容の更新が禁止されている時真を返します．
+
+
+ - Method on `Hash': has_key? (KEY)
+ - Method on `Hash': key? (KEY)
+ - Method on `Hash': include? (KEY)
+     ハッシュがKEYをキーとして持つ時真を返します．
+
+
+ - Method on `Hash': has_value? (VALUE)
+ - Method on `Hash': value? (VALUE)
+     ハッシュがVALUEを値として持つ時真を返します．
+
+
+ - Method on `Hash': index (VAL)
+     VALに対応するキーを返します．対応する要素が存在しない時には
+     `nil'を返します．
+
+
+ - Method on `Hash': indexes (KEY_1,..., KEY_N)
+ - Method on `Hash': indices (KEY_1,..., KEY_N)
+     引数で指定されたキーを持つ値の配列を返します．
+
+
+ - Method on `Hash': keys
+     全キーの配列を返します．
+
+
+ - Method on `Hash': length
+ - Method on `Hash': size
+     ハッシュの要素の数を返します．
+
+
+ - Method on `Hash': invert
+     値からキーへのハッシュを返します．
+
+
+ - Method on `Hash': rehash
+     キーのハッシュ値を再計算します．キーになっているオブジェクトのハッ
+     シュ値が変わってしまった場合，このメソッドを使ってハッシュ値を再
+     計算しない限り，そのキーに対応する値を取り出すことができなくなり
+     ます．
+
+
+ - Method on `Hash': replace (OTHER)
+     ハッシュの内容をOTHERの内容で置き換えます．
+
+
+ - Method on `Hash': shift
+     ハッシュから要素をひとつ取り除き，`[key,value]'という配列として
+     返します．
+
+
+ - Method on `Hash': store (KEY,VALUE)
+     KEYに対してVALUEを関連づけます．
+
+
+ - Method on `Hash': to_a
+     ハッシュを`[key,value]'なる2要素の配列の配列に変換します．
+
+
+ - Method on `Hash': values
+     ハッシュの全値の配列を返します．
+
+
+ - Method on `Hash': update (OTHER)
+     ハッシュの内容をマージします．重複するキーに対応する値はOTHERの
+     内容で上書きされます．
+
+
+File: ruby-jp.info,  Node: IO,  Next: File,  Prev: Hash,  Up: Pre-defined classes and modules
+
+IO
+--
+
+  `IO'クラスは基本的な入出力機能を実装します．
+
+スーパークラス:
+...............
+
+   - `Object' (*note Object::)
+
+インクルードされているモジュール:
+.................................
+
+   - `Enumerable' (*note Enumerable::)
+
+クラスメソッド:
+...............
+
+ - Class Method on `IO': foreach (PATH[, RS])
+     PATHで指定されたファイルの各行に対して繰り返します．ちょうど以下
+     のような働きをします．
+
+          port = open(PATH)
+          begin
+            port.each_line {
+              ...
+            }
+          ensure
+            port.close
+          end
+
+     行の区切りは引数RSで指定した文字列になります．RSのデフォルト値は
+     システム変数`$/' (*note 組込み変数と組込み定数: Pre-defined
+     variables and constants.)の値です．
+
+
+ - Class Method on `IO': new (FD[,MODE])
+     整数FDで指定したファイルディスクリプタに対応するストリームを生成
+     します．
+
+
+ - Class Method on `IO': popen (COMMAND [, MODE])
+     COMMANDをサブプロセスとして実行し，そのプロセスの標準入出力との
+     間にパイプラインを確立します．MODE はオープンするIOポートのモード
+     を指定するもので，`"r"', `"r+"', `"w"', `"w+"', `"a"', `"a+"'の
+     いずれかです(省略された時のデフォルトは"r")．
+
+     コマンド名が`"-"'の時，rubyはforkを行い，自分自身の分身(子プロセ
+     ス)とのパイプラインを生成します．
+
+
+ - Class Method on `IO': pipe
+     `pipe(2)'を実行して，相互につながった2つの`IO' (*note IO::)オブ
+     ジェクトを要素とする配列を返します．最初の要素が読み込み側で，次
+     の要素が書き込み側です．
+
+
+ - Class Method on `IO': readlines (PATH[, RS])
+     PATHで指定されたファイルを全て読み込んで，その各行を要素としても
+     つ配列を返します．ちょうど以下のような働きをします．
+
+          port = open(PATH)
+          begin
+            port.readlines
+          ensure
+            port.close
+          end
+
+     行の区切りは引数RSで指定した文字列になります．RSのデフォルト値は
+     システム変数`$/' (*note 組込み変数と組込み定数: Pre-defined
+     variables and constants.)の値です．
+
+
+ - Class Method on `IO': select (READS[, WRITES[, EXCEPTS[, TIMEOUT]]])
+     `select(2)'を実行します．READS/WRITES/EXECPTSには入力待ちする
+     IO (*note IO::)(またはそのサブクラス)のインスタンスの配列をわた
+     します．
+
+     TIMEOUTは整数，浮動小数点数, `Time' (*note Time::), または`nil'
+     を指定します．`nil' を指定した時にはIOがレディ状態になるまで待ち
+     続けます．
+
+     戻り値はTIMEOUTした時には`nil'を，そうでないときは3要素の配列を
+     返し，その各要素が入力/出力/例外待ちのオブジェクトの配列です(指
+     定した配列のサブセット)．
+
+
+メソッド:
+.........
+
+ - Method on `IO': self << OBJECT
+     OBJECTを出力します．OBJECTが文字列でない時にはメソッド`to_s'を用
+     いて文字列に変換します．`self'を戻り値とするので，以下のような
+     `<<'の連鎖を使うことができます．
+
+          $stdout << 1 << " is a " << Fixnum << "\n"
+
+
+ - Method on `IO': binmode
+     ストリームをバイナリモードにします．MSDOSなどバイナリモードの存
+     在するOSでのみ有効です．バイナリモードから通常のモードに戻す方法
+     は再オープンしかありません．
+
+
+ - Method on `IO': close
+     入出力ポートをクローズします．以後のこのポートに対する入出力操作
+     は例外を発生します．ガーベージコレクトの際にはクローズされていな
+     いIOポートはクローズされます．
+
+
+ - Method on `IO': closed?
+     ポートがクローズされている時に真を返します．
+
+
+ - Method on `IO': each ([RS]) {|LINE|...}
+ - Method on `IO': each_line ([RS]) {|LINE|...}
+     IOポートから1行ずつ読み込んで繰り返すイテレータ．IOポートはリー
+     ドモードでオープンされている必要があります(`open' (*note 組込み
+     関数: Ruby Functions.)参照)．
+
+     行の区切りは引数RSで指定した文字列になります．RSのデフォルト値は
+     システム変数`$/' (*note 組込み変数と組込み定数: Pre-defined
+     variables and constants.)の値です．
+
+
+ - Method on `IO': each_byte {|CH|...}
+     IOポートから1バイトずつ読み込みます．IOポートはリードモードでオー
+     プンされている必要があります(`open' (*note 組込み関数: Ruby
+     Functions.)参照)．
+
+
+ - Method on `IO': eof
+ - Method on `IO': eof?
+     ストリームがファイルの終端に達した場合真を返します．
+
+
+ - Method on `IO': fcntl (CMD[, ARG])
+     IOに対してシステムコール `fcntl' を実行します．機能の詳細は
+     `fcntl(2)'を参照してください．
+
+     ARGが整数の時にはその値を，文字列の場合にはpackした構造体だとみ
+     なして`fcntl(2)'に渡します．ARGの省略時の値は0です．
+
+
+ - Method on `IO': fileno
+ - Method on `IO': to_i
+     ファイル記述子の番号を返します．
+
+
+ - Method on `IO': flush
+     IOポートの内部バッファをフラッシュします．
+
+
+ - Method on `IO': getc
+     IOポートから1文字読み込んで，その文字に対応するFixnumを返す．
+     EOFに到達した時には`nil'を返します．
+
+
+ - Method on `IO': gets ([RS])
+     一行読み込んで，読み込みに成功した時にはその文字列を返します．ファ
+     イルの終りに到達した時には`nil'を返します．`each' (*note IO::)と
+     同じように動作しますが，こちらは1行返すだけで繰り返しません．
+
+     行の区切りは引数RSで指定した文字列になります．RSのデフォルト値は
+     システム変数`$/' (*note 組込み変数と組込み定数: Pre-defined
+     variables and constants.)の値です．
+
+     `gets'は読み込んだ文字列を変数`$_'にセットします．
+
+
+ - Method on `IO': ioctl (CMD[, ARG])
+     IOに対してシステムコール `ioctl' を実行します．機能の詳細は
+     `ioctl(2)'を参照してください．
+
+     ARGが整数の時にはその値を，文字列の場合にはpackした構造体だとみ
+     なして`ioctl(2)'に渡します．ARGの省略時の値は0です．
+
+
+ - Method on `IO': isatty
+ - Method on `IO': tty?
+     入出力ポートがttyに結合している時，真を返します．
+
+
+ - Method on `IO': lineno
+     現在の行番号を返します．
+
+
+ - Method on `IO': lineno = NUMBER
+     行番号をセットします．
+
+
+ - Method on `IO': pos
+     ファイルポインタの位置を返します．
+
+
+ - Method on `IO': pos = POS
+     ファイルポインタを指定位置に移動します．
+
+
+ - Method on `IO': print ARG...
+     引数をIOポートに順に出力します．
+
+
+ - Method on `IO': printf (FORMAT, ARG...)
+     `C'言語の`printf'と同じように，FORMATに従い引数を文字列に変換し
+     て，IOポートに出力します．
+
+
+ - Method on `IO': putc (CH)
+     文字CHを出力します．
+
+
+ - Method on `IO': puts (OBJ...)
+     各OBJを出力した後，改行します．
+
+
+ - Method on `IO': read [LENGTH]
+     LENGTHバイト読み込んで，その文字列を返します．LENGTHが省略された
+     時には，`EOF'までの全てのデータを読み込みます．
+
+     `EOF'で`nil'を返します．
+
+
+ - Method on `IO': readchar
+     `getc' (*note IO::)と同様に1文字読み込みますが，EOFに到達した時
+     に例外`EOFError'を発生させます．
+
+
+ - Method on `IO': readline ([RS])
+     `gets' (*note IO::)と同様に1行読み込みますが，EOFに到達した時に
+     例外`EOFError'を発生させます．
+
+     行の区切りは引数RSで指定した文字列になります．RSのデフォルト値は
+     システム変数`$/' (*note 組込み変数と組込み定数: Pre-defined
+     variables and constants.)の値です．
+
+     `readline'は`gets'同様読み込んだ文字列を変数`$_'にセットします．
+
+
+ - Method on `IO': readlines ([RS])
+     ファイルを全て読み込んで，その各行を要素としてもつ配列を返します．
+
+     行の区切りは引数RSで指定した文字列になります．RSのデフォルト値は
+     システム変数`$/' (*note 組込み変数と組込み定数: Pre-defined
+     variables and constants.)の値です．
+
+
+ - Method on `IO': reopen (IO)
+     自身をIOに繋ぎ換えます．クラスもIOに等しくなります(危険)．
+
+
+ - Method on `IO': rewind
+     ファイルポインタを先頭に移動します．
+
+
+ - Method on `IO': seek (OFFSET, WHENCE)
+     ファイルポインタをOFFSETだけ移動させます．WHENCEの値が0の時には
+     ファイルの先頭から，1の時には現在のファイルポインタから，2の時に
+     はEOFからOFFSETバイトだけ移動します．
+
+
+ - Method on `IO': stat
+     ファイルのステータスを含む`Stat' 構造体 (*note Struct::)を返しま
+     す．`Stat'構造体のメンバは以下の通りです．
+
+          dev             # デバイス番号(ファイルシステム)
+          ino             # i-node番号
+          mode            # ファイルモード
+          nlink           # ハードリンクの数
+          uid             # オーナーのユーザID
+          gid             # オーナーのグループID
+          rdev            # デバイスタイプ(スペシャルファイルのみ)
+          size            # ファイルサイズ(バイト単位)
+          blksize         # 望ましいI/Oのブロックサイズ
+          blocks          # 割り当てられているブロック数
+          atime           # 最終アクセス時間
+          mtime           # 最終更新時間
+          ctime           # 最終i-node変更時間
+
+     より詳細は`stat(2)'してください．システムによってサポートされて
+     いないメンバには0が入っています．
+
+
+ - Method on `IO': sync
+     現在の出力同期モードを真偽値で返します．同期モードが真の時は出力
+     関数の呼出毎にバッファがフラッシュされます．
+
+
+ - Method on `IO': sync = NEWSTATE
+     出力同期モードを設定します．
+
+
+ - Method on `IO': sysread (LENGTH)
+     `read(2)'を用いて入力を行ない，入力されたデータを含む文字列を返
+     します．ファイルの終りに到達した時には例外`EOFError'を発生させま
+     す．`stdio'を経由しないので`gets'や`getc'などと混用すると思わぬ
+     動作をすることがあります．
+
+
+ - Method on `IO': syswrite (STRING)
+     `write(2)'を用いてSTRINGを出力します．`stdio'を経由しないので他
+     の出力メソッドと混用すると思わぬ動作をすることがあります．
+
+
+ - Method on `IO': tell
+     ファイルポインタの現在の位置を返します．
+
+
+ - Method on `IO': write (STR)
+     IOポートに対してSTRを出力します．出力されたバイト数を返します．
+
+
+ - Method on `IO': ungetc (CHAR)
+     CHARを読み戻します．1バイト以上の読み戻しは保証されません．
+
+
+File: ruby-jp.info,  Node: File,  Next: Module,  Prev: IO,  Up: Pre-defined classes and modules
+
+File
+----
+
+  ファイルアクセスのためのクラス．通常`open' (*note 組込み関数: Ruby
+Functions.)  を使ってオープンされます．このクラスには`FileTest'
+(*note FileTest::) で定義されているのと同じ特異メソッドが定義されてい
+ます．
+
+スーパークラス:
+...............
+
+   - `IO' (*note IO::)
+
+クラスメソッド:
+...............
+
+ - Class Method on `File': atime (FILENAME)
+     ファイルの最終アクセス時間を返します．
+
+
+ - Class Method on `File': basename (FILENAME[, SUFFIX])
+     FILENAMEの一番後ろのスラッシュに続く要素を返します．もし，引数
+     SUFFIXが与えられて，かつそれがFILENAMEの末尾に一致するなら，それ
+     を取り除いたものを返します．
+
+     例:
+
+          basename("ruby/ruby.c")
+                  => "ruby.c"
+          basename("ruby/ruby.c", ".c")
+            => "ruby"
+
+
+ - Class Method on `File': ctime (FILENAME)
+     ファイルが生成された時間を返します．
+
+
+ - Class Method on `File': chmod (MODE, PATH...)
+     ファイルのモードをMODEに変更します．モードを変更したファイルの数
+     を返します．
+
+
+ - Class Method on `File': chown (OWNER, GROUP, FILENAME...)
+     ファイルのオーナーとグループを変更します．スーパーユーザだけがファ
+     イルのオーナーとグループを変更できます．変更を行ったファイルの数
+     を返します．
+
+     `nil' または `-1' を指定することでオーナーやグループを現在のまま
+     にすることができます．
+
+
+ - Class Method on `File': dirname (FILENAME)
+     FILENAMEの一番後ろのスラッシュに続く要素以外を文字列として返しま
+     す．スラッシュを含まないファイル名に対しては`"."'(カレントディレ
+     クトリ)を返します．
+
+
+ - Class Method on `File': expand_path (PATH[,DEFAULT_DIR])
+     PATHを絶対パスに展開します．パスが相対パスであればDEFAULT_DIRを
+     基準にします．DEFAULT_DIRがnilかまたは与えられなかった時にはカ
+     レントディレクトリが使われます．先頭の`~'はホームディレクトリに，
+     `~USER' はそのユーザのホームディレクトリに展開されます．
+
+          expand_path("..")
+                 => "/home/matz/work"
+          expand_path("~")
+                 => "/home/matz"
+          expand_path("~matz")
+                 => "/home/matz"
+
+
+ - Class Method on `File': join (ITEMS...)
+     `File::Separator'を間に入れて，文字列を連結します．
+
+
+               [items,..].join(File::Separator)
+
+
+     も同じ動作をします．
+
+
+ - Class Method on `File': ftype (FILENAME)
+     ファイルのタイプを表す文字列を返します．文字列は以下のうちのいず
+     れかです．
+
+          `"file"'
+          `"directory"'
+          `"characterSpecial"'
+          `"blockSpecial"'
+          `"fifo"'
+          `"link"'
+          `"socket"'
+
+
+ - Class Method on `File': link (OLD, NEW)
+     OLDを指すNEWという名前のハードリンクを生成します．OLDはすでに存
+     在している必要があります．
+
+
+ - Class Method on `File': lstat (FILENAME)
+     `stat' (*note File::)と同様にファイルの状態を返しますが，シンボ
+     リックリンクに関してリンクそのものの情報を返します．
+
+
+ - Class Method on `File': mtime (FILENAME)
+     ファイルの最終更新時間を返します．
+
+
+ - Class Method on `File': open (PATH[, MODE])
+ - Class Method on `File': new (PATH[, MODE])
+     PATHで指定されるファイルをオープンし，ファイルオブジェクトを返し
+     ます．MODEは`"r"', `"r+"', `"w"', `"w+"', `"a"', `"a+"'のいずれか
+     でファイルのモードを指定します．MODEが省略された時のデフォルトは
+     `"r"'です．
+
+
+ - Class Method on `File': readlink (PATH)
+     シンボリックリンクのリンク先を文字列で返します．
+
+
+ - Class Method on `File': rename (FROM, TO)
+     ファイルの名前を変更します．ディレクトリが異なる場合には移動も行
+     います．`rename(2)'を参照してください．移動先のファイルが存在す
+     る時には上書きされます．
+
+
+ - Class Method on `File': size (PATHNAME)
+     PATHNAMEで指定したファイルの大きさを返します．
+
+
+ - Class Method on `File': split (PATHNAME)
+     PATHNAMEを`dirname'と`basename'に分割して，2要素の配列を返します．
+
+
+ - Class Method on `File': stat (FILENAME)
+     FILENAMEの情報を含むStat構造体を返します．`Stat'構造体のメンバは
+     以下の通りです．
+
+          dev             # デバイス番号(ファイルシステム)
+          ino             # i-node番号
+          mode            # ファイルモード
+          nlink           # ハードリンクの数
+          uid             # オーナーのユーザID
+          gid             # オーナーのグループID
+          rdev            # デバイスタイプ(スペシャルファイルのみ)
+          size            # ファイルサイズ(バイト単位)
+          blksize         # 望ましいI/Oのブロックサイズ
+          blocks          # 割り当てられているブロック数
+          atime           # 最終アクセス時間
+          mtime           # 最終更新時間
+          ctime           # 最終i-node変更時間
+
+     より詳細は`stat(2)'してください．システムによってサポートされて
+     いないメンバには0が入っています．
+
+
+ - Class Method on `File': symlink (OLD, NEW)
+     OLDへのNEWという名前のシンボリックリンクを生成します．
+
+
+ - Class Method on `File': truncate (PATH, LENGTH)
+     PATHで指定されたファイルを最大LENGTHバイトにまで切り詰めます．
+
+
+ - Class Method on `File': unlink (FILENAME...)
+ - Class Method on `File': delete (FILENAME...)
+     ファイルを削除します．削除したファイルの数を返します．このメソッ
+     ドは通常ファイルの削除用で，ディレクトリの削除には`Dir.rmdir'
+     (*note Dir::)を使います．
+
+
+ - Class Method on `File': umask ([UMASK])
+     umaskを変更します．変更前のumaskの値を返します．UMASKを省略する
+     と変更を行わないで，現在のumaskの値を返します．
+
+
+ - Class Method on `File': utime (ATIME, MTIME, FILENAME...)
+     ファイルの最終アクセス時間と更新時間を変更します．変更されたファ
+     イルの数を返します．先頭の二つの引数は時間を指定する数値または
+     `Time' (*note Time::)クラスのインスタンスでなければなりません．
+
+     これら以外にも`File'クラスは`FileTest' (*note FileTest::)クラス
+     で定義されているクラスメソッドも持っています．
+
+
+メソッド:
+.........
+
+ - Method on `File': atime
+     ファイルの最終アクセス時間を返します．
+
+
+ - Method on `File': ctime
+     ファイルの状態が最後に変更された時間を返します．
+
+
+ - Method on `File': chmod (MODE)
+     ファイルのモードをMODEに変更します．`chmod(2)'参照．
+
+
+ - Method on `File': chown (OWNER, GROUP)
+     ファイルのオーナーとグループを変更します．スーパーユーザだけがファ
+     イルのオーナーとグループを変更できます．`nil' または `-1' を指定
+     することでオーナーやグループを現在のままにすることができます．
+
+
+ - Method on `File': flock (OPERATION)
+     ファイルをロックします．`LOCK_NB'が指定されていて，ブロックされ
+     そうな場合にはFALSEを返します．有効なOPERATIONは以下の通りです．
+
+    `LOCK_SH'
+          共有ロック．複数のプロセスが同時にロックを共有できます．
+
+    `LOCK_EX'
+          排他ロック．同時にはただひとつのプロセスだけがロックを保持で
+          きます．
+
+    `LOCK_UN'
+          アンロック．
+
+    `LOCK_NB'
+          ロックの際にブロックしない．他の指定と`or'することで指定し
+          ます．
+
+     以上の定数は`File'クラスで定義されています．
+
+
+ - Method on `File': eof
+ - Method on `File': eof?
+     ファイルがEOFに到達している時に真を返します．
+
+
+ - Method on `File': lstat
+     `stat' (*note File::)と同様にファイルの状態を返しますが，シンボ
+     リックリンクに関してリンクそのものの情報を返します．
+
+
+ - Method on `File': mtime
+     ファイルの最終更新時間を返します．
+
+
+ - Method on `File': reopen (IO)
+ - Method on `File': reopen (PATH, MODE)
+     1引数の時，自身をIOに繋ぎ換えます．2引数の時，PATHで指定されたファ
+     イルにストリームを繋ぎ換えます．
+
+
+ - Method on `File': path
+     オープンしているファイルのパスを返します．
+
+
+ - Method on `File': truncate (LENGTH)
+     ファイルのサイズを最大LENGTHバイトにします．ファイルはライトモー
+     ドでオープンされている必要があります．
+
+
+定数:
+.....
+
+ - Class Constant of `File': Separator
+     ファイルパスのセパレータです．普通は`"/"'です．
+
+
+File: ruby-jp.info,  Node: Module,  Next: Class,  Prev: File,  Up: Pre-defined classes and modules
+
+Module
+------
+
+  モジュールのクラス．
+
+スーパークラス:
+...............
+
+   - `Object' (*note Object::)
+
+メソッド:
+.........
+
+ - Method on `Module': self < OTHER
+ - Method on `Module': self <= OTHER
+ - Method on `Module': self > OTHER
+ - Method on `Module': self >= OTHER
+     比較演算子．`self'がOTHERのスーパークラスである時，self > が成立
+     します．
+
+
+ - Method on `Module': self === OBJ
+     このメソッドは主に`case' (*note Rubyの文法: Ruby Syntax.)  文での
+     比較に用いられます。OBJがselfと`kind_of?' (*note Object::) の関
+     係がある時，真になります．つまり，`case' (*note Rubyの文法:
+     Ruby Syntax.)  ではクラス，モジュールの所属関係をチェックすること
+     になります．
+
+
+ - Method on `Module': alias_method (NEW,OLD)
+     `alias' (*note Rubyの文法: Ruby Syntax.)と同様にメソッドの別名を
+     定義します．違いは以下の通りです．
+
+        * メソッド名は文字列またはID(整数)で指定する．
+
+        * 大域変数の別名をつける機能は無い．
+
+
+ - Method on `Module': append_features (MODULE_OR_CLASS)
+     モジュール(あるいはクラス)に別のモジュールの機能を追加します．
+     `Module#include' (*note Module::) の実体です．
+
+
+ - Method on `Module': attr (NAME[, ASIGNABLE])
+     そのモジュールをインクルードするクラスのインスタンスに対して
+     NAMEという属性とそのアクセスメソッドを定義します．アクセスメソッ
+     ドの定義は次の通りです．
+
+          def attr; @attr; end
+
+     省略可能な第2引数ASIGNABLEが指定され，その値が真である場合には書
+     き込みメソッド`name='も同時に定義されます．その定義は以下の通り
+     です．
+
+          def attr=(val); @attr = val; end
+
+     アクセスメソッドを再定義することで属性の挙動を変更できます．例え
+     ば書き込みメソッドを以下のように定義することで代入された値をプリ
+     ントできます．
+
+          attr("test", TRUE)
+          def test=(val)
+            print("test was ", @test, "\n")
+            print("and now is ", @test = val, "\n")
+          end
+
+
+ - Method on `Module': attr_reader (NAME, ...)
+     NAMEで指定された名称の属性の読みだしメソッドを定義します．
+
+
+ - Method on `Module': attr_writer (NAME, ...)
+     NAMEで指定された名称の属性の更新メソッド(`name=')を定義します．
+
+
+ - Method on `Module': attr_accessor (NAME, ...)
+     NAMEで指定された名称の属性に対して読みだしメソッドと更新メソッド
+     の両方を定義します．
+
+
+ - Method on `Module': ancestors
+     そのモジュールでインクルードしているモジュールを優先順位順に配列
+     に格納して返します．
+
+
+ - Method on `Module': class_eval (SRC)
+ - Method on `Module': class_eval {...}
+     module_eval (*note Module::)の別名．
+
+
+ - Method on `Module': constants
+     そのモジュール(またはクラス)で定義されている定数名の配列を返しま
+     す．
+
+
+ - Method on `Module': const_defined? (NAME)
+     モジュールにNAMEで指定される名前の定数が定義されている時真を返し
+     ます．
+
+
+ - Method on `Module': const_get (NAME)
+     モジュールに定義されているNAMEで指定される名前の定数の値を取り出
+     します．定数が定義されていない時には例外`NameError'が発生します．
+
+
+ - Method on `Module': const_set (NAME, VALUE)
+     モジュールにNAMEで指定された名前の定数をVALUEという値として定義
+     します．そのモジュールにおいてすでにその名前の定数が定義されてい
+     る場合，例外`NameError'が発生します．
+
+
+ - Method on `Module': extend_object (OBJECT)
+     オブジェクトにモジュールの機能を追加します．`Object#extend'
+     (*note Object::) の実体です．
+
+
+ - Method on `Module': include (MODULE...)
+     指定されたモジュールの性質(メソッドや定数)を追加します．
+     `include'は多重継承の代わりに用いられるMixinを実現するために使わ
+     れます．
+
+
+ - Method on `Module': included_modules
+     インクルードされているモジュールの配列を返します．
+
+
+ - Method on `Module': instance_methods
+     そのモジュールで定義されているメソッド名の一覧を返します．
+
+
+ - Method on `Module': method_added (ID)
+     メソッドが追加された時にインタプリタから呼び出されます．
+
+
+ - Method on `Module': method_defined? (ID)
+     インスタンスがIDで指定されたメソッドを持っている時，真を返します．
+
+
+ - Method on `Module': module_eval (EXPR)
+ - Method on `Module': module_eval {...}
+     モジュールのコンテキストでEXPRとして与えられた文字列を評価します．
+     ブロックが与えられた場合には文字列ではなくブロックをモジュールの
+     コンテキストで評価します．
+
+     モジュールのコンテキストでは
+
+        * SELF
+
+        * インスタンス変数
+
+        * 定数
+
+        * メソッド定義
+
+     がそのモジュールの定義の中にあるのと同じように評価されます．ただ
+     し，ローカル変数は`module_eval'の外側のスコープと共有します．
+
+
+ - Method on `Module': module_function (NAME...)
+     NAMEで指定されたメソッドをモジュール関数にします．モジュール関数
+     とは通常のメソッドであると同時にモジュール(またはクラス)の特異メ
+     ソッドでもあるようなメソッドです．例えば`Math' (*note Math::)モ
+     ジュールで定義されているメソッドがモジュール関数です
+
+
+ - Method on `Module': name ()
+     モジュールの名前を返します．
+
+
+ - Method on `Module': private (NAME...)
+     引数が与えられない時，今後このクラスまたはモジュール定義内で新規
+     に定義されるメソッドを関数形式でだけ呼び出せるように(private)設
+     定します．
+
+     引数が与えられた時には引数によって指定されたメソッドをprivate に
+     設定します．
+
+     例:
+
+          module Foo
+            def foo1() 1 end      # デフォルトではpublic
+            private               # 可視性をprivateに変更
+            def foo2() 2 end      # foo2はprivateメソッド
+          end
+          
+          foo = Foo.new
+          foo.foo1
+                 => 1
+          foo.foo2
+                 error--> private method `foo2' called #<Foo:0x4011ad8c>(Foo)
+
+
+ - Method on `Module': private_instance_methods
+     そのモジュールで定義されているprivateメソッド名の一覧を返します．
+
+
+ - Method on `Module': protected (NAME...)
+     引数が与えられない時，今後このクラスまたはモジュール定義内で新規
+     に定義されるメソッドをprotectedに設定します．protectedとはそのメ
+     ソッドが定義されているクラスまたはそのサブクラスからしか呼び出す
+     ことができないという意味です．
+
+     引数が与えられた時には引数によって指定されたメソッドをprotected
+     に設定します．
+
+
+ - Method on `Module': public (NAME...)
+     引数が与えられない時，今後このクラスまたはモジュール定義内で新規
+     に定義されるメソッドをどんな形式でも呼び出せるように(public)設定
+     します．
+
+     引数が与えられた時には引数によって指定されたメソッドをpublic に設
+     定します．
+
+     例:
+
+          def foo() 1 end
+          foo
+                 => 1
+          self.foo        # the toplevel default is private
+                 error--> private method `foo' called for "main"(Object)
+          
+          def bar() 2 end
+          public :bar     # visibility changed (all access allowed)
+          bar
+                 => 2
+          self.bar
+                 => 2
+
+
+ - Method on `Module': private_class_method (NAME, ...)
+ - Method on `Module': public_class_method (NAME, ...)
+     NAMEで指定したクラスメソッド(クラスの特異メソッド) の可視性を変更
+     します．
+
+
+ - Method on `Module': remove_const (NAME)
+     NAMEで指定した定数を取り除きます．もし指定した定数がそのモジュー
+     ル(またはクラス)で定義されていない時，`NameError'例外が発生しま
+     す．
+
+
+ - Method on `Module': remove_method (NAME)
+     NAMEで指定したメソッドをモジュールから取り除きます．もし指定した
+     メソッドが存在しない時には`NameError'例外が発生します．
+
+
+ - Method on `Module': undef_method (NAME)
+     NAMEで指定したメソッドの定義を取り消します．`undef' (*note
+     Rubyの文法: Ruby Syntax.)との違いはメソッド指定を文字列または
+     ID(整数)で行う点です/
+
+
+クラスメソッド:
+...............
+
+ - Class Method on `Module': nesting
+     このメソッドを呼び出した時点でのクラス/モジュールのネスト情報を
+     配列に入れて返します．
+
+
+ - Class Method on `Module': new
+     新しく名前の付いていないモジュールを生成します．
+
+
+File: ruby-jp.info,  Node: Class,  Next: Numeric,  Prev: Module,  Up: Pre-defined classes and modules
+
+Class
+-----
+
+  クラスのクラス．より正確に言えば，個々のクラスはそれぞれメタクラス
+と呼ばれる名前のないクラスをクラスとして持っていて，`Class'はそのメタ
+クラスのクラスです．この関係は少し複雑ですが，rubyを利用するにあたっ
+ては特に重要ではありません．
+
+スーパークラス:
+...............
+
+   - `Module' (*note Module::)
+
+メソッド:
+.........
+
+ - Method on `Class': ancestors
+     そのクラスのスーパークラスとインクルードしているモジュールを優先
+     順位順に配列に格納して返します．
+
+
+ - Method on `Class': inherited (SUBCLASS)
+     クラスのサブクラスが定義された時，新しく生成されたサブクラスを引
+     数にインタプリタから呼び出されます．
+
+
+ - Method on `Class': new (...)
+     クラスのインスタンスを作ります．このメソッドの引数はメソッド
+     `initialize' (*note Object::) に渡されます．
+
+
+ - Method on `Class': name ()
+     クラスの名前を返します．
+
+
+ - Method on `Class': superclass
+     クラスのスーパークラスを返します．
+
+
+クラスメソッド:
+...............
+
+ - Class Method on `Class': new ([SUPERCLASS])
+     新しく名前の付いていないSUPERCLASSのサブクラスを生成します．
+     SUPERCLASSが省略された時には`Object'のサブクラスを生成します．
+
+
+File: ruby-jp.info,  Node: Numeric,  Next: Integer,  Prev: Class,  Up: Pre-defined classes and modules
+
+Numeric
+-------
+
+  `Numeric'は数値の抽象クラスです．
+
+スーパークラス:
+...............
+
+   - `Object' (*note Object::)
+
+インクルードしているモジュール:
+...............................
+
+   - `Comparable' (*note Comparable::)
+
+メソッド:
+.........
+
+ - Method on `Numeric': + self
+     `self'自身を返します．
+
+
+ - Method on `Numeric': - self
+     `self'の符号を反転させたものを返します．
+
+
+ - Method on `Numeric': self <=> other
+     `self'と`other'を比較して，`self'が大きい時に正，等しい時に0，小
+     さい時に負の整数を返します．
+
+
+ - Method on `Numeric': abs
+     `self'の絶対値を返します．
+
+
+ - Method on `Numeric': chr
+     `Integer(self)'に対応するASCII文字を1文字だけ含んだ文字列を返し
+     ます．
+
+
+ - Method on `Numeric': coerce (NUMBER)
+     NUMBERの型を自分と直接演算できる型に変換して`[NUMBER,self]'とい
+     う配列に格納して返します．数値クラスの算術演算子は通常自分と演算
+     できないクラスをオペランドとして受け取ると`coerce'を使って自分
+     とオペランドを変換した上で演算を行います．
+
+
+ - Method on `Numeric': divmod (OTHER)
+     OTHERによる商と剰余の2要素の配列を返します．
+
+
+ - Method on `Numeric': integer?
+     `self'が整数の時，真を返します．
+
+
+ - Method on `Numeric': nonzero?
+     ゼロの時，偽を返し，非ゼロの時`self'を返します．
+
+
+ - Method on `Numeric': zero?
+     ゼロの時，真を返します．
+
+
+File: ruby-jp.info,  Node: Integer,  Next: Bignum,  Prev: Numeric,  Up: Pre-defined classes and modules
+
+Integer
+-------
+
+  整数の抽象クラス．サブクラスとして`Fixnum' (*note Fixnum::)と
+`Bignum' (*note Bignum::)があります．この2種類の整数は値の大きさに応
+じてお互いに自動的に変換されます．ビット操作において整数は無限の長さ
+のビットストリングとみなすことができます．
+
+スーパークラス:
+...............
+
+   - `Numeric' (*note Numeric::)
+
+インクルードしているモジュール:
+...............................
+
+   - `Precision' (*note Precision::)
+
+クラスメソッド:
+...............
+
+ - Class Method on `Integer': induced_from (NUM)
+     NUM を `Integer' に変換した結果を返します．
+
+
+メソッド:
+.........
+
+ - Method on `Integer': self [NTH]
+     NTH番目のビットが立っている時1を，そうでなければ0 を返します．
+
+
+ - Method on `Integer': chr
+     文字コードに対応する1文字を含む文字列を返します．例えば
+     `65.chr'は"A"を返します．
+
+     整数は0から255の範囲内でなければなりません．
+
+
+ - Method on `Integer': downto (MIN) {...}
+     `self'からMINまで1ずつ減らしながら繰り返します．
+
+
+ - Method on `Integer': integer?
+     真を返します．
+
+
+ - Method on `Integer': size
+     整数のサイズをバイトで返します．
+
+
+ - Method on `Integer': step (LIMIT, STEP) {...}
+     `self'からはじめSTEPを足しながらLIMITを越える前までブロックを繰
+     り返します．STEP は負の数も許されます．
+
+
+ - Method on `Integer': succ
+     "次"の整数を返します．
+
+
+ - Method on `Integer': times {...}
+     `self'回だけ繰り返します．
+
+
+ - Method on `Integer': to_f
+     値を浮動小数点数に変換します．
+
+
+ - Method on `Integer': to_i
+     レシーバをそのまま返します(変換の必要がないので)．
+
+
+ - Method on `Integer': upto (MAX) {...}
+     `self'からMAXまで1ずつ増やしながら繰り返します．
+
+
+File: ruby-jp.info,  Node: Bignum,  Next: Fixnum,  Prev: Integer,  Up: Pre-defined classes and modules
+
+Bignum
+------
+
+  多倍長整数のクラス．`Bignum'が扱うことのできる大きさはメモリサイズ
+だけによって制限されます．演算の結果が`Fixnum'の範囲内である場合には
+`Fixnum' に変換され，逆に`Fixnum'の範囲を越える時には`Bignum'に拡張さ
+れます．ビット演算については2の補数表現の無限長のビットストリングとみ
+なすことができます．特に負の数は左側に無限に1のビットが立っているよう
+に操作できます．`Float'との混合に関しては，変換時に桁落ちが生じる可
+能性があります．
+
+スーパークラス:
+...............
+
+   - Integer (*note Integer::)
+
+メソッド:
+.........
+
+ - Method on `Bignum': self + OTHER
+ - Method on `Bignum': self - OTHER
+ - Method on `Bignum': self * OTHER
+ - Method on `Bignum': self / OTHER
+ - Method on `Bignum': self % OTHER
+ - Method on `Bignum': self ** OTHER
+     算術演算子．それぞれ和，差，積，商，剰余，冪を計算します．
+
+
+ - Method on `Bignum': ~ self
+ - Method on `Bignum': self | OTHER
+ - Method on `Bignum': self & OTHER
+ - Method on `Bignum': self ^ OTHER
+     ビット演算子．それぞれ論理和，論理積，排他的論理和を計算します．
+
+
+ - Method on `Bignum': self << BITS
+ - Method on `Bignum': self >> BITS
+     シフト演算子．`bits'だけ右(左)にシフトします．
+
+
+ - Method on `Bignum': divmod (OTHER)
+     商と剰余を含む配列を返します．
+

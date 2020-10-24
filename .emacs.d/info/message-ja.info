@@ -1,0 +1,69 @@
+Info file: message-ja.info,    -*-Text-*-
+produced by `texinfo-format-buffer'
+from file `message-ja.texi'
+using `texinfmt.el' version 2.42 of  7 Jul 2006.
+
+INFO-DIR-SECTION Emacs
+START-INFO-DIR-ENTRY
+* Message-ja: (message-ja).     Mail and news composition mode that goes
+                                with Gnus (Japanese).
+END-INFO-DIR-ENTRY
+
+
+
+
+
+
+Indirect:
+message-ja.info-1: 351
+
+Tag table:
+(Indirect)
+Node: Top354
+Node: Interface2134
+Node: New Mail Message3028
+Node: New News Message3322
+Node: Reply3628
+Node: Wide Reply4517
+Node: Followup5152
+Node: Canceling News5937
+Node: Superseding6726
+Node: Forwarding7302
+Node: Resending8357
+Node: Bouncing8603
+Node: Mailing Lists9014
+Node: Commands12369
+Node: Buffer Entry12917
+Node: Header Commands13330
+Node: Movement16885
+Node: Insertion17291
+Node: MIME18500
+Node: IDNA19330
+Node: Security20141
+Node: Signing and encryption20592
+Node: Using S/MIME22375
+Node: Using PGP/MIME24454
+Node: PGP Compatibility25805
+Node: Various Commands26980
+Node: Sending28282
+Node: Mail Aliases28907
+Node: Spelling29842
+Node: Variables30906
+Node: Message Headers31482
+Node: Mail Headers36179
+Node: Mail Variables36953
+Node: News Headers39673
+Node: News Variables45086
+Node: Insertion Variables45421
+Node: Various Message Variables48505
+Node: Sending Variables53118
+Node: Message Buffers54162
+Node: Message Actions55693
+Node: Compatibility56831
+Node: Appendices57184
+Node: Responses57349
+Node: GNU Free Documentation License58270
+Node: Index83495
+Node: Key Index102254
+
+End tag table

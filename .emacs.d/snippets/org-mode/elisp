@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+#name : begin_src elisp
+#contributor : myuhe
+#key :elisp
+# --
+#+begin_src elisp
+${BODY}
+#+end_src

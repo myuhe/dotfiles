@@ -1,0 +1,8 @@
+        -- Oasis entity catalog for Extensible HTML 1.0 --
+PUBLIC  "-//W3C//DTD XHTML 1.0 Strict//EN"        "xhtml1-strict.dtd"
+PUBLIC  "-//W3C//DTD XHTML 1.0 Transitional//EN"  "xhtml1-transitional.dtd"
+PUBLIC  "-//W3C//DTD XHTML 1.0 Frameset//EN"      "xhtml1-frameset.dtd"
+
+
+        -- Ant DTD --
+PUBLIC  "-//ANT//DTD project//EN"                 "ant.dtd"

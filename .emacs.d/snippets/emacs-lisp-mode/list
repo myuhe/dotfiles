@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+#contributor: Xah Lee (XahLee.org)
+#name: list
+#key: list
+# --
+(list $0)

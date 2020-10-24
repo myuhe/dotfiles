@@ -1,0 +1,1873 @@
+Info file: efaq-ja,    -*-Text-*-
+produced by `texinfo-format-buffer'
+from file `faq.texi'
+using `texinfmt.el' version 2.38 of 3 July 1998.
+
+
+
+
+
+INFO-DIR-SECTION Emacs
+START-INFO-DIR-ENTRY
+* Emacs FAQ JA: (efaq-ja).	Frequently Asked Questions about Emacs.
+END-INFO-DIR-ENTRY
+
+
+
+
+
+File: efaq-ja, Node: w3-mode, Next: EDB, Prev: Ispell, Up: Major packages and programs
+
+w3-mode -- WWW ブラウザ
+=======================
+
+
+作者
+     Bill Perry <wmperry@spry.com>
+
+最新版
+     4.0pre.39
+
+配布場所
+     `ftp://ftp.cs.indiana.edu/pub/elisp/w3/w3.tar.gz'
+
+メーリングリスト
+     告知用メーリングリスト <w3-announce-request@indiana.edu>
+     βテスタ用メーリングリスト <w3-beta-request@indiana.edu>
+     開発者用メーリングリスト `w3-mode' at <w3-dev@indiana.edu>
+
+
+
+
+File: efaq-ja, Node: EDB, Next: Mailcrypt, Prev: w3-mode, Up: Major packages and programs
+
+EDB -- データベース管理プログラム
+=================================
+
+作者
+     Michael Ernst <mernst@theory.lcs.mit.edu>
+
+最新版
+     1.21
+
+配布場所
+     `ftp://theory.lcs.mit.edu/pub/emacs/edb'
+
+
+
+
+File: efaq-ja, Node: Mailcrypt, Next: JDE, Prev: EDB, Up: Major packages and programs
+
+Mailcrypt -- メール・ニュース用の PGP インターフェース
+======================================================
+
+
+作者
+     Patrick J. LoPresti <patl@lcs.mit.edu>
+     Jin S. Choi <jin@atype.com>
+
+保守管理者
+     Brian Warner <warner-mailcrypt@lothar.com>
+
+最新版
+     3.5.8
+
+配布場所
+     `http://dl.sourceforge.net/sourceforge/mailcrypt/mailcrypt-3.5.8.tar.gz'
+
+WWW
+     `http://mailcrypt.sourceforge.net/'
+
+
+
+
+File: efaq-ja, Node: JDE, Next: Patch, Prev: Mailcrypt, Up: Major packages and programs
+
+JDE -- Java プログラム統合開発環境
+==================================
+
+
+作者
+     Paul Kinnucan <paulk@mathworks.com>
+
+メーリングリスト
+     <jde-subscribe@sunsite.auc.dk>
+
+最新版
+     2.1.1
+
+WWW
+     `http://sunsite.auc.dk/jde/'
+
+
+
+
+File: efaq-ja, Node: Patch, Prev: JDE, Up: Major packages and programs
+
+Patch -- パッチ当てプログラム
+=============================
+
+
+作者
+     Larry Wall <lwall@wall.org> (with GNU modifications)
+
+最新版
+     2.5.4
+
+配布場所
+     *Note Current GNU distributions:: 参照。
+
+
+
+
+File: efaq-ja, Node: Key bindings, Next: Alternate character sets, Prev: Major packages and programs, Up: Top
+
+Key bindings
+************
+
+* Menu:
+
+* Binding keys to commands::    キー割り当て
+* Invalid prefix characters::   invalid prefix characters?
+* Terminal setup code works after Emacs has begun::  端末用の設定
+* Using function keys under X::  ファンクションキー
+* Working with function and arrow keys::  ファンクションキーのシンボル
+* X key translations for Emacs::  キーの読み替え
+* Handling C-s and C-q with flow control::  フロー制御
+* Binding C-s and C-q::         C-s と C-q を使う
+* Backspace invokes help::      Backspace でヘルプ
+* stty and Backspace key::      stty による設定
+* Swapping keys::               キーの入れ替え
+* Producing C-XXX with the keyboard::  特定のキーコードを入力
+* No Meta key::                 メタキーが無い
+* No Escape key::               エスケープキーが無い
+* Compose Character::           Compose Character キー
+* Binding combinations of modifiers and function keys::  特殊キーの組み合わせ
+* Meta key does not work in xterm::  xterm 上でメタキーを使う
+* ExtendChar key does not work as Meta::  ExtendChar キー
+
+
+
+File: efaq-ja, Node: Binding keys to commands, Next: Invalid prefix characters, Prev: Key bindings, Up: Key bindings
+
+キー(ファンクションキーを含む)にコマンドを割り当てる方法は?
+===========================================================
+
+   キーは対話的に割り当てることもできるし、`.emacs' ファイルであらかじ
+め割り当てることもできます。対話的にすべてのモードでキー割り当てが使え
+るようにするには次のように入力してください。
+
+   `M-x global-set-key <RET> KEY CMD <RET>'
+
+   現在のメジャーモードでのみ割り当てたいときは次のように入力してくだ
+さい。
+
+   `M-x local-set-key <RET> KEY CMD <RET>'
+
+   詳しくは *Note (emacs)Key Bindings:: を参照してください。
+
+   キーを割り当てるための lisp コードを `.emacs' に書きこむには次の様
+にすると簡単にできます。まず対話的にキーを割り当てます。直後に `C-x
+<ESC> <ESC> C-a C-k C-g' と入力します。これでキー割り当てのための Lisp 
+コードがキルリングにセーブされるので`.emacs' にペーストすることができ
+ます。グローバルに割り当てるときはそのままで構いません。たとえば次のコー
+ドは直接 `.emacs' に書き込めます。
+
+     (global-set-key (quote [f1]) (quote help-for-help))
+
+特定のモードでキーを割り当てるときは `add-hook' を使ってください。たと
+えば `tex-mode' でローカルに割り当てるときは次のようにします。
+
+     (add-hook 'tex-mode-hook
+       (lambda ()
+        (local-set-key (quote [f1]) (quote help-for-help))))
+
+
+
+   * キー入力列中の制御文字はペーストされた場所にグラフィック形式で表
+     示されます。つまり <CTRL> が `^' で表され、<TAB> は複数(通常は 8)
+     個のスペースで表されます。これはベクトルや文字列の形式に書き換え
+     たくなるでしょう。
+
+   * キー入力列のプレフィクスキーが完全なキー入力列として既に割り当て
+     られている場合は新しく割り当てる前にキー割り当てを解除する必要が
+     あります。たとえば `ESC {' が既に割り当てられている時は次のように
+     します。
+
+          (global-unset-key [?\e ?{])   ;;   または
+          (local-unset-key [?\e ?{])
+
+   * コマンドや「ラムダリスト」だけでなく、ベクトルや文字列をキーボー
+     ドマクロとしてキーに割り当てることができます。たとえば次のように
+     します。
+
+          (global-set-key [f10] [?\C-x?\e?\e?\C-a?\C-k?\C-g])  ;;  または
+          (global-set-key [f10] "\C-x\e\e\C-a\C-k\C-g")
+
+
+
+
+File: efaq-ja, Node: Invalid prefix characters, Next: Terminal setup code works after Emacs has begun, Prev: Binding keys to commands, Up: Key bindings
+
+"Key sequence XXX uses invalid prefix characters" って何のことですか?
+=====================================================================
+
+   大抵は以下の二つの場合のいずれかでしょう。一つ目の場合として、キー
+入力列中のの制御文字の記述が間違っているということがあります。(例えば 
+Lisp 式の中で `\C-f' ではなく、 `C-f' が使われている場合) もう一つの場
+合として、割り当てようとしているキー入力列のプレフィクスキーがすでに完
+全なキー入力列として割り当てられているということがあります。歴史的経緯
+で `ESC [' をプレフィクスキーにすると問題がありました。このときはキー
+入力列を割り当てる前に次の式を評価してください。
+
+     (global-unset-key [?\e ?[])  ;;  または
+     (global-unset-key "\e[")
+
+
+
+File: efaq-ja, Node: Terminal setup code works after Emacs has begun, Next: Using function keys under X, Prev: Invalid prefix characters, Up: Key bindings
+
+セットアップが `.emacs' の中でだとうまくいきません。なぜですか?
+===============================================================
+
+   起動時に Emacs は与えられたコードまたはファイルの順番に従って自分自
+身を初期化しようとします。端末やウィンドウの設定の初期化が実行されるま
+で有効にならないコードが書かれているとこの問題が発生します。(この順番
+は起動後にはあまり問題になりません)
+
+   端末・ウィンドウシステムの設定の初期化が実行されてから Lisp コード
+を実行させるには、あなたが実行したいと思っているコードを "ラムダ式" に
+して変数 `term-setup-hook' まはた `window-setup-hook' の値に追加してく
+ださい。たとえば次の様にします。
+
+     (add-hook 'term-setup-hook
+               (lambda ()
+                (when (string-match "\\`vt220" (or (getenv "TERM") ""))
+                  ;; vt220 の "Do" キーを M-x と同じにする
+                  (global-set-key [do] 'execute-extended-command))))
+
+   Emacs が起動時に何をするのかを知るためには`lisp/startup.el' を見て
+ください。
+
+
+
+File: efaq-ja, Node: Using function keys under X, Next: Working with function and arrow keys, Prev: Terminal setup code works after Emacs has begun, Up: Key bindings
+
+X 上でファンクションキーを使う方法は?
+=====================================
+
+   Emacs 19 以降ではファンクションキーは他のキーと同様に利用できます。
+*Note Binding keys to commands:: 参照。
+
+
+
+File: efaq-ja, Node: Working with function and arrow keys, Next: X key translations for Emacs, Prev: Using function keys under X, Up: Key bindings
+
+ファンクションキーやカーソルキーが生成する文字列を知る方法は?
+=============================================================
+
+   `C-h c' と入力してからファンクションキーやカーソルキーを押してくだ
+さい。ファンクションキーのシンボルか文字列を表示します。(詳細はオンラ
+インマニュアル参照) 他のキーに対しても使えます。
+
+
+
+File: efaq-ja, Node: X key translations for Emacs, Next: Handling C-s and C-q with flow control, Prev: Working with function and arrow keys, Up: Key bindings
+
+X 上で "キーの読み変え" をする方法は?
+=====================================
+
+   Emacs は標準では Xt ライブラリを使って書かれてはいないので、"キーの
+読み替え" はできません。(Xt ライブラリを使ってコンパイルした Emacs で
+のキーの読み替えについて知っていたら教えてください)
+
+   Emacs にそう言った挙動をさせるには(Emacs の外で) `xmodmap' を使うか、
+(Emacs の中で) `define-key' を使ってください。関数 `define-key' は変数 
+`function-key-map' と合わせて使ってください。たとえば次の式は 
+`M-<TAB>' というキー入力列を定義します。
+
+     (define-key function-key-map [M-<TAB>] [?\M-\t])
+
+
+
+File: efaq-ja, Node: Handling C-s and C-q with flow control, Next: Binding C-s and C-q, Prev: X key translations for Emacs, Up: Key bindings
+
+フロー制御に使われている `C-s' と `C-q' を扱う方法は?
+=====================================================
+
+   <C-s> と <C-q> は XON/XOFF のフロー制御に使われているのでEmacs は混
+乱します。それは Emacs が標準で <C-s> と <C-q> にコマンドを割り当てて
+いるからです。Emacs はこれらをフロー制御文字として認識せず、出力のバッ
+ファを埋め尽くすかも知れません。時に XON/XOFF フロー制御をするソフトは 
+Emacs から<C-s> と <C-q> を見えないようにしているかも知れません。
+
+   解決方法:
+
+
+   * `C-s', `C-q' によるフロー制御を止める
+
+     フロー制御の原因を特定します。
+
+
+        - 端末
+
+          あなたの使っている端末はすべてのキャラクタを表示する時間を取
+          るために XON/XOFF フロー制御をしているかも知れません。たとえ
+          ば VT 端末がこれをしています。セットアッップメニューを使えば
+          これを無効にできるかも知れません。これはいくつかの PC のター
+          ミナルエミュレータにも使えます。
+
+          端末のフロー制御を無効にすると、もう一端のフロー制御も無効に
+          しなければなりません。それはログインしたコンピュータかも知れ
+          ませんし、端末サーバかも知れません。
+
+          フロー制御を無効にするとキャラクタが失われる可能性があります。
+          端末につながっているプリンタは誤動作するかも知れません。これ
+          を回避するには、端末の `termcap' エントリを修正してヌルキャ
+          ラクタで埋めてください。
+
+        - モデム
+
+          電話回線で接続しているなら、モデムが XON/XOFF フロー制御をし
+          ています。これを回避する方法は明らかになっていません。
+
+        - ルータ、端末サーバ
+
+          端末とコンピュータをつなぐ装置が XON/XOFF フロー制御をしてい
+          る場合があります。他のフロー制御に切り替える事ができるかも知
+          れません。近くにいるネットワークに詳しい人に尋ねてみてくださ
+          い。
+
+        - `tty', `pty' デバイス
+
+          Emacs が動いているマシンまでの接続がいくつかの `tty', `pty' 
+          を通っている場合は、必要もないのに XON/XOFF フロー制御をして
+          いる場合があります。
+
+          Eirik Fuller <eirik@theory.tn.cornell.edu> は次の様に書いて
+          います。
+
+               `rlogin' (と `telnet')のいくつかのバージョンはフロー制
+               御文字を接続しているリモートシステムに渡さないんだ。そ
+               のようなシステムでは、リモートシステム上の Emacs はフロー
+               制御を抑制できない。`rlogin -8' で回避できることもある。
+
+               これを直す一つの方法はローカルホスト(`rlogin' を実行し
+               ているマシン。`rlogind' を実行している方ではない)で 
+               `rlogin' を実行する前に `stty' コマンドを使ってフロー制
+               御を抑制することだ。多くのシステムでは `stty start u
+               stop u' で良いだろう。
+
+               `tcsh' を使っている場合、バージョンによってはこれもうま
+               くいかないかも知れない。これを回避するには `rlogin' す
+               る前に別のシェルを起動し、そのシェルから `stty' コマン
+               ドを使ってフロー制御を抑制することだ。
+
+          システムによっては `stty start u stop u' の代わりに `stty
+          -ixon' を使う必要があります。
+
+
+   * Emacs に XON/XOFF フロー制御をさせる
+
+     次の式を評価すると Emacs は無条件に <C-s> と <C-q> をフロー制御文
+     字として扱うようになります。
+
+          (enable-flow-control)
+
+     端末によって設定を変える場合は次の様にしてください。(`vt100' や 
+     `h19' は実際の端末名に置き換えてください。)
+
+          (enable-flow-control-on "vt100" "h19")
+
+     これらのコマンドは自動的に <C-s> と <C-q> を<C-\> と <C-^> に入れ
+     替えます。変数 `flow-control-c-s-replacement' と
+     `flow-control-c-q-replacement' で交換用のキーを変更できます。
+
+     個人で対処する場合は `.emacs' に記述してください。サイトで対処す
+     る場合は `site-lisp/site-start.el' に記述するのが良いでしょう。
+     (実際にはこの `site-lisp' は Emacs をインストールしたディレクトリ
+     (Unix なら大抵の場合 `/usr/local/share/emacs')のサブディレクトリ
+     です。) `site-lisp/default.el' に書くのは問題があります。もしユー
+     ザーの `.emacs' にエラーがあると `site-lisp/default.el' はロード
+     されません。そうなると、ユーザはたとえ `.emacs' を修正するためで
+     あっても Emacs を使うことができなくなってしまいます。(`.emacs' の
+     名前を変更するとか `-q' オプションを使うと言う方法に気付けば話は
+     別ですが)
+
+     コマンド `enable-flow-control' は次の様に対話的に使うこともできま
+     す。
+
+     `M-x enable-flow-control <RET>'
+
+
+   詳しくは `etc/PROBLEMS' ファイルを読んでください。(このファイルは 
+Emacs の配布ファイルに含まれています。)
+
+
+
+
+File: efaq-ja, Node: Binding C-s and C-q, Next: Backspace invokes help, Prev: Handling C-s and C-q with flow control, Up: Key bindings
+
+`C-s' や `C-q' がフロー制御に利用されている場合にコマンドを割り当てる方法は?
+============================================================================
+
+   <C-s> と <C-q> にコマンドを割り当てるには関数 `enable-flow-control' 
+か関数 `enable-flow-control-on' を使ってください。使い方については 
+*Note Handling C-s and C-q with flow control:: 参照。
+
+   他のキーに割り当てるには関数 `keyboard-translate' を使ってください。
+使い方については *Note Swapping keys:: 参照。サイトで対処する場合は 
+`site-lisp/site-start.el' に記述してください。`site-lisp/default.el' 
+を使っていけない理由については*Note Handling C-s and C-q with flow
+control:: 参照。
+
+
+   * サイトで対処する場合、ドキュメントと Emacs の実際の動作が異なるの
+     でユーザーが混乱するかも知れません。
+
+
+
+
+File: efaq-ja, Node: Backspace invokes help, Next: stty and Backspace key, Prev: Binding C-s and C-q, Up: Key bindings
+
+何故 <Backspace> キーでヘルプが起動するのですか?
+================================================
+
+   <Backspace> キーは(ほとんどのキーボードでは) ASCII コードの 8 を生
+成します。<C-h> も同じコードを生成します。Emacs は標準で <C-h> でヘル
+プを起動します。`help' の先頭が `h' なので覚えやすいようにこう決められ
+ました。もっとも簡単な解決法は <C-h> (と <Backspace>)でヘルプを起動し、
+<DEL>(<Delete>)で直前の文字を削除するという標準のの設定のまま Emacs を
+使うことです。
+
+   この解決方法を好まない人もいます。
+
+
+   * Emacs 以外では通常 <Backspace> は直前の文字を削除するように定義さ
+     れています。Emacs 以外でも <DEL> を直前の文字の削除に利用すれば解
+     決できます。次のコマンドは多くの Unix システムで有効でしょう。
+
+          stty erase `^?'
+
+   * <Backspace> の方がキーボードの便利な位置にあるとか、<Delete> がな
+     いとかの理由で<Backspace> に直前の文字を削除させたい場合、
+     <Backspace> に <Delete> のように振る舞わせることもできます。
+
+        - 端末(例えば VT3## 端末)あるいは端末エミュレータ(例えば 
+          TeraTerm) によっては {Backspace} の生成するコードをセットアッ
+          プメニューで変更できます。
+
+        -  好きなように設定できるキーボードを利用するという方法もありま
+          す。キーの読み替え機能のある端末エミュレータもあります。
+
+        - Emacs 21.1 以降では <Backspace> と <Delete> の役割を変数 
+          `normal-erase-is-backspace-mode' の値を設定することで変える
+          ことができます。設定は端末でもウィンドウシステムでも有効です。
+          これは `M-x normal-erase-is-backspace' と入力することでも設
+          定できます。詳しくは変数や関数の説明を読んで下さい(*Note
+          Emacs Lisp documentation::参照)。
+
+        - Emacs 内部で <Backspace> と <DEL> を交換できます。
+
+               (keyboard-translate ?\C-h ?\C-?)
+
+          <Backspace> を <DEL> の様にする方法としてはこれがお薦めです。
+          この方法なら <DEL> に `delete-backward-char' 以外のコマンド
+          を割り当てているモードでも <Backspace> を <DEL> として扱いま
+          す。
+
+          同様にして <DEL> を `C-d' にするには次の様にします。(`C-d' 
+          は現在位置の文字を消します。)
+
+               (keyboard-translate ?\C-? ?\C-d)
+
+          `keyboard-translate' の詳細については *Note Swapping keys:: 
+          参照。
+
+        - 別の方法として、ヘルプを `C-x h' に割り当てることができます。
+
+               (global-set-key "\C-h" 'delete-backward-char)
+
+               ;;; overrides mark-whole-buffer
+               (global-set-key "\C-xh" 'help-command)
+
+          この方法はお薦めできません。この方法では <DEL> を 
+          `delete-backward-char' に割り当てているモードでのみうまくい
+          きます。そうでないモード(例えば`view-mode')では <Backspace> 
+          でヘルプが起動するでしょう。このため上記の 
+          `keyboard-translate' を利用する方法をお薦めします。
+
+          他にヘルプを割り当てるキーとしては <M-?> や <C-x ?> が良く使
+          われるようです。
+
+     <DEL> をヘルプに割り当てないでください。<DEL> にローカルな割り当
+     てを持つモードが多数存在し、うまく機能しません。
+
+
+   Emacs 21 以降ではウィンドウシステム上で起動された場合、<Delete> で
+ポイント位置の文字を削除するようになっています。このためウィンドウシス
+テム上ではあまりキー操作に悩むことはありません。
+
+   この問題についてオンラインマニュアルにも書かれています。*Note
+(emacs)DEL Does Not Delete::を参照して下さい。
+
+
+
+File: efaq-ja, Node: stty and Backspace key, Next: Swapping keys, Prev: Backspace invokes help, Up: Key bindings
+
+Emacs が <Backspace> と <Delete> に関する `stty' の設定を無視するのはなぜですか?
+================================================================================
+
+   良い質問です。
+
+
+
+
+File: efaq-ja, Node: Swapping keys, Next: Producing C-XXX with the keyboard, Prev: stty and Backspace key, Up: Key bindings
+
+キーを交換する方法は?
+=====================
+
+   Emacs 19 では関数 `keyboard-translate' を使ってキー(またはキー入力
+列)を交換することができます。例えば <C-h> と <DEL> を交換したいときは
+次の式を評価してください。
+
+     (keyboard-translate ?\C-h ?\C-?)  ; translate `C-h' to DEL
+     (keyboard-translate ?\C-? ?\C-h)  ; translate DEL to `C-h'.
+
+一番目の引数はキーボードから入力されるシーケンスです。二番目の引数はキー
+マップに適用されるシーケンスです。
+
+   キーボードトランスレーションはキー割り当てとは異なります。Emacs は
+色々な状況で適用される様々なキーマップを持ちますが、キーボードトランス
+レーションはただ一つしか存在せず、Emacs が端末から読み取る文字すべてに
+適用されます。キーボードトランスレーションは入力プロセスの最下層で実現
+されます。キーマップに適用されるキーはキーボードトランスレーションの結
+果の文字列です。
+
+   オンラインマニュアルの *Note (emacs)Keyboard Translations:: 参照。
+
+
+
+File: efaq-ja, Node: Producing C-XXX with the keyboard, Next: No Meta key, Prev: Swapping keys, Up: Key bindings
+
+C-XXX を入力する方法は?
+=======================
+
+   X 以外の端末では次の様な "エイリアス" が一般的です。
+
+
+`C-2' または `C-<SPC>'
+     `C-@'
+
+`C-6'
+     `C-^'
+
+`C-7' または `C-S--'
+     `C-_'
+
+`C-4'
+     `C-\'
+
+`C-5'
+     `C-]'
+
+`C-/'
+     `C-?'
+
+
+   他のエイリアスも存在します。<CTRL> キーと数字キーでどんなキーが生成
+されるか`C-h c' を使って調べてみてください。コマンド名がわかっているな
+ら `C-h w' を使ってみてください。
+
+
+
+File: efaq-ja, Node: No Meta key, Next: No Escape key, Prev: Producing C-XXX with the keyboard, Up: Key bindings
+
+<Meta> キーがない場合はどうしたらいいのですか?
+==============================================
+
+   多くのキーボードでは <Alt> キーが <Meta> キーとして使えるでしょう。
+
+   `M-a' と入力する代わりに、`<ESC> a' と入力することができます。実際、
+Emacs は内部で `M-a' を `<ESC> a' に分解して処理しています。(ただし変
+数 `meta-prefix-char' の値にもよります) <Meta> キーと <a> は同時に押し
+ますが、<ESC> を使うときは同時に押すのではなく、<ESC> を離してから <a> 
+を押すことに注意してください。
+
+
+
+File: efaq-ja, Node: No Escape key, Next: Compose Character, Prev: No Meta key, Up: Key bindings
+
+<Escape> キーがない場合はどうしたらいいのですか?
+================================================
+
+   `C-[' を代わりに使ってください。これは <ESC> と同じく ASCII コード
+の 27 を送信します。`C-3' も端末によっては(X 上でないときは)うまくいく
+でしょう。<F11> は多くの端末(特に DEC の端末)で <ESC> を生成します。そ
+うでなければ次の式で利用できるようになります。
+
+     ;;; F11 is the documented ESC replacement on DEC terminals.
+     (define-key function-key-map [f11] [?\e])
+
+
+
+File: efaq-ja, Node: Compose Character, Next: Binding combinations of modifiers and function keys, Prev: No Escape key, Up: Key bindings
+
+<Compose Character> キーを <Meta> キーの代わりに使う事はできますか?
+===================================================================
+
+   VT220 のようなダム端末ではできません。VT220 クローンでそのようなこ
+とができる物があるという噂はあります。X を使っているなら `xmodmap' を
+使ってできるかも知れません。
+
+
+
+File: efaq-ja, Node: Binding combinations of modifiers and function keys, Next: Meta key does not work in xterm, Prev: Compose Character, Up: Key bindings
+
+モディファイアキーとファンクションキーの組み合わせをコマンドに割り当てる方法は?
+===============================================================================
+
+   Emacs 19 以降ではベクトルを使ってモディファイアキーとファンクション
+キーを組み合わせたキー入力列を表すことができます。例: (オンラインマニュ
+アルにあります)
+
+     (global-set-key [?\C-x right] 'forward-page)
+
+`?\C-x' は <C-x> の Lisp 表現です。
+
+   ファンクションキーとモディファイアキー(<CTRL>, <META>, <HYPER>,
+<SUPER>, <ALT>, <SHIFT>)を同時に使うにはファンクションキーを表すシンボ
+ル名の前に`C-', `M-', `H-', `s-', `A-', `S-' を付けてください。次の式
+は `Hyper-Meta-RIGHT' に `forward-word' を割り当てます。
+
+     (global-set-key [H-M-right] 'forward-word)
+
+
+   * すべてのモディファイアキーが使えるとは限りません。<HYPER>,
+     <SUPER>, <ALT> は文字端末上では利用できません。ASCII でないキーや
+     マウスイベント(例えば `C-=' や `Mouse-1')についても同様です。
+
+
+   一般的なキー割り当ての方法については *Note Binding keys to
+commands:: 参照。
+
+
+
+File: efaq-ja, Node: Meta key does not work in xterm, Next: ExtendChar key does not work as Meta, Prev: Binding combinations of modifiers and function keys, Up: Key bindings
+
+`xterm' で <Meta> キーが使えないのはなぜ?
+=========================================
+
+   *Note (emacs)Single-Byte Character Support:: を参照してください。
+
+   それでうまく行かない場合は以下の点を確認してみてください。
+
+
+   * ウィンドウマネージャーに `mwm' を使っているなら無理でしょう。(誰
+     か良い解決法を知りませんか?)
+
+   * X11 上で使っているなら、キーが本当に <Meta> キーか確認してくださ
+     い。`xev' を使って <Meta> キー(らしきキー)の生成するコードを調べ
+     られます。それは `Meta_L' か `Meta_R' でなくてはいけません。そう
+     でなかったら `xmodmap' で修正してください。<Meta> キーが `Meta_L' 
+     か `Meta_R' を生成し、`M-x' が non-ASCII 文字を生成するのならば
+     `~/.Xdefaults'に以下の様に書き加えて下さい。
+
+          XTerm*eightBitInput:   false
+          XTerm*eightBitOutput:  true
+
+   * `xterm' の使う `pty' が 8 ビット文字を通すか確認してください。
+     `stty -a' (または `stty everything')で `cs8' が表示されなければい
+     けません。`cs7' が表示されたなら `stty cs8 -istrip'(または `stty
+     pass8') で修正してください。
+
+   * `xterm' と Emacs の間を `rlogin' でつないでいるなら 8 ビット文字
+     を通すために`-8' を `rlogin' の引数に指定する必要があります。
+
+   * Emacs が Ultrix 上で走っているなら `(set-input-mode t nil)' でう
+     まくいくと言う報告があります。
+
+   * 以上全部が駄目なら `M-W' を入力した時に `<ESC> W' を`xterm' に生
+     成させる方法があります。これは Emacs では同じキー入力列となります。
+     X11R4 では次のリソースを指定してください。
+
+          XTerm.VT100.EightBitInput: false
+
+     (これは `insert-eight-bit' の挙動を変更します)
+
+     古い `xterm' ではトランスレーションで同じことができます。
+
+          XTerm.VT100.Translations: #override \
+            Meta<KeyPress>: string(0x1b) insert()
+
+     リソース中の `Meta' を `Alt' に置き換える必要があるかも知れません。
+
+
+
+
+File: efaq-ja, Node: ExtendChar key does not work as Meta, Prev: Meta key does not work in xterm, Up: Key bindings
+
+HP-UX 8.0 と 9.x で <ExtendChar> キーが <Meta> キーとして使えないのはなぜ?
+==========================================================================
+
+   これは X11R4 で国際化拡張がなされ、現在 HP がこの拡張を使っているた
+めです。Emacs は `XLookupString' が <Meta> キーの状態によらずに同じ結
+果を返すものと見なすためです。Emacs 側で修正されるようになるまでは、X 
+サーバを起動する度に `xterm' を起動する前に次の様にしてください。
+
+     xmodmap -e 'remove mod1 = Mode_switch'
+
+
+   これによりシステム全体で新たなキーシムが使えなくなるので、期待した
+解決法ではないかもしれません。
+
+
+
+File: efaq-ja, Node: Alternate character sets, Next: Mail and news, Prev: Key bindings, Up: Top
+
+Alternate character sets
+************************
+
+* Menu:
+
+* Emacs does not display 8-bit characters::  8 ビット文字の表示
+* Inputting eight-bit characters::  8 ビット文字の入力
+* Kanji and Chinese characters::  漢字
+* Right-to-left alphabets::     右から左に書く文字
+
+
+
+File: efaq-ja, Node: Emacs does not display 8-bit characters, Next: Inputting eight-bit characters, Prev: Alternate character sets, Up: Alternate character sets
+
+8 ビット文字を表示する方法は?
+=============================
+
+   *Note (emacs)Single-Byte Character Support:: を参照してください。
+
+   Unix では Emacs が文字端末上で起動された場合(X 上であっても `-nw' 
+オプション付きで起動された場合)、コマンド `set-terminal-coding-system' 
+を使って Emacs に端末が表示できる文字を知らせる必要があります。これは
+言語環境の設定をしても自動的に設定されることはありません。この設定をし
+ないと ASCII 以外の文字はすべて `?' に置き換えて表示されます。Unix 以
+外の OS、たとえば MS-DOS や MS-Windows ではEmacs は端末で表示できる文
+字を調べて文字コードを自動的に設定をします。
+
+
+
+File: efaq-ja, Node: Inputting eight-bit characters, Next: Kanji and Chinese characters, Prev: Emacs does not display 8-bit characters, Up: Alternate character sets
+
+8 ビット文字を入力する方法は?
+=============================
+
+   8 ビット文字を入力する方法には様々なものがあります。*Note
+(emacs)Single-Byte Character Support:: を参照してください。また、言語
+ごとに専用の入力方法が用意されています。*Note (emacs)Input Methods:: 
+を参照してください。
+
+
+
+File: efaq-ja, Node: Kanji and Chinese characters, Next: Right-to-left alphabets, Prev: Inputting eight-bit characters, Up: Alternate character sets
+
+日本語や中国語の使える Emacs はありますか?
+==========================================
+
+   Emacs 20 以降では MULE (Emacs の多言語化拡張)の機能が取り込まれてい
+ます。Emacs の最新版を入手する方法については *Note Installing Emacs:: 
+参照。
+
+
+
+File: efaq-ja, Node: Right-to-left alphabets, Prev: Kanji and Chinese characters, Up: Alternate character sets
+
+セム語(右から左に書く言語)が扱える Emacs はありますか?
+======================================================
+
+   Emacs 20 ではヘブライ文字(ISO 8859-8)を扱えますが、右から左に表示さ
+せることはできません。
+
+   Joel M. Hoffman <joel@exc.com> が作った `hebrew.el' パッケージを使
+えばヘブライ語を右から左に書くということが実現できます。これは Emacs
+19 でも動作するそうですが、Emacs 18 用のパッチを当てる必要があります。
+パッチが必要なら Joel M. Hoffman にメールを出してください。
+
+
+   `hebrew.el' を使うにはヘブライ語のフォントが必要です。他に必要なも
+のは特にありません。Joel M. Hoffman は MS-DOS と GNU/Linux 用のフォン
+トを持っています。
+
+   archie で `hebrew' を検索してみるのも良いでしょう。必要なファイルが
+イスラエルの ftp サイトから入手できるかもしれません。
+
+
+
+File: efaq-ja, Node: Mail and news, Next: Concept index, Prev: Alternate character sets, Up: Top
+
+Mail and news
+*************
+
+* Menu:
+
+* Changing the included text prefix::  引用記号の変更
+* Saving a copy of outgoing mail::  差出メールの保存
+* Expanding aliases when sending mail::  エイリアス展開
+* Rmail thinks all messages are one big one::  Rmail でメールの区切りを認識
+* Sorting the messages in an Rmail folder::  Rmail でメールの並べ替え
+* Rmail writes to /usr/spool/mail::  Rmail が /usr/spool/mail に書き込む
+* Recovering mail files when Rmail munges them::  Rmail からの復帰
+* Replying to the sender of a message::  差出人にのみ返信
+* MIME with Emacs mail packages::  MIME サポート
+* Automatically starting a mail or news reader::  メーラ・ニュースリーダ起動
+* Reading news with Emacs::     ネットニュース
+* Gnus does not work with NNTP::  Gnus が動かない
+* Viewing articles with embedded underlining::  記事中のアンダーライン
+* Saving a multi-part Gnus posting::  分割投稿された記事
+* Starting Gnus faster::        Gnus の起動の高速化
+* Catching up in all newsgroups::  すべての記事を読んだことにする
+* Killing based on nonstandard headers::  いらない記事を消す
+* Removing flashing messages::  無駄なメッセージを出さない
+* Catch-up is slow in Gnus::    全部の記事を読んだことにするのに時間がかかる
+* Gnus hangs for a long time::  Gnus が固まる
+* Learning more about Gnus::    Gnus についてもっと知りたい
+
+
+
+File: efaq-ja, Node: Changing the included text prefix, Next: Saving a copy of outgoing mail, Prev: Mail and news, Up: Mail and news
+
+メールやニュースにフォローアップするときの引用記号の変更方法は?
+===============================================================
+
+   メールを Rmail で読んでいる、あるいはニュースを Gnus で読んでいる場
+合は、変数 `mail-yank-prefix' の値を設定してください。VM では変数 
+`vm-included-text-prefix' を、mh-e では変数 `mh-ins-buf-prefix' の値を
+設定してください。
+
+   より好みに合わせたいときは Supercite を使うと良いでしょう。*Note
+Supercite:: 参照。
+
+   返信のメッセージに余計なヘッダを含めない様にするには変数 
+`mail-yank-ignored-headers' の値を設定してください。
+
+
+
+File: efaq-ja, Node: Saving a copy of outgoing mail, Next: Expanding aliases when sending mail, Prev: Changing the included text prefix, Up: Mail and news
+
+メールをだすときにコピーを取っておく方法は?
+===========================================
+
+   BCC: ヘッダをメールの中に書いておけば自分自身にもメールをだせます。
+あるいは FCC: ヘッダを書くことで直接ファイルにコピーできます。
+
+   標準の mail コマンドを使っているなら、次の式を `.emacs' に書いてお
+けば自動的に自分宛の BCC: ヘッダが付くようになります。
+
+     (setq mail-self-blind t)
+
+FCC: ヘッダを自動的に付けたい場合はこうです。
+
+     (setq mail-archive-file-name (expand-file-name "~/outgoing"))
+
+   このときファイルは Unix mail 形式で保存されます。この形式のファイル
+は VM では直接読むことができますが、Rmail で読めるとは限りません。
+*Note Learning how to do something:: 参照。
+
+   mh-e を使っているなら `components' ファイル(変数 `mh-comp-formfile' 
+に指定される名前のファイル)に`FCC' か `BCC' フィールドを追加してくださ
+い。
+
+   `set record filename' を `.mailrc' に追加してもうまくいきません。
+
+
+
+File: efaq-ja, Node: Expanding aliases when sending mail, Next: Rmail thinks all messages are one big one, Prev: Saving a copy of outgoing mail, Up: Mail and news
+
+メールを送信するときに Emacs はなぜエリアスを展開しないのですか?
+================================================================
+
+
+   * 複数のアドレスはコンマ(`,')で区切って入力する必要があります。これ
+     は Emacs が RFC822 で定められている次のようなアドレスの記述に対応
+     しているからです。
+
+          To: Willy Smith <wks@xpnsv.lwyrs.com>
+
+     しかし `.mailrc' ファイル中ではコンマで区切る必要はありません。む
+     しろ `/usr/ucb/mail' (別名 `mailx')がRFC822 をサポートしていない
+     ならコンマで区切ってはいけません。
+
+   * Emacs は通常 `.mailrc' ファイルを一回の Emacs セッションに付きた
+     だ一度、一番最初にメールを書き始めるときにしか読み込みません。
+     `.mailrc' を編集したときは、`M-x rebuild-mail-abbrevs' と入力して
+     `.mailrc' を再び読み込んでください。
+
+   * 次の式を評価すればエイリアスを入力してその場で展開するようになり
+     ます。
+
+          (add-hook 'mail-mode-hook 'mail-abbrevs-setup)
+
+     エイリアスは <RET> か区切り文字(<,>)を入力したときに展開されるこ
+     とに注意してください。エイリアスの直後にポイントを移動して`C-x a
+     e' (`M-x expand-abbrev') と入力することで強制的にエイリアスを展開
+     できます。
+
+
+
+
+File: efaq-ja, Node: Rmail thinks all messages are one big one, Next: Sorting the messages in an Rmail folder, Prev: Expanding aliases when sending mail, Up: Mail and news
+
+Rmail がすべてのセーブしたメッセージを一つのメッセージと見なすのはなぜ?
+=======================================================================
+
+   メッセージの `FCC' フィールドにより作られた Unix mail 形式のファイ
+ルはRmail の使う形式(BABYL 形式)ではありません。Rmail は Unix mail 形
+式を入力としたとき、できるだけ BABYL 形式に変換しようとしますが、時に
+は変換に失敗します。より確実にファイルを読むためには関数 
+`set-rmail-inbox-list' を使ってメッセージをセーブするファイルを 
+`saved-messages' にしてください。
+
+
+
+File: efaq-ja, Node: Sorting the messages in an Rmail folder, Next: Rmail writes to /usr/spool/mail, Prev: Rmail thinks all messages are one big one, Up: Mail and news
+
+Rmail フォルダのメッセージを並べ変える方法は?
+=============================================
+
+   Rmail の中で `C-c C-s C-h' と入力して並べ変えの関数とキー割り当ての
+一覧を見てください。
+
+
+
+File: efaq-ja, Node: Rmail writes to /usr/spool/mail, Next: Recovering mail files when Rmail munges them, Prev: Sorting the messages in an Rmail folder, Up: Mail and news
+
+Rmail はなぜ `/usr/spool/mail' に書き込む必要があるのですか?
+============================================================
+
+   Rmail が使う `movemail' の挙動によるものです。このことから 
+`movemail' がロックファイルを使うように指定されていることがわかります。
+
+   RMS は次の様に言っています。
+
+     あるシステムはメールファイルをロックするためにロックファイルを使
+     う。このシステムでは `movemail' はロックファイルを書かなくてはい
+     けない。さもなくばメールを失う危険をおかすことになる。ただ 
+     `movemail' にロックファイルを書かせる様にすれば良い。
+
+     その他のシステムでは、 `flock' システムを使う。このシステムでは 
+     `movemail' が `flock' を使う様にすれば良い。
+
+
+
+File: efaq-ja, Node: Recovering mail files when Rmail munges them, Next: Replying to the sender of a message, Prev: Rmail writes to /usr/spool/mail, Up: Mail and news
+
+Rmail 形式のファイルをもとの Unix mail 形式に戻す方法は?
+========================================================
+
+   `M-x rmail-input' を使っただけであって、バッファを Rmail の形式
+(BABYL 形式と呼ぶ)で保存したくない場合は単にバッファを消して下さい
+(`C-x k' で消せます)。
+
+   既に `M-x rmail' で `inbox' のメールを読んでしまったがバッファを 
+Unix mail 形式で保存したい場合は、個々のメールに対して `C-o' を入力し
+てください。
+
+   BABYL 形式のファイルを Unix mail 形式に変換したい場合は`M-x
+unrmail' と入力してください。入力ファイルと出力ファイルを指定できます。
+
+   他に Emacs 付属のプログラム `b2m' を利用する方法があります。`b2m' 
+はフィルタプログラムで、次の様に使います。
+
+     b2m < BABYL-FILE > MBOX-FILE
+
+ここで BABYL-FILE は BABYL ファイルのファイル名前で、MBOX-FILE は変換
+後のファイルのファイル名です。
+
+
+
+File: efaq-ja, Node: Replying to the sender of a message, Next: MIME with Emacs mail packages, Prev: Recovering mail files when Rmail munges them, Up: Mail and news
+
+Rmail でリプライするときに差出人にのみ返信する方法は?
+=====================================================
+
+   Ron Isaacson <isaacson@seas.upenn.edu> は次の様に言っています。
+
+   Rmail 中で <r> を入力したとき、標準ではもとのメールの受取人(To: と 
+CC: フィールドに書かれている人) が CC: フィールドに挿入されます。プレ
+フィクスアーギュメントを付けると(`C-u r')差出人にのみ返信します。しか
+し毎回 `C-u' を入力するのは面倒です。次のコードは私が見つけた最も良い
+コードです。
+
+     (defun rmail-reply-t ()
+       "Reply only to the sender of the current message. (See rmail-reply.)"
+       (interactive)
+       (rmail-reply t))
+
+     (add-hook 'rmail-mode-hook
+       (lambda ()
+         (define-key rmail-mode-map "r" 'rmail-reply-t)
+         (define-key rmail-mode-map "R" 'rmail-reply)))
+
+
+
+File: efaq-ja, Node: MIME with Emacs mail packages, Next: Automatically starting a mail or news reader, Prev: Replying to the sender of a message, Up: Mail and news
+
+MIME を利用する方法は?
+======================
+
+   Emacs MIME FAQ を見てください。これは MacDonald Hall Jackson
+<trey@cs.berkeley.edu> が保守しています。次のところから入手できます。
+
+`http://bmrc.berkeley.edu/~trey/emacs/mime.html'
+
+   VM 6.x は MIME をサポートしています。 *Note VM:: 参照。
+
+   Gnus はメール・ニュースともに MIME をサポートしています(バージョン 
+5.8.1(Pterodactyl) 時点)。
+
+   Rmail は Emacs 20.3 以降で MIME がサポートされていますが、マルチパー
+トには対応していません。
+
+
+
+File: efaq-ja, Node: Automatically starting a mail or news reader, Next: Reading news with Emacs, Prev: MIME with Emacs mail packages, Up: Mail and news
+
+Emacs に自動的にメール・ニュースリーダを起動させる方法は?
+=========================================================
+
+   Gnus を起動する場合:
+
+     emacs -f gnus
+
+   Rmail の場合:
+
+     emacs -f rmail
+
+   Gnus を起動する便利な方法:
+
+     alias gnus 'emacs -f gnus'
+     gnus
+
+   `.emacs' ファイルからメールリーダ・ニュースリーダを起動するのはあさ
+はかです。こうした場合、 Emacs を二つ同時に走らせると問題になります。
+また Emacs を速く起動したいときには邪魔になります。
+
+
+
+File: efaq-ja, Node: Reading news with Emacs, Next: Gnus does not work with NNTP, Prev: Automatically starting a mail or news reader, Up: Mail and news
+
+   Emacs でニュースを読む方法は?
+=============================
+How do I read news under Emacs?
+
+   `M-x gnus' と入力してください。Info ドキュメントもあります(*Note
+Learning how to do something::)。
+
+
+
+File: efaq-ja, Node: Gnus does not work with NNTP, Next: Viewing articles with embedded underlining, Prev: Reading news with Emacs, Up: Mail and news
+
+Gnus が NNTP で動かないのはなぜですか?
+======================================
+
+   NNTP 1.5.10 にはバグがあって、複数の要求が同時に NNTP サーバに送ら
+れた時に最初の要求だけを受け付け、それ以外の要求を無視してしまいます。
+NNTP 1.5.11 では修正されるそうです。
+
+   次の様にすればこのバグを回避できます。
+
+     (setq nntp-maximum-request 1)
+
+   NNTP のバージョンはニュースサーバの走っているマシンのNNTP ポート(通
+常は 119)に `telnet' して(つまり `telnet SERVER-MACHINE 119')知ること
+ができます。サーバは最初にバージョンを表示するはずです。終了するときは 
+`quit' と入力してください。
+
+   他の場合については *Note Spontaneous entry into isearch-mode:: 参照。
+
+
+
+File: efaq-ja, Node: Viewing articles with embedded underlining, Next: Saving a multi-part Gnus posting, Prev: Gnus does not work with NNTP, Up: Mail and news
+
+アンダーラインの埋め込まれた記事を見る方法は(例えば ClariNews)?
+===============================================================
+
+   アンダーラインが埋め込まれた記事は次の様に見えます。
+
+     _^Hu_^Hn_^Hd_^He_^Hr_^Hl_^Hi_^Hn_^Hi_^Hn_^Hg
+
+   Per Abrahamsen <abraham@dina.kvl.dk> は次のコードを使うと良いといっ
+ています。このコードは Gnus で記事を読んでいる時に、実際にアンダーライ
+ンを表示させます。
+
+     (defun gnus-article-prepare-overstrike ()
+       ;; Prepare article for overstrike commands.
+       (save-excursion
+         (set-buffer gnus-article-buffer)
+         (let ((buffer-read-only nil))
+         (goto-char (point-min))
+           (while (search-forward "\b" nil t)
+             (let ((next (following-char))
+                   (previous (char-after (- (point) 2))))
+               (cond ((eq next previous)
+                      (delete-region (- (point) 2) (point))
+                      (put-text-property (point) (1+ (point))
+                                         'face 'bold))
+                     ((eq next ?_)
+                      (delete-region (1- (point)) (1+ (point)))
+                      (put-text-property (1- (point)) (point)
+                                         'face 'underline))
+                     ((eq previous ?_)
+                      (delete-region (- (point) 2) (point))
+                      (put-text-property (point) (1+ (point))
+                                         'face 'underline))))))))
+
+     (add-hook 'gnus-article-prepare-hook 'gnus-article-prepare-overstrike)
+
+   最新版の Gnus では自動的にこのような変換をします。
+
+   アンダーライン自体も消してしまいたい時は kbd{M-x
+ununderline-region} で消せます。これを自動的に行うには次のようにしてく
+ださい。
+
+     (add-hook 'gnus-article-prepare-hook
+       (lambda () (ununderline-region (point-min) (point-max))))
+
+
+
+File: efaq-ja, Node: Saving a multi-part Gnus posting, Next: Starting Gnus faster, Prev: Viewing articles with embedded underlining, Up: Mail and news
+
+分割投稿された記事をすべて保存する方法は?
+=========================================
+
+   `gnus-uu' を使ってください。Gnus のサマリバッファで `C-c C-v C-h' 
+と入力すれば利用できるコマンドの一覧が見られます。
+
+
+
+File: efaq-ja, Node: Starting Gnus faster, Next: Catching up in all newsgroups, Prev: Saving a multi-part Gnus posting, Up: Mail and news
+
+Gnus をもっと速く起動する方法は?
+================================
+
+   Gnus FAQ(*Note Learning more about Gnus:: 参照)より
+
+     Pranav Kumar Tiwari <pktiwari@eos.ncsu.edu> は次の様に書いていま
+     す。同じような質問を最近投稿して解答を貰った。その解答。まず新し
+     いバージョンの gnus(5.0.4 以降)が必要。私が使っているのは 5.0.12 
+     で次の設定でうまくいっている。
+
+          (setq gnus-check-new-newsgroups nil
+                gnus-read-active-file 'some
+                gnus-nov-is-evil nil
+                gnus-select-method '(nntp gnus-nntp-server))
+
+
+
+File: efaq-ja, Node: Catching up in all newsgroups, Next: Killing based on nonstandard headers, Prev: Starting Gnus faster, Up: Mail and news
+
+Gnus ですべてのニュースグループを読んだことにする方法は?
+========================================================
+
+   *Newsgroup* バッファで `M-< C-x ( c y C-x ) M-0 C-x e' と入力してく
+ださい。
+
+   ポイントのあるところから先だけでいいときは最初の `M-<' は入力しない
+でください。
+
+
+
+File: efaq-ja, Node: Killing based on nonstandard headers, Next: Removing flashing messages, Prev: Catching up in all newsgroups, Up: Mail and news
+
+Gnus で Newsgroups/Keywords/Control ヘッダで記事を消せないのはなぜですか?
+=========================================================================
+
+   Gnus では Newsgroups:, Keywords:, Control: ヘッダは"Unknown header" 
+フィールドです。
+
+   Newsgroups: ヘッダについては簡単な回避方法があります。Xref: ヘッダ
+を利用してください。このヘッダはクロスポストされた記事には必ずついてい
+ます。(あなたのサイトがクロスポスト先ののグループも講読している限りは)
+
+   本当にこれらのヘッダで記事を消したいときは次の様にしてください。
+
+     (gnus-kill nil "^Newsgroups: .*\\(bad\\.group\\|worse\\.group\\)")
+
+
+
+File: efaq-ja, Node: Removing flashing messages, Next: Catch-up is slow in Gnus, Prev: Killing based on nonstandard headers, Up: Mail and news
+
+遅い接続でのすぐ消えるようなメッセージを出さない様にする方法は?
+===============================================================
+
+   変数 `nntp-debug-read' を `nil' に設定してください。
+
+
+
+File: efaq-ja, Node: Catch-up is slow in Gnus, Next: Gnus hangs for a long time, Prev: Removing flashing messages, Up: Mail and news
+
+Gnus で記事を全部読んだことにすると時間がかかるのはなぜですか
+=============================================================
+
+   Gnus はクロスポストされた記事は他のグループについても読んだことにす
+るからです。この機能は変数 `gnus-use-cross-reference' で制御できます。
+
+
+
+File: efaq-ja, Node: Gnus hangs for a long time, Next: Learning more about Gnus, Prev: Catch-up is slow in Gnus, Up: Mail and news
+
+Gnus で記事を投稿するとすごく時間がかかるのはなぜですか?
+========================================================
+
+   David Lawrence <tale@uunet.uu.net> は次の様に説明しています。
+
+     この問題はほとんどの場合 C News と NNTP の間の通信方法によります。
+     NNTP の POST コマンドは投稿が成功したかどうかを返すために C News 
+     の`inews' をバックグラウンドで動かさずに完了するまで待ちます。(こ
+     のことと、システムによっては成功したかどうかを返さないことがある
+     こととは別の問題です) `inews' は `relaynews' を呼び出すので長い時
+     間かかります。`relaynews' は他の `relaynews' が動いているとロック
+     が解法されるまで待ちます。
+
+     `inews' が `relaynews' を使わずに `newsspool' を使う様にするとと
+     良いでしょう。これによりエラー検出ができなくなる場合もありますが、
+     ほとんどの場合`inews' がエラーを検出した場合と同程度にうまくいく
+     きます。C News を使っている人たちは `inews' を色々と高速化してい
+     るので、最新のバージョンではもっと速くなっているでしょう。
+
+
+
+File: efaq-ja, Node: Learning more about Gnus, Prev: Gnus hangs for a long time, Up: Mail and news
+
+Gnus についてもっと知りたいのですが。
+=====================================
+
+   Gnus に関する情報が欲しければ，Gnus に付属している Gnus マニュアル
+や FAQ を参照してください．
+
+
+
+File: efaq-ja, Node: Concept index, Prev: Mail and news, Up: Top
+
+Concept Index
+*************
+
+* Menu:
+
+* AUCTeX mode for editing TeX:  AUCTeX.                 4.
+* Abbrevs, turning on by default: Turning on abbrevs by default.  4.
+* Abnormal exits from `shell-mode': Shell process exits abnormally.  4.
+* Acronyms, definitions for:    Common acronyms.        4.
+* Adding to `load-path':        Changing load-path.     4.
+* Address book:                 BBDB.                   4.
+* Alternate character sets:     Alternate character sets.  4.
+* Alternative Info file viewers: Viewing Info files outside of Emacs.  4.
+* Alternative mail software:    VM.                     4.
+* Amiga, Emacs for:             Emacs for the Amiga.    4.
+* Antivirus programs, and Shell Mode: Problems with Shell Mode on MS-Windows.  18.
+* Apple computers, Emacs for:   Emacs for Apple computers.  4.
+* Apropos:                      Learning how to do something.  21.
+* Arabic alphabets:             Right-to-left alphabets.  4.
+* Archived postings from `gnu.emacs.help': Newsgroup archives.  4.
+* Arrow keys, symbols generated by: Working with function and arrow keys.  4.
+* Associating modes with files: Associating modes with files.  4.
+* Atari ST, Emacs for:          Emacs for Atari ST.     4.
+* Auto-saving:                  Disabling auto-save-mode.  4.
+* Automatic entry to `auto-fill-mode': Turning on auto-fill by default.  4.
+* Automatic filing of outgoing mail: Saving a copy of outgoing mail.  4.
+* Awk, mode for:                Modes for various languages.  4.
+* BBDB:                         BBDB.                   4.
+* Backspace and `stty':         stty and Backspace key.  4.
+* Backspace key invokes help:   Backspace invokes help.  4.
+* Backup files in a single directory: Disabling backups.  29.
+* Backups, disabling:           Disabling backups.      4.
+* Basic editing with Emacs:     Basic editing.          4.
+* Basic keys:                   Basic keys.             4.
+* Beeping, turning off:         Turning off beeping.    4.
+* Beeping without obvious reason: Spontaneous entry into isearch-mode.  4.
+* Beginning editing:            Basic editing.          4.
+* Bell, visible:                Turning off beeping.    4.
+* Bell, volume of:              Turning the volume down.  4.
+* Big Brother Database:         BBDB.                   4.
+* Binding `C-s' and `C-q':      Binding C-s and C-q.    4.
+* Binding function keys:        Using function keys under X.  4.
+* Binding keys to commands:     Binding keys to commands.  4.
+* Binding modifiers and function keys: Binding combinations of modifiers and function keys.  4.
+* Bison, mode for:              Modes for various languages.  4.
+* Bourne Shell, mode for:       Modes for various languages.  4.
+* Bug reporting:                Reporting bugs.         4.
+* Bugs and problems:            Bugs and problems.      4.
+* Building Emacs from source:   Installing Emacs.       4.
+* `C-M-h', definition of:       Basic keys.             4.
+* `C-h', definition of:         Basic keys.             4.
+* C++, mode for:                Modes for various languages.  4.
+* `C-s' and `C-q', binding:     Binding C-s and C-q.    4.
+* `C-s' and `C-q' with flow control: Handling C-s and C-q with flow control.  4.
+* `COPYING', description of file: Informational files for Emacs.  4.
+* Calc:                         Calc.                   4.
+* Case sensitivity in replacements: Controlling case sensitivity.  11.
+* Case sensitivity of searches: Controlling case sensitivity.  4.
+* Catching up all newsgroups in Gnus: Catching up in all newsgroups.  4.
+* Checking spelling:            Ispell.                 4.
+* Checking spelling:            Spell-checkers.         4.
+* Chinese, handling with Emacs: Kanji and Chinese characters.  4.
+* Citations in mail and news:   Supercite.              4.
+* Colorizing text:              Turning on syntax highlighting.  4.
+* Colors on a TTY:              Colors on a TTY.        4.
+* Colors on character terminals: New in Emacs 21.       11.
+* Column, displaying the current: Displaying the current line or column.  4.
+* Command description in the manual: Learning how to do something.  25.
+* Command, repeat last:         Repeating commands.     4.
+* Commands, binding keys to:    Binding keys to commands.  4.
+* Commands, extended:           Extended commands.      4.
+* Commands, repeating many times: Repeating a command as many times as possible.  4.
+* Common acronyms, definitions for: Common acronyms.    4.
+* Common requests:              Common requests.        4.
+* Compilation error messages:   Going to a line by number.  4.
+* Compiler error messages, recognizing: Compiler error messages.  4.
+* Compiling Emacs for DOS:      Emacs for MS-DOS.       4.
+* Compiling and installing Emacs: Compiling and installing Emacs.  4.
+* <Compose Character> key, using as <Meta>: Compose Character.  4.
+* Console, colors:              Colors on a TTY.        4.
+* Contact database:             BBDB.                   4.
+* Contracting the FSF:          Contacting the FSF.     4.
+* Control-Meta characters, notation for: Basic keys.    4.
+* Control characters, generating: Producing C-XXX with the keyboard.  4.
+* Control characters, working with: Working with unprintable characters.  4.
+* Control header, killing articles based on: Killing based on nonstandard headers.  4.
+* Control key, notation for:    Basic keys.             4.
+* Conventions for file names:   File-name conventions.  4.
+* Converting from BABYL to Unix mail format: Recovering mail files when Rmail munges them.  13.
+* Copying outgoing mail to a file: Saving a copy of outgoing mail.  4.
+* Copyleft, real meaning of:    Real meaning of copyleft.  4.
+* Creating new menu options:    Modifying pull-down menus.  4.
+* Crosspostings make Gnus catching up slow: Catch-up is slow in Gnus.  4.
+* Current GNU distributions:    Current GNU distributions.  4.
+* Current directory and `shell-mode': Shell mode loses the current directory.  4.
+* Customization file, setting up: Setting up a customization file.  4.
+* Customize indentation:        Customizing C and C++ indentation.  4.
+* DECwindows, Emacs for:        Emacs for VMS and DECwindows.  4.
+* <DEL>, definition of:         Basic keys.             4.
+* DEL key does not delete:      Backspace invokes help.  4.
+* `DISTRIB', description of file: Informational files for Emacs.  4.
+* DNS and IP addresses:         Translating names to IP addresses.  4.
+* DOS, Emacs for:               Emacs for MS-DOS.       4.
+* Database:                     EDB.                    4.
+* Debugging `.emacs' file:      Debugging a customization file.  4.
+* Debugging `.emacs' file:      Errors with init files.  4.
+* Decoration level, in `font-lock-mode': Turning on syntax highlighting.  45.
+* Delay when visiting files:    Emacs takes a long time to visit files.  4.
+* Delete and `stty':            stty and Backspace key.  4.
+* Deleting menus and menu options: Deleting menus and menu options.  4.
+* Difference Emacs and XEmacs:  Difference between Emacs and XEmacs.  4.
+* Differences between Emacs 19 and Emacs 20: New in Emacs 20.  4.
+* Differences between Emacs 20 and Emacs 21: New in Emacs 21.  4.
+* Differences between Unix and Emacs regexps: Using regular expressions.  4.
+* Diffs and patching:           Patch.                  4.
+* Directories and files that come with Emacs: File-name conventions.  4.
+* Directory, current in `shell-mode': Shell mode loses the current directory.  4.
+* Dired does not see a file:    Dired claims that no file is on this line.  4.
+* Disabling `auto-save-mode':   Disabling auto-save-mode.  4.
+* Disabling backups:            Disabling backups.      4.
+* Discussion of the GPL:        Real meaning of copyleft.  4.
+* Displaying eight-bit characters: Emacs does not display 8-bit characters.  4.
+* Displaying the current line or column: Displaying the current line or column.  4.
+* Distribution, retrieving Emacs: Finding Emacs on the Internet.  4.
+* <Do> key:                     Extended commands.      17.
+* Documentation for `etags':    Documentation for etags.  4.
+* Documentation, installing new Texinfo files: Installing Texinfo documentation.  4.
+* Documentation on Emacs Lisp:  Emacs Lisp documentation.  4.
+* Downloading and installing Emacs: Installing Emacs.   4.
+* E-mail reader, VM:            VM.                     4.
+* E-mail, retrieving the FAQ via: Obtaining the FAQ.    4.
+* EDB:                          EDB.                    4.
+* <ESC>, definition of:         Basic keys.             4.
+* Echoed commands in `shell-mode': ^M in the shell buffer.  4.
+* Editing MS-DOS files:         Editing MS-DOS files.   4.
+* Editing files with `$' in the name: Editing files with $ in the name.  4.
+* Eight-bit characters, displaying: Emacs does not display 8-bit characters.  4.
+* Eight-bit characters, entering: Inputting eight-bit characters.  4.
+* Eight-bit characters, working with: Working with unprintable characters.  4.
+* Emacs 20, new features in:    New in Emacs 20.        4.
+* Emacs 21, new features in:    New in Emacs 21.        4.
+* Emacs Lisp Archive:           Packages that do not come with Emacs.  4.
+* Emacs Lisp List:              Packages that do not come with Emacs.  4.
+* Emacs Lisp Reference Manual:  Emacs Lisp documentation.  4.
+* Emacs entries for termcap/terminfo: Termcap/Terminfo entries for Emacs.  4.
+* Emacs for MS-DOS:             Emacs for MS-DOS.       4.
+* Emacs for MS-Windows:         Emacs for Windows.      4.
+* Emacs manual, obtaining a printed or HTML copy of: Getting a printed manual.  4.
+* Emacs name origin:            Origin of the term Emacs.  4.
+* Emacs server functions:       Using an already running Emacs process.  4.
+* Embedded underlining in news articles: Viewing articles with embedded underlining.  4.
+* Emulation of `vi':            VIPER.                  4.
+* Encryption software, interface to: Mailcrypt.         4.
+* Entering eight-bit characters: Inputting eight-bit characters.  4.
+* Epoch:                        Difference between Emacs and XEmacs.  4.
+* Error in `.emacs':            Errors with init files.  4.
+* Error in init file:           Errors with init files.  4.
+* Errors, recognizing compiler: Compiler error messages.  4.
+* Errors when building Emacs:   Problems building Emacs.  4.
+* Escape key, lacking:          No Escape key.          4.
+* Escape sequences in `ls' output: Escape sequences in shell output.  4.
+* Evaluating Lisp code:         Evaluating Emacs Lisp code.  4.
+* Expanding aliases when sending mail: Expanding aliases when sending mail.  4.
+* Exporting messages as Unix mail files: Recovering mail files when Rmail munges them.  9.
+* <ExtendChar> key as <Meta>:   ExtendChar key does not work as Meta.  4.
+* Extended commands:            Extended commands.      4.
+* FAQ, `font-lock-mode':        Turning on syntax highlighting.  4.
+* FAQ for Gnus:                 Learning more about Gnus.  4.
+* FAQ for MIME and Emacs:       MIME with Emacs mail packages.  4.
+* FAQ for NT Emacs:             Emacs for Windows.      4.
+* FAQ notation:                 FAQ notation.           4.
+* FAQ, obtaining the:           Obtaining the FAQ.      4.
+* FSF, definition of:           Common acronyms.        4.
+* FTP, definition of:           Common acronyms.        4.
+* `FTP', description of file:   Informational files for Emacs.  4.
+* Faster, starting Gnus:        Starting Gnus faster.   4.
+* File extensions and modes:    Associating modes with files.  4.
+* File-name conventions:        File-name conventions.  4.
+* File name, displaying in the titlebar: Displaying the current file name in the titlebar.  4.
+* File names containing `$', editing: Editing files with $ in the name.  4.
+* Files included with Emacs:    Informational files for Emacs.  4.
+* Files, maximum size:          Problems with very large files.  4.
+* Files, replacing strings across multiple: Replacing text across multiple files.  4.
+* Files, take a long time to visit: Emacs takes a long time to visit files.  4.
+* Filing outgoing mail:         Saving a copy of outgoing mail.  4.
+* Fill prefix:                  Automatic indentation.  20.
+* Filling automatically:        Turning on auto-fill by default.  4.
+* Finding Emacs and related packages: Finding Emacs and related packages.  4.
+* Finding Emacs on the Internet: Finding Emacs on the Internet.  4.
+* Finding an Emacs Lisp package: Finding a package with particular functionality.  4.
+* Finding commands and variables: Learning how to do something.  29.
+* Finding current GNU software: Current GNU distributions.  4.
+* Finding other packages:       Packages that do not come with Emacs.  4.
+* Finding topics in the on-line manual: On-line manual.  4.
+* Flashing Gnus messages, removing: Removing flashing messages.  4.
+* Flow control, `C-s' and `C-q' with: Handling C-s and C-q with flow control.  4.
+* Folder, sorting messages in an Rmail: Sorting the messages in an Rmail folder.  4.
+* Forms mode:                   EDB.                    4.
+* Frame parameters:             Emacs ignores frame parameters.  4.
+* Free Software Foundation, contacting: Contacting the FSF.  4.
+* Function documentation:       Emacs Lisp documentation.  4.
+* Function keys:                Using function keys under X.  4.
+* Function keys and modifiers:  Binding combinations of modifiers and function keys.  4.
+* Function keys, symbols generated by: Working with function and arrow keys.  4.
+* Functionality, finding a particular package: Finding a package with particular functionality.  4.
+* GNU, definition of:           Common acronyms.        4.
+* `GNU', description of file:   Informational files for Emacs.  4.
+* GNU newsgroups, appropriate messages for: Guidelines for newsgroup postings.  4.
+* GPG:                          Mailcrypt.              4.
+* GPL, definition of:           Common acronyms.        4.
+* GPL, real meaning of:         Real meaning of copyleft.  4.
+* General Public License, real meaning of: Real meaning of copyleft.  4.
+* General questions:            General questions.      4.
+* Generating control characters: Producing C-XXX with the keyboard.  4.
+* Getting help:                 Getting help.           4.
+* Gnus, Catching up all newsgroups in: Catching up in all newsgroups.  4.
+* Gnus FAQ:                     Learning more about Gnus.  4.
+* Gnus and NNTP:                Gnus does not work with NNTP.  4.
+* Gnus, flashing messages in:   Removing flashing messages.  4.
+* Gnus hangs while posting:     Gnus hangs for a long time.  4.
+* Gnus is slow when catching up: Catch-up is slow in Gnus.  4.
+* Gnus newsreader:              Reading news with Emacs.  5.
+* Gnus, saving multi-part postings in: Saving a multi-part Gnus posting.  4.
+* Gnus, starting faster:        Starting Gnus faster.   4.
+* Going to a line by number:    Going to a line by number.  4.
+* Good bug reports:             Reporting bugs.         4.
+* HP-UX, the <ExtendChar> key:  ExtendChar key does not work as Meta.  4.
+* HTML browser in Emacs:        w3-mode.                4.
+* HTML version of Emacs manual, obtaining: Getting a printed manual.  19.
+* Hangs in Gnus:                Gnus hangs for a long time.  4.
+* Hebrew, handling with Emacs:  Right-to-left alphabets.  4.
+* Help for Emacs:               Learning how to do something.  4.
+* Help installing Emacs:        Help installing Emacs.  4.
+* Help invoked by Backspace:    Backspace invokes help.  4.
+* Help system, entering the:    Basic editing.          4.
+* Hiding `#ifdef' text:         Hiding #ifdef lines.    4.
+* Highlighting and replacing text: Replacing highlighted text.  4.
+* Highlighting based on syntax: Turning on syntax highlighting.  4.
+* Highlighting matching parentheses: Matching parentheses.  4.
+* Highlighting text:            Highlighting a region.  4.
+* Horizontal scrolling:         Horizontal scrolling.   4.
+* Hosts, Emacs cannot talk to:  Problems talking to certain hosts.  4.
+* How to submit a bug report:   Reporting bugs.         4.
+* `INTERVIEW', description of file: Informational files for Emacs.  4.
+* IP addresses from names:      Translating names to IP addresses.  4.
+* Iconification under the X Window System: Forcing Emacs to iconify itself.  4.
+* Ignored X resources:          Emacs ignores X resources.  4.
+* Ignoring case in searches:    Controlling case sensitivity.  4.
+* Included text prefix, changing: Changing the included text prefix.  4.
+* Indentation, how to customize: Customizing C and C++ indentation.  4.
+* Indenting new lines:          Automatic indentation.  4.
+* Indenting of `switch':        Indenting switch statements.  4.
+* Index search in a manual:     Learning how to do something.  14.
+* Info file viewers:            Viewing Info files outside of Emacs.  4.
+* Info files, how to install:   Installing Texinfo documentation.  4.
+* Info, finding topics in:      On-line manual.         4.
+* Informational files included with Emacs: Informational files for Emacs.  4.
+* Init file debugging:          Debugging a customization file.  4.
+* Init file, errors in:         Errors with init files.  4.
+* Init file, setting up:        Setting up a customization file.  4.
+* Input, 8-bit characters:      Inputting eight-bit characters.  4.
+* <Insert>:                     Overwrite mode.         4.
+* Installation help:            Help installing Emacs.  4.
+* Installing Emacs:             Installing Emacs.       4.
+* Installing Texinfo documentation: Installing Texinfo documentation.  4.
+* Integrated Java development environment: JDE.         4.
+* Integrated contact database:  BBDB.                   4.
+* Interface to PGP from Emacs mail and news: Mailcrypt.  4.
+* Internet, retrieving from:    Finding Emacs on the Internet.  4.
+* Invalid prefix characters:    Invalid prefix characters.  4.
+* Ispell:                       Ispell.                 4.
+* JDE:                          JDE.                    4.
+* Japanese, handling with Emacs: Kanji and Chinese characters.  4.
+* Java development environment: JDE.                    4.
+* Java, mode for:               Modes for various languages.  4.
+* Just-In-Time syntax highlighting: Turning on syntax highlighting.  37.
+* Kanji, handling with Emacs:   Kanji and Chinese characters.  4.
+* Key bindings:                 Key bindings.           4.
+* Key translations under X:     X key translations for Emacs.  4.
+* Keymaps and menus:            Modifying pull-down menus.  4.
+* Keys, binding to commands:    Binding keys to commands.  4.
+* Keys, swapping:               Swapping keys.          4.
+* Keywords header, killing articles based on: Killing based on nonstandard headers.  4.
+* Killing articles based on nonstandard headers: Killing based on nonstandard headers.  4.
+* Korean, handling with Emacs:  Kanji and Chinese characters.  4.
+* <LFD>, definition of:         Basic keys.             4.
+* LPF, definition of:           Common acronyms.        4.
+* LPF, description of:          The LPF.                4.
+* `LPF', description of file:   Informational files for Emacs.  4.
+* Lacking an Escape key:        No Escape key.          4.
+* Large files, opening:         Problems with very large files.  4.
+* Latest FAQ version, obtaining the: Obtaining the FAQ.  4.
+* Latest version of Emacs:      Latest version of Emacs.  4.
+* Lazy font-lock:               Turning on syntax highlighting.  56.
+* League for Programming Freedom: The LPF.              4.
+* Learning more about Gnus:     Learning more about Gnus.  4.
+* Learning to do something in Emacs: Learning how to do something.  4.
+* Length of tab character:      Changing the length of a Tab.  4.
+* Levels of syntax highlighting: Turning on syntax highlighting.  45.
+* Lex mode:                     Modes for various languages.  4.
+* Line number, displaying the current: Displaying the current line or column.  4.
+* Line wrap:                    Wrapping words automatically.  4.
+* Linking with -lX11 fails:     Linking with -lX11 fails.  4.
+* Lisp forms, evaluating:       Evaluating Emacs Lisp code.  4.
+* Lisp packages that do not come with Emacs: Packages that do not come with Emacs.  4.
+* Lookup a subject in a manual: Learning how to do something.  14.
+* Lucid Emacs:                  Difference between Emacs and XEmacs.  4.
+* M-x, meaning of:              Extended commands.      4.
+* `MACHINES', description of file: Informational files for Emacs.  4.
+* `MAILINGLISTS', description of file: Informational files for Emacs.  4.
+* MIME and Emacs mail packages: MIME with Emacs mail packages.  4.
+* MS-DOS, Emacs for:            Emacs for MS-DOS.       4.
+* MS-DOS files, editing:        Editing MS-DOS files.   4.
+* Macintosh, Emacs for:         Emacs for Apple computers.  4.
+* Mail alias expansion:         Expanding aliases when sending mail.  4.
+* Mail and news:                Mail and news.          4.
+* Mail and news citations:      Supercite.              4.
+* Mail files, recovering those munged by Rmail: Recovering mail files when Rmail munges them.  4.
+* Mail, interface to PGP from:  Mailcrypt.              4.
+* Mail packages and MIME:       MIME with Emacs mail packages.  4.
+* Mail reader, starting automatically: Automatically starting a mail or news reader.  4.
+* Mail replies, inserting a prefix character: Inserting > at the beginning of each line.  4.
+* Mail, saving outgoing automatically: Saving a copy of outgoing mail.  4.
+* Mailing lists, appropriate messages for: Guidelines for newsgroup postings.  4.
+* Major mode for shell scripts: Associating modes with files.  17.
+* Major packages and programs:  Major packages and programs.  4.
+* Manual, obtaining a printed or HTML copy of: Getting a printed manual.  4.
+* Matching parentheses:         Matching parentheses.   4.
+* Mathematical package:         Calc.                   4.
+* Maximum file size:            Problems with very large files.  4.
+* Maximum line width, default value: Wrapping words automatically.  4.
+* Menus and keymaps:            Modifying pull-down menus.  4.
+* Menus, creating or modifying: Modifying pull-down menus.  4.
+* Menus, deleting:              Deleting menus and menu options.  4.
+* <Meta> key and `xterm':       Meta key does not work in xterm.  4.
+* <Meta> key, notation for:     Basic keys.             4.
+* <Meta> key, what to do if you lack it: No Meta key.   4.
+* <Meta>, using <Compose Character> for: Compose Character.  4.
+* <Meta>, using <ExtendChar> for: ExtendChar key does not work as Meta.  4.
+* Microsoft Windows, Emacs for: Emacs for Windows.      4.
+* Microsoft files, editing:     Editing MS-DOS files.   4.
+* Misspecified key sequences:   Invalid prefix characters.  4.
+* Mode for TeX:                 AUCTeX.                 4.
+* Modes, associating with file extensions: Associating modes with files.  4.
+* Modifiers and function keys:  Binding combinations of modifiers and function keys.  4.
+* Modifying `load-path':        Changing load-path.     4.
+* Modifying pull-down menus:    Modifying pull-down menus.  4.
+* Multi-part postings in Gnus, saving: Saving a multi-part Gnus posting.  4.
+* Multiple files, replacing across: Replacing text across multiple files.  4.
+* `NEWS', description of file:  Informational files for Emacs.  4.
+* NNTP, Gnus fails to work with: Gnus does not work with NNTP.  4.
+* NeXTSTEP, Emacs for:          Emacs for NeXTSTEP.     4.
+* New Texinfo files, installing: Installing Texinfo documentation.  4.
+* New lines, indenting of:      Automatic indentation.  4.
+* News and mail citations:      Supercite.              4.
+* News articles with embedded underlining: Viewing articles with embedded underlining.  4.
+* News, interface to PGP from:  Mailcrypt.              4.
+* News reader, starting automatically: Automatically starting a mail or news reader.  4.
+* News replies, inserting a prefix character: Inserting > at the beginning of each line.  4.
+* Newsgroups, appropriate messages for: Guidelines for newsgroup postings.  4.
+* Newsgroups header, killing articles based on: Killing based on nonstandard headers.  4.
+* No Escape key:                No Escape key.          4.
+* No <Meta> key:                No Meta key.            4.
+* Notation for keys:            Basic keys.             4.
+* OS/2, Emacs for:              Emacs for OS/2.         4.
+* OSF, definition of:           Common acronyms.        4.
+* Objective-C, mode for:        Modes for various languages.  4.
+* Official GNU software sites:  Current GNU distributions.  4.
+* Old Usenet postings for GNU groups: Newsgroup archives.  4.
+* On-line manual, reading topics in: On-line manual.    4.
+* One space following periods:  Filling paragraphs with a single space.  4.
+* Opening very large files:     Problems with very large files.  4.
+* Ordering GNU software:        Contacting the FSF.     25.
+* Origin of the term "Emacs":   Origin of the term Emacs.  4.
+* Original version of Emacs:    Origin of the term Emacs.  4.
+* Overview of help systems:     Learning how to do something.  4.
+* Overwriting existing text:    Overwrite mode.         4.
+* PGP:                          Mailcrypt.              4.
+* Package, finding:             Finding a package with particular functionality.  4.
+* Packages, those that do not come with Emacs: Packages that do not come with Emacs.  4.
+* Pairs of parentheses, highlighting: Matching parentheses.  4.
+* Parentheses, matching:        Matching parentheses.   4.
+* Patching source files with diffs: Patch.              4.
+* Patents for software, opposition to: The LPF.         4.
+* Periods, one space following: Filling paragraphs with a single space.  4.
+* Postal address of the FSF:    Contacting the FSF.     4.
+* Postal service, ordering Emacs via: Finding Emacs on the Internet.  4.
+* Posting, Gnus hangs wile:     Gnus hangs for a long time.  4.
+* Posting messages to newsgroups: Guidelines for newsgroup postings.  4.
+* Prefix character, inserting in mail/news replies: Inserting > at the beginning of each line.  4.
+* Prefix characters, invalid:   Invalid prefix characters.  4.
+* Prefix in mail/news followups, changing: Changing the included text prefix.  4.
+* Prefixing lines:              Automatic indentation.  20.
+* Previous line, indenting according to: Automatic indentation.  4.
+* Printed Emacs manual, obtaining: Getting a printed manual.  4.
+* Printing a Texinfo file:      Printing a Texinfo file.  4.
+* Printing documentation:       Printing a Texinfo file.  4.
+* Problems building Emacs:      Problems building Emacs.  4.
+* Process shell exited:         Shell process exits abnormally.  4.
+* Producing control characters: Producing C-XXX with the keyboard.  4.
+* Programmable calculator:      Calc.                   4.
+* Pull-down menus, creating or modifying: Modifying pull-down menus.  4.
+* Quoting in mail messages:     Changing the included text prefix.  4.
+* <RET>, definition of:         Basic keys.             4.
+* RMS, definition of:           Common acronyms.        4.
+* Reading news under Emacs:     Reading news with Emacs.  5.
+* Reading the Emacs manual:     Learning how to do something.  9.
+* Reading topics in the on-line manual: On-line manual.  4.
+* Recently introduced features: New in Emacs 21.        4.
+* Recognizing non-standard compiler errors: Compiler error messages.  4.
+* Recompilation:                Going to a line by number.  4.
+* Recovering munged mail files: Recovering mail files when Rmail munges them.  4.
+* Reducing the increment when scrolling: Scrolling only one line.  4.
+* Reference card for Emacs:     Learning how to do something.  4.
+* Reference cards, in other languages: Learning how to do something.  41.
+* Reference manual for Emacs Lisp: Emacs Lisp documentation.  4.
+* Regexps:                      Using regular expressions.  4.
+* Regexps and unprintable characters: Working with unprintable characters.  4.
+* Regexps for recognizing compiler errors: Compiler error messages.  4.
+* Region, highlighting a:       Highlighting a region.  4.
+* Regular expressions:          Using regular expressions.  4.
+* Remaining in the same column, regardless of contents: Forcing the cursor to remain in the same column.  4.
+* Removing flashing Gnus messages: Removing flashing messages.  4.
+* Removing yourself from GNU mailing lists: Unsubscribing from Emacs lists.  4.
+* Repeating commands as with `vi': Repeating commands.  4.
+* Repeating commands many times: Repeating a command as many times as possible.  4.
+* Replacing, and case sensitivity: Controlling case sensitivity.  11.
+* Replacing highlighted text:   Replacing highlighted text.  4.
+* Replacing strings across files: Replacing text across multiple files.  4.
+* Replies to mail/news, inserting a prefix character: Inserting > at the beginning of each line.  4.
+* Replying only to the sender of a message: Replying to the sender of a message.  4.
+* Reporting bugs:               Reporting bugs.         4.
+* Resources, X:                 Valid X resources.      4.
+* Retrieving and installing Emacs: Installing Emacs.    4.
+* Retrieving the latest FAQ version: Obtaining the FAQ.  4.
+* Richard Stallman, acronym for: Common acronyms.       4.
+* Right-to-left alphabets:      Right-to-left alphabets.  4.
+* Rmail and `/usr/spool/mail':  Rmail writes to /usr/spool/mail.  4.
+* Rmail munged my files:        Recovering mail files when Rmail munges them.  4.
+* Rmail, replying to the sender of a message in: Replying to the sender of a message.  4.
+* Rmail, sorting messages in:   Sorting the messages in an Rmail folder.  4.
+* Rmail thinks all messages are one large message: Rmail thinks all messages are one big one.  4.
+* Rolodex-like functionality:   BBDB.                   4.
+* `SERVICE', description of file: Informational files for Emacs.  4.
+* <SPC>, definition of:         Basic keys.             4.
+* `SUN-SUPPORT', description of file: Informational files for Emacs.  4.
+* Saving a copy of outgoing mail: Saving a copy of outgoing mail.  4.
+* Saving at frequent intervals: Disabling auto-save-mode.  4.
+* Saving multi-part postings in Gnus: Saving a multi-part Gnus posting.  4.
+* Scrolling horizontally:       Horizontal scrolling.   4.
+* Scrolling only one line:      Scrolling only one line.  4.
+* Searching for unprintable characters: Working with unprintable characters.  4.
+* Searching without case sensitivity: Controlling case sensitivity.  4.
+* Security with Emacs:          Security risks with Emacs.  4.
+* Selectively displaying `#ifdef' code: Hiding #ifdef lines.  4.
+* Self-paced tutorial, invoking the: Basic editing.     4.
+* Semitic alphabets:            Right-to-left alphabets.  4.
+* Sender, replying only to:     Replying to the sender of a message.  4.
+* Sending mail with aliases:    Expanding aliases when sending mail.  4.
+* Set number capability in `vi' emulators: Displaying the current line or column.  30.
+* Setting X resources:          Valid X resources.      4.
+* Setting the included text character: Changing the included text prefix.  4.
+* Shell Mode, and MS-Windows:   Problems with Shell Mode on MS-Windows.  5.
+* Shell buffer, echoed commands and `^M' in: ^M in the shell buffer.  4.
+* Shell mode:                   Modes for various languages.  4.
+* Show matching paren as in `vi': Matching parentheses.  34.
+* Single space following periods: Filling paragraphs with a single space.  4.
+* Slow catch up in Gnus:        Catch-up is slow in Gnus.  4.
+* Slow connections causing flashing messages in Gnus: Removing flashing messages.  4.
+* Snail mail address of the FSF: Contacting the FSF.    4.
+* Snail mail, ordering Emacs via: Finding Emacs on the Internet.  4.
+* Software patents, opposition to: The LPF.             4.
+* Sorting messages in an Rmail folder: Sorting the messages in an Rmail folder.  4.
+* Source code, building Emacs from: Installing Emacs.   4.
+* Sources for current GNU distributions: Current GNU distributions.  4.
+* Spell-checker:                Ispell.                 4.
+* Spelling, checking TeX documents: Checking TeX and *roff documents.  4.
+* Spelling, checking text documents: Spell-checkers.    4.
+* Spontaneous entry into isearch-mode: Spontaneous entry into isearch-mode.  4.
+* Stallman, Richard, acronym for: Common acronyms.      4.
+* Starting Gnus faster:         Starting Gnus faster.   4.
+* Starting mail/news reader automatically: Automatically starting a mail or news reader.  4.
+* Status of Emacs:              Status of Emacs.        4.
+* Stuff, current GNU:           Current GNU distributions.  4.
+* Supercite:                    Supercite.              4.
+* Superyank:                    Supercite.              4.
+* Suspending Emacs:             Forcing Emacs to iconify itself.  4.
+* Swapping keys:                Swapping keys.          4.
+* Symbols generated by function keys: Working with function and arrow keys.  4.
+* Syntax highlighting:          Turning on syntax highlighting.  4.
+* Syntax highlighting on a TTY: Colors on a TTY.        4.
+* Synthetic X events and security: Security risks with Emacs.  4.
+* <TAB>, definition of:         Basic keys.             4.
+* TECO:                         Origin of the term Emacs.  4.
+* TOS, Emacs for:               Emacs for Atari ST.     4.
+* TTY colors:                   New in Emacs 21.        11.
+* Tab length:                   Changing the length of a Tab.  4.
+* TeX documents, checking spelling in: Checking TeX and *roff documents.  4.
+* TeX mode:                     AUCTeX.                 4.
+* Termcap:                      Termcap/Terminfo entries for Emacs.  4.
+* Terminal setup code in `.emacs': Terminal setup code works after Emacs has begun.  4.
+* Terminfo:                     Termcap/Terminfo entries for Emacs.  4.
+* Texinfo documentation, installing: Installing Texinfo documentation.  4.
+* Texinfo file, printing:       Printing a Texinfo file.  4.
+* Text, highlighting:           Highlighting a region.  4.
+* Text indentation:             Automatic indentation.  4.
+* Text strings, putting regexps in: Using regular expressions.  4.
+* Titlebar, displaying the current file name in: Displaying the current file name in the titlebar.  4.
+* Toggling `overwrite-mode':    Overwrite mode.         4.
+* Toolbar support:              New in Emacs 21.        5.
+* Tools needed to compile Emacs under DOS: Emacs for MS-DOS.  4.
+* Translating names to IP addresses: Translating names to IP addresses.  4.
+* Translations for keys under X: X key translations for Emacs.  4.
+* Tutorial, invoking the:       Basic editing.          4.
+* Unbundled packages:           Packages that do not come with Emacs.  4.
+* Underlining a region of text: Underlining paragraphs.  4.
+* Underlining, embedded in news articles: Viewing articles with embedded underlining.  4.
+* Unix regeps, differences from Emacs: Using regular expressions.  4.
+* Unix systems, installing Emacs on: Installing Emacs.  4.
+* Unpacking and installing Emacs: Installing Emacs.     4.
+* Unprintable characters, working with: Working with unprintable characters.  4.
+* Unsubscribing from GNU mailing lists: Unsubscribing from Emacs lists.  4.
+* Up-to-date GNU stuff:         Current GNU distributions.  4.
+* Updating Emacs:               Updating Emacs.         4.
+* Updating files with diffs:    Patch.                  4.
+* Usenet archives for GNU groups: Newsgroup archives.   4.
+* Usenet groups, appropriate messages for: Guidelines for newsgroup postings.  4.
+* Usenet reader in Emacs:       Reading news with Emacs.  5.
+* Using BIND to translate addresses: Translating names to IP addresses.  4.
+* Using an existing Emacs process: Using an already running Emacs process.  4.
+* VIPER:                        VIPER.                  4.
+* VM:                           VM.                     4.
+* VMS, Emacs for:               Emacs for VMS and DECwindows.  4.
+* Variable documentation:       Emacs Lisp documentation.  4.
+* Variable-size fonts:          New in Emacs 21.        5.
+* Version, latest:              Latest version of Emacs.  4.
+* Vertical movement in empty documents: Forcing the cursor to remain in the same column.  4.
+* Very large files, opening:    Problems with very large files.  4.
+* View Mail:                    VM.                     4.
+* Viewing Info files:           Viewing Info files outside of Emacs.  4.
+* Visible bell:                 Turning off beeping.    4.
+* Visiting files takes a long time: Emacs takes a long time to visit files.  4.
+* Volume of bell:               Turning the volume down.  4.
+* WWW browser:                  w3-mode.                4.
+* Web browser:                  w3-mode.                4.
+* Web, reading the FAQ on the:  Obtaining the FAQ.      4.
+* Why Emacs?:                   Origin of the term Emacs.  21.
+* Windows 9X, ME, NT, 2K, and CE, Emacs for: Emacs for Windows.  4.
+* Windows files, editing:       Editing MS-DOS files.   4.
+* Working with arrow keys:      Working with function and arrow keys.  4.
+* Working with function keys:   Working with function and arrow keys.  4.
+* Working with unprintable characters: Working with unprintable characters.  4.
+* Wrapping lines:               Wrapping words automatically.  4.
+* Wrapping word automatically:  Wrapping words automatically.  4.
+* Writing and debugging TeX:    AUCTeX.                 4.
+* X Menus don't work:           Linking with -lX11 fails.  27.
+* X Window System and function keys: Using function keys under X.  4.
+* X Window System and iconification: Forcing Emacs to iconify itself.  4.
+* X events and security:        Security risks with Emacs.  4.
+* X key translations:           X key translations for Emacs.  4.
+* X resources:                  Valid X resources.      4.
+* X resources being ignored:    Emacs ignores X resources.  4.
+* XEmacs:                       Difference between Emacs and XEmacs.  4.
+* `.Xdefaults':                 Emacs ignores X resources.  4.
+* Xterm and <Meta> key:         Meta key does not work in xterm.  4.
+* Yacc mode:                    Modes for various languages.  4.
+* `auto-fill-mode', activating automatically: Turning on auto-fill by default.  4.
+* `auto-fill-mode', introduction to: Wrapping words automatically.  4.
+* `auto-mode-alist', modifying: Associating modes with files.  4.
+* `awk-mode':                   Modes for various languages.  4.
+* `calculator', a package:      Calc.                   18.
+* `case-fold-search':           Controlling case sensitivity.  4.
+* `case-replace':               Controlling case sensitivity.  11.
+* `cc-mode':                    Modes for various languages.  4.
+* `csh' mode:                   Modes for various languages.  4.
+* `-debug-init' option:         Debugging a customization file.  4.
+* `default-tab-width':          Changing the length of a Tab.  4.
+* `delete-selection-mode':      Replacing highlighted text.  4.
+* `.emacs' debugging:           Debugging a customization file.  4.
+* `.emacs' file, errors in:     Errors with init files.  4.
+* `.emacs' file, locating:      Setting up a customization file.  4.
+* `.emacs' file, setting up:    Setting up a customization file.  4.
+* `emacsclient':                Using an already running Emacs process.  4.
+* `.', equivalent to `vi' command: Repeating commands.  4.
+* `etags', documentation for:   Documentation for etags.  4.
+* `explicit-shell-file-name':   Problems with Shell Mode on MS-Windows.  5.
+* `file-local-variable' and security: Security risks with Emacs.  4.
+* `fill-column', default value: Wrapping words automatically.  4.
+* `font-lock-mode':             Turning on syntax highlighting.  4.
+* `frame-title-format':         Displaying the current file name in the titlebar.  4.
+* `gethostbyname', problematic version: Problems talking to certain hosts.  4.
+* `gnuserv':                    Using an already running Emacs process.  67.
+* `hide-ifdef-mode':            Hiding #ifdef lines.    4.
+* hilit19 is deprecated:        Turning on syntax highlighting.  10.
+* `hscroll-mode':               Horizontal scrolling.   4.
+* `#ifdef', selective display of: Hiding #ifdef lines.  4.
+* `$' in file names:            Editing files with $ in the name.  4.
+* isearch-mode, spontaneous entry into: Spontaneous entry into isearch-mode.  4.
+* `keyboard-translate':         Swapping keys.          4.
+* lX11, linking fails with:     Linking with -lX11 fails.  4.
+* `line-number-mode':           Displaying the current line or column.  4.
+* `load-path', modifying:       Changing load-path.     4.
+* `ls' in Shell mode:           Escape sequences in shell output.  4.
+* `mail-yank-prefix':           Inserting > at the beginning of each line.  4.
+* `mode-line-format':           Displaying the current line or column.  4.
+* `movemail' and security:      Security risks with Emacs.  4.
+* `overwrite-mode':             Overwrite mode.         4.
+* `paren.el':                   Matching parentheses.   4.
+* `pascal-mode':                Modes for various languages.  4.
+* `patch':                      Patch.                  4.
+* `picture-mode':               Forcing the cursor to remain in the same column.  4.
+* `sh-mode':                    Modes for various languages.  4.
+* `shell-mode' and current directory: Shell mode loses the current directory.  4.
+* `shell-mode' exits:           Shell process exits abnormally.  4.
+* `stty' and Emacs:             stty and Backspace key.  4.
+* `switch', indenting:          Indenting switch statements.  4.
+* `transient-mark-mode':        Highlighting a region.  4.
+* `underline-region':           Underlining paragraphs.  4.
+* `unrmail' command:            Recovering mail files when Rmail munges them.  13.
+* `/usr/spool/mail' and Rmail:  Rmail writes to /usr/spool/mail.  4.
+* `vi' emulation:               VIPER.                  4.
+* `w3-mode':                    w3-mode.                4.
+
+

@@ -1,0 +1,121 @@
+Info file: fileutils-ja.info,    -*-Text-*-
+produced by `texinfo-format-buffer'
+from file `fileutils-ja.texi'
+using `texinfmt.el' version 2.38 of 3 July 1998.
+
+
+
+
+
+
+START-INFO-DIR-ENTRY
+* File utilities(ja): (fileutils-ja).  GNU file utilities.
+* chgrp(ja): (fileutils-ja)chgrp invocation.         Change file groups.
+* chown(ja): (fileutils-ja)chown invocation.         Change file owners/groups.
+* chmod(ja): (fileutils-ja)chmod invocation.         Change file permissions.
+* cp(ja): (fileutils-ja)cp invocation.               Copy files.
+* dd(ja): (fileutils-ja)dd invocation.               Copy and convert a file.
+* df(ja): (fileutils-ja)df invocation.               Report filesystem disk usage.
+* dir(ja): (fileutils-ja)dir invocation.             List directories briefly.
+* dircolors(ja): (fileutils-ja)dircolors invocation. Color setup for ls.
+* du(ja): (fileutils-ja)du invocation.               Report on disk usage.
+* install(ja): (fileutils-ja)install invocation.     Copy and change attributes.
+* ln(ja): (fileutils-ja)ln invocation.               Make links between files.
+* ls(ja): (fileutils-ja)ls invocation.               List directory contents.
+* mkdir(ja): (fileutils-ja)mkdir invocation.         Create directories.
+* mkfifo(ja): (fileutils-ja)mkfifo invocation.       Create FIFOs (named pipes).
+* mknod(ja): (fileutils-ja)mknod invocation.         Create special files.
+* mv(ja): (fileutils-ja)mv invocation.               Rename files.
+* rm(ja): (fileutils-ja)rm invocation.               Remove files.
+* rmdir(ja): (fileutils-ja)rmdir invocation.         Remove empty directories.
+* shred(ja): (fileutils-ja)shred invocation.         Remove files more securely.
+* sync(ja): (fileutils-ja)sync invocation.           Synchronize memory and disk.
+* touch(ja): (fileutils-ja)touch invocation.         Change file timestamps.
+* vdir(ja): (fileutils-ja)vdir invocation.           List directories verbosely.
+END-INFO-DIR-ENTRY
+
+This file documents the GNU set of file utilities.
+
+Copyright 1994, 95, 96, 1999, 2001 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.1 or
+any later version published by the Free Software Foundation; with no
+Invariant Sections, with no Front-Cover Texts, and with no Back-Cover
+Texts.  A copy of the license is included in the section entitled "GNU
+Free Documentation License".
+
+
+
+
+
+
+
+Indirect:
+fileutils-ja.info-1: 2454
+fileutils-ja.info-2: 50636
+
+Tag table:
+(Indirect)
+Node: Top2457
+Node: Introduction3168
+Node: Common options3895
+Node: Backup options4531
+Node: Block size5979
+Node: Target directory8330
+Node: Trailing slashes9824
+Node: File permissions10444
+Node: Mode Structure10904
+Node: Symbolic Modes12105
+Node: Setting Permissions12822
+Node: Copying Permissions14184
+Node: Changing Special Permissions14596
+Node: Conditional Executability15461
+Node: Multiple Changes15772
+Node: Umask and Protection16618
+Node: Numeric Modes17193
+Node: Date input formats18152
+Node: General date syntax19998
+Node: Calendar date items21481
+Node: Time of day items22696
+Node: Time zone items23599
+Node: Day of week items23998
+Node: Relative items in date strings24509
+Node: Pure numbers in date strings25458
+Node: Authors of getdate25892
+Node: Directory listing26361
+Node: ls invocation26792
+Node: Which files are listed27827
+Node: What information is listed28916
+Node: Sorting the output32116
+Node: More details about version sort33676
+Node: General output formatting34600
+Node: Formatting the file names37170
+Node: dir invocation38615
+Node: vdir invocation38944
+Node: dircolors invocation39246
+Node: Basic operations40170
+Node: cp invocation40708
+Node: dd invocation45978
+Node: install invocation48270
+Node: mv invocation50639
+Node: rm invocation52806
+Node: shred invocation54161
+Node: Special file types58207
+Node: ln invocation59097
+Node: mkdir invocation62010
+Node: mkfifo invocation62980
+Node: mknod invocation63610
+Node: rmdir invocation64585
+Node: Changing file attributes65375
+Node: chown invocation65980
+Node: chgrp invocation68629
+Node: chmod invocation69900
+Node: touch invocation70977
+Node: Disk usage72697
+Node: df invocation73179
+Node: du invocation76565
+Node: sync invocation78898
+Node: Index79445
+
+End tag table

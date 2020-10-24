@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+#contributor: Xah Lee (XahLee.org)
+#name: require
+#key: require
+# --
+(require '${1:SYMBOL})
+$0

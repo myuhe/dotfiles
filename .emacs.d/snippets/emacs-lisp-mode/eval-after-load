@@ -1,0 +1,10 @@
+# -*- mode: snippet -*-
+#contributor: myuhe
+#name:  eval-after-load
+#key: eval-after-load
+# --
+(eval-after-load "${1:SYM}"
+  ${2:$$(yas/choose-value '("'(progn" "'"))}
+  ${3:BODY}
+  ${2:$(when (string= "'(progn" text) ")")})
+$0

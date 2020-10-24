@@ -1,0 +1,102 @@
+
+background = no
+update_interval = 2
+ 
+cpu_avg_samples = 2
+net_avg_samples = 2
+ 
+override_utf8_locale = yes
+ 
+double_buffer = yes
+no_buffers = yes
+ 
+imlib_cache_size = 0
+ 
+default_shade_color = white
+draw_graph_borders = yes
+minimum_size = 5,5
+out_to_console = false
+out_to_stderr = no
+extra_newline = no
+own_window_class = Conky
+stippled_borders = 0
+use_spacer = none
+show_graph_scale = no
+show_graph_range = no
+text_buffer_size = 8096
+
+-- Window specifications -- 
+ 
+own_window = yes
+own_window_type = override
+own_window_transparent = yes
+own_window_hints = undecorated,below,sticky,skip_taskbar,skip_pager
+ 
+border_inner_margin = 0
+border_outer_margin = 0
+ 
+minimum_size = 1100,1000
+maximum_width = 1070
+ 
+alignment = tr
+gap_x = 10
+gap_y = 0
+ 
+-- Graphics settings -- #
+
+draw_shades = no
+draw_outline = no
+draw_borders = no
+ 
+-- Text settings -- #
+use_xft = yes
+xftfont = "Migu 2M:size=9.5"
+xftalpha = 0.8
+override_utf8_locale = yes
+
+ 
+uppercase = no
+ 
+default_color = FFFFFF
+
+conky.text = [[
+${goto 500}${hr 2}
+${goto 15}${color #f8df58}${font Poky:size=14}x${color #f8df58}${font}  DATA ${color}
+${goto 350}${font hooge 05_53:size=18}${alignr}${time %A, %d %B %Y}${font}
+${goto 16}${font weather:size=20}x ${font} Bak2 ${execpi 60 nc localhost 7634 | cut -d'|' -f4} ℃ ${font} Data ${execpi 60 nc localhost 7634 | cut -d'|' -f9} ℃ ${font} Bak1 ${execpi 60 nc localhost 7634 | cut -d'|' -f14} ℃ ${font} Root ${execpi 60 nc localhost 7634 | cut -d'|' -f19} ℃ ${goto 404}${font weather:size=20}z ${font}GPU ${execi 60 nvidia-settings -query GPUCoreTemp | perl -ne 'print $1 if /GPUCoreTemp.*?: (\d+)./;'} ℃
+
+${goto 13}${color #F8DF58}${font Poky:size=14}a${font}   PROCESSES${color}
+${goto 13}${font PizzaDude Bullets:size=12}r${font}   Down Speed: ${downspeed wlan0} ${goto 400}${font VariShapes Solid:size=12}Q ${font}Total Down: ${totaldown wlan0}
+${goto 15}${font StyleBats:size=12}A${font}   CPU0: ${cpu cpu0}% ${cpubar 7,100 cpu0}${goto 400}${font StyleBats:size=14}P${font}   Uptime: ${uptime_short}
+${goto 15}${font StyleBats:size=12}A${font}   CPU1: ${cpu cpu1}% ${cpubar 7,100 cpu1}${goto 400}${font StyleBats:size=16}8${font} ${goto 427} Bat: ${battery BAT1}
+${goto 15}${font StyleBats:size=12}A${font}   CPU2: ${cpu cpu2}% ${cpubar 7,100 cpu2}${goto 400}${font PizzaDude Bullets:size=12}J${font}   RAM: $memperc% 
+${goto 15}${font StyleBats:size=12}A${font}   CPU3: ${cpu cpu3}% ${cpubar 7,100 cpu3}${goto 400}${font StyleBats:size=14}8${font}   SWAP: $swapperc%
+${goto 400}${font StyleBats:size=14}8${font}   WiFi: ${wireless_essid wlan0} : ${wireless_link_qual wlan0}%
+
+${goto 13}${color #F8DF58}${font Poky:size=14}a${font}   CPU${color}${goto 450}${color #F8DF58}${font Poky:size=14}a${font}   Memory${color}
+${goto 45}${font Radio Space:size=9}Name ::. ${goto 170}PID${goto 275}CPU%${goto 400}MEM%${goto 482}${font Radio Space:size=9}Name ::. ${goto 607}PID${goto 712}CPU%${goto 837}MEM%
+${goto 45}${top name 1} ${goto 170}${top pid 1}${goto 275}${top cpu 1}${goto 400}${top mem 1}${goto 482}${top_mem name 1} ${goto 607}${top pid 1}${goto 712}${top cpu 1}${goto 837}${top_mem mem 1}
+${goto 45}${top name 2} ${goto 170}${top pid 2}${goto 275}${top cpu 2}${goto 400}${top mem 2}${goto 482}${top_mem name 2} ${goto 607}${top pid 2}${goto 712}${top cpu 2}${goto 837}${top_mem mem 2}
+${goto 45}${top name 3} ${goto 170}${top pid 3}${goto 275}${top cpu 3}${goto 400}${top mem 3}${goto 482}${top_mem name 3} ${goto 607}${top pid 3}${goto 712}${top cpu 3}${goto 837}${top_mem mem 3}
+
+## ${goto 13}${voffset +10}${color #f8df58}${font Poky:size=12}d${font}   CALENDAR${color}
+## ${goto 45}${execi 300 gcalcli --nc --cals=owner calw 2 | tee /home/yuhei/.conky/gcal.txt}
+${goto 13}${color F8DF58}${font Poky:pixelsize=16}y${font}   DISKS${color} 
+${goto 45}Root:  ${fs_bar 7,100 /}${goto 275}${fs_free /} / ${fs_size /}    
+${goto 45}Home:  ${fs_bar 7,100 /home}${goto 275}${fs_free /home} / ${fs_size /home}
+${goto 45}Data:  ${fs_bar 7,100 /data}${goto 275}${fs_free /data}/ ${fs_size /data}
+${goto 45}Bak1:  ${fs_bar 7,100 /backup}${goto 275}${fs_free /backup}/ ${fs_size /backup}
+${goto 45}Bak2:  ${fs_bar 7,100 /backup2}${goto 275}${fs_free /backup2}/ ${fs_size /backup2}
+
+# ${goto 10}${color #f8df58}${font OpenLogos:size=15}J${color #f8df58}${font} WEATHER ${color}
+# ${goto 10}${execi 1800 /home/yuhei/.conky/google-weather/weather.sh "Kumamoto,Japan" }
+# ${goto 10}${font weather:size=45}${execi 1800 /home/yuhei/.conky/google-weather/weather.sh "Kumamoto,Japan" cp } ${font}
+# ${goto 10}${execi 1800 /home/yuhei/.conky/google-weather/weather.sh "Kumamoto,Japan" dl } 
+# ${goto 10}${font weather:size=45}${execi 1800 /home/yuhei/.conky/google-weather/weather.sh "Kumamoto,Japan" fcp } ${font}
+# ${goto 10}${execi 1800 /home/yuhei/.conky/google-weather/weather.sh "Kumamoto,Japan" fct}
+
+
+${voffset 25}${goto 22}${font Takao Pゴシック :size=8}${color 909090}${execi 600 conkyForecast --location=JAXX0117 --datatype=CN --refetch}
+${font Takao Pゴシック :size=8}${color whitesmoke}${goto 24}${execi 1800 conkyForecast --location=JAXX0117 --datatype=CT}${voffset -15}${goto 200}${font Takao Pゴシック :size=25}${color d4d4d4}${execi 1800 conkyForecast --location=JAXX0117 -u
+--datatype=HT}
+]] 

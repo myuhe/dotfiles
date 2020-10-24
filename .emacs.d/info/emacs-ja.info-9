@@ -1,0 +1,2017 @@
+Info file: emacs-ja.info,    -*-Text-*-
+produced by `texinfo-format-buffer'
+from file `emacs-ja.texi'
+using `texinfmt.el' version 2.38 of 3 July 1998.
+
+
+Emacs 20.6版対応に改訂した`GNU Emacs Manual' 13版です。
+
+INFO-DIR-SECTION Editors
+START-INFO-DIR-ENTRY
+* Emacs: (emacs-ja).	The extensible self-documenting text editor.
+END-INFO-DIR-ENTRY
+
+
+Published by the Free Software Foundation 59 Temple Place, Suite 330
+Boston, MA 02111-1307 USA
+
+Copyright (C) 1985, 1986, 1987, 1993, 1994, 1995, 1996, 1997, 1998,
+1999 Free Software Foundation, Inc.
+
+Permission is granted to make and distribute verbatim copies of this
+manual provided the copyright notice and this permission notice are
+preserved on all copies.
+
+Permission is granted to copy and distribute modified versions of this
+manual under the conditions for verbatim copying, provided also that
+the sections entitled "The GNU Manifesto", "Distribution" and "GNU
+General Public License" are included exactly as in the original, and
+provided that the entire resulting derived work is distributed under
+the terms of a permission notice identical to this one.
+
+Permission is granted to copy and distribute translations of this
+manual into another language, under the above conditions for modified
+versions, except that the sections entitled "The GNU Manifesto",
+"Distribution" and "GNU General Public License" may be included in a
+translation approved by the Free Software Foundation instead of in the
+original English.
+
+
+
+
+
+File: emacs-ja.info, Node: List Tags, Prev: Tags Search, Up: Tags
+
+タグテーブルの照会
+------------------
+
+`M-x list-tags RET FILE RET'
+     プログラムファイルFILEで定義されているタグの一覧を表示する。
+`M-x tags-apropos RET REGEXP RET'
+     REGEXPに一致するすべてのタグを表示する。
+
+`M-x list-tags'は、選択されたタグテーブルに記載されているファイルのど
+れか1つのファイル名を読み取り、そのファイルで定義されているすべてのタ
+グを表示します。引数の『ファイル名』は、タグテーブルに記録されたファイ
+ル名と単純に文字列として比較されます。ファイル名というよりは、文字列と
+して読まれます。したがって、補完やデフォルトはありませんし、タグテーブ
+ルに格納されているとおりに正確にファイル名を入力する必要があります。タ
+グテーブル内のファイル名にディレクトリが含まれない限り、ファイル名にも
+ディレクトリを含めてはいけません。
+
+`M-x tags-appropos'は、タグに対する`apropos'にあたります （*Note
+Apropos::）。このコマンドは、正規表現を読み取り、選択されたタグテーブ
+ルの中から正規表現に一致する項目のタグをすべてみつけだし、そのタグ名を
+表示します。
+
+現在のタグテーブルに含まれるタグ名を名前空間として、バッファ内で補完を
+行うこともできます。*Note Symbol Completion::。
+
+
+
+File: emacs-ja.info, Node: Emerge, Next: C Modes, Prev: Tags, Up: Programs
+
+emergeを用いたファイルの併合
+============================
+
+ちょっとしたミスで、1つのプログラムから2つの別の版を作ってしまうことも
+あります。この混乱した状態を収拾するには、それらを併合する必要がありま
+す。emergeを使うと、併合作業が容易になります。手動で比較するコマンドに
+ついては、*Note Comparing Files::と*Note Emerge: (ediff)Emergeを参照し
+てください。
+
+* Menu:
+
+* Overview of Emerge::	How to start Emerge.  Basic concepts.
+* Submodes of Emerge::	Fast mode vs. Edit mode.
+			  Skip Prefers mode and Auto Advance mode.
+* State of Difference::	You do the merge by specifying state A or B
+			  for each difference.
+* Merge Commands::	Commands for selecting a difference,
+			  changing states of differences, etc.
+* Exiting Emerge::	What to do when you've finished the merge.
+* Combining in Emerge::	    How to keep both alternatives for a difference.
+* Fine Points of Emerge::   Misc.
+
+
+
+File: emacs-ja.info, Node: Overview of Emerge, Next: Submodes of Emerge, Up: Emerge
+
+emergeの概要
+------------
+
+以下の4つのコマンドのいずれかでemergeを実行します。
+
+`M-x emerge-files'
+     指定した2つのファイルを併合する。
+
+`M-x emerge-files-with-ancestor'
+     共通の祖先を参照しながら、指定した2つのファイルを併合する。
+
+`M-x emerge-buffers'
+     2つのバッファを併合する。
+
+`M-x emerge-buffers-with-ancestor'
+     3番目のバッファに入っている共通の祖先を参照しながら、2つのバッファ
+     を併合する。
+
+emergeコマンドは、2つのファイル、あるいは、2つのバッファを比較して、比
+較結果を3つのバッファ、つまり、各入力テキストに1つずつ（"Aバッファ"と
+"Bバッファ"）と、併合を実施するバッファ（"併合バッファ"）に表示します。
+併合バッファには、比較によって得られる差分だけでなく、併合したテキスト
+全体が表示されます。2つの入力テキストが相違している箇所については、ど
+ちらのテキストを併合バッファに含めるか選択できます。
+
+既存のバッファを入力源とするemergeコマンドでは、入力バッファがナロイン
+グされていると、バッファの参照可能な部分だけを使います（*Note
+Narrowing::）。
+
+併合したい2つのテキストのもとである共通の祖先にあたる版を利用できると
+きには、emergeはそれを使ってどちらの選択肢が正しいのか推測します。一方
+の入力と祖先との一致部分がどこかにあれば、もう一方の入力には併合結果に
+残すべき意図的な変更がなされていると推測します。共通の祖先のテキストを
+指定するには、名前に`with-ancestor'の付いたコマンドを使ってください。
+これらのコマンドは、A版、B版、共通の祖先に対応する3つのファイル名かバッ
+ファ名を読み取ります。
+
+入力を比較してバッファの準備を終えると、つぎは対話的な併合作業が始まり
+ます。併合バッファで特別な"併合コマンド"を打って併合作業を制御します。
+併合バッファには、単なる差分ではなく併合したテキスト全体が表示されます。
+入力テキストの各相違箇所に対して、どちら側を残すか選択したり、両者をも
+とにして編集できます。
+
+併合バッファでは、emergeモードと呼ばれる特別なメジャーモードが使われ、
+これらを選択するコマンドがあります。もちろん、通常のEmacsコマンドでバッ
+ファを編集することもできます。
+
+emergeの注意は、いつでも"注目"相違箇所と呼ばれる相違箇所に向けられてい
+ます。3つのバッファ内では、注目相違点はつぎのように印が付けられます。
+
+     vvvvvvvvvvvvvvvvvvvv
+     TEXT THAT DIFFERS
+     ^^^^^^^^^^^^^^^^^^^^
+
+emergeはすべての相違箇所に順に番号をふります。さらに、モード行にはつね
+に注目相違箇所の番号が表示されます。
+
+通常、併合バッファはA版の内容で始まります。しかし、A版の内容が共通の祖
+先の内容と一致するときには、併合バッファはB版の内容で始まります。
+
+emergeを終えると、併合バッファにはその時点の併合済みテキストが残ります。
+emerge終了時には、`C-x C-w'でファイルに保存できます。`emerge-files'や
+`emerge-files-with-ancestor'に数引数を指定すると、ミニバッファで出力ファ
+イル名を読み取ります。（どちらの場合でも、これがいちばん最後に聞かれる
+ファイル名。）すると、emerge終了時には、併合済みのテキストがその出力ファ
+イルに保存されます。
+
+emergeを終えると、通常、emergeコマンドが併合バッファをファイルに保存し
+ます。emergeを`C-]'でアボートするとemergeコマンドは併合バッファを保存
+しませんが、必要ならばユーザー自身で保存できます。
+
+
+
+File: emacs-ja.info, Node: Submodes of Emerge, Next: State of Difference, Prev: Overview of Emerge, Up: Emerge
+
+emergeのサブモード
+------------------
+
+併合コマンドを指示するためのモードが2つ、つまり、高速モード（Fast mode）
+と編集モード（Edit mode）があり、どちらかを選べます。高速モードでは、
+基本的な併合コマンドは1文字で表され、通常のEmacsコマンドは禁止されてい
+ます。併合コマンドだけを使用するのであれば、高速モードが便利です。編集
+モードでは、すべての併合コマンドはプレフィックス`C-c C-c'で始まり、通
+常のEmacsコマンドも使えます。このモードでは、併合バッファを編集できま
+すが、emergeの処理は遅くなります。
+
+編集モードに切り替えるには`e'を使い、高速モードに切り替えるには`C-c
+C-c f'を使います。モード行には、編集モードは`E'、高速モードは`F'と表示
+されます。
+
+emergeには、特定の併合コマンドの動作に影響を与えるサブモードがさらに2
+つあります。自動前進（auto-advance）モードと優先箇所スキップ
+（skip-prefers）モードです。
+
+自動前進モードがオンであると、コマンド`a'と`b'は、自動的につぎの相違箇
+所にポイントを進めます。このモードでは、どちらかの入力だけを選ぶ状況で
+ある限り、高速に併合を行えます。モード行には`A'と表示され、自動前進モー
+ドであるを示します。
+
+優先箇所スキップモードがオンであると、コマンド`n'と`p'は、A優先／B優先
+の状態にある相違箇所をスキップします（*Note State of Difference::）。
+つまり、どちらの版も『正しい』と推定されない相違箇所だけを調べことにな
+ります。モード行には`S'と表示され、優先箇所スキップモードであることを
+示します。
+
+自動前進モードをオン／オフするには、コマンド`s a'
+（`emerge-auto-advance-mode'）を使います。優先箇所スキップモードをオン／
+オフするには、コマンド`s s'（`emerge-skip-prefers-mode'）を使います。
+どちらのコマンドも、正の数引数を指定するとオンにし、負あるいは0の数引
+数を指定するとオフにし、引数を指定しないとトグル（切り替え）します。
+
+
+
+File: emacs-ja.info, Node: State of Difference, Next: Merge Commands, Prev: Submodes of Emerge, Up: Emerge
+
+相違箇所の状態
+--------------
+
+併合バッファ内では、相違箇所は`v'と`^'の文字だけの行に挟まれて示されま
+す。各相違箇所は、つぎの7つのいずれかの状態になっています。
+
+状態A
+     この相違箇所はA版の内容である。`a'コマンドは必ずこの状態にする。
+     モード行には`A'と表示される。
+
+状態B
+     この相違箇所はB版の内容である。`b'コマンドは必ずこの状態にする。
+     モード行には`B'と表示される。
+
+デフォルトA
+デフォルトB
+     まだ決心していないので、『デフォルト』で、相違箇所は状態A（A版の
+     内容）か状態B（B版の内容）である。どちらかの選択肢が『優先される』
+     （下記参照）場合を除いて、相違箇所はすべてデフォルトAで始まる（つ
+     まり、併合バッファの内容はAバッファのコピー）。
+
+     相違箇所を選択すると、その状態は、デフォルトAやデフォルトBから状
+     態Aや状態Bに遷移する。つまり、一度でも選択した相違箇所は、デフォ
+     ルトAやデフォルトBの状態であることはなく、これらの状態はけっして
+     モード行には表示されない。
+
+     デフォルトの状態として、コマンド`d a'はデフォルトAを選び、`d b'デ
+     フォルトBを選ぶ。これらのコマンドで選んだデフォルトの状態は、一度
+     も選択してなく、かつ、どちらの版も優先されない相違箇所に適用され
+     る。併合作業を先頭から順に行っている場合、最後に選択した相違箇所
+     に続く相違箇所群が一度も選択されていないものである。したがって、
+     先頭から順に進めるのであれば、`d a'と`d b'を使い分けて、併合バッ
+     ファのある部分ではA版をデフォルトとし、別の部分ではB版をデフォル
+     トとすることができる。
+
+優先A
+優先B
+     どちらかが"優先され"ているので、相違箇所は状態A（A版の内容）か状
+     態B（B版の内容）である。つまり、明示的にはまだ選択していないが、
+     当該箇所では、一方の版が共通の祖先に一致するため、他方の版のほう
+     が正しく思われるのである。したがって、Aバッファが共通の祖先と一致
+     する箇所では、実際に変更されたほうが正しいものである可能性がある
+     ので、B版が優先される。
+
+     これらの2つの状態は、モード行では`A*'や`B*'と表示される。
+
+混合状態
+     `x c'や`x C'コマンドの結果、相違箇所は、状態A（A版の内容）と状態B
+     （B版の内容）の混合状態になっている。
+
+     相違箇所がいったんこの状態になると、コマンド`a'や`b'に数引数を指
+     定しない限り、何もしない。
+
+     この状態は、モード行では`comb'と表示される。
+
+
+
+File: emacs-ja.info, Node: Merge Commands, Next: Exiting Emerge, Prev: State of Difference, Up: Emerge
+
+併合コマンド
+------------
+
+ここでは、高速モードの併合操作コマンドを示します。編集モードでは、これ
+らのコマンドのまえに`C-c C-c'を付けます。
+
+`p'
+     まえの相違箇所を選択する。
+
+`n'
+     つぎの相違箇所を選択する。
+
+`a'
+     この相違箇所をA版にする（状態A）。
+
+`b'
+     この相違箇所をB版にする（状態B）。
+
+`C-u N j'
+     番号Nの相違箇所を選択する。
+
+`.'
+     ポイントを含む相違箇所を選択する。このコマンドは、併合バッファ、A
+     バッファ、Bバッファのいずれでも使える。
+
+`q'
+     終了する。併合作業を完了。
+
+`C-]'
+     アボートする。併合作業をやめ、併合結果も保存しない。
+
+`f'
+     高速モードに移行する。（編集モードでは、実際には`C-c C-c f'コマン
+     ド。）
+
+`e'
+     編集モードに移行する。
+
+`l'
+     3つのウィンドウすべてを（`C-l'のように）再表示する。
+
+`-'
+     数引数の一部を指定する。
+
+`DIGIT'
+     これも、数引数の一部を指定する。
+
+`d a'
+     併合バッファのこれ以降では、A版を選ぶ（デフォルトA）。
+
+`d b'
+     併合バッファのこれ以降では、B版を選ぶ（デフォルトB）。
+
+`c a'
+     この相違箇所のA版のテキストをキルリングにコピーする。
+
+`c b'
+     この相違箇所のB版のテキストをキルリングにコピーする。
+
+`i a'
+     この相違箇所のA版のテキストをポイント位置に挿入する。
+
+`i b'
+     この相違箇所のB版のテキストをポイント位置に挿入する。
+
+`m'
+     相違箇所の周りにポイントとマークを設定する。
+
+`^'
+     3つのウィンドウすべてを（`M-v'のように）下にスクロールする。
+
+`v'
+     3つのウィンドウすべてを（`C-v'のように）上にスクロールする。
+
+`<'
+     3つのウィンドウすべてを（`C-x <'のように）左にスクロールする。
+
+`>'
+     3つのウィンドウすべてを（`C-x >'のように）右にスクロールする。
+
+`|'
+     3つのウィンドウすべてで、水平方向のスクロール分をリセットする。
+
+`x 1'
+     併合バッファを表示しているウィンドウの高さを1行に縮小する。（フル
+     サイズに戻すには`C-u l'を使う。）
+
+`x c'
+     この相違箇所の2つの版を混合する（*Note Combining in Emerge::）。
+
+`x f'
+     emergeで作業しているファイル／バッファの名前を、ヘルプ用ウィンド
+     ウに表示する。（ウィンドウをもとの状態に戻すには`C-u l'を使う。）
+
+`x j'
+     この相違箇所を、つぎの相違箇所と結合する。（`C-u x j'では、まえの
+     相違箇所と結合する。）
+
+`x s'
+     この相違箇所を2つに分割する。このコマンドを使うまえに、3つのバッ
+     ファそれぞれで、相違箇所を分割したい位置にポイントを移動しておく。
+
+`x t'
+     相違箇所の先頭や末尾にある同じ行を取り去る。このような行が現れる
+     のは、A版とB版は一致しているが、共通の祖先とは一致しない場合。
+
+
+
+File: emacs-ja.info, Node: Exiting Emerge, Next: Combining in Emerge, Prev: Merge Commands, Up: Emerge
+
+emergeの終了
+------------
+
+`q'コマンド（`emerge-quit'）は、併合を終了し、出力ファイルを指定してあ
+れば、そこに結果を保存します。AバッファとBバッファは正しい内容に復元さ
+れますが、emergeがAバッファとBバッファを作成して、かつ、編集されていな
+ければ、それらをキルします。さらに、併合バッファでのemergeコマンドを使
+用禁止にします。というのは、これ以降に併合コマンドを実行するとさまざま
+なバッファが悪影響を受ける可能性があるからです。
+
+`C-]'は、併合作業をアボートします。つまり、出力ファイルに書き出さずに
+終ります。出力ファイルを指定していなければ、併合作業をアボートしようが
+終了しようが、何の違いもありません。
+
+他のLispプログラムからemergeコマンドが呼び出された場合、正しく終了する
+と`t'、アボートしたときは`nil'が返されます。
+
+
+
+File: emacs-ja.info, Node: Combining in Emerge, Next: Fine Points of Emerge, Prev: Exiting Emerge, Up: Emerge
+
+2つの版の混合
+-------------
+
+相違箇所によっては、*両方*の版を残したいこともあるでしょう。そのような
+場合には、`x c'を使います。すると、併合バッファはつぎのようになります。
+
+     #ifdef NEW
+     VERSION FROM A BUFFER
+     #else /* not NEW */
+     VERSION FROM B BUFFER
+     #endif /* not NEW */
+
+この例では、2つの版をCのプリプロセッサの条件節で分けていますが、変数
+`emerge-combine-versions-template'に好みの文字列を設定すれば、このコマ
+ンドで使用する文字列を指定できます。この文字列内では、A版のテキストを
+置く箇所には`%a'を、B版のを置く箇所には`%b'を指定します。上に示した結
+果を生じるデフォルトの設定はつぎのとおりです。
+
+     "#ifdef NEW\n%a#else /* not NEW */\n%b#endif /* not NEW */\n"
+
+
+
+File: emacs-ja.info, Node: Fine Points of Emerge, Prev: Combining in Emerge, Up: Emerge
+
+細かな注意点
+------------
+
+併合作業中には、AバッファやBバッファを勝手に編集してはいけません。
+emergeは一時的にこれらのバッファの内容を変更しますが、最終的にはもとの
+状態に戻します。
+
+複数の併合処理を同時に進めることもできますが、別の併合処理の入力に同じ
+バッファを使用してはいけません。というのは、一時的にせよ、互いに異なる
+複数の変更が1つのバッファに加えられてしまうからです。
+
+入力ファイル全体を比較する必要があるため、emergeの開始にはしばらく時間
+がかかる場合もあります。また、`diff'コマンドが完了するまで、emergeは何
+もできません。たぶん、そのうち誰かがemergeを変更して、入力ファイルが大
+きいときにはバックグラウンドで比較を行うようにするでしょう。そうすれば、
+emergeがコマンドを受け付けるようになるまで、Emacsで他の作業を続けられ
+ます。
+
+フック`emerge-startup-hook'（*Note Hooks::）が、併合処理の設定の最後に
+実行されます。
+
+
+
+File: emacs-ja.info, Node: C Modes, Next: Fortran, Prev: Emerge, Up: Programs
+
+Cモードと関連するモード
+=======================
+
+本節では、C、C++、Objective-C、Java、CORBA IDL、Pike用の各モードで利用
+可能な特別な機能について述べます。『Cモードと関連するモード』と書いた
+ときには、これらのモードを意味します。
+
+* Menu:
+
+* Motion in C::
+* Electric C::
+* Hungry Delete::
+* Other C Commands::
+* Comments in C::
+
+
+
+File: emacs-ja.info, Node: Motion in C, Next: Electric C, Up: C Modes
+
+Cモードの移動コマンド
+---------------------
+
+本節では、Cモードとその関連モードでポイントを移動するコマンドについて
+述べます。
+
+`C-c C-u'
+     マークをポイント位置に設定し、ポイントを含むプリプロセッサの条件
+     節の先頭に後向きにポイントを戻す。数引数は反復回数として働く。負
+     の引数を指定すると、条件節の末尾に前向きにポイントを移動する。後
+     向きに戻る場合、`#elif'は、`#if'が続く`#else'のように扱われる。前
+     向きに進む場合、`#elif'は無視される (1) (*Note Motion in
+     C-Footnotes::)。
+
+`C-c C-p'
+     マークをポイント位置に設定し、プリプロセッサの条件節を横断して後
+     向きにポイントを移動する。数引数は反復回数として働く。負の引数を
+     指定すると、前向きに移動する。
+
+`C-c C-n'
+     マークをポイント位置に設定し、プリプロセッサの条件節を横断して前
+     向きにポイントを移動する。数引数は反復回数として働く。負の引数を
+     指定すると、後向きに移動する。
+
+`M-a'
+     もっとも内側のCの文の先頭にポイントを移動する
+     （`c-beginning-of-statement'）。すでに文の先頭にポイントがある場
+     合、直前の文の先頭に移動する。数引数Nを指定すると、N-1だけまえの
+     文に移動する。
+
+     ポイントが、文字列やコメントの内側、あるいは、コメントのうしろ
+     （コメントのあいだに白文字がある場合のみ）にある場合、Cの文ではな
+     く自然言語の文単位で移動する。
+
+     プログラムから呼ばれるときには、この関数は、3つの引数、つまり、反
+     復回数、（これよりも後向きには戻らない）移動限界、ポイントがコメ
+     ントの内側にある場合に自然言語の文単位の移動をするかどうか、を取
+     るが、これらは省略できる。
+
+`M-e'
+     もっとも内側のCの文の末尾にポイントを移動する。`M-a'と同じだが、
+     移動方向が逆（`c-end-of-statement'）。
+
+`M-x c-backward-into-nomenclature'
+     C++の命名語法の部分や単語の先頭に後向きにポイントを移動する。数引
+     数Nを指定すると、N回移動する。Nが負ならば、前向きに移動する。C++
+     の命名語法とは、NamingSymbolsWithMixedCaseAndNoUnderlinesのような
+     形のシンボル名のこと（つまり、大文字で始めた単語を連結したもの）。
+     各大文字が部分や単語の先頭となる。
+
+     GNUプロジェクトでは、CやC++の識別子は、大文字小文字で区別するので
+     はなく、単語を下線で区切ることを推奨する。
+
+`M-x c-forward-into-nomenclature'
+     C++の命名語法の部分や単語の末尾に前向きにポイントを移動する。数引
+     数Nを指定すると、N回移動する。
+
+
+File: emacs-ja.info  Node: Motion in C-Footnotes, Up: Motion in C
+
+(1) 【訳注】`#elif'のところで止まってしまう。
+
+
+
+File: emacs-ja.info, Node: Electric C, Next: Hungry Delete, Prev: Motion in C, Up: C Modes
+
+エレクトリックC文字
+-------------------
+
+Cモードとその関連モードでは、ある種の印字文字は『エレクトリック』です。
+つまり、その文字自身を挿入することに加えて、現在行を字下げし直したり、
+改行も挿入することさえあります。この機能は、変数`c-auto-newline'で制御
+されます。『エレクトリック』文字は、`{'、`}'、`:'、`#'、`;'、`,'、`<'、
+`>'、`/'、`*'、`('、`)'です。
+
+"自動改行"（auto-newline）機能がオン（モード行のモード名のあとに`/a'と
+表示される）の場合に限り、エレクトリック文字は改行を挿入します。この機
+能は、変数`c-auto-newline'で制御されます。コマンド`C-c C-a'でこの機能
+をオン／オフできます。
+
+`C-c C-a'
+     自動改行機能をオン／オフする（`c-toggle-auto-state'）。数引数を指
+     定した場合、正ならば自動改行機能をオンにし、負ならばオフにする。
+
+コロン`:'はエレクトリックです。なぜなら、単独のコロンの入力の解釈とし
+てはそれが適切だからです。しかし、C++で2つの連続するコロンを挿入する場
+合、コロンのエレクトリックな動作は不便です。`C-c :'と打てば、字下げも
+改行の挿入も行わずにコロンを2つ挿入できます。
+
+`C-c :'
+     行の字下げも改行の挿入もせずに、スコープ演算子を表すコロン2つをポ
+     イント位置に挿入する（`c-scope-operator'）。
+
+エレクトリックキー`#'は、プリプロセッサ指令の始まりと思われる位置では、
+行を字下げし直します。変数`c-electric-pound-behavior'の値が
+`(alignleft)'のときには、このようになります。この機能をオフにするには、
+`c-electric-pound-behavior'に`nil'を設定します。
+
+変数`c-hanging-braces-alist'は、挿入された中括弧の前／後への改行の挿入
+を制御します。これは、`(SYNTACTIC-SYMBOL . NL-LIST)'の形の要素から成る
+連想リストです。`c-offsets-alist'に現れるほとんどの構文シンボルは、こ
+こでも意味を持ちます。
+
+リストNL-LISTは、シンボル`before'か`after'のいずれか、あるいはその両方、
+もしくは`nil'を含みます。中括弧が挿入されるときには、その中括弧が定義
+する構文上の文脈を`c-hanging-braces-alist'から探します。みつかれば、
+NL-LISTを使って中括弧の前／後／前後のどこに改行を挿入するか決定します。
+みつからなければ、デフォルトとして中括弧の前後に改行を挿入します。
+
+変数`c-hanging-colons-alist'は、挿入されたコロンの前／後への改行の挿入
+を制御します。これは、`(SYNTACTIC-SYMBOL . NL-LIST)'の形の要素から成る
+連想リストです。リストNL-LISTは、シンボル`before'か`after'のいずれか、
+あるいはその両方、もしくは`nil'を含みます。
+
+コロンが挿入されるときには、そのコロンが定義する構文シンボルをこの連想
+リストから探します。みつかれば、NL-LISTを使ってコロンの前／後のどこに
+改行を挿入するか決定します。みつからなければ、改行を挿入しません。
+
+自動改行機能がオンのときには、エレクトリック文字は自動的に改行を削除し
+ます。この機能により、改行が不要だと思われるもっとも一般的な場面で改行
+を削除するので、自動改行機能をユーザーにより受け入れやすくしています。
+Emacsは改行を削除することが望ましいいくつかの場面を認識できますが、変
+数`c-cleanup-list'を設定すれば、*どの*場面で行うか指定できます。この変
+数の値はシンボルのリストです。各要素は、改行を削除してよい場面を1つ指
+定します。以下に指定できるシンボルとその意味を示します。
+
+`brace-catch-brace'
+     `} catch (CONDITION) {'の構造全体を1行に再配置する。`catch'や
+     CONDITION以外に中括弧のあいだになにもないときに`{'を打つと再配置
+     する。
+
+`brace-else-brace'
+     `} else {'の構造全体を1行に再配置する。`else'に続けて`{'を打った
+     ときに再配置するが、中括弧と`else'のあいだに空白以外の文字がない
+     場合に限る。
+
+`brace-elseif-brace'
+     `} else if (...) {'の構造全体を1行に配置する。`{'を打ったときに再
+     配置するが、キーワードと`if'の条件式を除いて、`}'と`{'のあいだに
+     空白以外の文字がない場合に限る。
+
+`empty-defun-braces'
+     空の関数定義の中括弧、`{'と`}'を同じ行に再配置する。閉じ中括弧`}'
+     を打ったときに再配置する。
+
+`defun-close-semi'
+     `struct'や同様の型宣言のあとのセミコロンを閉じ中括弧と同じ行に再
+     配置する。セミコロンを打ったときに再配置する。
+
+`list-close-comma'
+     配列／合成体の初期化式の中の閉じ中括弧とそれに続くコンマを同じ行
+     に再配置する。コンマを打ったときに再配置する。
+
+`scope-operator'
+     C++のスコープ演算子を表している可能性がある2つのコロンを一緒にす
+     る。2つめのコロンを打ったときに一緒にするが、コロンのあいだに白文
+     字以外の文字がない場合に限る。
+
+
+
+File: emacs-ja.info, Node: Hungry Delete, Next: Other C Commands, Prev: Electric C, Up: C Modes
+
+Cの欲張りな削除機能
+-------------------
+
+"欲張りな削除"機能をオン（モード行のモード名のあとに`/h'か`/ah'で表示
+される）にすると、1つのDELコマンドで、直前の空白1つだけでなく、白文字
+すべてを削除します。この機能をオン／オフにするには、`C-c C-d'を使いま
+す。
+
+`C-c C-d'
+     欲張り削除機能（`c-toggle-hungry-state'）をオン／オフする。数引数
+     を指定した場合、正ならば欲張り削除機能をオンにし、負ならばオフに
+     する。
+
+`C-c C-t'
+     自動改行機能と欲張り削除機能を同時にオン／オフする 
+     （`c-toggle-auto-hungry-state'）。
+
+変数`c-hungry-delete-key'は、欲張り削除機能がオンかオフかを制御します。
+
+
+
+File: emacs-ja.info, Node: Other C Commands, Next: Comments in C, Prev: Hungry Delete, Up: C Modes
+
+Cモードのその他のコマンド
+-------------------------
+
+`C-M-h'
+     関数定義の末尾にマークを設定し、先頭にポイントを置く
+     （`c-mark-function'）。
+
+`M-q'
+     CやC++のコメントを考慮して、段落を詰め込む（`c-fill-paragraph'）。
+     現在行にコメントがあったり、現在行がコメントの内側なら、コメント
+     の字下げとコメント区切りを保存したまま、ポイント位置のコメントや
+     段落を詰め込む。
+
+`C-c C-e'
+     リージョン内のテキストに対してCプリプロセッサを実行し、マクロ呼び
+     出しを展開した結果を表示する（`c-macro-expand'）。リージョンのま
+     えにあるテキストにマクロ定義があることもあるので、それらもプリプ
+     ロセッサに渡されるが、その部分の出力は表示しない。
+
+     マクロを用いたCのコードをデバッグするとき、どのようにマクロが展開
+     されるか正確に理解するのが難しいことがある。このコマンドを使えば、
+     マクロ展開のことを考える必要はない。展開結果を目にすることができ
+     る。
+
+`C-c C-\'
+     リージョン内の行末に`\'文字を挿入したり、行末の`\'の位置揃えを行
+     う（`c-backslash-region'）。Cのマクロ定義を書いたり編集したあとに
+     便利なコマンド。
+
+     行末がすでに`\'で終っているなら、そのまえに置く白文字の個数を調整
+     する。そうでなければ、新たに`\'を挿入する。ただし、リージョン内の
+     最後の行は特別扱いする。その行に`\'を挿入することはなく、また、
+     `\'がある場合には削除する。
+
+`M-x cpp-highlight-buffer'
+     プリプロセッサ指令の条件節に従って、テキストの一部を強調表示する。
+     このコマンドは`*CPP Edit*'という名前のバッファを表示する。このバッ
+     ファは、特定のプリプロセッサ条件とその内容をどのように表示するか
+     を選択するグラフィックメニュー。さまざま設定を変更したあとで、
+     `[A]pply these settings'をクリックする（あるいは、そのバッファへ
+     移動して`a'と打つ）と、設定に応じてCモードのバッファを強調表示し
+     直す。
+
+`C-c C-s'
+     現在のソース行に関する構文上の情報を表示する
+     （`c-show-syntactic-information'）。この情報は行の字下げを指示す
+     る。
+
+
+
+File: emacs-ja.info, Node: Comments in C, Prev: Other C Commands, Up: C Modes
+
+Cモードのコメント
+-----------------
+
+Cモードとその関連モードでは、コメントの整形にいくつかの変数を使います。
+
+`c-comment-only-line-offset'
+     コメント開始部分だけを含んだ行に与える余分のオフセット。この変数
+     の値は整数、あるいは`(NON-ANCHORED-OFFSET . ANCHORED-OFFSET)'の形
+     のコンスセルのどちらでもかまわない。ここで、NON-ANCHORED-OFFSETは、
+     1桁目以降から始まるコメントに与えるオフセット。ANCHORED-OFFSETは、
+     0桁目から始まるコメントに与えるオフセット。整数値だけの場合は、
+     `(VAL . 0)'と等価。
+
+`c-comment-start-regexp'
+     コメント開始の識別方法を指定するバッファにローカルな変数。
+
+`c-hanging-comment-ender-p'
+     この変数が`nil'であると、`c-fill-paragraph'は、ブロックコメントの
+     コメント終了区切りだけの行を作る。デフォルト値は`t'で、コメント終
+     了区切り`*/'をコメントの最後の行の末尾に置く。
+
+`c-hanging-comment-starter-p'
+     この変数が`nil'であると、`c-fill-paragraph'は、ブロックコメントの
+     コメント開始区切りだけの行を作る。デフォルト値は`t'で、コメント開
+     始区切り`/*'をコメントの最初の行の先頭に置く。
+
+
+
+File: emacs-ja.info, Node: Fortran, Next: Asm Mode, Prev: C Modes, Up: Programs
+
+Fortranモード
+=============
+
+Fortranモードには、Fortranの文と副プログラム向けの特別な移動コマンド、
+Fortranの入れ子、行番号と継続文の約束事に従う字下げコマンドがあります。
+Fortranモードには、長い行を適切なFortranの継続行に分ける専用の自動詰め
+込み（fortran-auto-fill）モードがあります。
+
+Fortranのコメントは他の言語のコメントとは異なっているので、コメントに
+対する特別なコマンドもあります。Fortranのキーワードを入力するときの打
+鍵量を減らせる、組み込みの略語もあります。
+
+Fortran用のメジャーモードに切り替えるには、`M-x fortran-mode'を使いま
+す。このコマンドは、フック`fortran-mode-hook'を実行します（*Note
+Hooks::）。
+
+* Menu:
+
+* Motion: Fortran Motion.	 Moving point by statements or subprograms.
+* Indent: Fortran Indent.	 Indentation commands for Fortran.
+* Comments: Fortran Comments.	 Inserting and aligning comments.
+* Autofill: Fortran Autofill.	 Auto fill minor mode for Fortran.
+* Columns: Fortran Columns.	 Measuring columns for valid Fortran.
+* Abbrev: Fortran Abbrev.	 Built-in abbrevs for Fortran keywords.
+* Misc: Fortran Misc.            Other Fortran mode features.
+
+
+
+File: emacs-ja.info, Node: Fortran Motion, Next: Fortran Indent, Up: Fortran
+
+移動コマンド
+------------
+
+Fortran モードには、副プログラム（関数やサブルーチン）や文を単位とて移
+動するための特別なコマンドがあります。また、副プログラムを囲むリージョ
+ンを設定するコマンドもあり、副プログラムをキルしたり移動したりするのに
+便利です。
+
+
+`C-M-a'
+     副プログラムの先頭に移動する（`beginning-of-fortran-subprogram'）。
+`C-M-e'
+     副プログラムの末尾に移動する（`end-of-fortran-subprogram'）。
+`C-M-h'
+     副プログラムの先頭にポイントを置き、末尾にマークを設定する
+     （`mark-fortran-subprogram'）。
+`C-c C-n'
+     現在の文かつぎの文の先頭に移動する（`fortran-next-statement'）。
+`C-c C-p'
+     現在の文かまえの文の先頭に移動する（`fortran-previous-statement'）。
+
+
+
+File: emacs-ja.info, Node: Fortran Indent, Next: Fortran Comments, Prev: Fortran Motion, Up: Fortran
+
+Fortranの字下げ
+---------------
+
+Fortranのコードでは、構文上の各種要素（行番号、コメント行指示子、継続
+マーク）は標準Fortranが要求する桁に現れるようにしなくてはいけないので、
+字下げに関する特別なコマンドと機能が必要です。
+
+* Menu:
+
+* Commands: ForIndent Commands.  Commands for indenting Fortran.
+* Contline: ForIndent Cont.      How continuation lines indent.
+* Numbers:  ForIndent Num.       How line numbers auto-indent.
+* Conv:     ForIndent Conv.      Conventions you must obey to avoid trouble.
+* Vars:     ForIndent Vars.      Variables controlling Fortran indent style.
+
+
+
+File: emacs-ja.info, Node: ForIndent Commands, Next: ForIndent Cont, Up: Fortran Indent
+
+Fortranの字下げコマンド
+.......................
+
+`TAB'
+     現在行を字下げする（`fortran-indent-line'）。
+`C-j'
+     現在行を字下げしてから、字下げした新たな行を始める
+     （`fortran-indent-new-line'）。
+`C-M-j'
+     ポイント位置で現在行を分割し、継続行を設定する。
+`M-^'
+     現在行と直前の行を繋げる。
+`C-M-q'
+     ポイントを含む副プログラムの行をすべて字下げする
+     （`fortran-indent-subprogram'）。
+
+Fortranモードでは、Fortranの行を字下げするようにTABを再定義します
+（`fortran-indent-line'）。このコマンドは、行番号と継続マークを要求さ
+れる桁位置に字下げしたうえ、それとは独立にプログラム中の入れ子に基づい
+て文本体を字下げします。
+
+キー`C-j'は`fortran-indent-new-line'を実行します。これは、現在行を字下
+げしてから、新たな行を作成して字下げします。新たな行を始めるまえに、
+`do'ループやその他のブロックを閉じる文を字下げし直すのに便利です。
+
+キー`C-M-q'は、ポイントを含むFortranの副プログラム（関数やサブルーチン）
+の行すべてを字下げするコマンド`fortran-indent-subprogram'を実行します。
+
+キー`C-M-j'は、適切な方法でFortranの行を分割するコマンド
+`fortran-split-line'を実行します。コメント行でなければ、後半部を継続行
+にし、それに応じて字下げします。コメント行ならば、前後半部分とも独立し
+たコメント行になります。
+
+`M-^'は、`fortran-split-line'の逆操作を行うコマンド`fortran-join-line'
+を実行します。現在行と直前の行を、Fortranコードとして適切に繋げます。
+
+
+
+File: emacs-ja.info, Node: ForIndent Cont, Next: ForIndent Num, Prev: ForIndent Commands, Up: Fortran Indent
+
+継続行
+......
+
+近代的なほとんどのFortranコンパイラには、継続行の記述方法が2つ用意され
+ています。ある行の空白でない最初の文字が5桁目にあれば、先行する行の継
+続行です。このスタイルを"固定フォーマット"と呼びます。（GNU Emacsでは、
+桁位置はつねに0から数える。）変数`fortran-continuation-string'は、5桁
+目に置く文字を指定します。タブ文字で始まり`0'以外の数字が続く行も継続
+行です。このスタイルを"タブフォーマット"と呼びます。
+
+Fortranモードではどちらのスタイルの継続行も利用できますが、希望するほ
+うを指定する必要があります。変数`indent-tabs-mode'の値で希望を指定しま
+す。`nil'ならば固定フォーマット、`nil'以外ならばタブフォーマットになり
+ます。モード行に文字列`Tab'があるかどうかで、現在使用しているスタイル
+がわかります。
+
+Fortranモードでは、テキストが慣用的なFortranの継続マーク`$'で始まる、
+あるいは、5桁目から白文字以外の文字で始まる場合には、その行を継続行と
+して扱います。TABで継続行を字下げすると、選択されている継続行のスタイ
+ルに変換します。`C-M-j'でFortranの文を分割すると、継続行のスタイルに応
+じて新たな行には継続マークを付けます。
+
+継続行のスタイルは、Fortranモードでの編集に関わるその他の側面にも影響
+します。固定フォーマットでは、文本体を置く最小桁位置は6になります。
+Fortranのブロックの内側にある行を7桁目以降に字下げするときには、白文字
+には空白文字を使います。一方、タブフォーマットでは、文本体を置く最小桁
+位置は8で、8桁目よりまえの白文字はつねにタブ文字です。
+
+既存のファイルに対してFortranモードに入ると、その内容から自動的に適切
+な継続行のスタイルを推測しようとします。タブ文字か空白6個で始まる最初
+の行でスタイルを判断します。変数`fortran-analyze-depth'で、（ファイル
+の先頭から）何行分をスタイル判断に使用するか指定します。この範囲内にス
+タイルを示すような行がみつからなければ、変数`fortran-tab-mode-default'
+がスタイルを指定します。`nil'なら固定フォーマット、`nil'以外ならタブ
+フォーマットです。
+
+
+
+File: emacs-ja.info, Node: ForIndent Num, Next: ForIndent Conv, Prev: ForIndent Cont, Up: Fortran Indent
+
+行番号
+......
+
+ある行の白文字以外の最初の文字が数字であれば、Fortranの字下げではそれ
+を行番号とみなして0桁目から4桁目のあいだに移動します。（GNU Emacsでは、
+桁位置はつねに0から始まる。）
+
+通常、4桁以下の行番号は空白1個で字下げします。変数
+`fortran-line-number-indent'でこの字下げ幅を制御します。この変数の値は、
+行番号の最大字下げ幅を表します。最大字下げ幅まで字下げできなくなると、
+行番号の最後の桁が4桁目になるように右揃えで字下げします。この変数のデ
+フォルト値は1です。
+
+これらの規則に従って行番号を字下げするには、行番号を挿入するだけで十分
+です。行番号の各桁が挿入されるたびに、字下げ幅を再計算します。この機能
+をオフにするには、変数`fortran-electric-line-number'に`nil'を設定しま
+す。こうすると、行番号の挿入はその他の文字の挿入と同様に行われます。
+
+
+
+File: emacs-ja.info, Node: ForIndent Conv, Next: ForIndent Vars, Prev: ForIndent Num, Up: Fortran Indent
+
+構文上の規約
+............
+
+Fortranモードでは、適切な字下げをするためのFortranプログラムの解釈を簡
+単にするために、以下の規約に従っているものと仮定します。
+
+   * 2つの入れ子になった`do'ループは、けっして`continue'文を共有しない。
+
+   * `if'、`else'、`then'、`do'といったFortranのキーワードは、あいだに
+     空白があったり、途中で行分けされない。
+
+     一般にFortranコンパイラは文字列定数の外側にある空白を無視するが、
+     Fortranモードは途中に空白が入っているキーワードを認識しない。
+     `else if'や`end do'のような書き方は許されるが、2つの単語を同じ行
+     に置いた場合に限る。継続行に分かれていると認識しない。
+
+以上の規約に従っていない場合には、行を美しく字下げできないこともありま
+す。しかしながら、たとえ規約に従っていなくても、正しいFortranプログラ
+ムであれば字下げによって意味が変わることはありません。
+
+
+
+File: emacs-ja.info, Node: ForIndent Vars, Prev: ForIndent Conv, Up: Fortran Indent
+
+Fortranの字下げのための変数
+...........................
+
+Fortranの字下げ動作に影響する変数がいくつかあります。
+
+`fortran-do-indent'
+     `do'文の各レベルごとに追加する字下げ幅（デフォルトは3）。
+
+`fortran-if-indent'
+     `if'文の各レベルごとに追加する字下げ幅（デフォルトは3）。この値は、
+     Fortran 90の`where'文の字下げにも使われる。
+
+`fortran-structure-indent'
+     `structure'、`union'、`map'の各文の各レベルごとに追加する字下げ幅
+     （デフォルトは3）。
+
+`fortran-continuation-indent'
+     継続行の文本体に追加する字下げ幅（デフォルトは5）。
+
+`fortran-check-all-num-for-matching-do'
+     この変数が`nil'なら、字下げ処理では、`do'文は`continue'文で終って
+     いると仮定する。こうすると、`continue'以外の文の字下げを計算する
+     ときに、当該文が`do'文を終えるかどうか検査しなくてよいので、時間
+     を節約できる。この変数が`nil'以外であれば、行番号が付いた文の字下
+     げを計算するときには、当該文が`do'文を終えるかどうか検査する必要
+     がある。デフォルト値は`nil'。
+
+`fortran-blink-matching-if'
+     この変数が`t'なら、`endif'文の字下げを行うときに、対応する`if'文
+     を示すために一時的にカーソルを移動する。デフォルト値は`nil'。
+
+`fortran-minimum-statement-indent-fixed'
+     固定フォーマットの継続行スタイルを採用したときの、文に対する最小
+     字下げ幅。文本体の字下げ幅がこの値より小さくなることはない。デフォ
+     ルト値は6。
+
+`fortran-minimum-statement-indent-tab'
+     タブフォーマットの継続行スタイルを採用したときの、文に対する最小
+     字下げ幅。文本体の字下げ幅がこの値より小さくなることはない。デフォ
+     ルト値は8。
+
+
+
+File: emacs-ja.info, Node: Fortran Comments, Next: Fortran Autofill, Prev: Fortran Indent, Up: Fortran
+
+Fortranのコメント
+-----------------
+
+Emacsの通常のコメント用コマンドは、コメントをコードのあとにも置けると
+仮定します。Fortranでは、標準的なコメントの構文は、1つの行全体を必要と
+します。そのため、Fortranモードでは、Emacsの通常のコメント用コマンドを
+置き換え、新たな変数をいくつか定義しています。
+
+Fortranモードでは、文字`!'で始まり他のテキストのあとにも置ける非標準的
+なコメントの構文も扱えます。しかし、この構文を受け付けるFortranコンパ
+イラは限られるため、まえもって指定しておかない限り、Fortranモードは非
+標準のコメントを使いません。このスタイルのコメントを使うには、変数
+`comment-start'に`"!"'を設定します（*Note Variables::）。
+
+`M-;'
+     コメントの位置を揃えたり、新たなコメントを挿入する
+     （`fortran-indent-comment'）。
+
+`C-x ;'
+     非標準の`!'コメントだけに作用する。
+
+`C-c ;'
+     リージョン内のすべての行をコメントにする。あるいは、（引数を指定
+     すると）コメントをコードに戻す（`fortran-comment-region'）。
+
+Fortranモードの`M-;'は、コマンド`fortran-indent-comment'に再定義されて
+います。通常の`M-;'と同じく、既存のコメントを認識して、そのテキストの
+桁位置を揃えます。コメントがなければ、コメントを挿入して桁位置を揃えま
+す。しかし、Fortranモードのコメントの挿入と揃え方は、他のモードと同じ
+ではありません。
+
+新たにコメントを挿入する場合、現在行が空行のときは（1行全体を占める）
+行コメントを挿入します。空行でないとき、非標準のコメントを使うように指
+定してあれば非標準の`!'コメントを挿入します。いずれでもないときには、
+現在行のまえに行コメントを挿入します。
+
+非標準の`!'コメントは他の言語のコメントと同じように揃えられますが、行
+コメントの場合はようすが異なります。標準の行コメントでは、コメント区切
+りはつねに0桁目にある必要があります。コメント内部のテキストだけを揃え
+ます。`fortran-comment-indent-style'を設定して、3種類の揃え方を選べま
+す。
+
+`fixed'
+     `fortran-comment-line-extra-indent'と文に対する最小字下げ幅を合計
+     した桁位置にテキストを揃える。デフォルトはこれ。
+
+     文の最小字下げ幅は、固定フォーマットの継続行スタイルの場合には
+     `fortran-minimum-statement-indent-fixed'の値、タブフォーマットの
+     場合には`fortran-minimum-statement-indent-tab'の値。
+
+`relative'
+     コード行であるかのように揃えるが、
+     `fortran-comment-line-extra-indent'だけ余計に桁をずらす。
+
+`nil'
+     行コメントのテキストを勝手に動かさない。
+
+また、行コメントの字下げ文字を変更したければ、変数
+`fortran-comment-indent-char'に好みの1文字を設定してください。
+
+Fortranモードには、`comment-line-start'と`comment-line-start-skip'の2
+つの変数が新たに導入されています。これらは、コードのあとに置く通常のコ
+メントに対する`comment-start'と`comment-start-skip'と同様の役割を、行
+コメントに対して果たします。どちらもFortranモードが適切に設定するので、
+変更する必要はありません。
+
+Emacsの通常のコメント用コマンド`C-x ;'は、再定義されていません。このコ
+マンドは`!'コメントを扱えます。`!'コメントを使っていない場合には、この
+コマンドはFortranモードでは役に立ちません。
+
+コマンド`C-c ;'（`fortran-comment-region'）は、リージョン内のすべての
+行の先頭に`C$$$'を挿入してコメントに変えます。数引数を指定すると、行の
+先頭から`C$$$'を削除して、リージョンを生きたコードに戻します。これらの
+コメントに使う文字列は、変数`fortran-comment-region'の設定で制御できま
+す。ところで、ここではコマンドと変数に同じ名前が使われています。Lispや
+Emacsにおいては、使用される文脈からコマンドと変数をつねに区別できるの
+で、このような名前の使い方が問題を起こすことはありません。
+
+
+
+File: emacs-ja.info, Node: Fortran Autofill, Next: Fortran Columns, Prev: Fortran Comments, Up: Fortran
+
+Fortran専用自動詰め込み（fortran-auto-fill）モード
+--------------------------------------------------
+
+Fortran専用自動詰め込み（fortran-auto-fill）モードは、挿入したFortran
+の文が長くなりすぎると自動的に文を分割するマイナモードです。文を分割す
+るには、`fortran-continuation-string'（*Note ForIndent Cont::）を用い
+て継続行を作ります。SPC、RET、TABを打ったときや、字下げコマンドを使っ
+たときに分割されます。
+
+`M-x fortran-auto-fill-mode'は、Fortran専用自動詰め込み
+（fortran-auto-fill）モードがオンならばオフにし、オフならばオンにしま
+す。このコマンドは、通常の自動詰め込み（auto-fill）モード（*Note
+Filling::）である`M-x auto-fill-mode'が行うのと同じように働きます。正
+の数引数を指定すると、Fortran専用自動詰め込み（fortran-auto-fill）モー
+ドをオンにし、負であればオフにします。このモードのオン／オフは、モード
+行の括弧の中に`Fill'があるかどうかで判断できます。Fortran専用自動詰め
+込み（fortran-auto-fill）モードはマイナモードなので、各バッファごとに
+独立にオン／オフにできます。*Note Minor Modes::。
+
+Fortran専用自動詰め込み（fortran-auto-fill）モードは、行の長さが規定の
+幅（`fill-column'の値）を越えると、空白や区切りの位置で行を分割します。
+Fortran専用自動詰め込み（fortran-auto-fill）が分割する区切りは、`,'、
+`''、`+'、`-'、`/'、`*'、`='、`)'です。変数
+`fortran-break-before-delimiters'が`nil'の場合には、区切りのうしろで分
+割します。それ以外（デフォルトでもある）では、区切りのまえで分割します。
+
+デフォルトではFortran専用自動詰め込み（fortran-auto-fill）モードはオフ
+です。この機能を恒常的に使いたければ、`(fortran-auto-fill-mode 1)'を実
+行するフック関数を`fortran-mode-hook'に追加してください。*Note Hooks::。
+
+
+
+File: emacs-ja.info, Node: Fortran Columns, Next: Fortran Abbrev, Prev: Fortran Autofill, Up: Fortran
+
+桁位置の確認
+------------
+
+`C-c C-r'
+     現在行の上にしばらくのあいだ『桁定規』を表示する
+     （`fortran-column-ruler'）。
+`C-c C-w'
+     現在のウィンドウを一時的に分割して幅を72桁にする。一部のFortranコ
+     ンパイラは1行を72文字以内に制限しているので、このコマンドを使用す
+     れば1行が長くなりすぎることを防げる
+     （`fortran-window-create-momentarily'）。
+
+コマンド`C-c C-r'（`fortran-column-ruler'）は、桁定規をしばらくのあい
+だ、現在行の上に表示します。桁定規は、Fortranプログラムにおいて特別な
+意味をもつ桁位置を表す2行のテキストです。2行目の角括弧と中括弧で、それ
+ぞれ、行番号と文の本体の範囲を表します。桁番号は（それらの上の）1行目
+に表示されます。
+
+GNU Emacsでは桁番号をつねに0から数えることに注意してください。その結果、
+桁定規に示される桁番号は、慣れ親しんだものより1だけ小さくなります。し
+かし、それらが表す位置はFortranの標準に従ったものです。
+
+桁定規の表示に用いるテキストは、変数`indent-tabs-mode'の値に依存します。
+この変数の値が`nil'ならば、変数`fortran-column-ruler-fixed'の値を桁定
+規の表示に使います。`nil'以外であれば、変数`fortran-column-ruler-tab'
+の内容を表示に使います。これらの変数の内容を変更すれば、桁定規の表示を
+変更できます。
+
+さらに桁合わせを支援するために、`C-c C-w'（`fortran-window-create'）は、
+現在のウィンドウを幅が72桁になるように横位置で分割します。このウィンド
+ウで編集すれば、正しいFortranのプログラムとしては長すぎる行を即座に発
+見できます。
+
+
+
+File: emacs-ja.info, Node: Fortran Abbrev, Next: Fortran Misc, Prev: Fortran Columns, Up: Fortran
+
+Fortranのキーワードの略語
+-------------------------
+
+Fortranモードには、一般的なキーワードや宣言に対する数多くの組み込み略
+語があります。これらは、ユーザー自身が定義できる略語と同じ種類のもので
+す。それらを使うには、略語（abbrev）モードをオンにします。*Note
+Abbrevs::。
+
+組み込み略語は他の略語と1つの点で変わっています。すべてセミコロンで始
+まります。通常は略語にはセミコロンを使えませんが、Fortranモードでは、
+セミコロンの構文上の意味を『単語を構成する文字』に変更することで、これ
+を可能にしています。
+
+たとえば、`continue'に対する組み込みFortran略語は`;c'です。略語
+（abbrev）モードがオンのときに、`;c'を挿入してから空白や改行といった句
+読点文字を挿入すると、`;c'は自動的に`continue'と展開されます。
+
+組み込みFortran略語とその展開形の一覧を表示するには、`;?'あるいは
+`;C-h'と打ちます。
+
+
+
+File: emacs-ja.info, Node: Fortran Misc, Prev: Fortran Abbrev, Up: Fortran
+
+Fortranモードのその他のコマンド
+-------------------------------
+
+`C-x n d'
+     現在のFortranの副プログラムにナロイングする。
+
+Fortranモードでは、キー`C-x n d'はコマンド
+`fortran-narrow-to-subprogram'を実行するように再定義しています。このコ
+マンドは、キーの通常の定義をFrotran風にしたものです。バッファをポイン
+トを含む副プログラムにナロイングします。
+
+
+
+File: emacs-ja.info, Node: Asm Mode, Prev: Fortran, Up: Programs
+
+asmモード
+=========
+
+asmモードは、アセンブリコードのファイルを編集するためのメジャーモード
+です。つぎのコマンドが定義されています。
+
+`TAB'
+     `tab-to-tab-stop'。
+`C-j'
+     改行を挿入し、`tab-to-tab-stop'で字下げする。
+`:'
+     コロンを挿入し、コロンに先行するラベルのまえの字下げを取り除く。
+     そして、`tab-to-tab-stop'を行う。
+`;'
+     コメントの挿入／位置揃えを行う。
+
+変数`asm-comment-char'は、アセンブラ構文でコメントを開始する文字を指定
+します。
+
+
+File: emacs-ja.info, Node: Building, Next: Abbrevs, Prev: Programs, Up: Top
+
+プログラムのコンパイルとテスト
+******************************
+
+前章ではプログラムの変更に便利なEmacsコマンドを説明しました。本章では
+プログラムの大規模な開発や保守を助けるコマンドを説明します。
+
+* Menu:
+
+* Compilation::         Compiling programs in languages other
+                          than Lisp (C, Pascal, etc.).
+* Grep Searching::      Running grep as if it were a compiler.
+* Compilation Mode::    The mode for visiting compiler errors.
+* Compilation Shell::   Customizing your shell properly
+                          for use in the compilation buffer.
+* Debuggers::	        Running symbolic debuggers for non-Lisp programs. 
+* Executing Lisp::      Various modes for editing Lisp programs, 
+                          with different facilities for running
+                          the Lisp programs. 
+* Libraries: Lisp Libraries.      Creating Lisp programs to run in Emacs.
+* Interaction: Lisp Interaction.  Executing Lisp in an Emacs buffer.
+* Eval: Lisp Eval.      Executing a single Lisp expression in Emacs.
+* External Lisp::         Communicating through Emacs with a separate Lisp. 
+
+
+
+File: emacs-ja.info, Node: Compilation, Next: Grep Searching, Up: Building
+
+Emacs下でのコンパイラの実行
+===========================
+
+EmacsはCやFortranのような非対話的な言語のコンパイラを下位プロセスとし
+て実行でき、そのエラーログをEmacsバッファに取り込めます。また、エラー
+メッセージを解析して、コンパイルエラーを起こしたソース行を提示すること
+もできます。
+
+`M-x compile'
+     Emacs下でコンパイラを非同期に実行し、エラーメッセージを
+     `*compilation*'バッファに取り込む。
+`M-x grep'
+     Emacs下で`grep'を非同期に実行し、一致した行を`*grep*'バッファに取
+     り込む。
+`M-x grep-find'
+     指定した引数で`find'と`grep'を実行し、出力を`*grep*'バッファに取
+     り込む。
+`M-x kill-compilation'
+`M-x kill-grep'
+     実行中のコンパイラや`grep'のサブプロセスを停止させる。
+
+`make'や他のコンパイルコマンドを実行するには、`M-x compile'と打ちます。
+このコマンドは、ミニバッファでシェルコマンドを読み取り、そのコマンドを
+下位シェルで実行し、出力結果を`*compilation*'という名のバッファに取り
+込みます。カレントバッファのデフォルトディレクトリをシェルコマンド実行
+時の作業ディレクトリとして用います。そのため、通常はこのディレクトリに
+あるものをコンパイルします。
+
+シェルコマンド行を読み取るとき、ミニバッファにはデフォルトのシェルコマ
+ンド行が表示されますが、これは前回`M-x compile'を使ったときのコマンド
+です。単にRETだけを打鍵すると、同じシェルコマンド行を再使用します。最
+初の`M-x compile'では、デフォルトは`make -k'です。デフォルトのコンパイ
+ルコマンドは変数`compile-command'から取ります。適切なコンパイルコマン
+ドが他にある場合には、ファイルでこの変数のローカルな値を指定すると便利
+でしょう（*Note File Variables::）。
+
+コンパイルが始まると、バッファ`*compilation*'は別のウィンドウに表示さ
+れますが、選択されるわけではありません。このバッファのモード行では、括
+弧の中に単語`run'か`exit'を表示してコンパイルが終了したかどうか示しま
+す。このバッファを見えるようにしておく必要はありません。いずれにしても、
+コンパイルは継続されます。コンパイル中は、すべてのウィンドウのモード行
+に文字列`Compiling'が表示されます。この文字列が消えれば、コンパイルは
+終了しています。
+
+コンパイルの進行状況を見たい場合には、`*compilation*'バッファに切り替
+えてポイントをバッファの末尾に移動します。ポイントがバッファの末尾にあ
+ると、新らたなコンパイル出力はポイントのまえに挿入されポイントは末尾に
+留まります。ポイントがバッファの末尾にないと、コンパイル出力はバッファ
+の末尾に追加されますがポイントは途中の場所に留まったままです。
+
+変数`compilation-scroll-output'に`nil'以外の値を設定すると、出力が到着
+するたびに出力に追従するようにコンパイルバッファをつねにスクロールしま
+す。
+
+コンパイルプロセスを止めるには、`M-x kill-compilation'を実行します。コ
+ンパイルプロセスが終了すると、`*compilation*'バッファのモード行の表示
+が`run'から`signal'に変わります。一度に実行可能なコンパイルは1つだけな
+ので、新しくコンパイルを始めると実行中のコンパイルは停止させられます。
+しかし、`M-x compile'は、実行中のコンパイルを実際に停止させるかどうか
+聞いてきます。
+
+
+
+File: emacs-ja.info, Node: Grep Searching, Next: Compilation Mode, Prev: Compilation, Up: Building
+
+Emacs下でのgrepによる探索
+=========================
+
+Emacsからコンパイラを実行し、コンパイルエラーを起こした行を訪れること
+ができるように、`grep'を実行して一致した行を訪れることができます。これ
+は、`grep'が報告した一致を『エラー』として扱うことで行います。
+
+それには、`M-x grep'と打鍵してから、`grep'をどのように実行するかを指定
+するコマンド行を入力します。普通に`grep'を実行するときに指定する引数と
+同じものを使います。つまり、`grep'流の（普通、シェルの特殊文字をクォー
+トするためにシングルクォートで囲んだ）正規表現に続けて、ワイルドカード
+などを用いたファイル名を指定します。`grep'の出力は`*grep*'バッファに入
+ります。ファイル内の対応する行を探すには、コンパイルエラーの場合と同様
+に、`C-x `'とRETを使います。
+
+`M-x grep'に前置引数を指定すると、ポイントの周りから（探すべき）タグを
+推測してデフォルトの`grep'コマンドにそれを含めます。
+
+`M-x grep-find'は`M-x grep'コマンドと同様ですが、シェルコマンドに与え
+る最初のデフォルトが違います。`find'と`grep'の両方を実行して、ディレク
+トリ木構造下の各ファイルを探索します。*Note Dired and Find::の
+`find-grep-dired'コマンドも参照してください。
+
+
+
+File: emacs-ja.info, Node: Compilation Mode, Next: Compilation Shell, Prev: Grep Searching, Up: Building
+
+コンパイルモード
+================
+
+`*compilation*'バッファは、コンパイル（compilation）モードと呼ばれる特
+別なメジャーモードになります。このモードの主な機能は、エラーが起きたソー
+ス行を簡単に参照できることです。
+
+`C-x `'
+     つぎのコンパイルエラーや`grep'のつぎの一致に対応する箇所を訪れる。
+`RET'
+     ポイントが位置するエラーメッセージに対応する箇所を訪れる。このコ
+     マンドは、コンパイルバッファで使う。
+`Mouse-2'
+     マウスでクリックしたエラーメッセージに対応する箇所を訪れる。
+
+`*compilation*'でエラーメッセージにポイントを持っていってRET
+（`compile-goto-error'）を打鍵すれば、そのエラーの原因となったソースを
+訪問できます。あるいは、エラーメッセージを`Mouse-2'でクリックしますが、
+このときは、あらかじめ`*compilation*'バッファに切り替えておく必要はあ
+りません。
+
+コンパイラのエラーメッセージを順番に解析するには、`C-x `'
+（`next-error'）と打鍵します。`C-x'に続く文字は、シングルクォートでは
+なくバッククォート、すなわち、『アクサングレーブ』です。このコマンドは
+`*compilation*'だけでなく、すべてのバッファで使用可能です。このコマン
+ドは、一方のウィンドウの先頭にエラーメッセージを表示し、別のウィンドウ
+にエラーとなったソースコードを表示します。
+
+コンパイル開始後に最初に`C-x `'を使うと、最初のエラー箇所に移動します。
+続けて`C-x `'を実行すると、次々にエラー箇所に移動していきます。RETや
+`Mouse-2'で特定のエラー箇所に移動したあとに`C-x `'コマンドを実行すると、
+その場所のつぎのエラー箇所に移動します。バッファの末尾に到達してもうエ
+ラーメッセージがないと、`C-x `'コマンドは失敗し、エラーを通知します。
+
+`C-u C-x `'は、コンパイルバッファの先頭から解析を始めます。コンパイル
+をやり直さずに一連のエラーの解析をもう一度行う方法の1つです。
+
+コンパイル（compilation）モードでは、SPCキーとDELキーを1画面分のスクロー
+ルに、`M-n'と`M-p'を1つつぎ／まえのエラーメッセージへの移動に再定義し
+ます。また、別のソースファイルのエラーメッセージへの移動には、`M-{'と
+`M-}'コマンドを使えます。
+
+コンパイル（compilation）モードの機能は、コンパイルマイナ
+（compilation-minor）モードと呼ばれるマイナモードでも使えます。これに
+より、普通のコンパイルバッファだけでなく任意のバッファ内のエラーメッセー
+ジを解析できます。このマイナモードをオンにするには、`M-x
+compilation-minor-mode'と打鍵します。すると、メジャーモードのコンパイ
+ル（compilation）モードと同様にRETキーと`Mouse-2'を定義します。
+
+バッファの内容が認識できる形式である限り、コンパイルマイナ
+（compilation-minor）モードは任意のバッファで動作します。rloginバッファ
+（*Note Remote Host::）では、コンパイルマイナ（compilation-minor）モー
+ドはリモートのソースファイルをFTPで自動的に取ってきます（*Note File
+Names::）。
+
+
+
+File: emacs-ja.info, Node: Compilation Shell, Next: Debuggers, Prev: Compilation Mode, Up: Building
+
+コンパイルのためのサブシェル
+============================
+
+Emacsはシェルを使ってコンパイルコマンドを実行しますが、非対話的なシェ
+ルになるようなオプションを指定します。つまり、シェルはプロンプトを出さ
+ずに実行を開始するはずです。`*compilation*'バッファに通常のシェルプロ
+ンプトがぶざまに現れる場合は、個人のシェル初期化ファイルでプロンプトを
+無条件に設定していることを意味します。（シェル初期化ファイルの名前は、
+`.bashrc'、`.profile'、`.cshrc'、`.shrc'などだが、使っているシェルによっ
+てさまざまな場合がある。）シェル初期化ファイルでは、プロンプトがすでに
+設定されているときだけプロンプトを再設定するべきです。たとえば、`csh'
+では以下のようにします。
+
+     if ($?prompt) set prompt = ...
+
+bashでは以下のようにします。
+
+     if [ "${PS1+set}" = set ]
+     then PS1=...
+     fi
+
+読者のシェル初期化ファイルには、対話的なシェルに対してだけ本来は設定す
+るべきことがまだあるかもしれません。同じ方法を用いて、それらを状況に応
+じて設定するようにできます。
+
+MS-DOS『オペレーティングシステム』では、非同期のサブプロセスを使えませ
+ん。対応策として、MS-DOSでは`M-x compile'はコンパイルコマンドを同期的
+に実行します。その結果、Emacs上で他の作業を行うには、コンパイルコマン
+ドの終了を待つ必要があります。*Note MS-DOS::。
+
+
+
+File: emacs-ja.info, Node: Debuggers, Next: Executing Lisp, Prev: Compilation Shell, Up: Building
+
+Emacs下でのデバッガの実行
+=========================
+
+GUD（Grand Unified Debugger、大統一デバッガ）ライブラリは、Emacsからさ
+まざまなデバッガへのインターフェイスを提供します。フリーソフトウェアで
+あるGDBをお勧めしますが、DBX、SDB、XDBを持っているならばそれらを使うこ
+ともできます。GUDは、Perlのデバッグモード、PythonのデバッガPDB、Javaデ
+バッガJDBに対するインターフェイスにもなります。
+
+* Menu:
+
+* Starting GUD::	How to start a debugger subprocess.
+* Debugger Operation::	Connection between the debugger and source buffers.
+* Commands of GUD::	Key bindings for common commands.
+* GUD Customization::	Defining your own commands for GUD.
+
+
+
+File: emacs-ja.info, Node: Starting GUD, Next: Debugger Operation, Up: Debuggers
+
+GUDの起動
+---------
+
+デバッガを開始するコマンドはいくつかあり、それぞれ、特定のデバッガに対
+応しています。
+
+`M-x gdb RET FILE RET'
+     EmacsのサブプロセスとしてGDBを実行する。このコマンドは、GDBへの入
+     出力用のバッファを新たに作り、そのバッファへ切り替える。GDBバッファ
+     が既存の場合は、そのバッファへ切り替えるだけ。
+
+`M-x dbx RET FILE RET'
+     同様に、GDBのかわりにDBXを実行する。
+
+`M-x xdb RET FILE RET'
+     同様に、GDBのかわりにXDBを実行する。ソースファイルを探索するディ
+     レクトリ群を指定するには、変数`gud-xdb-directories'を使う。
+
+`M-x sdb RET FILE RET'
+     同様に、GDBのかわりにSDBを実行する。
+
+     SDBのバージョンによっては、メッセージにソースファイル名を含めない
+     ものがある。そのようなSDBを使う場合には、GUDがソースコードから関
+     数を探せるように正しいタグテーブル（*Note Tags::）が必要である。
+     タグテーブルを訪問していなかったり、タグテーブルに当該関数がなかっ
+     たりすると、`The sdb support requires a valid tag table to work'
+     というメッセージが表示される。このような場合には、作業ディレクト
+     リに正しいタグファイルを生成してからやり直す。
+
+`M-x perldb RET FILE RET'
+     PerlプログラムFILEをデバッグするためにPerlインタープリタをデバッ
+     グモードで実行する。
+
+`M-x jdb RET FILE RET'
+     FILEをデバッグするためにJavaデバッガを実行する。
+
+`M-x pdb RET FILE RET'
+     FILEをデバッグするためにPythonデバッガを実行する。
+
+これらのコマンドは引数を1つ、つまり、デバッガを起動するコマンド行を取
+ります。もっとも単純な場合は、デバッグしたい実行ファイルの名前を指定し
+ます。デバッガに指定できるオプションを使うこともできます。しかし、シェ
+ルのワイルドカードや変数名は使えません。GUDは、`-'で始まらない最初の引
+数をデバッグする実行ファイル名であると仮定します。
+
+Emacsはデバッガプロセスを一度に1つだけ実行できます。
+
+
+
+File: emacs-ja.info, Node: Debugger Operation, Next: Commands of GUD, Prev: Starting GUD, Up: Debuggers
+
+デバッガの操作
+--------------
+
+GUDの下でデバッガを実行すると、デバッガは通常の入出力にEmacsバッファを
+使います。このバッファをGUDバッファと呼びます。デバッガはEmacsバッファ
+でファイルを訪問して、プログラムのソースファイルを表示します。このよう
+なバッファの1つに矢印（`=>'）が表示され、現在実行している行を表示しま
+す。このバッファでポイントを動かしても矢印は動きません。
+
+ソースファイルを表示したバッファでは、いつでもソースファイルを編集でき
+ます。矢印はファイルのテキストの一部ではなく、画面上に表示されているだ
+けです。ソースファイルを変更するとき、行を挿入／削除すると矢印の表示位
+置情報が失われることに注意してください。GUDには、変更前のデバッガメッ
+セージから変更後の対応する行番号を知る術はありません。また、デバッガに
+ソースの変更を反映するには、プログラムを再コンパイルしてから再実行する
+必要があります。
+
+お好みならば、シェル（shell）モードの変形を用いたデバッガバッファを介
+して、デバッガプロセスを完全に制御することもできます。こうすれば、デバッ
+ガのすべてのコマンドを利用でき、シェル（shell）モードの履歴機能を用い
+てコマンドを繰り返し実行できます。*Note Shell Mode::。
+
+
+
+File: emacs-ja.info, Node: Commands of GUD, Next: GUD Customization, Prev: Debugger Operation, Up: Debuggers
+
+GUDのコマンド
+-------------
+
+GUD対話バッファはシェル（shell）モードの変形を使うので、シェル（shell）
+モードのコマンドを使えます（*Note Shell Mode::）。GUDモードでは、ブレー
+クポイントの設定と解除、スタックフレームの選択、プログラムのステップ実
+行などのコマンドもあります。これらのコマンドはGUDバッファでもそれ以外
+でも使えますが、キーバインドは異なります。
+
+ブレークポイントコマンドは、普通、ソースファイルのバッファで使います。
+というのは、ソース上でブレークポイントを設定／解除するのが自然だからで
+す。以下はブレークポイントを設定するグローバルコマンドです。
+
+`C-x SPC'
+     ポイントがあるソース行にブレークポイントを設定する。
+
+以下はその他のGUDモード特有のコマンドです。`C-c'で始まるキー列は、GUD
+対話バッファだけで使えます。`C-x C-a'で始まるキー列は、GUD対話バッファ
+とソースファイル（のバッファ）の両方で使えます。
+
+`C-c C-l'
+`C-x C-a C-l'
+     GUDバッファで参照した最後の行を別のウィンドウに表示する（つまり、
+     最新の実行位置メッセージが指す行を表示する）。これは、コマンド
+     `gud-refresh'を実行する。
+
+`C-c C-s'
+`C-x C-a C-s'
+     ソースコード1行分を実行する（`gud-step'）。その行に関数呼び出しが
+     含まれる場合は、呼び出された関数に入ってから停止する。
+
+`C-c C-n'
+`C-x C-a C-n'
+     ソースコード1行分を実行し、関数呼び出しでも停止せずにフルスピード
+     で実行する（`gud-next'）。
+
+`C-c C-i'
+`C-x C-a C-i'
+     機械語1命令を実行する（`gud-stepi'）。
+
+`C-c C-r'
+`C-x C-a C-r'
+     停止位置を指定せずに実行を継続する。プログラムの実行は、ブレーク
+     ポイントに出会う、プログラムが終了する、デバッガが監視しているシ
+     グナルを受け取るまで実行を継続する。
+
+`C-c C-d'
+`C-x C-a C-d'
+     現在のソース行にブレークポイントがあるならばそれを削除する
+     （`gud-remove'）。GUD対話バッファでこのコマンドを使うと、プログラ
+     ムが最後に停止した行に適用される。
+
+`C-c C-t'
+`C-x C-a C-t'
+     現在のソース行に一時的なブレークポイントを設定する。GUD対話バッファ
+     でこのコマンドを使うと、プログラムが最後に停止した行に適用される。
+
+上にあげたコマンドは、（GUDから使える）すべてのデバッガに共通です。GDB
+やDBX（のあるバージョン）では、さらに以下のコマンドも使えます。
+
+`C-c <'
+`C-x C-a <'
+     1つ外側のスタックフレームを選択する（`gud-up'）。これは`up'コマン
+     ドと等価。
+
+`C-c >'
+`C-x C-a >'
+     1つ内側のスタックフレームを選択する（`gud-down'）。これは`down'コ
+     マンドと等価。
+
+GDBを使う場合には以下のコマンドも使用できます。
+
+`TAB'
+     GDBでは、シンボル名を補完する（`gud-gdb-complete-command'）。この
+     キーはGUDの対話バッファでだけ使える。また、GDBのバージョンは4.13
+     以降であること。
+
+`C-c C-f'
+`C-x C-a C-f'
+     あらかじめ選択したスタックフレームから戻る（あるいは、他の理由で
+     停止する）までプログラムを実行する。
+
+これらのコマンドは、意味がある場合には数引数を反復回数として解釈します。
+
+TABは、補完コマンドとして働くため、GDBでデバッグしているプログラムへの
+タブの入力には使えません。タブを入力するには`C-q TAB'と打鍵します。
+
+
+
+File: emacs-ja.info, Node: GUD Customization, Prev: Commands of GUD, Up: Debuggers
+
+GUDのカスタマイズ
+-----------------
+
+GUDが実行を開始すると、GDBの場合は`gdb-mode-hook'、DBXの場合は
+`dbx-mode-hook'、SDBの場合は`sdb-mode-hook'、XDBの場合は
+`xdb-mode-hook'、Perlのデバッグモードの場合は`perldb-mode-hook'、PDBの
+場合は`pdb-mode-hook'、JDBの場合は`jdb-mode-hook'のフックを実行します。
+これらのフックを使って、デバッガの対話バッファ用に自前のキーバインドを
+定義できます。*Note Hooks::。
+
+以下は、特定のコマンド文字列をデバッガに送るコマンドを定義し、かつ、そ
+のコマンドに対するキーバインドをデバッガの対話バッファに設定する便利な
+方法です。
+
+     (gud-def FUNCTION CMDSTRING BINDING DOCSTRING)
+
+これは、デバッガプロセスにCMDSTRINGを送るFUNCTIONという名前のコマンド
+を定義し、そのコマンドの説明文字列をDOCSTRINGとします。このように定義
+したコマンドは、どのバッファでも使えます。BINDINGが`nil'以外の場合、
+`gud-def'はGUDバッファのモードに対してはこのコマンドを`C-c BINDING'に
+バインドし、それ以外に対しては`C-x C-a BINDING'にバインドします。
+
+コマンド文字列CMDSTRINGには、FUNCTIONが呼び出されたときにデータが埋め
+込まれる`%'系列を含めることもできます。
+
+`%f'
+     現在のソースファイルの名前。カレントバッファがGUDバッファだった場
+     合には、『現在のソースファイル』とはプログラムが停止した箇所に対
+     応するソースファイル。
+
+`%l'
+     現在のソース行番号。カレントバッファがGUDバッファだった場合には、
+     『現在のソース行番号』とはプログラムが停止した箇所に対応するソー
+     スファイルの行番号。
+
+`%e'
+     ポイント位置あるいはポイントに隣接するCの左辺値か関数呼び出し式。
+
+`%a'
+     ポイント位置あるいはポイントに隣接する箇所の16進数表記アドレス。
+
+`%p'
+     FUNCTIONを呼ぶときに指定された数引数を10進値表記したもの。数引数
+     なしで呼ばれた場合、`%p'は空文字列。
+
+     CMDSTRINGで`%p'を使用しなければ、定義しようとしているFUNCTIONは数
+     引数を無視する。
+
+
+
+File: emacs-ja.info, Node: Executing Lisp, Next: Lisp Libraries, Prev: Debuggers, Up: Building
+
+Lisp式の実行
+============
+
+Emacsには、LispやSchemeのための異なったメジャーモードがいくつかありま
+す。これらは編集コマンドという意味では同じですが、Lisp式を実行するコマ
+ンドが異なります。各モードには固有の目的があります。
+
+emacs-lispモード
+     このモードはEmacs Lispで実行するプログラムのソースファイル編集用。
+     このモードでは、現在の関数定義を評価する`C-M-x'を定義する。*Note
+     Lisp Libraries::。
+lisp対話モード（Lisp Interaction mode）
+     このモードはEmacs Lispの対話セッション用。ポイントの直前のS式を評
+     価し、その値をバッファに挿入する`C-j'を定義する。*Note Lisp
+     Interaction::。
+lispモード
+     このモードはEmacs Lisp以外のLispで実行するプログラムのソースコー
+     ド編集用。このモードでは、現在の関数定義を下位のLispプロセスに送
+     る`C-M-x'を定義する。*Note External Lisp::。
+下位lispモード（Inferior Lisp mode）
+     このモードは下位Lispプロセスとの対話セッション用。このモードは、
+     lispモードとシェル（shell）モード（*Note Shell Mode::）の特別な機
+     能の組み合わせ。
+schemeモード
+     lispモードと同様だが、Schemeプログラム編集用。
+下位Schemeモード（Inferior Scheme mode）
+     このモードは下位のSchemeプロセスとの対話セッション用。
+
+Lispプログラム用の編集コマンドの大部分は事実上どこでも使えます。*Note
+Programs::。
+
+
+
+File: emacs-ja.info, Node: Lisp Libraries, Next: Lisp Interaction, Prev: Executing Lisp, Up: Building
+
+Emacs用のLispコードのライブラリ
+===============================
+
+Emacs編集コマンドのLispコードは、習慣的に`.el'で終る名前のファイルに格
+納されています。これらの拡張子は、emacs-lispモードで編集するように
+Emacsに指示します（*Note Executing Lisp::）。
+
+Emacs Lispコードのファイルを実行するには、`M-x load-file'を使います。
+このコマンドは、ミニバッファでファイル名を読み取り、そのファイルの内容
+をLispコードとして実行します。あらかじめファイルを訪問しておく必要はあ
+りません。いずれにしても、このコマンドはディスク上のファイルを読むので
+あって、Emacsバッファのテキストを読むのではありません。
+
+LispコードのファイルをEmacs Lispライブラリのディレクトリに置いておけば、
+そのファイルは`M-x load-library'でロードできます。プログラムからは、
+`load-library'を呼んでロードするか、あるいは、より基本的な類似の関数で
+余分な引数も指定できる`load'でロードします。
+
+`M-x load-library'が`M-x load-file'と異なる点は、一連のディレクトリに
+ついて3つのファイル名を順に調べるということです。引数がLIBだとすると、
+3つのファイル名とは、`LIB.elc'、`LIB.el'、そして最後に`LIB'です。
+`LIB.elc'というファイルが存在すれば、これは習慣として`LIB.el'をコンパ
+イルしたものです。コンパイル済みのファイルはロードと実行が速いので、こ
+ちらをロードするほうが有利です。
+
+`load-library'が`LIB.elc'よりも新しい`LIB.el'をみつけると、警告を出力
+します。というのは、`.el'ファイルを変更後に再コンパイルし忘れている可
+能性があるからです。
+
+`load-library'の引数は、通常、それ自体では正しいファイル名でないことが
+多いため、ファイル名の補完はできません。もちろん、このコマンドを使うと
+き、指定すべき正確なファイル名を普通は知らないでしょうが。
+
+`M-x load-library'が探索するディレクトリの順番は、変数`load-path'で指
+定します。その値は、ディレクトリ名の文字列から成るリストです。リストの
+デフォルト値には、Emacs自身のLispコードを収めたディレクトリが含まれま
+す。個人用のLispライブラリがあるならば、それらを1つのディレクトリにま
+とめ、そのディレクトリ名を`load-path'に追加してください。リスト内の
+`nil'はカレントデフォルトディレクトリを表しますが、リストに`nil'を加え
+ることはあまり勧められません。リストに`nil'が本当に必要だと感じたとき
+には、それについては`M-x load-file'を実行するのではいけないだろうかと
+考えてみてください。
+
+ライブラリの中で定義されているコマンドに対しては、そのライブラリを"自
+動的にロード"（autoload）するように設定されているので、ほとんどの場合、
+ライブラリをロードするコマンドを指定する必要はないでしょう。ライブラリ
+をロードするために`load'を呼び出すようなコマンドを1つ試してみてくださ
+い。こうすると、「自動的にロードする」という定義がライブラリ内の実際の
+定義で置き換わります。
+
+Emacs Lispコードはバイトコードにコンパイルできます。コンパイルすると、
+ロードが速くなり、ロードしても必要な記憶容量が少なくなり、実行も速くな
+ります。*Note バイトコンパイル: (elisp)Byte Compilation。習慣として、
+ライブラリのコンパイル済みのコードは、ライブラリのソースファイル名に
+`c'を付けた名前の別のファイルに入ります。したがって、`foo.el'のコンパ
+イル済みのコードは、`foo.elc'に入ります。これが、`load-library'はまず
+`.elc'というファイルを探す理由です。
+
+
+
+File: emacs-ja.info, Node: Lisp Eval, Next: External Lisp, Prev: Lisp Interaction, Up: Building
+
+Emacs Lisp式の評価
+==================
+
+Emacs内で動かすつもりのLispプログラムは、emacs-lispモードで編集しましょ
+う。ファイル名が`.el'で終っているファイルを編集すると、自動的にこのモー
+ドになります。一方、lispモードは、他のLispシステム向けのLispプログラム
+を編集するためのモードです。陽にemacs-lispモードに移るには、コマンド
+`M-x emacs-lisp-mode'を使います。
+
+Emacs内で動くプログラムのテストには、Emacsバッファにあるプログラムの一
+部を評価すると便利です。たとえば、Lispの関数定義のテキストを変更してか
+らその定義を評価すると、それ以降にその関数を呼び出すと使われるようにイ
+ンストールされます。Lisp式を評価すると非対話的な（コマンドではない）関
+数を起動できるので、どんな種類の編集作業にも便利です。
+
+`M-:'
+     ミニバッファで1つのLisp式を読み取り、それを評価し、その値をエコー
+     領域に表示する（`eval-expression'）。
+`C-x C-e'
+     ポイントの直前のLisp式を評価し、その値をエコー領域に表示する
+     （`eval-last-sexp'）。
+`C-M-x'
+     ポイントを含むか直後にある関数定義（defun）を評価し、その値をエコー
+     領域に表示する（`eval-defun'）。
+`M-x eval-region'
+     リージョン内のすべてのLisp式を評価する。
+`M-x eval-current-buffer'
+     バッファ内のすべてのLisp式を評価する。
+
+`M-:'（`eval-expression'）は、Lisp式を対話的に評価するもっとも基本的な
+コマンドです。これは、ミニバッファで式を1つ読み取りますから、バッファ
+の内容に関係なくバッファ内でどんな式でも実行できます。式が評価されたあ
+とは、`M-:'を打鍵したときのカレントバッファが、ふたたびカレントバッファ
+になります。
+
+emacs-lispモードでは、キー`C-M-x'はコマンド`eval-defun'にバインドされ
+ています。このコマンドはポイントを含むか直後にある関数定義をLisp式とし
+て解析し評価します。その値はエコー領域に表示されます。このコマンドは、
+関数定義のテキストの変更をLisp環境に反映するのに便利です。
+
+`C-M-x'は`defvar'式を特別扱いします。通常、変数にすでに値が定義されて
+いる場合には、`defvar'式を評価しても何もしません。しかし、`C-M-x'は、
+`defvar'式で指定されている初期値に変数の値を戻します。この特別な機能は、
+Lispプログラムをデバッグするときに便利です。
+
+コマンド`C-x C-e'（`eval-last-sexp'）は、ポイントのまえにあるLisp式を
+評価しその値をエコー領域に表示します。このコマンドはemacs-lispモードだ
+けでなく、すべてのメジャーモードで使えます。このコマンドは、`defvar'を
+特別扱いしません。
+
+`C-M-x'、`C-x C-e'、`M-:'に数引数を指定すると、値をエコー領域に表示す
+るかわりにカレントバッファのポイント位置に挿入します。引数の値は関係あ
+りません。
+
+バッファでLisp式を評価するもっとも一般的なコマンドは`eval-region'です。
+`M-x eval-region'は、リージョン内の1つ以上のLisp式を解析して、それらを
+1つずつ順に評価します。`M-x eval-current-buffer'も同様ですが、バッファ
+全体を評価します。これは、テスト準備が整ったLispコードのファイルの内容
+を取り込むうまい方法です。個々の関数のバグを発見して修正したら、変更し
+た関数それぞれに`C-M-x'を使います。これによって、Lispの環境とソースファ
+イルが一致します。
+
+
+
+File: emacs-ja.info, Node: Lisp Interaction, Next: Lisp Eval, Prev: Lisp Libraries, Up: Building
+
+lisp対話バッファ
+================
+
+Emacsが動き始めたときに選択されるバッファ`*scratch*'は、Emacs内でLisp
+式を対話的に評価するためのものです。
+
+`*scratch*'バッファを使うもっとも簡単な方法は、Lisp式を挿入してから各
+式の末尾で`C-j'と打つことです。このコマンドは、ポイントの直前のLisp式
+を読み取り、それを評価し、その値を表示形式でポイントのまえに挿入します。
+この結果は、評価した式とその値の完全なtypescript (1) (*Note Lisp
+Interaction-Footnotes::)です。
+
+`*scratch*'バッファのメジャーモードはlisp対話（lisp interaction）モー
+ドであり、`C-j'のバインディングを除けばemacs-lispモードと同じです。
+
+この機能が存在する理由を説明しましょう。Emacsが実行を開始すると何かし
+らバッファが必要です。しかし、ファイルを訪問するたびに新たにバッファが
+作られるので、このバッファはファイルを編集するのには適しません。最初の
+バッファをLispインタープリタのtypescriptにするというのが作者が考えつい
+たもっともよい方法でした。`M-x lisp-interaction-mode'と打つと、カレン
+トバッファはlisp対話（lisp interaction）モードになります。
+
+Emacs Lisp式を対話的に評価する別の方法は、下位emacs-lispモードを使うこ
+とです。このモードは、シェル（shell）モード（*Note Shell Mode::）に似
+たインターフェイスでEmacs Lisp式を評価できます。`M-x ielm'と打てば、下
+位emacs-lispモードを使う`*ielm*'バッファが作られます。
+
+
+File: emacs-ja.info  Node: Lisp Interaction-Footnotes, Up: Lisp Interaction
+
+(1) 【訳注】入力と出力をすべて記録した対話記録
+
+
+
+File: emacs-ja.info, Node: External Lisp, Prev: Lisp Eval, Up: Building
+
+外部Lispの実行
+==============
+
+Emacsには他のLispシステム上でプログラムを実行する機能があります。Lisp
+プロセスをEmacsの下位プロセスとして実行し、それに式を渡して評価させる
+ことができます。また、Lispプログラムを編集するEmacsバッファの中で変更
+した関数定義をそのまま下位のLispプロセスに渡すこともできます。
+
+下位のLispプロセスを実行するには、`M-x run-lisp'と打ちます。このコマン
+ドは、シェルコマンドとして`lisp'と入力するのと同じ`lisp'という名前のプ
+ログラムを実行し、プログラムの入出力は`*lisp*'という名前のEmacsバッファ
+を介してやりとりされます。つまり、Lispからの『端末出力』はバッファに入
+りポイントを進め、Lispへの『端末入力』はバッファのテキストから取られま
+す。（実行したいLisp実行ファイルの名前を変えるには、変数
+`inferior-lisp-program'を設定する。）
+
+Lispに入力を与えるには、バッファの末尾に移動してから入力を打鍵し、最後
+にRETを打ちます。`*lisp*'バッファは下位lisp（inferior lisp）モードになっ
+ていて、シェル（shell）モード（*Note Shell Mode::）のほとんどの機能に
+lispモードの特別な特性を組み合わせています。サブプロセスに1行を送ると
+いうRETの定義は、シェル（shell）モードの機能の1つです。
+
+外部Lispで実行するプログラムのソースファイルにはlispモードを使います。
+このモードは`M-x lisp-mode'で選択できます。また、ほとんどのLispシステ
+ムで使われる`.l' (1) (*Note External Lisp-Footnotes::) や`.lsp'や
+`.lisp'で終る名前のファイルにはこのモードが自動的に使われます。
+
+
+実行中のLispプログラムの関数を編集しているとき、変更した定義を下位の
+Lispプロセスに送るもっとも簡単な方法はキー`C-M-x'です。lispモードでは、
+このキーは関数`lisp-eval-defun'を実行します。この関数は、ポイントの周
+りや直後の関数定義を探し、それをLispプロセスの入力へ送ります。（Emacs
+はカレントバッファが何であるかに関わりなく、どんな下位プロセスにも入力
+を送ることができる。）
+
+`C-M-x'コマンドの（任意のLispシステムで実行するプログラムの編集用）
+lispモードでの意味と（Emacsで実行するLispプログラムの編集用）
+emacs-lispモードでの意味を比較してみましょう。どちらのモードでもポイン
+トを含む関数定義をインストールしますが、関連するLisp環境がどこにあるか
+に応じて、その方法は異なります。*Note Executing Lisp::。
+
+
+File: emacs-ja.info  Node: External Lisp-Footnotes, Up: External Lisp
+
+(1) 【訳注】この拡張子はlexやflexのソースファイルにも使われる。
+
+
+File: emacs-ja.info, Node: Abbrevs, Next: Picture, Prev: Building, Up: Top
+
+略語の利用法
+************
+
+定義済みの略語（abbrev）とは、挿入時に別のテキストに展開される単語のこ
+とです。略語を定義するときに、それをどう展開するか指定します。たとえば、
+`foo'を略語として、`find outer otter'に展開すると定義したとします。す
+ると、`f o o SPC'と打鍵すればバッファには`find outer otter ' (1)
+(*Note Abbrevs-Footnotes::) が挿入されます。
+
+略語の別な形に、"動的略語展開"（dynamic abbrev expansion）があります。
+動的略語展開とは、バッファ中のポイントのまえにある文字列をバッファ内に
+あるその文字列で始まる既存の単語に展開することで、陽にコマンドを実行し
+て行います。*Note Dynamic Abbrevs::。
+
+* Menu:
+
+* Abbrev Concepts::   Fundamentals of defined abbrevs.
+* Defining Abbrevs::  Defining an abbrev, so it will expand when typed.
+* Expanding Abbrevs:: Controlling expansion: prefixes, canceling expansion.
+* Editing Abbrevs::   Viewing or editing the entire list of defined abbrevs.
+* Saving Abbrevs::    Saving the entire list of abbrevs for another session.
+* Dynamic Abbrevs::   Abbreviations for words already in the buffer.
+* Dabbrev Customization:: What is a word, for dynamic abbrevs.  Case handling.
+
+
+File: emacs-ja.info  Node: Abbrevs-Footnotes, Up: Abbrevs
+
+(1) 【訳注】展開を引き起こしたSPCも挿入されることに注意。
+
+
+
+File: emacs-ja.info, Node: Abbrev Concepts, Next: Defining Abbrevs, Up: Abbrevs
+
+略語の考え方
+============
+
+略語とは、あらかじめどう"展開"するか定義された単語のことです。略語に続
+けて、空白、タブ、ピリオドなどの単語の区切り文字を入力すると、略語は展
+開されて展開形に置き換わります。たとえば、略語`foo'を展開形`find outer
+otter'に展開するように定義しておけば、`f o o .'と打鍵すると`find outer
+otter.'をバッファに挿入できます。
+
+略語は、略語（abbrev）モード（マイナモード）がオンのときにだけ展開され
+ます。略語（abbrev）モードをオフにしても定義した略語が消えてしまうわけ
+ではなく、つぎにオンにしたときに同じ定義をふたたび使えます。コマンド
+`M-x abbrev-mode'でこのモードのオン／オフをトグル（切り替えが）できま
+す。また、数引数を指定した場合、引数が正のときには略語（abbrev）モード
+はオンになり、それ以外のときにはオフになります。*Note Minor Modes::。
+`abbrev-mode'は変数でもあります。この変数が`nil'以外のときには略語
+（abbrev）モードはオンです。この変数に値を設定すると、自動的にカレント
+バッファにローカルな変数になります。
+
+略語定義は"モードに固有"にできます。つまり、あるメジャーモードのときに
+だけ働くように定義できます。略語は"グローバル"にも定義でき、そのときは
+すべてのメジャーモードで使えます。同じ略語に、グローバルな定義と、さま
+ざまなメジャーモードに固有な定義とを持たせることができます。あるメジャー
+モードに固有な定義は、グローバルな定義に優先します。
+
+略語は、編集作業中に対話的に定義できます。略語の定義一覧を、あとで使う
+ためにファイルに保存することもできます。大量の略語定義をセッションごと
+にロードする人もいます。
+
+
+
+File: emacs-ja.info, Node: Defining Abbrevs, Next: Expanding Abbrevs, Prev: Abbrev Concepts, Up: Abbrevs
+
+略語の定義方法
+==============
+
+`C-x a g'
+     ポイントのまえの単語を展開形として、略語を定義する。
+     （`add-global-abbrev'）。
+`C-x a l'
+     上と同様。ただし、現在のメジャーモードに固有な略語を定義する。
+     （`add-mode-abbrev'）。
+`C-x a i g'
+     バッファ中の1単語を略語として定義する。
+     （`inverse-add-global-abbrev'）。
+`C-x a i l'
+     バッファ中の1単語をモードに固有な略語として定義する。
+     （`inverse-add-mode-abbrev'）。
+`M-x kill-all-abbrevs'
+     このコマンドは現在有効なすべての略語定義を抹消し空にする。
+
+略語を定義する普通の方法は、まず、略語に置き換わってほしい展開形のテキ
+ストを入力し、つぎにその直後にポイントをもっていき、`C-x a g'
+（`add-global-abbrev'）と打鍵します。すると、ミニバッファを用いて略語
+を読み取り、ポイントの直前の単語（群）に対する略語として登録します。展
+開形として用いる単語の個数は、数引数で指定します。たとえば、略語`foo'
+をまえのように定義するには、テキスト`find outer otter'を挿入し、続いて
+`C-u 3 C-x a g f o o RET'と打鍵します。
+
+`C-x a g'に数引数として0を指定すると、展開形はリージョンの内容になりま
+す。
+
+コマンド`C-x a l'（`add-mode-abbrev'）も同様ですが、特定のモードに固有
+な定義になります。モードに固有な略語は、特定のメジャーモードの中だけで
+有効です。`C-x a l'は、`C-x a l'と打鍵したときのメジャーモードに対する
+略語を定義します。引数の意味は`C-x a g'と同じです。
+
+すでにバッファ内にあるテキストを略語として使いたい場合には、`C-x a g'
+のかわりにコマンド`C-x a i g' （`inverse-add-global-abbrev'）、あるい
+は、`C-x a l'のかわりにコマンド`C-x a i l' （`inverse-add-mode-abbrev'）
+を使います。これらは『逆さ』（inverse）コマンドと呼ばれます。というの
+は、これらのコマンドで使う（バッファにあるものとミニバッファから読むも
+のの）2つの文字列の用途が逆さだからです。
+
+略語の定義を変更するには、単に新たに定義してください。略語がすでに定義
+されていると、略語定義コマンドは置き換えてよいかどうかを確認してきます。
+
+略語の定義を削除するには、略語定義コマンドに負の数引数を指定します。
+`C-u - C-x a g'や`C-u - C-x a l'のようにします。前者はグローバルな定義
+を、後者はモードに固有な定義を削除します。
+
+`M-x kill-all-abbrevs' は、グローバルとローカルのすべての略語定義を削
+除します。
+
+
+

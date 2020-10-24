@@ -1,0 +1,9 @@
+! Xft.autohint: false
+! Emacs.FontBackend: xft
+
+Emacs*useXIM: false
+!!Emacs.font: DejaVu Sans Mono-12
+!!Emacs*attributeHeight: 1
+!!Emacs.font: Sans-11.5
+!!Emacs.Font: VL gothic-12
+

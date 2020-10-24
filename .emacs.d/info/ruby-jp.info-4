@@ -1,0 +1,1819 @@
+This is ruby-jp.info, produced by makeinfo version 3.12o (+ Japanese
+Patch 0.61) from Ruby.texi.
+
+INFO-DIR-SECTION Languages
+START-INFO-DIR-ENTRY
+* ruby-jp: (ruby-jp).           Ruby Language Reference Manual (Japanese)
+END-INFO-DIR-ENTRY
+
+     このinfoファイルは、Rubyリファレンスマニュアル(HTML版)
+
+     <http://www.netlab.co.jp/ruby/jp/man-1.3/>
+     for `Ruby' Version 1.4.0
+     written by まつもと ゆきひろ <matz@netlab.co.jp>
+     Last modified: Mon Aug 16 15:46:22 1999
+
+     を元に機械的にTexinfo形式へ変換して作成しました。したがって、本文
+     に対する著作権はまつもと ゆきひろ氏にあるものとします。
+
+
+File: ruby-jp.info,  Node: Fixnum,  Next: Float,  Prev: File,  Up: Pre-defined classes and modules
+
+Fixnum
+------
+
+  マシンのポインタのサイズに収まる長さの固定長整数．ほとんどのマシン
+では31ビット幅です．演算の結果が`Fixnum'の範囲を越えた時には自動的に
+`Bignum' (*note Bignum::)に拡張されます．
+
+スーパークラス:
+...............
+
+   - `Integer' (*note Integer::)
+
+メソッド:
+.........
+
+ - Method on `Fixnum': self + OTHER
+ - Method on `Fixnum': self - OTHER
+ - Method on `Fixnum': self * OTHER
+ - Method on `Fixnum': self / OTHER
+ - Method on `Fixnum': self % OTHER
+ - Method on `Fixnum': self ** OTHER
+     算術演算子．
+
+
+ - Method on `Fixnum': ~ self
+ - Method on `Fixnum': self | OTHER
+ - Method on `Fixnum': self & OTHER
+ - Method on `Fixnum': self ^ OTHER
+     ビット演算子．
+
+
+ - Method on `Fixnum': self << BITS
+ - Method on `Fixnum': self >> BITS
+     シフト演算子．
+
+
+ - Method on `Fixnum': id2name
+     (シンボルの)整数に対応する文字列を返します．もし整数に対応するシ
+     ンボルが存在しない時には`nil'を返します．
+
+
+ - Method on `Fixnum': remainder (other)
+     `self'をOTHERで割った余りを返します．整数に負の数を含む時，`%'と
+     値が異なります．
+
+           13 %  4  =>  1
+           13 % -4  => -3
+          -13 %  4  =>  3
+          -13 % -4  => -1
+          
+           13.remainder(4)   =>  1
+           13.remainder(-4)  =>  1
+          -13.remainder(4)   => -1
+          -13.remainder(-4)  => -1
+
+
+File: ruby-jp.info,  Node: Float,  Next: Proc,  Prev: Fixnum,  Up: Pre-defined classes and modules
+
+Float
+-----
+
+  浮動小数点数のクラス．
+
+スーパークラス:
+...............
+
+   - `Numeric' (*note Numeric::)
+
+インクルードしているモジュール:
+...............................
+
+   - `Precision' (*note Precision::)
+
+クラスメソッド:
+...............
+
+ - Class Method on `Float': induced_from (NUM)
+     NUM を `Float' に変換した結果を返します．
+
+
+メソッド:
+.........
+
+ - Method on `Float': self + OTHER
+ - Method on `Float': self - OTHER
+ - Method on `Float': self * OTHER
+ - Method on `Float': self / OTHER
+ - Method on `Float': self % OTHER
+ - Method on `Float': self ** OTHER
+     算術演算子．
+
+
+ - Method on `Float': self == OTHER
+ - Method on `Float': self < OTHER
+ - Method on `Float': self <= OTHER
+ - Method on `Float': self > OTHER
+ - Method on `Float': self >= OTHER
+     比較演算子．
+
+
+ - Method on `Float': ceil
+     `self'より大きい最小の整数を返します．
+
+
+ - Method on `Float': floor
+     `self'より小さい最大の整数を返します．
+
+
+ - Method on `Float': round
+     `self'にもっとも近い整数を返します．
+
+
+ - Method on `Float': to_f
+     レシーバをそのまま返します(変換の必要がないので)．
+
+
+ - Method on `Float': to_i
+     値を整数に変換します．
+
+
+File: ruby-jp.info,  Node: Proc,  Next: Range,  Prev: Float,  Up: Pre-defined classes and modules
+
+Proc
+----
+
+  `Proc'はブロックをコンテキスト(ローカル変数やスタックフレーム)とと
+もにオブジェクト化した手続きオブジェクトです．`Proc'はローカル変数の
+スコープを導入しないことを除いて名前のない関数のように使えます(ダイナ
+ミックローカル変数は`Proc'ローカルの変数として使えます)．`Proc'を生
+成したメソッドからリターンしてしまった後は`Proc'からの`return',
+`break', `next', `redo', `retry'は例外を発生させます．
+
+スーパークラス:
+...............
+
+   - `Object' (*note Object::)
+
+クラスメソッド:
+...............
+
+ - Class Method on `Proc': new
+     ブロックをコンテキストとともにオブジェクト化します．
+
+
+メソッド:
+.........
+
+ - Method on `Proc': self [ARG...]
+ - Method on `Proc': call (ARG...)
+     手続きオブジェクトを実行します．引数はブロックの引数にそのまま
+     (多重代入のルールに従い)代入されます．
+
+
+File: ruby-jp.info,  Node: Range,  Next: Regexp,  Prev: Proc,  Up: Pre-defined classes and modules
+
+Range
+-----
+
+  範囲オブジェクトのクラス．範囲オブジェクトは範囲演算子(`..'または
+`...')によって生成されます．`..'演算子によって生成された範囲オブジェ
+クトは終点を含み，`...'演算子によって生成された範囲オブジェクトは終
+点を含みません．
+
+  例:
+
+     for i in 1..5
+       ...
+     end
+
+  これは1から5までの範囲オブジェクトを生成して，それぞれの値に対して
+繰り返すと言う意味です．
+
+  範囲演算子のオペランドは互いに `<=>' で比較できる必要があります．さ
+らに`each' (*note Range::)を実行するためには`succ'メソッドを実行でき
+るものでなければいけません．
+
+  範囲は両端を含みます．
+
+スーパークラス:
+...............
+
+   - `Obejct' (*note Object::)
+
+インクルードしているモジュール:
+...............................
+
+   - `Enumerable' (*note Enumerable::)
+
+クラスメソッド:
+...............
+
+ - Class Method on `Range': new (FIRST,LAST[, exclude_end])
+     FIRSTからLASTまでの範囲オブジェクトを生成します．EXCLUDE_ENDは終
+     端を含むかどうかを指定します．省略時には終端を含みます．
+
+
+メソッド:
+.........
+
+ - Method on `Range': self === OTHER
+     このメソッドは主に`case' (*note Rubyの文法: Ruby Syntax.)  文での
+     比較に用いられます。OTHERが範囲内に含まれている時に真を返します．
+
+
+ - Method on `Range': each {|ITEM| ...}
+     範囲内の要素に対して繰り返します．
+
+
+ - Method on `Range': length
+ - Method on `Range': size
+     範囲の長さ(last - first + 1)を返します．
+
+
+ - Method on `Range': first
+ - Method on `Range': begin
+     最初の要素を返します．
+
+
+ - Method on `Range': last
+ - Method on `Range': end
+     最後の要素を返します．
+
+
+File: ruby-jp.info,  Node: Regexp,  Next: String,  Prev: Range,  Up: Pre-defined classes and modules
+
+Regexp
+------
+
+  正規表現のクラス．正規表現のリテラルはスラッシュで囲んだ形式で生成
+します．
+
+     /^this is regexp/
+
+  `Regexp.new(string)'を使って正規表現オブジェクトを動的に生成するこ
+ともできます．
+
+スーパークラス:
+...............
+
+   - `Object' (*note Object::)
+
+クラスメソッド:
+...............
+
+ - Class Method on `Regexp': compile (STRING[, CASEFOLD[, CODE]])
+ - Class Method on `Regexp': new (STRING[, OPTION[, CODE]])
+     文字列をコンパイルして正規表現オブジェクトを生成します．第2 引数
+     が与えられて，その値が真であれば，生成された正規表現はアルファベッ
+     トの大文字小文字を区別しません．第2引数が整数であった場合，その
+     値は`Regexp::IGNORECASE'と`Regexp::EXTENDED'の論理和でなければな
+     りません．
+
+     第3引数が与えられた時には，`$KCODE'の値にかかわらず，指定された
+     文字コードでマッチを行います．文字コードは`$KCODE' (*note 組込み
+     変数と組込み定数: Pre-defined variables and constants.)への代入
+     と同様に文字列引数の最初の一文字で決定されます．
+
+
+ - Class Method on `Regexp': quote (STRING[,KCODE])
+ - Class Method on `Regexp': escape (STRING[,KCODE])
+     STRINGの中で正規表現において特別な意味を持つ文字の直前にエスケー
+     プ文字(バックスラッシュ)を挿入した文字列を返します．省略可能な引
+     数KCODEで文字列の文字コードを指定します．文字コードの指定は
+     $KCODE (*note 組込み変数と組込み定数: Pre-defined variables and
+     constants.)と同様に行います．
+
+
+メソッド:
+.........
+
+ - Method on `Regexp': self =~ STRING
+ - Method on `Regexp': self === STRING
+     マッチする場合，マッチした位置のインデックスを返します(先頭は0)．
+     マッチしなかった場合`nil'を返します．
+
+
+ - Method on `Regexp': ~ self
+     変数`$_'の値との間でのマッチをとります．ちょうど以下と同じ意味で
+     す．
+
+          self =~ $_
+
+
+ - Method on `Regexp': casefold?
+     正規表現が大文字小文字の判定しないようにコンパイルされている時，
+     真を返します．
+
+
+ - Method on `Regexp': kcode
+     その正規表現が対応するようにコンパイルされている文字コードを
+     `$KCODE' (*note 組込み変数と組込み定数: Pre-defined variables
+     and constants.)と同じ形式で返します．もし，正規表現が固定コード
+     に対してコンパイルされていない(マッチ時点での`$KCODE'の値を用い
+     る) 場合には，文字列`"$KCODE"'を返します．
+
+
+ - Method on `Regexp': source
+     その正規表現のもととなった文字列表現を返します．
+
+
+File: ruby-jp.info,  Node: String,  Next: Struct,  Prev: Regexp,  Up: Pre-defined classes and modules
+
+String
+------
+
+  文字列クラス．`String'クラスは任意の長さのバイト列を扱うことができ
+ます．
+
+  `String'クラスのメソッドには名前が`!'で終るものがあります．これらの
+メソッドは文字列の中身を直接変更するものです．`!'のついていない同じ
+名前のメソッドは文字列のコピーを作ってそちらを更新しますのでやや遅い
+ですが，より安全です．例えば:
+
+     f = "string"
+     print f, f.sub("str", "ski"), f
+            => string, skiing, string
+     print f, f.sub!("str", "ski"), f
+            => skiing, skiing, skiing
+
+スーパークラス:
+...............
+
+   - `Object' (*note Object::)
+
+インクルードしているモジュール:
+...............................
+
+   - `Comparable' (*note Comparable::)
+
+   - `Enumerable' (*note Enumerable::)
+
+クラスメソッド:
+...............
+
+ - Class Method on `String': new (STRING)
+     STRINGと同じ内容の新しい文字列を返します．
+
+
+メソッド:
+.........
+
+ - Method on `String': self + OTHER
+     文字列の結合を行います．
+
+
+ - Method on `String': self * TIMES
+     文字列の繰り返し．例えば`"x" * 4'は`"xxxx"' を返します．
+
+
+ - Method on `String': self % ARGS
+     文字列のフォーマット．`sprintf(self, *args)'とほぼ同じ．
+
+
+ - Method on `String': self == OTHER
+ - Method on `String': self > OTHER
+ - Method on `String': self >= OTHER
+ - Method on `String': self < OTHER
+ - Method on `String': self <= OTHER
+     文字列の比較．変数`$='の値が偽である時，比較はアルファベットの大
+     文字小文字を無視して行われます．
+
+
+ - Method on `String': self << OTHER
+     文字列への内容の追加．
+
+
+ - Method on `String': self =~ OTHER
+     正規表現のマッチを行います．マッチが成功すればマッチした位置のイ
+     ンデックスを，そうでなければ`nil'を返します．OTHERが文字列であっ
+     た場合には正規表現へのコンパイルが行われます．
+
+
+ - Method on `String': ~ self
+     `$_ =~ self'と同じです．
+
+
+ - Method on `String': self [NTH]
+     NTH番目の文字(文字コードを示すFixnum)を返します．
+
+
+ - Method on `String': self [START..LAST]
+     START番目の文字からLAST番目の文字までの部分文字列を返します．部
+     分文字列は両端を含みます．
+
+
+ - Method on `String': self [START, LENGTH]
+     STARTから長さLENGTHだけ部分文字列を返します．
+
+
+ - Method on `String': self [NTH] = VAL
+     NTH番目の文字をVALに変更します．文字列がフリーズされている時には
+     例外が発生します．
+
+
+ - Method on `String': self [START..LAST] = VAL
+     STARTからLASTまでの部分文字列をVALに置き換えます．
+
+
+ - Method on `String': self [BEG, LEN] = VAL
+     STARTから長さLENGTHの部分文字列をVALに置き換えます．
+
+
+ - Method on `String': self <=> other
+     `self'と`other'を辞書順で比較して，`self'が大きい時に正，等しい
+     時に０，小さい時に負の整数を返します．
+
+
+ - Method on `String': <<(OTHER)
+ - Method on `String': concat (OTHER)
+     OTHERの内容を追加します．
+
+
+ - Method on `String': capitalize
+ - Method on `String': capitalize!
+     先頭の文字がアルファベットであれば大文字に変更します．
+
+
+ - Method on `String': chop
+ - Method on `String': chop!
+     文字列の最後の文字を取り除きます(終端が"\r\n"であれば2文字取り除
+     きます)．`chop!'は文字列そのものを変更します．`chop!'は取り除く
+     文字が無かった時には`nil'を返します．
+
+
+ - Method on `String': chomp ([RS])
+ - Method on `String': chomp! ([RS])
+     文字列の末尾からRSで指定する行区切りを取り除きます．RSのデフォル
+     ト値は変数`$/'の値です．`chomp!'は文字列そのものを変更します．
+     `chomp!'は取り除く改行が無かった時には`nil'を返します．
+
+
+ - Method on `String': clone
+ - Method on `String': dup
+     文字列と同じ内容を持つ新しい文字列を返します．フリーズした文字列
+     の`clone'はフリーズされた文字列を返しますが，`dup'は内容の等しい
+     フリーズされていない文字列を返します．
+
+
+ - Method on `String': crypt (SALT)
+     `crypt(3)'を使って文字列を暗号化します．SALTは2バイト以上の任意
+     の文字列を指定します．
+
+
+ - Method on `String': delete (STR)
+ - Method on `String': delete! (STR)
+     文字列からSTRに含まれる文字を取り除きます．STRの形式は`tr(1)'と
+     同じです．つまり，``a-c''は`a'から`c'を意味し，文字列の先頭が
+     `^'の場合は文字列に含まれない文字を削除します．`delete!'は取り
+     除く文字が無かった時には`nil'を返します．
+
+
+ - Method on `String': downcase
+ - Method on `String': downcase!
+     文字列中の大文字を小文字に置き換えます．`tr("A-Z","a-z")'よりも
+     ちょっと速そうです．`downcase!'は置き換えが発生しなかった時には
+     `nil'を返します．
+
+
+ - Method on `String': dump
+     文字列中の非表示文字をバックスラッシュ記法に置き換えた文字列を返
+     します．`str == eval(str.dump)'が保証されます．
+
+
+ - Method on `String': each_byte {|CHAR|...}
+     文字列中の各文字に対して繰り返します．
+
+
+ - Method on `String': each ([RS]) {|LINE|...}
+ - Method on `String': each_line ([RS]) {|LINE|...}
+     文字列中の各行に対して繰り返します．行の区切りはRSで指定します．
+     RSのデフォルト値は変数`$/'の値です．
+
+
+ - Method on `String': empty?
+     文字列が空(つまり長さ0)の時，真を返します．
+
+
+ - Method on `String': freeze
+     文字列の更新を禁止します．フリーズされた文字列の変更は例外を発生
+     させます．
+
+
+ - Method on `String': frozen
+     文字列がフリーズされている時真を返します．
+
+
+ - Method on `String': gsub (PATTERN, REPLACE)
+ - Method on `String': gsub! (PATTERN, REPLACE)
+     文字列中でPATTERNにマッチする部分を全てREPLACEに置き換えます．置
+     換文字列REPLACE中の`\&'と`\0'はマッチした部分文字列に，
+     `\1...\9'はn番目の括弧の内容に置き換えられます．置換文字列内では
+     `\`'，`\''，`\+'も使えます．これらは `$`'，`$''，`$+'に対応しま
+     す．
+
+     *注意*: REPLACEの中で`$<digits>'は使えません．この文字列が評価さ
+     れる時点ではまだマッチが行われていないからです．
+
+     `gsub!'は元の文字列を書き換えます．置換が行なわれなかった場合は
+     `nil'を返します．一方，`gsub'は文字列のコピーを変更します．マッ
+     チが成功しなかった場合には元の文字列を返します．
+
+
+ - Method on `String': gsub (PATTERN) {...}
+ - Method on `String': gsub! (PATTERN) {...}
+     `gsub'と`gsub!'はブロックを指定して呼び出された時には，全てのマッ
+     チした部分をブロックを評価した値で置き換えます．ブロックの中では
+     変数`$<digits>'を参照できます．マッチした部分文字列がブロックの
+     引数として渡されます．
+
+
+ - Method on `String': hex
+     文字列を16進文字列であると解釈して，整数に変換します．
+
+
+ - Method on `String': index (SUBSTR[, POS])
+     文字列中のSUBSTRのインデックスを返します．もし見付からなければ
+     `nil'を返します．POSが与えられた時にはその位置から検索を開始しま
+     す．SUBSTRは文字列，文字コードを示す整数，正規表現のいずれかを指
+     定します．
+
+
+ - Method on `String': intern
+     文字列に対応するシンボル値(Fixnum)を返します．文字列はナルキャラ
+     クタ('\0')を含むことができません．
+
+
+ - Method on `String': length
+ - Method on `String': size
+     文字列の長さを返します．
+
+
+ - Method on `String': ljust (WIDTH)
+ - Method on `String': rjust (WIDTH)
+ - Method on `String': center (WIDTH)
+     それぞろ左詰め，右詰め，中央寄せした文字列を返します．文字列の長
+     さがWIDTHより長い時には元の文字列をそのまま返します．
+
+
+ - Method on `String': oct
+     文字列を8進文字列であると解釈して，整数に変換します．文字列が8進
+     (`/^[0-7]+/')でない時には0を返します．
+
+
+ - Method on `String': reverse
+ - Method on `String': reverse!
+     文字列をひっくり返します．
+
+
+ - Method on `String': replace (OTHER)
+     文字列の内容をOTHERの内容で置き換えます．
+
+
+ - Method on `String': rindex (SUBSTR[, POS])
+     文字列中の最後のSUBSTRの位置を返します．もし見付からなければ
+     `nil'を返します．POSが与えられた時にはその位置から検索を開始しま
+     す．SUBSTRは文字列，文字コードを示す整数，正規表現のいずれかを指
+     定します．
+
+
+ - Method on `String': scan (RE)
+ - Method on `String': scan (RE) {...}
+     REで与えられる正規表現を文字列に対して繰り返しマッチを行い，正規
+     表現中の括弧で括られた部分にマッチした文字列を配列として返します．
+     正規表現が括弧を含まない場合はマッチした部分文字列の配列を返しま
+     す．ブロックを指定して呼び出された時には，括弧で括られた部分にマッ
+     チする部分文字列(括弧を含まない場合はマッチ全体)をブロックのパラ
+     メータとします．
+
+
+ - Method on `String': split ([SEP[, LIMIT]])
+     文字列をSEPで指定されたパターンによって分割して配列に格納します．
+     SEPが省略された時のデフォルトはシステム変数`$;'の値が用いられま
+     す．`$;'の値が`nil'の時には先頭の空白を除いて空白で分割を行いま
+     す．
+
+     LIMITが省略された時には配列末尾の空文字列は取り除かれます．
+     LIMITが指定されて，その値が負でない時には最大LIMIT個のフィールド
+     に分割します．LIMITの値が負の時には無限に大きいLIMIT が指定され
+     たかのように分割します．
+
+     SEPで指定されたパターンが空文字列とマッチする場合は文字列が1文字
+     ずつに分割されます．例えば:
+
+          print 'hi there'.split(/ */).join(':');
+                  => h:i:t:h:e:r:e
+
+
+ - Method on `String': squeeze ([STR])
+ - Method on `String': squeeze! ([STR])
+     STRに含まれる同一の文字の並びをひとつにまとめます．`squeeze!'は
+     文字列を変更しなかった時には`nil'を返します．
+
+
+ - Method on `String': strip
+ - Method on `String': strip!
+     先頭と末尾の空白(whitespace)を取り除きます．`strip!'は文字列を変
+     更しなかった時には`nil'を返します．
+
+
+ - Method on `String': sub (PATTERN, REPLACE)
+ - Method on `String': sub! (PATTERN, REPLACE)
+     文字列中でPATTERNに最初にマッチする部分をREPLACE に置き換えます．
+     置換文字列REPLACE中の`\&' と`\0'はマッチした部分文字列に，
+     `\1...\9'はn 番目の括弧の内容に置き換えられます．置換文字列内では
+     `\`'，`\''，`\+'も使えます．これらは `$`'，`$''，`$+'に対応しま
+     す．
+
+     *注意*: REPLACEの中で`$<digits>'は使えません．この文字列が評価さ
+     れる時点ではまだマッチが行われていないからです．
+
+     `sub!'は元の文字列を書き換えます．置換が行なわれなかった場合は
+     `nil'を返します．一方，`sub'は文字列のコピーを変更します．マッチ
+     が成功しなかった場合には元の文字列を返します．
+
+
+ - Method on `String': sub (PATTERN) {...}
+ - Method on `String': sub! (PATTERN) {...}
+     `sub'と`sub!'はブロックを指定して呼び出された時には，最初にマッ
+     チした部分をブロックを評価した値で置き換えます．ブロックの中では
+     変数`$<digits>'を参照できます．マッチした部分文字列がブロックの
+     引数として渡されます．
+
+
+ - Method on `String': succ
+ - Method on `String': succ!
+     以下のような*次*の文字列を返します．
+
+          "aa".succ => "ab"
+          "99".succ => "100"
+          "a9".succ => "b0"
+          "Az".succ => "Ba"
+          "zz".succ => "aaa"
+
+     `succ!'は文字列の内容を破壊的に修正します．
+
+
+ - Method on `String': sum ([BITS])
+     文字列のBITSビットのチェックサムを計算します．BITSの省略値は16で
+     す．例えば，以下のコードでSystem Vの`sum'プログラムと同じ値を得
+     られます．
+
+          while gets
+            sum += $_.sum
+          end
+          sum %= 65536
+
+
+ - Method on `String': swapcase
+ - Method on `String': swapcase!
+     全ての大文字を小文字に，小文字を大文字に変更します．
+     `swapcase!'は置き換えが発生しなかった時には`nil'を返します．
+
+
+ - Method on `String': to_f
+     文字列を`Float' (*note Float::)に変換します．
+
+
+ - Method on `String': to_i
+     文字列を10進で解釈して整数に変換します．
+
+
+ - Method on `String': tr (SEARCH, REPLACE)
+ - Method on `String': tr! (SEARCH, REPLACE)
+     文字列の中にSEARCH文字列に含まれる文字が存在すれば，REPLACE文字
+     列の対応する文字で置き換えます．SEARCH文字列の最初の文字が`^'で
+     ある場合，続く文字列に_含まれない_文字列が置換の対象になります．
+
+     `tr!'は文字列を変更しなかった時には`nil'を返します．
+
+
+ - Method on `String': tr_s (SEARCH, REPLACE)
+ - Method on `String': tr_s! (SEARCH, REPLACE)
+     文字列の中にSEARCH文字列に含まれる文字が存在すれば，REPLACE文字
+     列の対応する文字で置き換えます．置換した部分に同一の文字の並びを
+     1文字に圧縮します．tr (*note String::)同様，SEARCH文字列の最初
+     の文字が`^'である場合，続く文字列に_含まれない_文字列が置換の対
+     象になります．
+
+     `tr_s!'は文字列を変更しなかった時には`nil'を返します．
+
+
+ - Method on `String': unpack (TEMPLATE)
+     パックされた(おそらくは`Array#pack' (*note Array::)によって生成
+     された)文字列をTEMPLATE文字列にしたがってアンパックし，それらの
+     要素を含む配列を返します．TEMPLATE文字列は`Array#pack'とほぼ同様
+     で，以下の通りです．
+
+    `a'
+          ASCII文字列(後続するnull文字やスペースを残す)
+
+    `A'
+          ASCII文字列(後続するnull文字やスペースを削除)
+
+    `b'
+          ビットストリング(下位ビットから上位ビット)
+
+    `B'
+          ビットストリング(上位ビットから下位ビット)
+
+    `h'
+          16進文字列(下位ニブルが先)
+
+    `H'
+          16進文字列(上位ニブルが先)
+
+    `c'
+          char
+
+    `C'
+          unsigned char
+
+    `s'
+          short
+
+    `S'
+          unsigned short
+
+    `i'
+          int
+
+    `I'
+          unsigned int
+
+    `l'
+          long
+
+    `L'
+          unsigned long
+
+    `m'
+          base64された文字列
+
+    `n'
+          ネットワークバイトオーダーのshort
+
+    `N'
+          ネットワークバイトオーダーのlong
+
+    `v'
+          リトルエンディアン(Intel(またはVax)フォーマット)のshort
+
+    `V'
+          リトルエンディアン(Intel(またはVax)フォーマット)のlong
+
+    `f'
+          単精度浮動小数点数(機種依存)
+
+    `d'
+          倍精度浮動小数点数(機種依存)
+
+    `p'
+          ナル終端の文字列へのポインタ
+
+    `P'
+          構造体(固定長文字列)へのポインタ
+
+    `u'
+          uuencodされた文字列
+
+    `x'
+          1バイト読み飛ばす
+
+    `X'
+          1バイト後退
+
+    `@'
+          絶対位置への移動
+
+
+ - Method on `String': upcase
+ - Method on `String': upcase!
+     小文字を全て大文字にする．`tr("a-z", "A-Z")'よりもちょっと速そう
+     です．
+
+     `upcase!'は置き換えが発生しなかった時には`nil'を返します．
+
+
+ - Method on `String': upto (MAX) {...}
+     `self'から始まって，MAXまで*次*の文字列を順に繰り返します．*次
+     *の定義については`succ' (*note String::)を参照してください．
+
+     このメソッドは`Range#each' (*note Range::) の内部で用いられてい
+     るので，以下のようなコードは:
+
+               for i in "a" .. "ba"
+                 print i, "\n"
+               end
+
+     `a, b, c,...z,aa,...az, ba'を出力します．
+
+
+File: ruby-jp.info,  Node: Struct,  Next: Time,  Prev: String,  Up: Pre-defined classes and modules
+
+Struct
+------
+
+  構造体クラス．`Struct.new'はこのクラスのサブクラスを新たに生成しま
+す．個々の構造体はサブクラスから`new'を使って生成します．個々の構造体
+サブクラスでは構造体のメンバに対するアクセスメソッドが定義されていま
+す．
+
+スーパークラス:
+...............
+
+   - `Object' (*note Object::)
+
+インクルードしているモジュール:
+...............................
+
+   - `Enumerable' (*note Enumerable::)
+
+クラスメソッド:
+...............
+
+ - Class Method on `Struct': new (NAME, MEMBER...)
+     `Struct'クラスにNAMEという名前の新しいサブクラスを作って，それを
+     返します．サブクラスでは構造体のメンバに対するアクセスメソッドが
+     定義されています．例えば:
+
+          dog = Struct.new("Dog", :name, :age)
+          fred = dog.new("fred", 5)
+          fred.age=6
+          printf "name:%s age:%d", fred.name, fred.age
+
+     は`"name:fred age:6"'を出力します．
+
+     構造体名はStructのクラス定数名になりますので大文字で始まる必要が
+     あります．
+
+
+構造体クラスのクラスメソッド:
+.............................
+
+ - Class Method on `Struct': new (VALUE...)
+ - Class Method on `Struct': [VALUE...]
+     構造体を生成します．引数は構造体の初期値です．構造体のメンバの数
+     と同じだけ引数を指定する必要があります．
+
+
+ - Class Method on `Struct': members
+     構造体のメンバの名前の配列を返します．
+
+
+メソッド:
+.........
+
+ - Method on `Struct': self [NTH]
+     構造体のNTH番目のメンバの値を返します．NTHが文字列の場合はその名
+     前のメンバの値を返します．
+
+
+ - Method on `Struct': self [NTH]=VALUE
+     構造体のNTH番目のメンバの値をVALUEにします．
+
+
+ - Method on `Struct': each
+     構造体の各メンバに対して繰り返します．
+
+
+ - Method on `Struct': members
+     構造体のメンバの名前の配列を返します．
+
+
+ - Method on `Struct': values
+ - Method on `Struct': to_a
+     構造体のメンバを配列にいれて返します．例えば以下のようにして
+     passwdのエントリを出力できます．
+
+          print Etc.getpwuid.values.join(":"), "\n"
+
+
+
+File: ruby-jp.info,  Node: Time,  Next: NilClass,  Prev: Struct,  Up: Pre-defined classes and modules
+
+Time
+----
+
+  時刻オブジェクト．`Time.now'は現在の時刻を返します．`File#stat'
+(*note File::)の返すファイルのタイムスタンプは`Time'オブジェクトです．
+
+  `Time'オブジェクトは時刻を起算時からの経過秒数で保持しています．起
+算時は協定世界時(UTC，もしくはその旧称からGMTとも表記されます) の
+1970年1月1日午前0時です．なお，うるう秒を勘定するかどうかはシステムに
+よります．
+
+スーパークラス:
+...............
+
+   - `Object' (*note Object::)
+
+インクルードしているモジュール:
+...............................
+
+   - `Comparable' (*note Comparable::)
+
+クラスメソッド:
+...............
+
+ - Class Method on `Time': now
+     現在時刻の`Time'オブジェクトを返します．
+
+
+ - Class Method on `Time': at (TIME)
+     TIMEで指定した時刻の`Time'オブジェクトを返します．TIMEは`Time'オ
+     ブジェクト，もしく起算時からの経過秒数を表わす整数か浮動小数点数
+     です．
+
+
+ - Class Method on `Time': gm (YEAR, MONTH, DAY, HOUR, MIN, SEC)
+     引数で指定した協定世界時の`Time'オブジェクトを返します．第2引数
+     以降は省略可能で，省略した場合の値はその引数がとり得る最小の値で
+     す．
+
+     MONTHは1(1月)から12(12月)の範囲の整数または英語の月名，または1か
+     ら12までの数を表わす文字列で指定します．
+
+     引数の数がTime#to_a (*note Time::)と全く同じ場合(こちらは秒が先
+     頭に来る形式ですが)，その順序を正しく解釈します．
+
+
+ - Class Method on `Time': local (YEAR, MONTH, DAY, HOUR, MIN, SEC)
+ - Class Method on `Time': mktime (YEAR, MONTH, DAY, HOUR, MIN, SEC)
+     引数で指定したローカルタイムの`Time'オブジェクトを返します．引数
+     の扱いは`gm' (*note Time::)と同じです．
+
+
+ - Class Method on `Time': times
+     自身のプロセスとその子プロセスが消費したユーザ/システムCPU 時間の
+     積算を構造体 (*note Struct::)として返します．
+
+          utime           # user time
+          stime           # system time
+          cutime          # user time of children
+          cstime          # system time of children
+
+     時間の単位は秒で，浮動小数点数で与えられます．詳細は`times(3)'を
+     参照してください．
+
+
+メソッド:
+.........
+
+ - Method on `Time': self + OTHER
+     `self'よりOTHERだけ後の時刻を返します
+
+
+ - Method on `Time': self - OTHER
+     OTHERが`Time'オブジェクトである時，ふたつの時刻の差を実数で返し
+     ます．OTHERが数値である時にはSELFよりOTHERだけ前の時刻を返しま
+     す．
+
+
+ - Method on `Time': self <=> OTHER
+     時刻の比較．OTHERは`Time'オブジェクトか数値でなければなりません．
+     数値の場合は起算時からの経過秒数とみなして比較します．
+
+
+ - Method on `Time': asctime
+ - Method on `Time': ctime
+     時刻を`asctime(3)'の形式の文字列に変換します．
+
+
+ - Method on `Time': to_s
+     時刻を`date(1)'のような形式の文字列に変換します．
+
+
+ - Method on `Time': gmtime
+     タイムゾーンを協定世界時に設定します．このメソッドを呼び出した後
+     は時刻変換を協定世界時として行ないます．協定世界時を表示するため
+     には以下のようにします．
+
+          print Time.now.gmtime, "\n"
+
+     `gmtime'は自分自身を返します．
+
+
+ - Method on `Time': localtime
+     タイムゾーンをローカルタイムに設定します(デフォルト)．
+
+     `localtime'(`gmtime'も)の挙動はシステムの`localtime(3)'の挙動に
+     依存します．`Time'クラスでは時刻を起算時からの経過秒数として保持
+     していますが，ある特定の時刻までの経過秒は，システムがうるう秒を
+     勘定するかどうかによって異なる場合があります．システムを越えて
+     `Time' オブジェクトを受け渡す場合には注意する必要があります．
+
+
+ - Method on `Time': to_i
+ - Method on `Time': tv_sec
+     起算時からの経過秒数を整数で返します．
+
+
+ - Method on `Time': sec
+ - Method on `Time': min
+ - Method on `Time': hour
+ - Method on `Time': mday
+ - Method on `Time': day
+ - Method on `Time': mon
+ - Method on `Time': month
+ - Method on `Time': year
+ - Method on `Time': wday
+ - Method on `Time': yday
+ - Method on `Time': zone
+ - Method on `Time': isdst
+     内部的に保持している`tm'構造体の内容を返します．`zone'以外は整数
+     を返します．`zone'はタイムゾーンを表す文字列を返します．
+     (`localtime(3)' 参照)
+
+     注意: Cのtm構造体とは異なり，`month'は1月に対して1を返し，
+     `year'は1998年に対して1998を返します．また、`yday'は1から数えま
+     す．
+
+
+ - Method on `Time': strftime (FORMAT)
+     時刻をFORMAT文字列に従って文字列に変換した結果を返します．
+     FORMAT文字列として指定できるものは 以下の通りです．
+
+    `%A'
+          曜日の名称(Sunday, Monday...)
+
+    `%a'
+          曜日の省略名(Sun, Mon...)
+
+    `%B'
+          月の名称(January, February...)
+
+    `%b'
+          月の省略名(Jan, Feb...)
+
+    `%c'
+          日付と時刻
+
+    `%d'
+          日(01-31)
+
+    `%H'
+          24時間制の時(00-23)
+
+    `%I'
+          12時間制の時(01-12)
+
+    `%j'
+          年中の通算日(001-366)
+
+    `%M'
+          分(00-59)
+
+    `%m'
+          月を表す数字(01-12)
+
+    `%p'
+          午前または午後(AM,PM)
+
+    `%S'
+          秒(00-60)
+
+    `%U'
+          週を表す数．最初の日曜日が第1週の始まり(00-53)
+
+    `%W'
+          週を表す数．最初の月曜日が第1週の始まり(00-53)
+
+    `%w'
+          曜日を表す数．日曜日が0(0-6)
+
+    `%X'
+          時刻
+
+    `%x'
+          日付
+
+    `%Y'
+          西暦を表す数
+
+    `%y'
+          西暦の下2桁(00-99)
+
+    `%Z'
+          タイムゾーン
+
+    `%%'
+          %自身
+
+
+ - Method on `Time': to_a
+     tm構造体の中身を配列にして返します．その順序は:
+
+        * sec
+
+        * min
+
+        * hour
+
+        * mday
+
+        * mon
+
+        * year
+
+        * wday
+
+        * yday
+
+        * isdst
+
+        * zone
+
+     です．
+
+
+ - Method on `Time': to_f
+     起算時からの経過秒数を浮動小数点数で返します．1秒に満たない経過
+     も表現されます．
+
+
+ - Method on `Time': usec
+ - Method on `Time': tv_usec
+     時刻のマイクロ秒の部分を返します．
+
+
+File: ruby-jp.info,  Node: NilClass,  Prev: Time,  Up: Pre-defined classes and modules
+
+NilClass
+--------
+
+  `nil'のクラス．偽変数(の値)`nil'は`NilClass'クラスの唯一のインスタ
+ンスです．`nil'は`FALSE'オブジェクトとともに偽を表し，その他の全ての
+オブジェクトは真です．
+
+  *注意:* このクラスは内部的に用いられているもので，定数`Nil'は定義さ
+れていません．
+
+スーパークラス:
+...............
+
+   - `Object' (*note Object::)
+
+
+File: ruby-jp.info,  Node: modules,  Prev: classes,  Up: Pre-defined classes and modules
+
+組込みモジュール
+================
+
+* Menu:
+
+* Comparable::                  Comparable
+* Enumerable::                  Enumerable
+* FileTest::                    FileTest
+* GC::                          GC
+* Kernel::                      Kernel
+* Marshal::                     Marshal
+* Math::                        Math
+* ObjectSpace::                 ObjectSpace
+* Precision::                   Precision
+* Process::                     Process
+
+
+File: ruby-jp.info,  Node: Comparable,  Next: Enumerable,  Up: Pre-defined classes and modules
+
+Comparable
+----------
+
+  比較演算を許すクラスのための`Mixin'．このモジュールをインクルードす
+るクラスは，基本的な比較演算子である`<=>'演算子を定義している必要があ
+ります．他の比較演算子はその定義を利用して派生できます．
+
+メソッド:
+.........
+
+ - Method on `Comparable': self == other
+     `self'とOTHERが等しい時真を返します．
+
+
+ - Method on `Comparable': self > other
+     `self'がOTHERより大きい時真を返します．
+
+
+ - Method on `Comparable': self >= OTHER
+     `self'がOTHERより大きいか等しい時真を返します．
+
+
+ - Method on `Comparable': self < OTHER
+     `self'がOTHERより小さい時真を返します．
+
+
+ - Method on `Comparable': self <= OTHER
+     `self'がOTHERより小さいか等しい時真を返します．
+
+
+ - Method on `Comparable': between? (min, max)
+     `self'がMINとMAXの範囲内にある時真を返します．
+
+
+File: ruby-jp.info,  Node: Enumerable,  Next: FileTest,  Prev: Comparable,  Up: Pre-defined classes and modules
+
+Enumerable
+----------
+
+  繰り返しを行なうクラスのための`Mixin'．このモジュールをインクルード
+するクラスは，メソッド`each'を定義している必要があります．
+`Enumerable'で定義されているメソッドは全て`each'を用いて定義されてい
+ます．
+
+メソッド:
+.........
+
+ - Method on `Enumerable': collect {|ITEM|...}
+     各要素に対してブロックを評価した結果を全て含む配列を返します．
+
+
+ - Method on `Enumerable': each_with_index {|ITEM,INDEX|...}
+     要素とインデックスを両方与えるイテレータ．
+
+
+ - Method on `Enumerable': find {|ITEM|...}
+ - Method on `Enumerable': detect {|ITEM|...}
+     要素に対してブロックを評価した値が真になった最初の要素を返します．
+
+
+ - Method on `Enumerable': find_all {|ITEM|...}
+ - Method on `Enumerable': select {|ITEM|...}
+     各要素に対してブロックを評価した値が真であった要素を全て含む配列
+     を返します．
+
+
+ - Method on `Enumerable': grep (pattern)
+ - Method on `Enumerable': grep (pattern) {|ITEM|...}
+     `PATTERN === item'が成立する全ての要素を含む配列を返します．ブロッ
+     クとともに呼び出された時には条件の成立した要素に対してそれぞれブ
+     ロックを評価します．
+
+
+ - Method on `Enumerable': member? (VAL)
+ - Method on `Enumerable': include? (VAL)
+     VALと`=='の関係にある要素を持つ時，真を返します．
+
+
+ - Method on `Enumerable': index (VAL)
+     VALと`=='の関係にあるオブジェクトのインデックスを返します．一番
+     最初の要素が0になります．要素が存在しない時には`nil'を返します．
+     このメソッドは順序のないクラスに対しては意味がありません．
+
+
+ - Method on `Enumerable': length
+ - Method on `Enumerable': size
+     要素の数を返します．
+
+
+ - Method on `Enumerable': max
+     最大の要素を返します．各要素が`<=>'メソッドで比較できることを仮
+     定しています
+
+
+ - Method on `Enumerable': max {|A, B|...}
+     `sort' (*note Enumerable::)と同様の基準で最大の要素を返します．
+     ブロックが与えられたときにはその評価した結果で比較します．
+
+
+ - Method on `Enumerable': min
+     最小の要素を返します．全ての要素がお互いに`<=>'メソッドで比較で
+     きることを仮定しています．
+
+
+ - Method on `Enumerable': min {|A, B|...}
+     `sort' (*note Enumerable::)と同様の基準で最小の要素を返します．
+     ブロックが与えられたときにはその評価した結果で比較します．
+
+
+ - Method on `Enumerable': reject {|ITEM|...}
+     各要素に対してブロックを評価した値が真であった要素を除いた配列を
+     返します．
+
+
+ - Method on `Enumerable': sort
+ - Method on `Enumerable': sort {|A, B|...}
+     全ての要素をソートした配列を返します．ブロックとともに呼び出され
+     た時はブロックを評価した値(`a>b'で正，`a==b'で0，`a<b'で負を返す
+     こと)を元にソートします
+
+
+ - Method on `Enumerable': to_a
+     全ての要素を含む配列を返します．
+
+
+File: ruby-jp.info,  Node: FileTest,  Next: GC,  Prev: Enumerable,  Up: Pre-defined classes and modules
+
+FileTest
+--------
+
+  `FileTest'はファイルの検査関数を集めたモジュールです．このモジュー
+ルはインクルードしても使えます．
+
+モジュール関数:
+...............
+
+ - Module Function on `FileTest': blockdev? (FILENAME)
+     FILENAMEがブロックスペシャルファイルである時，真を返します．
+
+
+ - Module Function on `FileTest': chardev? (FILENAME)
+     FILENAMEがキャラクタスペシャルファイルの時，真を返します．
+
+
+ - Module Function on `FileTest': executable? (FILENAME)
+     FILENAMEが実効ユーザ/グループIDで実行できる時，真を返します．
+
+
+ - Module Function on `FileTest': executable_real? (FILENAME)
+     FILENAMEが実ユーザ/グループIDで実行できる時，真を返します．
+
+
+ - Module Function on `FileTest': exist? (FILENAME)
+     FILENAMEが存在する時，真を返します．
+
+
+ - Module Function on `FileTest': grpowned? (FILENAME)
+     FILENAMEがのグループIDが実行グループIDと等しい時，真を返します．
+
+
+ - Module Function on `FileTest': directory? (FILENAME)
+     FILENAMEがディレクトリの時，真を返します．
+
+
+ - Module Function on `FileTest': file? (FILENAME)
+     FILANAMEが通常ファイルである時，真を返します．
+
+
+ - Module Function on `FileTest': pipe? (FILENAME)
+     FILENAMEが名前つきパイプ(FIFO)である時，真を返します．
+
+
+ - Module Function on `FileTest': socket? (FILENAME)
+     FILENAMEがソケットである時，真を返します．
+
+
+ - Module Function on `FileTest': owned? (FILENAME)
+     FILENAMEが自分のものである時に真を返します．
+
+
+ - Module Function on `FileTest': readable? (FILENAME)
+     FILENAMEを読み込み可能な時に真を返します．
+
+
+ - Module Function on `FileTest': readable_real? (FILENAME)
+     FILENAMEが実ユーザ/実グループによって読み込み可能な時に真を返し
+     ます．
+
+
+ - Module Function on `FileTest': setuid? (FILENAME)
+     FILENAMEがsetuidされている時に真を返します．
+
+
+ - Module Function on `FileTest': setgid? (FILENAME)
+     FILENAMEがsetgidされている時に真を返します．
+
+
+ - Module Function on `FileTest': size? (FILENAME)
+     FILENAMEのサイズを返します．FILENAMEが存在しない時やFILENAMEのサ
+     イズが0の時には偽を返します．
+
+
+ - Module Function on `FileTest': sticky? (FILENAME)
+     FILENAMEのstickyビットが立っている時に真を返します．
+
+
+ - Module Function on `FileTest': symlink? (FILENAME)
+     FILENAMEがシンボリックリンクである時，真を返します．
+
+
+ - Module Function on `FileTest': writable? (FILENAME)
+     FILENAMEが読み込み可である時，真を返します．
+
+
+ - Module Function on `FileTest': writable_real? (FILENAME)
+     FILENAMEが実ユーザ/実グループによって読み込み可である時，真を返
+     します．
+
+
+ - Module Function on `FileTest': zero? (FILENAME)
+     FILENAMEが存在して，そのサイズが0である時，真を返します．
+
+
+File: ruby-jp.info,  Node: GC,  Next: Kernel,  Prev: FileTest,  Up: Pre-defined classes and modules
+
+GC
+--
+
+  `GC'はrubyインタプリタの「ゴミ集め(Garbage Collection)」を制御するモ
+ジュールです．
+
+メソッド:
+.........
+
+ - Method on `GC': garbage_collect
+     ガーベージコレクトを開始します．以下と同じ働きをします．
+
+          GC.start
+
+
+モジュールメソッド:
+...................
+
+ - Module Method on `GC': disable
+     ガーベージコレクトを禁止します．
+
+
+ - Module Method on `GC': enable
+     カーベージコレクトを許可します．
+
+
+ - Module Method on `GC': start
+     カーベージコレクトを開始します．
+
+
+File: ruby-jp.info,  Node: Kernel,  Next: Math,  Prev: GC,  Up: Pre-defined classes and modules
+
+Kernel
+------
+
+  全てのクラスから参照できるメソッドを定義しているモジュール．
+`Object'クラスはこのモジュールをインクルードしています．組込み関数
+(*note Ruby Functions::)の項で解説されているメソッドはこのモジュール
+で定義されています．
+
+  `Object'クラスのメソッドは実際にはこのモジュールで定義されています．
+これはトップレベルでのメソッドの再定義に対応するためです．
+
+
+File: ruby-jp.info,  Node: Marshal,  Next: Math,  Prev: Kernel,  Up: Pre-defined classes and modules
+
+Marshal
+-------
+
+  rubyオブジェクトをファイル(または文字列)に書き出したり，読み戻したり
+する機能を提供するモジュール．大部分のクラスのインスタンスを書き出す
+事ができますが，書き出しの不可能なクラスも存在していて(例:`IO'
+(*note IO::))，そのようなクラスを書き出そうとすると例外が発生します．
+
+モジュール関数:
+...............
+
+ - Module Function on `Marshal': dump (OBJ[,PORT][,LIMIT])
+     OBJを再帰的にファイルに書き出します．ファイルに書き出せないクラス
+     のインスタンスをファイルに書き出そうとすると例外が発生します．ファ
+     イルに書き出せないクラスは以下の通りです．
+
+          Class, Module, IO(そのサブクラスも), Data
+
+     また，これらのクラスを間接的に指すクラスなども書き出せません．
+
+     PORTは`IO'(またはそのサブクラス)のインスタンスを指定します．省略
+     した場合には`dump'はそのオブジェクトをダンプした文字列を返します．
+
+     出力するオブジェクトがメソッド``_dump''を定義している場合には，
+     ファイル出力はそのメソッドを使って行われます．メソッド
+     ``_dump''は引数として再帰を制限するレベルLIMITを受け取り，オブジェ
+     クトを文字列化したものを返します．インスタンスがメソッド
+     ``_dump''を持つクラスは必ず同じフォーマットを読み戻す特異メソッ
+     ド``_load''を定義する必要があります．``_load''はオブジェクトを表
+     現した文字列を受け取り，それをオブジェクトに戻したものを返す必要
+     があります．
+
+     LIMITを指定した場合，LIMIT段以上深くリンクしたオブジェクトをダン
+     プできません(デフォルトは100レベル)。負のLIMITを指定すると深さチェッ
+     クを行いません。
+
+
+ - Module Function on `Marshal': load (PORT)
+     PORTからオブジェクトを読み込んで来て，元のオブジェクトと同じ状態
+     をもつオブジェクトを生成します．PORTは文字列か`IO'(またはそのサ
+     ブクラス)のインスタンスを指定します．PROCとして手続きオブジェク
+     トが与えられた場合には読み込んで来るオブジェクトを引数にその手続
+     きが呼び出されます．
+
+
+File: ruby-jp.info,  Node: Math,  Next: ObjectSpace,  Prev: Marshal,  Up: Pre-defined classes and modules
+
+Math
+----
+
+  浮動小数点演算をサポートするクラス．Mathモジュールは同じ定義のメソッ
+ドと特異メソッドとの両方が定義されているので，特異メソッドを呼び出し
+て使う使い方と，クラスにインクルードして使う使い方との両方ができます．
+
+  例:
+
+     pi = Math.atan2(1, 1)*4;
+     include Math
+     pi2 = atan2(1, 1)*4
+
+モジュール関数:
+...............
+
+ - Module Function on `Math': atan2 (X, Y)
+     π〜-πの範囲でX/Yのアークタンジェントを返します．
+
+
+ - Module Function on `Math': cos (X)
+ - Module Function on `Math': sin (X)
+ - Module Function on `Math': tan (X)
+     -1〜1の範囲でラジアンで表されたXの三角関数の値を返します．
+
+
+ - Module Function on `Math': exp (X)
+     Xの指数関数の値を返します．
+
+
+ - Module Function on `Math': frexp (X)
+     実数Xの指数部と仮数部を返します．
+
+
+ - Module Function on `Math': ldexp (X,EXP)
+     実数Xに2のexp乗をかけた数を返します．
+
+
+ - Module Function on `Math': log (X)
+     Xの自然対数を返します．
+
+
+ - Module Function on `Math': log10 (X)
+     Xの常用対数を返します．
+
+
+ - Module Function on `Math': sqrt (X)
+     Xの平方根を返します．Xの値が負である時には例外が発生します．
+
+
+定数:
+.....
+
+ - Class Constant of `Math': PI
+     円周率
+
+
+ - Class Constant of `Math': E
+     e
+
+
+File: ruby-jp.info,  Node: ObjectSpace,  Next: Precision,  Prev: Math,  Up: Pre-defined classes and modules
+
+ObjectSpace
+-----------
+
+  全てのオブジェクトを操作するためのモジュール．
+
+モジュール関数:
+...............
+
+ - Module Function on `ObjectSpace': add_finalizer (PROC)
+     PROCをfinalizerとして設定します．`call_finalizer' (*note
+     ObjectSpace::)で指定したオブジェクトが開放される時，そのオブジェ
+     クトのID(c.f Object#id (*note Object::))を引数にfinalizerが評価
+     されます．
+
+
+ - Module Function on `ObjectSpace': call_finalizer (OBJ)
+     OBJをfinalizerの対象オブジェクトとして設定します．
+
+
+ - Module Function on `ObjectSpace': finalizers
+     現在登録されているfinalizerの配列を返します．
+
+
+ - Module Function on `ObjectSpace': each_object ([CLASS_OR_MODULE])
+     CLASS_OR_MODULEと`kind_of?' (*note Kernel::)の関係にある全ての
+     オブジェクトに対して繰り返します．引数が省略された時には全てのオ
+     ブジェクトに対して繰り返します．
+
+
+ - Module Function on `ObjectSpace': garbage_collect
+     どこからもアクセスされなくなったオブジェクトを回収します．
+
+
+ - Module Function on `ObjectSpace': remove_finalizer (PROC)
+     指定したPROCをfinalizersから取り除きます．
+
+
+File: ruby-jp.info,  Node: Precision,  Next: Process,  Prev: ObjectSpace,  Up: Pre-defined classes and modules
+
+Precision
+---------
+
+  精度をもつ具象数値クラスのための`Mix-in'． ここでいう精度とは実数の
+近似の良さを意味します．抽象数値クラスや複素数，行列などそれら自身が
+実数に含まれないような クラスにインクルードすべきではありません．
+
+クラスメソッド:
+...............
+
+ - Class Method on `Precision': induced_from (NUMBER)
+     number を自分のクラスに変換した結果を返します． デフォルトの定義
+     は，TypeError を発生するので，Mix-inしたクラスでこのメソッドを再
+     定義する必要があります．再定義に，Prec#prec (*note
+     Precision::)を使うと， 無限ループになる可能性があります．
+
+
+メソッド:
+.........
+
+ - Method on `Precision': prec (KLASS)
+     `self' を精度 KLASS に変換した結果を返します．デフォルトの定義で
+     は`KLASS.induced_from(self)' を呼び出し，その結果を返します新
+     しく精度クラスを作るときは組み込みクラスの`induced_from' () を変
+     更するのではなく，この prec の再定義で対応するべきです．
+
+
+ - Method on `Precision': prec_i
+     `self' を `Integer' に変換します．`prec(Integer)' と等価です．
+
+
+ - Method on `Precision': prec_f
+     `self' を `Float' に変換します．`prec(Float)' と等価です．
+
+
+File: ruby-jp.info,  Node: Process,  Next: Bundled Libraries,  Prev: Precision,  Up: Pre-defined classes and modules
+
+Process
+-------
+
+  UNIXのプロセスを管理するモジュール．`Math' (*note Math::)モジュール
+と同様にこのモジュールも定義されているメソッドは全てモジュール関数
+(*note Module::)です．
+
+  `Process'がプロセスを表現するクラスではなく，プロセスに対する操作を
+まとめたモジュールであることに注意してください．
+
+モジュール属性:
+...............
+
+ - Module Attribute on `Process': egid
+     実効グループID．
+
+
+ - Module Attribute on `Process': egid = GID
+     実効グループIDを設定します．
+
+
+ - Module Attribute on `Process': euid
+     実効ユーザID．
+
+
+ - Module Attribute on `Process': euid = UID
+     実効ユーザIDを設定します．
+
+
+ - Module Attribute on `Process': gid
+     実グループID．
+
+
+ - Module Attribute on `Process': gid = GID
+     実グループIDを設定します．
+
+
+ - Module Attribute on `Process': pid
+     プロセスID．変数`$$'の値と同じ．
+
+
+ - Module Attribute on `Process': ppid
+     親プロセスのプロセスID．UN*Xでは実際の親プロセスが終了した後は
+     `ppid'は1(`init'のpid)になります．
+
+
+ - Module Attribute on `Process': uid
+     プロセスの実ユーザID．
+
+
+ - Module Attribute on `Process': uid = UID
+     プロセスの実ユーザIDを設定します．
+
+
+モジュール関数:
+...............
+
+ - Module Function on `Process': getpgrp ([PID])
+     PIDのプロセスのプロセスグループを返します．PIDが0の時や省略され
+     た時はカレントプロセスを意味します．
+
+
+ - Module Function on `Process': getpriority (WHICH, WHO)
+     プロセス，プロセスグループ，ユーザの現在のプライオリティを返しま
+     す．`getpriority(2)'参照．`Process'モジュールはWHICHとして指定で
+     きる定数PRIO_PROCESS, PRIO_PGRP, PRIO_USERを定義しています．
+
+
+ - Module Function on `Process': kill (SIGNAL, PID...)
+     PIDで指定されたプロセスにシグナルを送ります．SIGNALはシグナル番
+     号か名前で指定します．負の値を持つシグナル(あるいはシグナル名の
+     前に`-')を与えるとプロセスではなくプロセスグループにシグナルを送
+     ります．
+
+
+ - Module Function on `Process': setpgrp (PID, PGRP)
+     PIDのプロセスグループを設定します．PIDが0の時はカレントプロセス
+     を意味します．
+
+
+ - Module Function on `Process': setpriority (WHICH, WHO, PRIO)
+     プロセス，プロセスグループ，ユーザの現在のプライオリティを設定し
+     ます．`setpriority(2)'参照．`Process'モジュールはWHICHとして指定
+     できる定数PRIO_PROCESS, PRIO_PGRP, PRIO_USERを定義しています．
+
+
+ - Module Function on `Process': setsid ()
+     新しいセッションを作成して，ttyを切り離します．デーモンを簡単に
+     作ることができます．セッションIDを返します．
+
+
+ - Module Function on `Process': wait
+     子プロセスが終了するのを待ち，終了した子プロセスのpidを返します．
+     子プロセスが一つもなければ`nil'を返します．
+
+
+ - Module Function on `Process': waitpid (PID, FLAGS)
+     PIDで指定される特定の子プロセスの終了を待ち，そのプロセスが終了
+     した時に`pid'を返します．子プロセスが存在しないか，ノンブロッキ
+     ングモードで子プロセスがまだ終了していない時には`nil'を返します．
+     `waitpid(2)'か`wait4(2)'の実装されていないマシンではFLAGSはいつ
+     も`nil'または0を指定する必要があります．
+
+
+定数:
+.....
+
+ - Class Constant of `Process': PRIO_PROCESS
+     `getpriority'または`setpriority'のプロセスプライオリティ指定．
+
+
+ - Class Constant of `Process': PRIO_PGRP
+     プロセスグループプライオリティ．
+
+
+ - Class Constant of `Process': PRIO_USER
+     ユーザプライオリティ．
+
+
+ - Class Constant of `Process': WNOHANG
+     終了した子プロセスがない時直ちに終了します．
+
+
+ - Class Constant of `Process': WUNTRACED
+     ステータスを報告していない子プロセスがある時には終了します．
+
+
+File: ruby-jp.info,  Node: Bundled Libraries,  Next: Pseudo BNF Syntax of Ruby,  Prev: Pre-defined classes and modules,  Up: Top
+
+添付ライブラリ
+**************
+
+  添付ライブラリについてのドキュメントはThread (*note The Thread
+Library::)以外はまだ不十分です．
+
+   - `dbm' (*note DBM::)
+
+   - `etc'
+
+   - `kconv' (*note Kconv::)
+
+   - `getopts' (*note getopts::)
+
+   - `parsearg' (*note parsearg::)
+
+   - `parsedate'
+
+   - `ftplib' (*note ftplib::)
+
+   - `socket' (*note The Socket Library::)
+
+        - `BasicSocket' (*note BasicSocket::)
+
+             - `IPSocket' (*note IPSocket::)
+
+                  - `TCPSocket' (*note TCPSocket::)
+
+                       - `TCPServer' (*note TCPServer::)
+
+
+                  - `UDPSocket' (*note UDPSocket::)
+
+
+             - `UNIXSocket' (*note UNIXSocket::)
+
+                  - `UNIXServer' (*note UNIXServer::)
+
+
+             - `Socket' (*note Socket::)
+
+
+   - `thread' (*note The Thread Library::)
+
+        - `Thread' (*note Thread::)
+
+        - `Mutex' (*note Mutex::)
+
+        - `Queue' (*note Queue::)
+
+
+   - `tk' (*note The Tk Library::)
+
+

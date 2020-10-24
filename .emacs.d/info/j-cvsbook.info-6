@@ -1,0 +1,1085 @@
+これは j-cvsbook.info、j-main.texi より makeinfo バージョン 4.2
+によって作成されました。
+
+START-INFO-DIR-ENTRY
+* CVS Book: (cvsbook).          A CVS tutorial and reference.
+END-INFO-DIR-ENTRY
+
+Copyright (C) 1999 Karl Fogel <kfogel@red-bean.com>
+
+This document is free software; you can redistribute and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation; either version 2, or (at your option) any
+later version.
+
+This document is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+General Public License for more details.
+
+This manual describes how to use and administer CVS (Concurrent Versions
+System).  It is part of a larger work entitled `Open Source Development
+With CVS'; please see the introduction for details.
+
+This is version 1.12 of this manual.
+
+
+File: j-cvsbook.info,  Node: Enabling Watches In The Repository,  Next: Using Watches In Development,  Prev: How Watches Work,  Up: Watches (CVS As Telephone)
+
+Enabling Watches In The Repository
+----------------------------------
+
+まずは CVSROOT/notify ファイルを編集して、電子メールでの通知を有
+効にします。開発者の1人がやってもいいですし、もし開発者にリポジトリ
+の管理ファイルを変更する権限がなければ、管理者がやってもいいです。ど
+ちらにしろ、まずは管理領域をチェックアウトして、それから notify ファ
+イルを編集します:
+
+     floss$ cvs -q co CVSROOT
+     U CVSROOT/checkoutlist
+     U CVSROOT/commitinfo
+     U CVSROOT/config
+     U CVSROOT/cvswrappers
+     U CVSROOT/editinfo
+     U CVSROOT/loginfo
+     U CVSROOT/modules
+     U CVSROOT/notify
+     U CVSROOT/rcsinfo
+     U CVSROOT/taginfo
+     U CVSROOT/verifymsg
+     floss$ cd CVSROOT
+     floss$ emacs notify
+     ...
+
+notify ファイルは、初回編集時にはこのようになっています:
+
+     # The "notify" file controls where notifications from watches set by
+     # "cvs watch add" or "cvs edit" are sent. The first entry on a line is
+     # a regular expression which is tested against the directory that the
+     # change is being made to, relative to the $CVSROOT. If it matches,
+     # then the remainder of the line is a filter program that should contain
+     # one occurrence of %s for the user to notify, and information on its
+     # standard input.
+     #
+     # "ALL" or "DEFAULT" can be used in place of the regular expression.
+     #
+     # For example:
+     # ALL mail %s -s "CVS notification"
+
+最後の行の冒頭の`#'を取ってコメントをはずすだけです。notify ファ
+イルは他の管理ファイルと同様、ディレクトリ名に対する正規表現を書ける
+柔軟なインタフェースを提供していますが、実際はその柔軟さを活用するこ
+とはほとんどありません。リポジトリの特定部分にマッチする正規表現を複
+数行で書くことがあるとすれば、各プロジェクト用に別々の通知機構を使い
+たいときだけでしょう。しかし、通常の電子メールは完璧に良い通知機構な
+ので、大抵はそれを使います。
+
+電子メール通知を指定するには、標準的な Unix マシンではこの行
+
+     ALL mail %s -s "CVS notification"
+
+を書けば動きます。このコマンドは通知をサブジェクト`CVS
+notification'の電子メールで送ります(例によって、特殊表現 ALL は全て
+のディレクトリにマッチします)。この行のコメントをはずしたら、notify
+ファイルをコミットしてリポジトリに変更を知らせましょう:
+
+     floss$ cvs ci -m "turned on watch notification"
+     cvs commit: Examining .
+     Checking in notify;
+     /usr/local/newrepos/CVSROOT/notify,v  <--  notify
+     new revision: 1.2; previous revision: 1.1
+     done
+     cvs commit: Rebuilding administrative file database
+     floss$
+
+notify ファイルをこのように編集しさえすればリポジトリの監視ができま
+す。しかしながら、リモートからプロジェクトに参加している開発者がいる
+場合、`CVSROOT/users' ファイルも編集する必要があります。users
+ファイルの目的は、外部のメールアドレスを持っているユーザに対し、電子
+メール通知をどこへ送信すればよいかを CVS に指示することです。users
+ファイルの各行の形式は:
+
+     CVS_USERNAME:EMAIL_ADDRESS
+
+です。例えば、
+
+     qsmith:quentinsmith@farawayplace.com
+
+行の冒頭の CVS ユーザ名というのは、そのユーザ名が `CVSROOT/passwd'
+に存在し、かつ pserver アクセスを使っている場合はそのユーザに、そうでな
+ければ CVS を実行している人のサーバ側のシステムユーザ名に対応します。コ
+ロンのあとにはそのユーザに通知を送る場合の外部のメールアドレスを書きます。
+これを書いている時点では、users ファイルは CVS ディストリビューション中
+に存在しません。管理ファイルなので、普通のやりかたでファイルを作成して
+cvs add して commit してもらって、それに加え `CVSROOT/checkoutlist'
+に書き足してください。こうするとリポジトリ内のチェックアウトコピーが常に
+保守されるようになります。
+
+これを行うセッションの実地例をお見せしましょう:
+
+     floss$ emacs checkoutlist
+       ... (add the line for the users file) ...
+     floss$ emacs users
+       ... (add the line for qsmith) ...
+     floss$ cvs add users
+     floss$ cvs ci -m "added users to checkoutlist, qsmith to users"
+     cvs commit: Examining .
+     Checking in checkoutlist;
+     /usr/local/newrepos/CVSROOT/checkoutlist,v  <--  checkoutlist
+     new revision: 1.2; previous revision: 1.1
+     done
+     Checking in users;
+     /usr/local/newrepos/CVSROOT/users,v  <--  users
+     new revision: 1.2; previous revision: 1.1
+     done
+     cvs commit: Rebuilding administrative file database
+     floss$
+
+`CVSROOT/users' にメールアドレスを拡張形式で書くこともできますが、
+空白文字には注意して、全てクオートしてください。例えば、次のは動きますが:
+
+     qsmith:"Quentin Q. Smith <quentinsmith@farawayplace.com>"
+
+または
+
+     qsmith:'Quentin Q. Smith <quentinsmith@farawayplace.com>'
+
+しかし、これは動きません:
+
+     qsmith:"Quentin Q. Smith" <quentinsmith@farawayplace.com>
+
+動くかどうかわからないと思う時は、 notify ファイルに指定するコマンドライ
+ンを手で動かしてテストしてください。下記の `%s' を
+
+     mail %s -s "CVS notification"
+
+users ファイルのコロンのあとに書いたのと同じものに置き換えてください。コ
+マンドプロンプトでやってみて動いたら、users ファイルでも動きます。
+
+これらが終わった時点で checkoutlist ファイルはこのようになっています:
+
+     # The "checkoutlist" file is used to support additional version controlled
+     # administrative files in $CVSROOT/CVSROOT, such as template files.
+     #
+     # The first entry on a line is a filename which will be checked out from
+     # the corresponding RCS file in the $CVSROOT/CVSROOT directory.
+     # The remainder of the line is an error message to use if the file cannot
+     # be checked out.
+     #
+     # File format:
+     #
+     #       [<whitespace>]<filename><whitespace><error message><end-of-line>
+     #
+     # comment lines begin with '#'
+     
+     users   Unable to check out 'users' file in CVSROOT.
+
+users ファイルはこのようになっていると思います:
+
+     qsmith:quentinsmith@farawayplace.com
+
+さて、これでリポジトリの監視用設定はできました。次に開発者が作業コピーで
+しなければならないことを見ていきましょう。
+
+
+File: j-cvsbook.info,  Node: Using Watches In Development,  Next: Ending An Editing Session,  Prev: Enabling Watches In The Repository,  Up: Watches (CVS As Telephone)
+
+Using Watches In Development
+----------------------------
+
+開発者はまず、作業コピーをチェックアウトして、次にプロジェクト中の1ファ
+イルの監視者リストに自分を加えます:
+
+     floss$ whoami
+     jrandom
+     floss$ cvs -q co myproj
+     U myproj/README.txt
+     U myproj/foo.gif
+     U myproj/hello.c
+     U myproj/a-subdir/whatever.c
+     U myproj/a-subdir/subsubdir/fish.c
+     U myproj/b-subdir/random.c
+     floss$ cd myproj
+     floss$ cvs watch add hello.c
+     floss$
+
+最後のコマンド cvs watch add hello.c で、誰かが hello.c で作業しはじめた
+ら jrandom に通知するよう CVS に対し指示します(つまり、 jrandom を
+hello.c の監視リストに加えます)。あるファイルが編集され次第 CVS が通知を
+送るするためには、編集しようとするユーザがそのファイルに対してまず cvs
+edit を実行する必要があります。CVS にとって、編集が始まったことを知る方
+法は他にありません。チェックアウトが済んだら通常 CVS は次のアップデート
+かコミットまで起動されることはありませんから、そのときにはもうそのファイ
+ルは編集されているかもしれません:
+
+     paste$ whoami
+     qsmith
+     paste$ cvs -q co myproj
+     U myproj/README.txt
+     U myproj/foo.gif
+     U myproj/hello.c
+     U myproj/a-subdir/whatever.c
+     U myproj/a-subdir/subsubdir/fish.c
+     U myproj/b-subdir/random.c
+     paste$ cd myproj
+     paste$ cvs edit hello.c
+     paste$ emacs hello.c
+     ...
+
+qsmith が cvs edit hello.c を実行したとき、CVS は hello.c の監視リストを
+見て jrandom がその中にいることを知り、jrandom に対して qsmith
+がそのファ イルを編集しはじめたことをメールを送って知らせます。メールは
+qsmith から 来たようなかたちになります:
+
+     From: qsmith
+     Subject: CVS notification
+     To: jrandom
+     Date: Sat, 17 Jul 1999 22:14:43 -0500
+     
+     myproj hello.c
+     --
+     Triggered edit watch on /usr/local/newrepos/myproj
+     By qsmith
+     
+     加えて、qsmith (またはどの人でも) が hello.c の新しいリビジョンをコミッ
+     トするたびに、jrandom はメールを受けとります:
+     
+     myproj hello.c
+     --
+     Triggered commit watch on /usr/local/newrepos/myproj
+     By qsmith
+
+これらのメールを受けとったら、jrandom は hello.c をアップデートして
+qsmith が何をしたか見てみたいでしょうし、qsmith にそのファイルをいじった
+理由をきくためにメールするでしょう。qsmith は cvs edit を実行するのを忘
+れないように強制はされなかったことに注意してください。おそらく、自分が何
+をしようとするかを jrandom に知ってもらいたかったから実行したのです(どち
+らにしろ、cvs edit するのを忘れていたとしても、コミットすれば通知が起こ
+ります)。cvs edit を使うのは、あるファイルをいじりはじめる前にそのファイ
+ルを監視している人たちにそれを知らせるのが目的です。監視している人たちが、
+コンフリクトが起こるかもしれないと思った場合には連絡できますから、時間を
+無駄にせずに済むでしょう。
+
+あるファイルに対し cvs edit を実行した人は全てそのファイルの監視リストに
+加えて欲しいと思っている(少なくとも一時的に、誰か他の人がそのファイルを
+編集しはじめた場合とかには)、と CVS は仮定します。qsmith が cvs edit を
+実行した場合、彼は hello.c の監視者になります。彼と jrandom は第三者が
+cvs edit を実行した場合(あるいはコミットした場合)、通知を受けとります。
+
+しかし、CVS はそのファイルを編集中の人は編集している間だけ監視者リストに
+居たいだろうと仮定します。そのようなユーザは編集が済んだら監視者リストか
+らはずされます。そのファイルをずっと監視したい場合は cvs watch add を実
+行する必要があります。また、デフォルトでコミット時には編集が終わったと仮
+定します(とりあえず次回までは)。
+
+あるファイルに対し `cvs edit' を走らせただけで監視者リストに入っ
+た人は、"一時監視者(temporary watcher)"と呼ばれ、変更をコミットし次
+第監視者リストからはずされます。そのファイルを再度編集したい場合は、
+`cvs edit' を再実行する必要があります。
+
+変更作業が終わるまで何回コミットする必要があるかということは CVS にはわ
+かりませんので、最初のコミットで編集が終わると仮定する以外に良い方法はあ
+りません。この仮定は"1回限り(one-off)"の変更の場合、つまりファイルの
+1個所だけ直してコミットするなら、うまくいきます。ちょっと長いあいだ編集
+して何度かコミットするような場合は、自分を恒久的に監視リストに加えたほう
+がよいでしょう:
+
+     paste$ cvs watch add hello.c
+     paste$ cvs edit hello.c
+     paste$ emacs hello.c
+     ...
+     paste$ cvs commit -m "print hello in Sanskrit"
+
+watch add したので、qsmith はコミット後も hello.c を監視したままになりま
+す。(ところで、qsmith は自分が編集したことについては通知されません、他の
+人にだけ通知が行きます。CVS はかしこいので、誰かがやったことをその人自身
+宛に通知したりしないのです)
+
+
+File: j-cvsbook.info,  Node: Ending An Editing Session,  Next: Controlling What Actions Are Watched,  Prev: Using Watches In Development,  Up: Watches (CVS As Telephone)
+
+Ending An Editing Session
+-------------------------
+
+コミットしたくないけど編集が終わったことを明示したい場合は、cvs unedit
+を実行しましょう:
+
+     paste$ cvs unedit hello.c
+
+でも、気をつけてください! こうすると、監視している人全員に編集を終えたこ
+とを知らせる以上のことをします。そのファイルに加えたけれどコミットしてい
+ない変更を、取り消すかどうか聞いてきます:
+
+     paste$ cvs unedit hello.c
+     hello.c has been modified; revert changes? y
+     paste$
+
+もし `y' と答えると、CVS は変更を全て取り消したあと、あなたがもはや
+そのファイルを編集中ではないということを監視者に知らせます。`n' と
+答えると、CVS は変更をそのままに置いておき、あなたは編集者として登録され
+たままになります(通知はされません、つまり`cvs unedit'を全く実行
+しなかったのと同じということになります)。キーの1打の違いで変更が全部取り
+消されてしまうのはちょっとこわいような気もしますが、原則は理解しやすいと
+思います: その編集を終える旨世界に宣言するということは、コミットしていな
+い変更を置いておく意味はない、ということです。少なくとも CVS はそのよう
+に理解します。おせっかいかもしれませんが、十分気をつけてくださいね!
+
+
+File: j-cvsbook.info,  Node: Controlling What Actions Are Watched,  Next: Finding Out Who Is Watching What,  Prev: Ending An Editing Session,  Up: Watches (CVS As Telephone)
+
+Controlling What Actions Are Watched
+------------------------------------
+
+デフォルトでは、監視している人には3種類のアクションが通知されます: edit,
+commit, unedit  です。ですが、たとえば commit だけを通知して欲しい場合に
+は -a  フラグ(a は action という意味)で通知のしかたを調整することができ
+ます:
+
+     floss$ cvs watch add -a commit hello.c
+
+あるいは、edit と commit だけを監視したいけれど unedit は気にしないとい
+う場合には -a フラグを2つ渡してください:
+
+     floss$ cvs watch add -a edit -a commit hello.c
+
+-a フラグで監視を追加する場合、いまある監視を削除したりはしません。もし
+既に3種類のアクションを hello.c について監視している場合には、
+
+     floss$ cvs watch add -a commit hello.c
+
+とやっても何の効果もありません、3種類全部を監視したままになります。監視
+を削除したければ、
+
+     floss$ cvs watch remove hello.c
+
+を実行してください。add と同じように、デフォルトでは3つのアクション全て
+の監視を削除します。 -a 引数を渡すと、指定した監視のみを削除します:
+
+     floss$ cvs watch remove -a commit hello.c
+
+これは commit についての通知を受けとるのをやめるが、edit と unedit につ
+いての通知は引き続き受けとる、という意味になります(初めに edit と unedit
+を監視しているとすればそうなるということです)。
+
+-a フラグに渡すアクションで、2つ特殊なものがあります: all と none です。
+前者は監視できるアクション全てを意味し(これを書いている時点では edit,
+commit, unedit です)、後者はどれでもないという意味になります。-a がない
+場合、CVS
+のデフォルト動作では全てのアクションを監視することになりますし、
+どれも監視しないというのは監視者リストから自分を削除するというのに等しい
+ので、これら2つの特殊アクションを使うような状況というのは考えにくいです。
+しかしながら、cvs edit は -a オプションを解釈しますので、この場合にはall
+または none を指定できるのは便利かもしれません。例えば、だれかがあるファ
+イルをとても短い間だけいじっていて、ほかの人がそのファイルで何をしている
+かの通知を受け取りたくないとしましょう。その場合、このコマンドを実行すると
+
+     paste$ whoami
+     qsmith
+     paste$ cvs edit -a none README.txt
+
+README.txt の監視者は qsmith がそのファイルをいじろうとしているという通
+知を受けとりますが、qsmith は自分の編集中 README.txt の一時監視者には加
+えられません(通常は加えられます)。どのアクションも監視したくないと言った
+からです。
+
+cvs watch コマンドでは、自分自身の監視をいじれるだけだということを覚えて
+おいてください。あるファイルについて自分自身が監視するのを止めることはで
+きますが、誰か他の人の監視状況を変えることはできません。
+
+
+File: j-cvsbook.info,  Node: Finding Out Who Is Watching What,  Next: Reminding People To Use Watches,  Prev: Controlling What Actions Are Watched,  Up: Watches (CVS As Telephone)
+
+Finding Out Who Is Watching What
+--------------------------------
+
+cvs edit を実行する前に誰が監視しているか知りたいと思うこともあるでしょ
+う。また、自分を監視リストに加えずに、誰が何を編集しているのか知りたいこ
+ともあるでしょう。あるいは、自分の状況を忘れてしまうこともあるでそう。監
+視を設定/設定解除してファイルをコミットしたあとは、何を監視していて何を
+編集中なのかを見失いがちです。
+
+CVS は誰が監視していて、誰がファイルを編集中なのかを見せてくれるコマンド
+を2つ用意しています。cvs watchers と cvs editors です:
+
+     floss$ whoami
+     jrandom
+     floss$ cvs watch add hello.c
+     floss$ cvs watchers hello.c
+     hello.c jrandom  edit unedit  commit
+     floss$ cvs watch remove -a unedit hello.c
+     floss$ cvs watchers hello.c
+     hello.c jrandom  edit commit
+     floss$ cvs watch add README.txt
+     floss$ cvs watchers
+     README.txt      jrandom edit    unedit  commit
+     hello.c jrandom edit    commit
+     floss$
+
+最後の cvs watchers コマンドはファイルを指定していないことに注意して
+ください。従って、すべてのファイルの監視者を表示します(つまり、監視
+者のいるファイルをすべて、ということです)。
+
+他の CVS コマンドと同様、すべての watch コマンドと edit コマンドはこ
+のように動作します。ファイル名を指定した場合、そのファイルについて動
+作します。ディレクトリ名を指定した場合、そのディレクトリとそのサブディ
+レクトリ内のすべてについて動作します。何も指定しない場合、カレントディ
+レクトリとそれ以下できる限り深いレベルまですべてについて動作します。
+たとえば(同じセッションを続けます):
+
+     floss$ cvs watch add a-subdir/whatever.c
+     floss$ cvs watchers
+     README.txt      jrandom edit    unedit  commit
+     hello.c jrandom edit    commit
+     a-subdir/whatever.c     jrandom edit    unedit  commit
+     floss$ cvs watch add
+     floss$ cvs watchers
+     README.txt      jrandom edit    unedit  commit
+     foo.gif jrandom edit    unedit  commit
+     hello.c jrandom edit    commit  unedit
+     a-subdir/whatever.c     jrandom edit    unedit  commit
+     a-subdir/subsubdir/fish.c       jrandom edit    unedit  commit
+     b-subdir/random.c       jrandom edit    unedit  commit
+     floss$
+
+コマンドの最後2つはそれぞれ、 jrandom をプロジェクト中のすべてのファ
+イルの監視者にし、プロジェクト中の全ファイルの監視者リストを表示して
+います。`cvs watchers' の出力は可変長の情報とタブストップが
+混合しているので、カラムがいつも完璧に整列しているわけではありません。
+しかし、各行は一貫した形式になっています:
+
+     [FILENAME] [whitespace] WATCHER [whitespace] ACTIONS-BEING-WATCHED...
+
+さて、qsmith がファイルをひとつ編集し始めたとして、何が起こるか見て
+みましょう:
+
+     paste$ cvs edit hello.c
+     paste$ cvs watchers
+     README.txt      jrandom edit    unedit  commit
+     foo.gif jrandom edit    unedit  commit
+     hello.c jrandom edit    commit  unedit
+            qsmith  tedit   tunedit tcommit
+     a-subdir/whatever.c     jrandom edit    unedit  commit
+     a-subdir/subsubdir/fish.c       jrandom edit    unedit  commit
+     b-subdir/random.c       jrandom edit    unedit  commit
+
+hello.c にはもう一人監視者が増えました: qsmith です(ファイル名は繰り
+返されませんが、行の冒頭は空白文字になっていることに注意してください。
+このことは watchers の出力を読むプログラムを書くときに重要になるでしょ
+う) hello.c を編集しているので、qsmith はそのファイルを "一時監 視"
+していることになります。ただし彼が hello.c の新しいリビジョンを
+コミットするとそうではなくなってしまいます。各アクションの前にあるプ
+レフィクス `t' は、これらが一時監視であることを示します。 qsmith
+がまた、自分自身を hello.c の正規監視者とした場合
+
+     paste$ cvs watch add hello.c
+     README.txt      jrandom edit    unedit  commit
+     foo.gif jrandom edit    unedit  commit
+     hello.c jrandom edit    commit  unedit
+            qsmith  tedit   tunedit tcommit edit    unedit  commit
+     a-subdir/whatever.c     jrandom edit    unedit  commit
+     a-subdir/subsubdir/fish.c       jrandom edit    unedit  commit
+     b-subdir/random.c       jrandom edit    unedit  commit
+
+彼は、一時監視者かつ常時監視者であると表示されます。常時監視状態は一
+時監視をオーバライドして次のようになると思ったかもしれませんが:
+
+             qsmith  edit    unedit  commit
+
+しかし、どんな順序で起こるかわからないので CVS は一時監視を置き換え
+ることはできません。qsmith が編集を終わる前に常時監視をやめたとした ら?
+あるいは監視したままで編集を終えたとしたら? 前者の場合、tedit/
+tunedit/tcommit アクションを残したままedit/unedit/commit アクション
+は削除されます。後者の場合、逆になります。
+
+とにかく、通常は監視者リスト側のことはあまり気にすることはありません。
+たいていはプロジェクトのトップレベルで
+
+     floss$ cvs watchers
+
+か
+
+     floss$ cvs editors
+
+を実行し、誰が何をしているか見ればよいのです。誰がどのアクションに注
+意しているか、詳細を知る必要はありません、重要なのは人とファイルです。
+
+
+File: j-cvsbook.info,  Node: Reminding People To Use Watches,  Next: What Watches Look Like In The Repository,  Prev: Finding Out Who Is Watching What,  Up: Watches (CVS As Telephone)
+
+Reminding People To Use Watches
+-------------------------------
+
+監視機構は開発者全員の協力に全面的に依存しているということに、既にお
+気づきだと思います。誰かが cvs edit をし忘れてファイルを編集し始めた
+場合、変更がコミットされるまで、誰もそのことを知らないということになっ
+てしまいます。cvs edit というのは通常の開発のサイクルに入っておらず、
+余分に手数のかかるものですから、忘れやすいと言えるでしょう。
+
+CVS は cvs edit を使うよう強制はできませんが、そうするのを忘れないよ
+うな機構を持っています。それは、watch on コマンドです:
+
+     floss$ cvs -q co myproj
+     U myproj/README.txt
+     U myproj/foo.gif
+     U myproj/hello.c
+     U myproj/a-subdir/whatever.c
+     U myproj/a-subdir/subsubdir/fish.c
+     U myproj/b-subdir/random.c
+     floss$ cd myproj
+     floss$ cvs watch on hello.c
+     floss$
+
+jrandom が cvs watch on hello.c を実行すると、これ以降の myproj のチェッ
+クアウトにおいて、作業コピー中の hello.c は読み出し専用で作成される
+ようになります。qsmith がそれをいじろうとすると、hello.c は読み出し
+専用であることに気づき、まず cvs edit を実行することを思い出します:
+
+     paste$ cvs -q co myproj
+     U myproj/README.txt
+     U myproj/foo.gif
+     U myproj/hello.c
+     U myproj/a-subdir/whatever.c
+     U myproj/a-subdir/subsubdir/fish.c
+     U myproj/b-subdir/random.c
+     paste$ cd myproj
+     paste$ ls -l
+     total 6
+     drwxr-xr-x   2 qsmith    users        1024 Jul 19 01:06 CVS/
+     -rw-r--r--   1 qsmith    users          38 Jul 12 11:28 README.txt
+     drwxr-xr-x   4 qsmith    users        1024 Jul 19 01:06 a-subdir/
+     drwxr-xr-x   3 qsmith    users        1024 Jul 19 01:06 b-subdir/
+     -rw-r--r--   1 qsmith    users         673 Jun 20 22:47 foo.gif
+     -r--r--r--   1 qsmith    users         188 Jul 18 01:20 hello.c
+     paste$
+
+こうすると、ファイルは読み書きできるようになります。編集してコミット
+すると、また読み出し専用になります:
+
+     paste$ cvs edit hello.c
+     paste$ ls -l hello.c
+     -rw-r--r--   1 qsmith    users         188 Jul 18 01:20 hello.c
+     paste$ emacs hello.c
+       ...
+     paste$ cvs commit -m "say hello in Aramaic" hello.c
+     Checking in hello.c;
+     /usr/local/newrepos/myproj/hello.c,v  <--  hello.c
+     new revision: 1.12; previous revision: 1.11
+     done
+     paste$ ls -l hello.c
+     -r--r--r--   1 qsmith    users         210 Jul 19 01:12 hello.c
+     paste$
+
+彼の edit と commit は hello.c の監視者全員に通知されます。jrandom
+は監視者でなくてもかまわないことに注意してください。cvs watch on
+hello.c を実行しても、jrandom はそのファイルの監視者リストの一員になっ
+たりはしないのです。ただ読み出し専用でチェックアウトされるように指定
+しただけになります。ファイルを監視したい人は自分を監視者リストに加え
+るのを忘れないようにする必要があります。CVS はその面倒は見ません。
+
+ファイルひとつについて watch on するのは例外的な状況です。一般にはプ
+ロジェクト全体を watch on するのが普通です:
+
+     floss$ cvs -q co myproj
+     U myproj/README.txt
+     U myproj/foo.gif
+     U myproj/hello.c
+     U myproj/a-subdir/whatever.c
+     U myproj/a-subdir/subsubdir/fish.c
+     U myproj/b-subdir/random.c
+     floss$ cd myproj
+     floss$ cvs watch on
+     floss$
+
+このアクションはプロジェクト全体についてのポリシーをアナウンスするの
+に等しいです: 「ファイルをいじるときは cvs edit を使って監視してる人
+に知らせてね。興味があったり、担当のファイルは自由に監視してください」
+プロジェクト中の全ファイルは読み出し専用でチェックアウトされますので、
+何かいじろうとすると cvs edit をしなければならないのを思い出すことで
+しょう。
+
+おもしろいことに、監視されているファイルをチェックアウトすると読み出
+し専用になるのに、アップデートではそうはなりません。jrandom が cvs
+watch on する前に既に qsmith が作業コピーをチェックアウトしていたと
+すると、qsmith のファイルはアップデートしても読み書きできるままにな
+ります。しかし、jrandom が watch on した後でコミットしたファイルは読
+み出し専用になります。jrandom が watch off しても、
+
+     floss$ cvs watch off
+
+qsmith の読み出し専用ファイルは自動的に読み書きできるようになったり
+はしません。一方、コミット後に読み出し専用には戻らなくなります(watch on
+のままだと読み出し専用に戻ります)。qsmith がひねくれていて、 `cvs edit'
+を全く避けて `chmod' コマンドで作業コピー中
+のファイルを書込み可にしたとします
+
+     paste$ chmod u+w hello.c
+
+またはこのように全部一挙に
+
+     paste$ chmod -R u+w .
+
+したとします。
+
+こういう風なことをされると CVS には手も足も出ません。もともと作業コ
+ピーというのはプライベートなサンドボックスなのです。監視機構は the
+watch features can open them up to public scrutiny a little bit, but
+only as far as the developer permits.  Only when a developer does
+something that affects the repository (such as commits) is her privacy
+unconditionally lost.
+
+watch add, watch remove, watch on, watch off の関係はちょっとわかり
+にくいかもしれません。全体の規則をまとめるとこうなります:
+
+`add' と `remove' はそのファイルの監視者リストにユーザを追
+加したり、削除したりするもので、チェックアウト時やチェックアウト後に
+ファイルを読み出し専用にしたりはしません。`on' と `off' は
+ファイルのパーミッションについてのものです。ファイルの監視者リストに
+居るユーザをどうこうしたりはしません。開発者に監視ポリシーを思い出し
+てもらうために作業コピー中のファイルを読み出し専用にするだけです。
+
+ちょっと一貫していないように見えるかもしれません。監視機構を使うとい
+うのは、ある意味で CVS の本質に反しています。複数の開発者が自分の作
+業コピー内で自由に編集し、そのことはコミットするまでお互いから見えな
+い、という理想世界からそれることになります。監視機構は開発者が自分の
+作業コピーで何をしているかお互いに知らせるために CVS が提供している
+便利な方法なのです。しかし監視ポリシーを強制する方法はありませんし、
+編集セッションがどのように構成されるかについて絶対的なコンセプトがあ
+るわけでもありません。まあそれでも監視機構が役に立つような状況もある
+のです。
+
+
+File: j-cvsbook.info,  Node: What Watches Look Like In The Repository,  Prev: Reminding People To Use Watches,  Up: Watches (CVS As Telephone)
+
+What Watches Look Like In The Repository
+----------------------------------------
+
+ブラックボックスと要らぬ神秘を打ち消すため、リポジトリ中で監視機構が
+どう実装されているかちょっと覗いてみることにしましょう。でも pretty
+ではないので、ほんとにちょっと覗くだけですよ。
+
+監視するよう設定すると
+
+     floss$ pwd
+     /home/jrandom/myproj
+     floss$ cvs watch add hello.c
+     floss$ cvs watchers
+     hello.c jrandom edit    unedit  commit
+     floss$
+
+CVS は適切なリポジトリのサブディレクトリ中のある特殊なファイル
+`CVS/fileattr' にそれを記録します:
+
+     floss$ cd /usr/local/newrepos
+     floss$ ls
+     CVSROOT/   myproj/
+     floss$ cd myproj
+     floss$ ls
+     CVS/          a-subdir/     foo.gif,v
+     README.txt,v  b-subdir/     hello.c,v
+     floss$ cd CVS
+     floss$ ls
+     fileattr
+     floss$ cat fileattr
+     Fhello.c        _watchers=jrandom>edit+unedit+commit
+     floss$
+
+リポジトリに中の CVS サブディレクトリに fileattr が保存されるからと
+いって、リポジトリが作業コピーになったわけではありません。単に、 `CVS'
+という名前が既に作業コピー中で図書管理用に予約されているの
+で、リポジトリ中にその名前のサブディレクトリを作るようなプロジェクト
+は存在しないというのを確信できるから、という理由によります。
+
+`fileattr' の形式をきちんと説明したりはしません。コマンドごとに
+そのファイルが変わるのを見るだけで理解できると思います。
+
+     floss$ cvs watch add hello.c
+     floss$ cat /usr/local/newrepos/myproj/CVS/fileattr
+     Fhello.c        _watchers=jrandom>edit+unedit+commit
+     floss$ cvs watch add README.txt
+     floss$ cat /usr/local/newrepos/myproj/CVS/fileattr
+     Fhello.c        _watchers=jrandom>edit+unedit+commit
+     FREADME.txt     _watchers=jrandom>edit+unedit+commit
+     floss$ cvs watch on hello.c
+     floss$ cat /usr/local/newrepos/myproj/CVS/fileattr
+     Fhello.c        _watchers=jrandom>edit+unedit+commit;_watched=
+     FREADME.txt     _watchers=jrandom>edit+unedit+commit
+     floss$ cvs watch remove hello.c
+     floss$ cat /usr/local/newrepos/myproj/CVS/fileattr
+     Fhello.c        _watched=
+     FREADME.txt     _watchers=jrandom>edit+unedit+commit
+     floss$ cvs watch off hello.c
+     floss$ cat /usr/local/newrepos/myproj/CVS/fileattr
+     FREADME.txt     _watchers=jrandom>edit+unedit+commit
+     floss$
+
+fileattr 中のレコードを編集してみたりしましょう。qsmith が自分自身を
+編集者として登録したときに起こることを見てみます:
+
+     paste$ cvs edit hello.c
+     
+     floss$ cat /usr/local/newrepos/myproj/CVS/fileattr
+     Fhello.c        _watched=;_editors=qsmith>Tue Jul 20 04:53:23 1999 GMT+floss\
+     +/home/qsmith/myproj;_watchers=qsmith>tedit+tunedit+tcommit
+     FREADME.txt     _watchers=jrandom>edit+unedit+commit
+
+そのディレクトリのファイル全部に監視者も編集者もいなくなると、CVS は
+fileattr ファイルも CVS サブディレクトリも削除してしまうことに注
+意して下さい:
+
+     paste$ cvs unedit
+     
+     floss$ cvs watch off
+     floss$ cvs watch remove
+     floss$ cat /usr/local/newrepos/myproj/CVS/fileattr
+     cat: /usr/local/newrepos/myproj/CVS/fileattr: No such file or directory
+     floss$
+
+こうやってちょっと見てみるとおわかりの通り、fileattr のフォーマット
+の解釈の詳細は CVS に任せておいたほうがよいです。
+
+そのフォーマットについて理解するのは、舞台裏でなにが起こっているのか
+知って満足するというのを置いておくとすると、CVS の監視機構の拡張を書
+くとか、そのへんをデバッグするとかが主な理由だと思います。普通はリポ
+ジトリの中に CVS/ サブディレクトリができたからといってびっくりしない
+程度で十分です。CVS/ サブディレクトリは CVS にとって、監視者リストの
+ようなメタ情報を安全に保存しておける唯一の場所なのです。
+
+
+File: j-cvsbook.info,  Node: Log Messages And Commit Emails,  Next: Changing A Log Message After Commit,  Prev: Watches (CVS As Telephone),  Up: Advanced CVS
+
+Log Messages And Commit Emails
+==============================
+
+コミットメールとはコミット時に送信される通知で、ログメッセージやその
+コミットに含まれるファイル情報などを示します。通常はプロジェクトの参
+加者全員に送信されます。そのプロジェクトに興味のある他の人々に送られ
+ることもあります。コミットメールの設定方法の詳細は *Note Repository
+Administration:: で説明しましたのでここでは繰り返しません。
+
+take into account 考慮に入れる
+
+I have noticed, however, that commit emails can sometimes result in
+unexpected side effects to projects, effects that you may want to take
+into account if you set up commit emails for your project.
+
+まず、メッセージは大概無視されることを覚悟して下さい。読まれるかどう
+かは、少なくとも部分的には、そのプロジェクトにおいてどのくらいの頻度
+でコミットが行われるかによります。開発者は一日の終わりに1回だけ大き
+な変更をコミットするのでしょうか、それとも一日を通して小さな変更をた
+くさんコミットするのでしょうか? プロジェクトが後者に近いようなら、一
+日中さみだれのようにやってくる小さな通知に対して開発者は壁を作ってし
+まうでしょうし、各メッセージに対して払う注意も小さくなるでしょう。
+
+これは別に通知が役に立たないという意味ではないです、ただみんながメッ
+セージを全部読んでいるはずだなんて思っちゃいけないというだけのことで
+す。皆に誰が何をしているかを見張ってもらう方法(監視リストに追加する
+以外で)としては依然便利なものです。誰でも購読できるメーリングリスト
+を送信先にすると、興味のあるユーザ(と未来の開発者)に、日常的にコード
+に何が起こっているかを知る機会を与える素晴らしい機構になります。
+
+すべてのログメッセージを見ていて、プロジェクト全体の活動について概要
+を知っている開発者がいるんだ、と考えたいだろうと思います(もちろん良
+きプロジェクトリーダというものは何らかの手段でこういうことをしている
+のだろうと思います)。明確な分担区分がある場合、つまり、ある開発者が
+プロジェクト中のあるサブディレクトリの係りである、ということなんです
+が、その場合は CVSROOT/loginfo をちょっといじって、分担領域で変更が
+行われたら、係の部隊が特別に印をつけた変更通知を受け取るようにもでき
+ます。これは、開発者が少なくとも自分のサブディレクトリに関係あるメー
+ルは読むよう保証するのに役に立つでしょう。
+
+コミットメールが無視されない場合、おもしろい副作用が起こります。リア
+ルタイムのコミュニケーションの手段として使われ始めるのです。そうなっ
+た場合のログメッセージの例をお見せしましょう:
+
+     Finished feedback form; fixed the fonts and background colors on the
+     home page.  Whew!  Anyone want to go to Mon Lung for lunch?
+
+別に何も悪いことはないですし、あとでログメッセージを読むと楽しいでしょ
+うね。でも、以下の例のようなログメッセージには注意しなければなりません。
+ログメッセージは電子メールで配られるだけのものではなく、プロジェクト
+の履歴として永久に保存されるものなのです。顧客の仕様についてのグチを
+言ったりするのは、プログラマの間で気晴らしによく行われることです。他
+のプログラマがメールですぐ見るとわかっている場合、こんなログメッセー
+ジをコミットしてしまうのは想像に難くないでしょう:
+
+     Truncate four-digit years to two-digits in input.  What the customer
+     wants, the customer gets, no matter how silly & wrong.  Sigh.
+     (訳: 入力時の4桁の年を2桁に縮める。お客様は御所望のものを手に入れる、
+     どんなにバカみたいだろうが間違ってようが気にしない。はー。)
+
+これはおもしろいメールにはなりますが、しかし顧客が後日このログをレビュー
+したらどうなりますか? (これと同じような問題のために、1つ以上のサイト
+で、ログメッセージに不快な単語が入らないようガードするスクリプトが起
+動するように CVSROOT/loginfo が設定されているのに賭けますよ!)
+
+コミットメールの一般的な効果は、短く不明瞭なログメッセージを書きにく
+くなるということです。良いことだと思います。しかし、聴衆はコミットメー
+ルを受け取る人だけではなく、ログを読むかもしれない人全員である、とい
+うことに留意する必要があります。
+
+
+File: j-cvsbook.info,  Node: Changing A Log Message After Commit,  Next: Getting Rid Of A Working Copy,  Prev: Log Messages And Commit Emails,  Up: Advanced CVS
+
+Changing A Log Message After Commit
+===================================
+
+後悔するようなログメッセージをコミットしてしまった場合には、CVS では
+コミットしたあとでそのログを書き直すことができます。これは admin コ
+マンドの -m オプションででき(このコマンドについてはこの章のもう少し
+後で説明します)、一度に1つのログメッセージ(リビジョン毎、ファイル毎)
+を変更できます。どのように動くか見てみましょう:
+
+     floss$ cvs admin -m 1.7:"Truncate four-digit years to two in input." date.c
+     RCS file: /usr/local/newrepos/someproj/date.c,v
+     done
+     floss$
+
+リビジョン1.7とともにコミットされた元の無礼なログメッセージは、完璧
+に無垢なメッセージ(退屈にはなりましたが)に置き換えられました。(リビ
+ジョン番号と新しいログメッセージの間のコロンを忘れないようにして下さ
+い。)
+
+複数のファイルに良くないメッセージがコミットされてしまった場合、1つ
+ずつ cvs admin を実行しなければなりません。各ファイルでリビジョン番
+号が違うからです。ですから、これは CVS では数少ない、引数にファイル
+名を1つだけ渡すコマンドなのです:
+
+     floss$ cvs admin -m 1.2:"very boring log message" hello.c README.txt foo.gif
+     cvs admin: while processing more than one file:
+     cvs [admin aborted]: attempt to specify a numeric revision
+     floss$
+
+まぎらわしいことに、ファイル名を渡さなかった場合にも同じエラーになり
+ます(なぜならそのような場合にはカレントディレクトリ及びそれ以下にあ
+るすべてのファイルを指定したことになるからです):
+
+     floss$ cvs admin -m 1.2:"very boring log message"
+     cvs admin: while processing more than one file:
+     cvs [admin aborted]: attempt to specify a numeric revision
+     floss$
+
+(このように不幸にも CVS のエラーメッセージが出てしまった場合には、 CVS
+の視点に立ってそのメッセージの意味を読み取らねばなりません。)
+
+`admin -m' を実行すると、そのプロジェクトの履歴を変えてしま
+うことになるので注意して使って下さい。ログメッセージが変更されたとい
+う記録は残りません。ただ、そのリビジョンは最初からその新しいメッセー
+ジでコミットされたかのように見えるのです。古いログメッセージの痕跡は
+どこにも残されません(元のコミットメールをセーブしているのでなければ)。
+
+名前からするとこのコマンドは指定された CVS の管理者にしか使えないよ
+うに見えますが、実際は、そのプロジェクトの書込み権限さえあれば誰でも
+`cvs admin' を実行することができます。それでもやはり注意し
+て使うのが一番良いでしょう。プロジェクトの履歴を変えられるというのは
+他の有害なものに匹敵するようなことができてしまいます。 `admin'
+については *Note CVS Reference:: に詳しいです。使用を制限
+する方法も書いてあります。
+
+
+File: j-cvsbook.info,  Node: Getting Rid Of A Working Copy,  Next: History -- A Summary Of Repository Activity,  Prev: Changing A Log Message After Commit,  Up: Advanced CVS
+
+Getting Rid Of A Working Copy
+=============================
+
+CVS の典型的な使い方では、作業コピーのディレクトリを削除するには、他
+のディレクトリツリーと同じように削除します:
+
+     paste$ rm -rf myproj
+
+しかしこの方法で作業コピーを削除すると、その作業コピーを使い終わった
+ことが他の開発者にわかりません。CVS は明示的に作業コピーを放棄するコ
+マンドを用意しています。リリース(release)はチェックアウトの反対だと
+思って下さい。その作業コピーでの作業が終わったことをリポジトリに知ら
+せます。チェックアウトと同様、リリースはツリーの親ディレクトリで起動
+します:
+
+     paste$ pwd
+     /home/qsmith/myproj
+     paste$ cd ..
+     paste$ ls
+     myproj
+     paste$ cvs release myproj
+     You have [0] altered files in this repository.
+     Are you sure you want to release directory 'myproj': y
+     paste$
+
+リポジトリ中に未コミットの変更があった場合リリースは失敗し、変更のあ
+るファイルの一覧を出力する以外何もしません。そのディレクトリツリーが
+クリーン(すべて最新)だとするとリリースコマンドはその作業コピーがリリー
+スされたという記録をリポジトリ中に残します。
+
+リリースコマンドに作業コピーのツリーを自動的に削除させることもできま
+す。-d フラグを渡して下さい:
+
+     paste$ ls
+     myproj
+     paste$ cvs release -d myproj
+     You have [0] altered files in this repository.
+     Are you sure you want to release (and delete) directory 'myproj: y
+     paste$ ls
+     paste$
+
+CVS バージョン 1.10.6 現在、リリースコマンドは作業コピーを調べてリポ
+ジトリの場所を推定することができません(このコマンドが作業コピーの中
+ではなくその上で実行されるものだからです)。`-d <REPOS>' グ
+ローバルオプションを渡すか、 CVSROOT 環境変数が正しく設定されている
+ことを確認するかして下さい。(このバグは将来のバージョンの CVS では解
+決されているでしょう)
+
+Cederqvist では、作業コピーを削除する代わりにリリースを使った場合、
+リリースされたファイルに監視設定をしている人々には `unedit' を
+したかのような通知が行く、と書いてあります。しかしながら筆者が試しに
+やってみたところ、そうはならないようでした。
+
+
+File: j-cvsbook.info,  Node: History -- A Summary Of Repository Activity,  Next: Annotations -- A Detailed View Of Project Activity,  Prev: Getting Rid Of A Working Copy,  Up: Advanced CVS
+
+History - A Summary Of Repository Activity
+==========================================
+
+*Note Repository Administration:: で、cvs history コマンドについて少し
+述べました。このコマンドはそのリポジトリで行われた全ての checkout,
+commit, update, rtag, release の概略を表示します(少なくとも
+CVSROOT/history ファイルが作成されてログの記録が始まって以降のものは)。
+この概略の形式と内容は、いろいろなオプションによって変えることができ
+ます。
+
+まずはリポジトリ中でログが記録できるようになっていることを確認します。
+リポジトリ管理者は最初に history ファイルが存在することを確かめなく
+てはなりません:
+
+     floss$ cd /usr/local/newrepos/CVSROOT
+     floss$ ls -l history
+     ls: history: No such file or directory
+     floss$
+
+ない場合には次のように作成して下さい:
+
+     floss$ touch history
+     floss$ ls -l history
+     -rw-r--r--   1 jrandom   cvs           0 Jul 22 14:57 history
+     floss$
+
+この history ファイルはリポジトリを使用する人全員が書き込めるように
+なっていなければなりません。そうしないとそのファイルを変更する CVS
+コマンドを実行するたびにエラーが起きるようになってしまいます。ワール
+ドライタブルにするのが一番簡単でしょう:
+
+     floss$ chmod a+rw history
+     floss$ ls -l history
+     -rw-rw-rw-   1 jrandom   cvs           0 Jul 22 14:57 history
+     floss$
+
+リポジトリが `cvs init' により作成されたのであれば history
+ファイルは既に存在しているはずですが、パーミッションの問題は解決する
+必要があるかもしれません。
+
+以降の例では、しばらくの間 hisotry ログ記録がされていたと仮定します。
+history ファイルにデータが蓄積されるだけの時間がたっています。(?)
+
+cvs history の出力は少々ぶっきらぼうです(これは多分、人間が読むため
+というよりはプログラムが解釈するためにこうなっているのでしょうけれど、
+ちょっと勉強すれば読めます)。とりあえず走らせてみて出力を見てみましょ
+う:
+
+     paste$ pwd
+     /home/qsmith/myproj
+     paste$ cvs history -e -a
+     O 07/25 15:14 +0000 qsmith  myproj =mp=     ~/*
+     M 07/25 15:16 +0000 qsmith  1.14 hello.c    myproj == ~/mp
+     U 07/25 15:21 +0000 qsmith  1.14 README.txt myproj == ~/mp
+     G 07/25 15:21 +0000 qsmith  1.15 hello.c    myproj == ~/mp
+     A 07/25 15:22 +0000 qsmith  1.1  goodbye.c  myproj == ~/mp
+     M 07/25 15:23 +0000 qsmith  1.16 hello.c    myproj == ~/mp
+     M 07/25 15:26 +0000 qsmith  1.17 hello.c    myproj == ~/mp
+     U 07/25 15:29 +0000 qsmith  1.2  goodbye.c  myproj == ~/mp
+     G 07/25 15:29 +0000 qsmith  1.18 hello.c    myproj == ~/mp
+     M 07/25 15:30 +0000 qsmith  1.19 hello.c    myproj == ~/mp
+     O 07/23 03:45 +0000 jrandom myproj =myproj= ~/src/*
+     F 07/23 03:48 +0000 jrandom        =myproj= ~/src/*
+     F 07/23 04:06 +0000 jrandom        =myproj= ~/src/*
+     M 07/25 15:12 +0000 jrandom 1.13 README.txt myproj == ~/src/myproj
+     U 07/25 15:17 +0000 jrandom 1.14 hello.c    myproj == ~/src/myproj
+     M 07/25 15:18 +0000 jrandom 1.14 README.txt myproj == ~/src/myproj
+     M 07/25 15:18 +0000 jrandom 1.15 hello.c    myproj == ~/src/myproj
+     U 07/25 15:23 +0000 jrandom 1.1  goodbye.c  myproj == ~/src/myproj
+     U 07/25 15:23 +0000 jrandom 1.16 hello.c    myproj == ~/src/myproj
+     U 07/25 15:26 +0000 jrandom 1.1  goodbye.c  myproj == ~/src/myproj
+     G 07/25 15:26 +0000 jrandom 1.17 hello.c    myproj == ~/src/myproj
+     M 07/25 15:27 +0000 jrandom 1.18 hello.c    myproj == ~/src/myproj
+     C 07/25 15:30 +0000 jrandom 1.19 hello.c    myproj == ~/src/myproj
+     M 07/25 15:31 +0000 jrandom 1.20 hello.c    myproj == ~/src/myproj
+     M 07/25 16:29 +0000 jrandom 1.3  whatever.c myproj/a-subdir == ~/src/myproj
+     paste$
+
+There, isn't that clear?
+
+出力を調べる前に、起動時のオプション(-e と -a)に注意して下さい。
+history を実行するときには大抵、どのデータをどのように表示するか指定
+するオプションをつけると思います。この点においてこのコマンドは他の CVS
+のコマンドとは違います。他のコマンドは普通、オプション無しでも役
+に立ちます。この例の2つのフラグはそれぞれ、everything (起こったイベン
+トの全種類を表示) と all (全てのユーザについて) という意味です。
+
+history コマンドが他のコマンドと違う点は他にもあって、普通このコマン
+ドは作業コピー内で実行しますが、コマンド出力はその作業コピーのプロジェ
+クトの情報に限定されません。リポジトリ内の全てのプロジェクトの全ての
+イベント履歴を表示します。作業コピーは履歴データをどのリポジトリから
+取ってくればよいかを CVS に指定するために使われるだけです。(上の例で
+はリポジトリの履歴データは `myproj' プロジェクトのものしかない
+ので、これで全てなのです)
+
+出力の形式は通常このようです:
+
+     CODE DATE USER [REVISION] [FILE] PATH_IN_REPOSITORY ACTUAL_WORKING_COPY_NAME
+
+コード文字は CVS のさまざまなオペレーションを指します Table 6.1 を参
+照してください。
+
+オペレーション(チェックアウトのような)は各ファイルではなくプロジェク
+ト全体についてのもので、リビジョンやファイル名は省略されています。イ
+コール記号の間にリポジトリ内パスが書いてあります。
+
+history コマンドの出力はコンパクトなように、他のプログラムが解釈し易
+いようにデザインされていますが、CVS still gives you a lot of control
+over its scope and content. Table 6.2 にあるオプションで、どんなタイ
+プのイベントを報告して欲しいかコントロールします。
+
+     Table 6.1  コード文字の意味
+     
+     Letter	        Meaning
+     ======          =========================================================
+     O		チェックアウト
+     T		タグ
+     F		リリース
+     W		アップデート(ユーザファイルがない、エントリファイルから削除)
+     U		アップデート(変更されていないユーザファイルを上書き)
+     G		アップデート(変更されたユーザファイルにマージ、成功)
+     C		アップデート(変更されたユーザファイルにマージ、コンフリクト)
+     M		コミット(ファイル変更)
+     A		コミット(ファイル追加)
+     R		コミット(ファイル削除)
+     E		エクスポート
+
+     Table 6.2  イベントタイプでフィルタリングするオプション
+     
+     Option	        Meaning
+     ==========      =========================================================
+     -m MODULE	MODULE に起こった履歴イベントを表示
+     -c		コミットイベントを表示
+     -o		チェックアウトイベントを表示
+     -T		タグイベントを表示
+     -x CODE(S)	CODE タイプのイベントを全て表示(OTFWUGCMARE から1つ以上)
+     -e		全タイプのイベント表示。以上。レポートして欲しいイベン
+     		トのタイプを選択したあと、Table 6.3 に示したオプション
+     		でさらにフィルタリングすることもできます。
+
+     Table 6.3  ユーザでフィルタリングするオプション
+     
+     Option	        Meaning
+     ==========      =========================================================
+     -a		全ユーザのアクションを表示
+     -w		この作業コピー内のアクションのみ表示
+     -l		ユーザが取ったそのアクションの最後の日付を表示
+     -u USER 	USER の記録を表示
+

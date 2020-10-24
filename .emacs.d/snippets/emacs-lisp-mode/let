@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+#contributor: myuhe
+#name: let
+#key: let
+# --
+(let ((${1:ARG}))
+ $0
+)

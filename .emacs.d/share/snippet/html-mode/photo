@@ -1,0 +1,4 @@
+# -*- mode: snippet -*-
+# name: photo
+# --
+<a href="$1"><img src="$2" alt="$3" /></a>

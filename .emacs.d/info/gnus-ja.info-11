@@ -1,0 +1,1822 @@
+Info file: gnus-ja.info,    -*-Text-*-
+produced by `texinfo-format-buffer'
+from file `gnus-ja.texi'
+using `texinfmt.el' version 2.42 of  7 Jul 2006.
+
+Copyright (C) 1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003,
+2004, 2005, 2006, 2007 Free Software Foundation, Inc.
+
+     Permission is granted to copy, distribute and/or modify this
+     document under the terms of the GNU Free Documentation License,
+     Version 1.2 or any later version published by the Free Software
+     Foundation; with no Invariant Sections, with the Front-Cover
+     texts being "A GNU Manual", and with the Back-Cover Texts as in
+     (a) below.  A copy of the license is included in the section
+     entitled "GNU Free Documentation License" in the Emacs manual.
+
+     この文書を、フリーソフトウェア財団発行の GNU フリー文書利用許諾契
+     約書第 1.2 版またはそれ以降の版が定める条件の下で複製、配布、ある
+     いは変更することを許可します。変更不可部分は指定しません。“A GNU
+     Manual”は表表紙テキスト、以下の (a) は裏表紙テキストです。この利
+     用許諾契約書の複写は“Emacs manual”の「GNU フリー文書利用許諾契約
+     書」という章に含まれています。
+
+     (a) The FSF's Back-Cover Text is: "You have freedom to copy and
+     modify this GNU Manual, like GNU software.  Copies published by
+     the Free Software Foundation raise funds for GNU development."
+
+     (a) FSF の裏表紙テキスト:「あなたにはこの GNU Manual を GNU ソフト
+     ウェアのように複製したり変更する自由があります。複製はフリーソフト
+     ウェア財団によって出版されました。(フリーソフトウェア財団は) GNU
+     の開発のために必要な資金を集めています。」
+
+     This document is part of a collection distributed under the GNU
+     Free Documentation License.  If you want to distribute this
+     document separately from the collection, you can do so by adding
+     a copy of the license to the document, as described in section 6
+     of the license.
+
+     この文書は「GNU フリー文書利用許諾契約書」に基づいて配布された収集
+     著作物の一部です。もしあなたがこの文書を収集著作物から分離して配布
+     したいときは、契約書の第 6 章に記述されているように、文書に契約書
+     の複写を付加することによって、行なうことができます。
+
+
+
+INFO-DIR-SECTION Emacs
+START-INFO-DIR-ENTRY
+* Gnus-ja: (gnus-ja).           The newsreader Gnus (Japanese).
+END-INFO-DIR-ENTRY
+
+
+
+
+
+File: gnus-ja.info, Node: Highlighting and Menus, Next: Buttons, Prev: Mode Lines, Up: Various
+
+ハイライトとメニュー
+====================
+
+変数 `gnus-visual' は Gnus を素敵にするたいていの方面の操作をします。
+`nil' であると、Gnus はメニューを作ったり、素敵な色やフォントを使ったり
+しようとしません。これはさらに `gnus-vis.el' ファイルを読み込むことも禁
+止します。
+
+この変数は有効にされている視覚的なプロパティーのリストであることができ
+ます。以下の要素は有効で、ディフォルトですべて含まれています:
+
+`group-highlight'
+     グループバッファーでハイライト (強調表示) をします。
+`summary-highlight'
+     概略バッファーでハイライトをします。
+`article-highlight'
+     記事バッファーでハイライトをします。
+`highlight'
+     すべてのバッファーでハイライトをするようにします。
+`group-menu'
+     グループバッファーでメニューを作成します。
+`summary-menu'
+     概略バッファーでメニューを作成します。
+`article-menu'
+     記事バッファーでメニューを作成します。
+`browse-menu'
+     ブラウズバッファーでメニューを作成します。
+`server-menu'
+     サーバーバッファーでメニューを作成します。
+`score-menu'
+     スコアバッファーでメニューを作成します。
+`menu'
+     すべてのバッファーでメニューを作成します。
+
+ですから、記事バッファーだけをハイライトしたくて、すべてのバッファーで
+メニューを作りたい場合は、このようにすることができます:
+
+     (setq gnus-visual '(article-highlight menu))
+
+もしハイライトだけで、メニューの類は欲しくないときは、次のようにできま
+す:
+
+     (setq gnus-visual '(highlight))
+
+`gnus-visual' が `t' であると、ハイライトとメニューはすべての Gnus のバッ
+ファーで使用されます。
+
+他のすべてのバッファーの外見に影響する総合的な変数は:
+
+`gnus-mouse-face'
+     これは Gnus でマウスのハイライトに使われるフェース (すなわちフォン
+     ト) です。`gnus-visual' が `nil' であると、マウスハイライトはなさ
+     れません。
+
+まったく違ったメニューを作成するために、関連するフックがあります:
+
+`gnus-article-menu-hook'
+     記事モード (article mode) のメニューを作成した後に呼ばれるフックで
+     す。
+
+`gnus-group-menu-hook'
+     グループモード (group mode) のメニューを作成した後に呼ばれるフック
+     です。
+
+`gnus-summary-menu-hook'
+     概略モード (summary mode) のメニューを作成した後に呼ばれるフックで
+     す。
+
+`gnus-server-menu-hook'
+     サーバーモード (server mode) のメニューを作成した後に呼ばれるフッ
+     クです。
+
+`gnus-browse-menu-hook'
+     概観モード (browse mode) のメニューを作成した後に呼ばれるフックで
+     す。
+
+`gnus-score-menu-hook'
+     スコアモード (score mode) のメニューを作成した後に呼ばれるフックで
+     す。
+
+
+
+File: gnus-ja.info, Node: Buttons, Next: Daemons, Prev: Highlighting and Menus, Up: Various
+
+ボタン
+======
+
+最新流行のマウス "mouse" 装置が、近ごろではちゃんとした操作法を学びたが
+らない若者やかっこいいこどもたちの間で大人気です。それでは私が Tops 20
+システム上で Emacs を使っていた頃の、'89 年の夏を思い起こしてみましょう。
+300 人の利用者が、一つのマシン上で、みんなが Simula コンパイラを走らせ
+ていました。ああ、ばかばかしい!
+
+ほんとうに。
+
+さて、`gnus-carpal' を `t' に設定することによって、クリックするだけで何
+でもできるボタンだらけのバッファーを Gnus に表示させることができます。
+とっても簡単です、ほんとうに。指圧療法の先生に教えてあげて下さい (訳注:
+carpal とは手首の骨のこと)。
+
+`gnus-carpal-mode-hook'
+     すべての手首モードバッファーで実行するフックです。
+
+`gnus-carpal-button-face'
+     ボタンに使われるフェースです。
+
+`gnus-carpal-header-face'
+     手首バッファーのヘッダーで使用されるフェースです。
+
+`gnus-carpal-group-buffer-buttons'
+     グループバッファーのボタンです。
+
+`gnus-carpal-summary-buffer-buttons'
+     概略バッファーのボタンです。
+
+`gnus-carpal-server-buffer-buttons'
+     サーバーバッファーのボタンです。
+
+`gnus-carpal-browse-buffer-buttons'
+     閲覧バッファーのボタンです。
+
+すべての `buttons' 変数はリストです。これらのリストの要素は、その
+`car' の項が表示される文を含んでいて、その `cdr' の項が関数シンボルになっ
+ている cons セルか、もしくはただの文字列のどちらかです。
+
+
+
+File: gnus-ja.info, Node: Daemons, Next: NoCeM, Prev: Buttons, Up: Various
+
+デーモン
+========
+
+Gnus、それは (言い伝えによれば) かつて書かれたいかなるプログラムよりも
+大きく、あなたがやって欲しいと思うさまざまな奇妙なことを、あなたのいな
+いところで行なってくれるものです。例えば、あなたは時たま新着メールを
+チェックしてもらいたいかもしれません。あるいは Emacs をしばらく放ってお
+いたときすべてのサーバーの接続を切断してもらいたくなるかもしれません。
+他にも何かそういったことです。
+
+Gnus はさまざまな「ハンドラー」(処理を行なわせるためのもの) を定義する
+ことによってそのようなことを可能にします。各ハンドラーは三つの要素から
+成ります:「関数」、「時間」、「アイドル」(何もしていない状態を示すもの)
+パラメーターです。
+
+これは Emacs のアイドル状態が三十分続いたときに接続を切断するハンドラー
+の例です:
+
+     (gnus-demon-close-connections nil 30)
+
+これは Emacs がアイドルのとき、一時間毎に PGP ヘッダーを走査するハンド
+ラーです:
+
+     (gnus-demon-scan-pgp 60 t)
+
+この「時間」パラメーターと「アイドル」パラメーターは、奇妙かつ素晴らし
+いやり方で一緒に動作します。基本的に「アイドル」が `nil' だったら、関数
+は「時間」分毎に呼び出されます。
+
+「アイドル」が `t' だったら、関数は Emacs がアイドルだったときに限って
+「時間」分後に呼び出されます。したがって Emacs がアイドルにならなければ、
+関数は呼び出されません。いったん Emacs がアイドル状態になると、この関数
+は「時間」分毎に呼び出されます。
+
+「アイドル」が数値で「時間」も数値だった場合、Emacs のアイドル状態が
+「アイドル」分続いた場合に限って、「時間」分毎に関数が呼び出されます。
+
+「アイドル」が数値で「時間」が `nil' だった場合、関数は Emacs のアイド
+ル状態が「アイドル」分続く度に一度呼び出されます。
+
+そして「時間」が文字列だった場合 (それは `07:31' のような形式でなければ
+なりません)、関数は毎日その時刻の頃になると一度呼び出されます。もちろん
+「アイドル」パラメーターによって動作が変わります。
+
+(ここで「分」と言ったとき、それは実際には `gnus-demon-timestep' 秒のこ
+とです。これはディフォルトでは 60 です。もしこの変数を変更すると、すべ
+てのハンドラーの計時に影響を与えます。)
+
+というわけで、ハンドラーを追加したければ、`~/.gnus.el' ファイルに以下の
+ようなものを書き込めば良いでしょう:
+
+     (gnus-demon-add-handler 'gnus-demon-close-connections 30 t)
+
+このための既製の関数がいくつか作成されています:
+`gnus-demon-add-nocem', `gnus-demon-add-disconnection',
+`gnus-demon-add-nntp-close-connection',
+`gnus-demon-add-scan-timestamps', `gnus-demon-add-rescan', および
+`gnus-demon-add-scanmail' です。これらの機能を必要とするならば、単にこ
+れらの関数を `~/.gnus.el' に入れて下さい。
+
+`gnus-demon-handlers' に直接ハンドラーを追加した場合には、それを効かせ
+るために `gnus-demon-init' を実行して下さい。すべてのデーモンを取り消す
+には、`gnus-demon-cancel' 関数を使うことができます。
+
+デーモンの追加をやりすぎるのはかなりマズいことです。すべてのサーバーか
+らすべてのニュースとメールを二秒毎に調べまわす関数を付け加えたりするこ
+とは、どんな立派なシステムからも確実に追い出される方法です。お行儀良く
+しましょう。
+
+
+
+File: gnus-ja.info, Node: NoCeM, Next: Undo, Prev: Daemons, Up: Various
+
+NoCeM
+=====
+
+"Spam" とは、同じ記事を何回も何回も何回も投稿することです。Spam は悪い
+ことです。Spam は凶悪です。
+
+Spam はさまざまな反 spam 機関によって、通常一日かそこらで取り消しされま
+す。通常これらの機関は、一緒に "NoCeM" メッセージも送り出します。
+NoCeM" は“no see-'em”(彼らを見たくない) と発音され、意味はその名前の
+通りです--これらのメッセージは気に触る記事を、つまり、消してしまいます。
+
+どうせそれらの記事が取り消しされてしまうのなら、これらの NoCeM メッセー
+ジは何に使われるのでしょう? あるサイトでは取り消しメッセージを重視しま
+せん。また、あるサイトでは特定の数人からの取り消しメッセージだけを尊重
+します。そこで、あなたは NoCeM メッセージを使いたくなるかもしれないわけ
+です。これらは `alt.nocem.misc' ニュースグループで配布されています (訳
+注: 他に `fj.news.lists.filters' や `news.lists.filters' などでも独自の
+NoCeM メッセージが配布されています)。
+
+Gnus はこのグループのメッセージを自動的に読み、解釈することができ、これ
+で spam を消し去ります。
+
+もちろん、これらをカスタマイズするための変数がいくつかあります:
+
+`gnus-use-nocem'
+     ものごとを始めさせるには、この変数を `t' に設定して下さい。ディフォ
+     ルトでは `nil' です。
+
+     この変数にグループレベルとして正の数値を設定することもできます。そ
+     の場合、この値が `gnus' や `gnus-group-get-new-news' などのコマン
+     ドの接頭引数として与えるグループレベル以下だったら、Gnus は新着
+     ニュースをチェックするときに NoCeM メッセージを走査します。さもな
+     ければ、それらのコマンドにグループレベルを与えると、Gnus は NoCeM
+     メッセージを走査しません。例えば、メールグループで 1 か 2 を使って
+     いてニュースグループのレベルがディフォルトのままだったら、3 が最も
+     良い選択です。
+
+`gnus-nocem-groups'
+     Gnus はこのグループのリストから NoCeM メッセージを探します。ディフォ
+     ルトは次の通りです:
+
+          ("news.lists.filters" "news.admin.net-abuse.bulletins"
+           "alt.nocem.misc" "news.admin.net-abuse.announce")
+
+`gnus-nocem-issuers'
+     NoCeM メッセージを発行する人はたくさんいます。このリストでは、誰の
+     いうことに従いたいかを指定します。ディフォルトは次の通りです:
+
+          ("Automoose-1" "clewis@ferret.ocunix.on.ca"
+           "cosmo.roadkill" "SpamHippo" "hweede@snafu.de")
+
+     彼らはみんな、立派で高潔な市民です。
+
+     このリストに含められる有名な反 spam 家たちは
+     `http://www.xs4all.nl/~rosalind/nocemreg/nocemreg.html' に載ってい
+     ます。
+
+     これらすべての人々の NoCeM メッセージに留意する必要はありません--
+     言うことを聞きたい人だけで良いのです。また、それらの人たちからの
+     NoCeM メッセージを、すべて受け入れる必要もありません。それぞれの
+     NoCeM メッセージは、そのメッセージの厳密な (多少は厳密、たいていは
+     そうでもない) 定義を与える種別 "type" ヘッダーを持っています。一般
+     的な種別は `spam', `spew', `mmf', `binary', および `troll' です。
+     これを指定するには、リストの中で `(発行者 条件...)' という要素を使
+     う必要があります。それぞれの条件は、文字列 (使いたい種別に合致する
+     正規表現) または `(not 文字列)' という形式のリスト (この場合の「文
+     字列」は使いたくない種別に合致する正規表現) のどちらかです。
+
+     例えば、Chris Lewis からの、`troll' メッセージ以外のすべての
+     NoCeM メッセージを欲しい場合には、こうすれば良いでしょう:
+
+          ("clewis@ferret.ocunix.on.ca" ".*" (not "troll"))
+
+     一方、彼の `spam' と `spew' メッセージ以外は何も要らないのであれば、
+     以下のようにできます:
+
+          ("clewis@ferret.ocunix.on.ca" (not ".*") "spew" "spam")
+
+     この指定は左から右に適用されます。
+
+`gnus-nocem-verifyer'
+     これは NoCeM 発行者が本人であることを検証する関数でなくてはなりま
+     せん。ディフォルトは `pgg-verify' で、これは検証に成功したら
+     非-`nil' を返し、そうでなければ (NoCeM メッセージが署名されていな
+     い場合を含みます) `nil' を返します。もしこれが非常に遅くて、検証結
+     果を気にしない (これはたぶん危険です) のであれば、この変数を
+     `nil' にすることができます。
+
+     以前、ディフォルトは Mailcrypt の関数である `mc-verify' でした。ま
+     だそれを使うことができますが、PGP の公開鍵を GnuPG の鍵束に加える
+     ことを厭わなければ、GnuPG とともに動作するディフォルトの関数に変え
+     ることができます。
+
+`gnus-nocem-directory'
+     これは Gnus が NoCeM キャッシュファイルを保存する場所です。ディフォ
+     ルトは `~/News/NoCeM/' です。
+
+`gnus-nocem-expiry-wait'
+     古い NoCeM 項目をキャッシュから消すまでの日数。ディフォルトは 15
+     です。これを短くするほど Gnus は速くなりますが、古い spam を見るこ
+     とになってしまうかもしれません。
+
+`gnus-nocem-check-from'
+     非-`nil' では、記事のボディーにある発行人の正当性を調べます。そう
+     でない場合は、著者が正しい発行人でなくても気にせずに記事を取り込み
+     ますが、もしあなたが正しい発行人を見分けられるならば、そうした方が
+     とても速くなるでしょう。
+
+`gnus-nocem-check-article-limit'
+     すべての NoCeM グループにおけるチェックする記事の最大数を指定しま
+     す (訳注: `nil' で無制限)。NoCeM グループは巨大になることがあり、
+     そうなると処理がとても遅くなります。
+
+NoCeM を使うと、もしかするとメモリ喰いになるかもしれません。あなたがた
+くさんの生きたグループ (つまり購読あるいは非購読グループ) を持っている
+と、Emacs のプロセスは大きくなってしまうでしょう。もしこれが問題であれ
+ば、非購読のグループを全部 (あるいはその多くを) 消し去って (kill して)
+しまうべきです (*Note Subscription Commands::)。
+
+
+
+File: gnus-ja.info, Node: Undo, Next: Predicate Specifiers, Prev: NoCeM, Up: Various
+
+やり直し
+========
+
+実行したことのやり直しができると、とても便利です。Emacs の普通のバッ
+ファーでは十分に簡単です--単に `undo' ボタンを押すだけです。しかし
+Gnus のバッファーでは、それは簡単ではありません。
+
+Gnus がバッファー内に表示しているものは、Gnus にとってはまったく何の価
+値もありません--これはみんな、利用者に奇麗に見えるようにデザインされて
+いるただのデータなのです。`C-k' でグループバッファーからグループを消去
+すると、その行は消え去りますが、それは実際の動作--当のグループを Gnus
+の内部構造体から削除すること、の単なる副作用でしかありません。これらの
+やり直しは、通常の Emacs の `undo' 関数では行なうことができません。
+
+Gnus は利用者がすることを憶えておいて、利用者がすることの逆を行なうこと
+によって、これを多少は救済しようとします。利用者が `undo' キーを押すと、
+一段階または数段階前までの操作を元に戻すコードを実行します。しかし、す
+べての操作が簡単に逆戻りできるわけではないので、現在 Gnus は、やり直し
+可能なキーの機能を僅かしか提供していません。これらはグループの削除、グ
+ループの貼り付け、およびグループの既読記事のリストの変更です。実際それ
+だけです。将来はもっと機能が追加されるかもしれませんが、追加されるそれ
+ぞれの機能は保存するべきデータを増やすので、決して Gnus は完全にやり直
+し可能にはならないでしょう。
+
+やり直し機能は `gnus-undo-mode' マイナーモードによって提供されます。こ
+れは `gnus-use-undo' が `nil' 以外であれば使用され、これがディフォルト
+です。`C-M-_' キーが `gnus-undo' 命令を実行します。これは通常の Emacs
+の `undo' 命令にいくぶん似ているはずです。
+
+
+
+File: gnus-ja.info, Node: Predicate Specifiers, Next: Moderation, Prev: Undo, Up: Various
+
+述語指示子
+==========
+
+いくつかの Gnus の変数は「述語指示子」(predicate specifiers) です。これ
+は、その多くをすべて記述する必要なしに、述語の仕様に融通を効かせること
+ができる特別な形式です。
+
+これらの指示子は関数、シンボルおよびリストからなるリストです。
+
+例です:
+
+     (or gnus-article-unseen-p
+         gnus-article-unread-p)
+
+利用できるシンボルは `or'、`and' および `not' です。関数はすべて一つの
+パラメーターを受け取ります。
+
+呼ぶことができる関数を作るために、Gnus はこれらの指示子について内部的に
+`gnus-make-predicate' を使います。この関数へのこの入力パラメーターは、
+述語指示子の中のすべての関数に渡されます。
+
+
+
+File: gnus-ja.info, Node: Moderation, Next: Fetching a Group, Prev: Predicate Specifiers, Up: Various
+
+司会役
+======
+
+もしあなたが司会者 (モデレーター) ならば、`gnus-mdrtn.el' パッケージを
+使うことができます。これは標準の Gnus パッケージには含まれていません。
+`larsi@gnus.org' に、どのグループの司会を行なうのかを述べたメールを書い
+て下さい。そうすればコピーを手に入れることができます。
+
+司会者用パッケージは概略バッファーのマイナーモードとして実装されていま
+す。
+
+     (add-hook 'gnus-summary-mode-hook 'gnus-moderate)
+
+をあなたの `~/.gnus.el' ファイルに入れて下さい。
+
+あなたが `rec.zoofle' の司会者だとすると、これは以下のように動作するよ
+うになっています:
+
+  1. 受信したメールを `Newsgroups:.*rec.zoofle' に合致させることによっ
+     て分割します。これは投稿されようとしているすべての記事を、あるメー
+     ルグループ--例えば `nnml:rec.zoofle' に入れます。
+
+  2. あなたは時折このグループに入り、`e' (edit-and-post) あるいは `s'
+     (just send unedited) 命令を使って記事を投稿します。
+
+  3. `rec.zoofle' ニュースグループを読んでいる途中で、もしあなたが承認
+     していない記事をたまたま見つけたとしたら、`c' 命令で取り消しできま
+     す。
+
+二つのグループで司会者モードを使うとすれば、こうなります:
+
+     (setq gnus-moderated-list
+           "^nnml:rec.zoofle$\\|^rec.zoofle$")
+
+
+
+File: gnus-ja.info, Node: Fetching a Group, Next: Image Enhancements, Prev: Moderation, Up: Various
+
+グループを取得する
+==================
+
+時々「Gnus が起動しているかどうかを気にしないでこのグループを読みたい。」
+ということができれば便利なことがあります。これは、利用者よりもプログラ
+ムのコードを書く人に便利な機能ですが、どちらにしろ `gnus-fetch-group'
+コマンドはこの機能を提供します。それはグループの名前を引数としてとりま
+す。
+
+
+
+File: gnus-ja.info, Node: Image Enhancements, Next: Fuzzy Matching, Prev: Fetching a Group, Up: Various
+
+画像の拡張
+==========
+
+XEmacs それに v21 以上の Emacs は絵やその種のものを表示することができる
+(1) (*Note Image Enhancements-Footnotes::)ので、Gnus はこれを利用するこ
+とにしました。
+* Menu:
+
+* X-Face::                      ファンキーでちっちゃな白黒の絵を表示する
+* Face::                        よりファンキーでちっちゃなカラーの絵を表示する
+* Smileys::                     幸せな顔をまさにそのように表示する
+* Picons::                      あなたが読んでいるものの絵を表示する方法
+* XVarious::                    XEmacs のための Gnus の変数
+
+
+File: gnus-ja.info  Node: Image Enhancements-Footnotes, Up: Image Enhancements
+
+(1) MS ウィンドウズの Emacs 21 は画像をサポートしていません。Emacs 22
+はします。
+
+
+
+File: gnus-ja.info, Node: X-Face, Next: Face, Prev: Image Enhancements, Up: Image Enhancements
+
+X-Face
+------
+
+`X-Face' ヘッダーは、メッセージの著者を表わすことになっている 48×48 画
+素の白黒 (深さ 1 bit の) の絵を描きます。これは進化し続けるあまたのメー
+ルとニュースリーダーによってサポートされるでしょう。
+
+`X-Face' ヘッダーを見るには `compface' をサポートしている Emacs (ほとん
+どの XEmacs の版がサポート) か、変換または表示のための適切なプログラム
+をインストールしてあることが必要です。あなたの Emacs が自前で画像の表示
+をサポートしているならば、ディフォルトで `From' ヘッダーの前に顔が表示
+されます。Emacs が自前で `X-Face' をサポートしていない場合、Gnus は
+`pbmplus' パッケージとその仲間の外部プログラム (下記参照) を使って
+`X-Face' ヘッダーを変換しようとします。`X-Face' をサポートするようにコ
+ンパイルされている XEmacs は速いです。画像をサポートしていない Emacs で
+は、ディフォルトでは表示のための処理を `display' というプログラムに委ね
+ます。
+
+GNU/Linux システムの場合、ImageMagick パッケージに含まれてい
+る `display' プログラムを使います。外部プログラムとして
+は `netpbm'、`libgr-progs' および `compface' のような名前
+のものを探します。Windows では `http://gnuwin32.sourceforge.net' に
+ある `netpbm' および `compface' パッケージを使っても良いです。
+`PATH' 環境変数に `bin' ディレクトリーを追加する必要があります。
+
+変数 `gnus-article-x-face-command' で、`X-Face' ヘッダーを表示するため
+に何のプログラムを使うかを制御します。この変数が文字列ならば、この文字
+列がサブシェルで実行されます。関数ならば、この関数が顔を引数として呼ば
+れます。もし `gnus-article-x-face-too-ugly' (これは正規表現です) が
+`From' 欄に合致すれば、顔は表示されません。
+
+(注: 変数/関数名には `xface' ではなく `x-face' が使われます。)
+
+フェースと変数:
+
+`gnus-x-face'
+     X-Face を表示するためのフェース。このフェースの色が表示される
+     X-Face の前景色と背景色として使われます。ディフォルトの色は黒と白
+     です。
+
+`gnus-face-properties-alist'
+     Face (*Note Face::) と X-Face 画像に適用される、画像の形式とプロパ
+     ティーの連想リストです。ディフォルト値は Emacs 用の
+     `((pbm . (:face gnus-x-face)) (png . nil))' または XEmacs 用の
+     `((xface . (:face gnus-x-face)))' です。例を挙げましょう:
+
+          ;; From ヘッダーにおける Face と X-Face の高さを指定します。
+          (setq gnus-face-properties-alist
+                '((pbm . (:face gnus-x-face :ascent 80))
+                  (png . (:ascent 80))))
+
+          ;; Face と X-Face を凹んだボタンのように表示します。
+          (setq gnus-face-properties-alist
+                '((pbm . (:face gnus-x-face :relief -2))
+                  (png . (:relief -2))))
+
+     いろいろな画像の形式で利用可能なプロパティーについては *Note
+     Image Descriptors: (elisp)Image Descriptors, を参照して下さい。今
+     のところ Emacs では `pbm' が X-Face 画像に使われ、 `png' が Face
+     画像に使われます。XEmacs では、それが `libcompface' ライブラリーと
+     ともに構築されていれば、`xface' 画像形式に `:face' プロパティーだ
+     けが効果を及ぼします。
+
+投稿様式 (posting style) を使うのであれば、`gnus-posting-styles' に
+`x-face-file' の項を加えれば良いでしょう (*Note Posting Styles::)。さも
+なけば、外に出すメッセージに X-Face ヘッダーを簡単に挿入できるようにす
+るために Gnus が提供する、いくつかの便利な関数と変数を利用することがで
+きます。これらの機能のためには、前述の ImageMagick、netpbm または他の画
+像を変換するパッケージ (何が必要かは、下記の変数群の値によります) も必
+要です。
+
+`gnus-random-x-face' は `gnus-x-face-directory' にあるすべての `pbm' ファ
+イルをくまなく探してランダムに一つを選び取り、シェルコマンド
+`gnus-convert-pbm-to-x-face-command' を使ってそれを X-Face の形式に変換
+します。`pbm' ファイルは 48×48 画素の大きさでなければなりません。それ
+は X-Face ヘッダーのデータを文字列で返します。
+
+`gnus-insert-random-x-face-header' は `gnus-random-x-face' を呼んで、ラ
+ンダムに生成されたデータによる X-Face ヘッダーを挿入します。
+
+`gnus-x-face-from-file' はパラメーターとして GIF ファイルを受け取り、シェ
+ルコマンド `gnus-convert-image-to-x-face-command' を使ってそのファイル
+を X-Face の形式に変換します。
+
+一番目の関数の一般的な使い方を示します。以下のようなものを
+`~/.gnus.el' ファイルに書き込んで下さい:
+
+     (setq message-required-news-headers
+           (nconc message-required-news-headers
+                  (list '(X-Face . gnus-random-x-face))))
+
+最後の関数を使うのは、このようになるでしょう:
+
+     (setq message-required-news-headers
+           (nconc message-required-news-headers
+                  (list '(X-Face . (lambda ()
+                                     (gnus-x-face-from-file
+                                      "~/My-face.gif"))))))
+
+
+
+File: gnus-ja.info, Node: Face, Next: Smileys, Prev: X-Face, Up: Image Enhancements
+
+Face
+----
+
+`Face' ヘッダーは、本質的に `X-Face' をよりファンキーに変形したものです。
+それらは、メッセージを書いた人を象徴することになっている 48×48 画素の
+カラー画像を描きます。
+
+`Face' ヘッダーの内容は base64 でエンコードされた PNG の画像でなけ
+ればなりません。正確な仕様について、
+`http://quimby.gnus.org/circus/face/' を参照して下さい。
+
+変数 `gnus-face-properties-alist' は表示される Face 画像の外観に影響し
+ます。*Note X-Face::.
+
+`Face' ヘッダーを見るには Emacs が PNG 画像を表示できる必要があります。
+
+Gnus は外に出すメッセージに Face ヘッダーを簡単に挿入できるようにするた
+めの、便利な関数と変数を少しばかり提供します。
+
+`gnus-convert-png-to-face' は 726-byte 以下の 48×48 の PNG の画像を受
+け取って、それを Face に変換します。
+
+`gnus-face-from-file' は JPEG ファイルの名前をパラメーターとして受け取
+り、シェルコマンド `gnus-convert-image-to-face-command' を使ってそのファ
+イルを Face フォーマットに変換します。
+
+この関数の代表的な使い方を挙げておきましょう。以下のようなものを
+`~/.gnus.el' ファイルに入れて下さい:
+
+     (setq message-required-news-headers
+           (nconc message-required-news-headers
+                  (list '(Face . (lambda ()
+                                   (gnus-face-from-file "~/face.jpg"))))))
+
+
+
+File: gnus-ja.info, Node: Smileys, Next: Picons, Prev: Face, Up: Image Enhancements
+
+スマイリー
+----------
+
+スマイリー "smiley" は Gnus とは別のパッケージですが、スマイリーを使っ
+ているパッケージは現在 Gnus だけなので、ここで説明します。
+
+ひとことで言えば--Gnus でスマイリーを使うには、以下を `~/.gnus.el' ファ
+イルに書き込んで下さい。
+
+     (setq gnus-treat-display-smileys t)
+
+スマイリーは、文字の顔マーク---`:-)', `8-)', `:-(' などといったもの--を
+絵に割り当てて、文字の顔マークの代わりにその絵を表示します。この変換は
+文字に合致する正規表現と、それに割り当てられたファイル名のリストで制御
+されます。
+
+使われる連想リストは、変数 `smiley-regexp-alist' で設定します。各要素の
+最初の項目は合致する正規表現で、二番目の要素は絵で置き換えられる正規表
+現のグループ番号、そして三番目の要素は表示されるファイルの名前です。
+
+以下の変数は、スマイリーがこれらのファイルを探す場所をカスタマイズしま
+す:
+
+`smiley-data-directory'
+     スマイリーが顔ファイルを探す場所です。
+
+`gnus-smiley-file-types'
+     スマイリーのファイル名として試してみる拡張子のリストです。
+
+
+
+File: gnus-ja.info, Node: Picons, Next: XVarious, Prev: Smileys, Up: Image Enhancements
+
+Picons
+------
+
+それで…、あなたはこのニュースリーダーをさらにもっと遅くしたいってわけ
+ですね! これはそうするのにぴったりな方法です。さらにこれは、あなたが
+ニュースを読んでいるんだということを、あなたの肩越しに見つめている人に
+印象づけるための素晴らしい方法でもあります。
+
+Picon とはなんでしょう? Picons ウェブサイトから直接引用しましょう。
+
+     "Picon" とは「個人アイコン (personal icons)」の略です。これは、あ
+     る電子メールアドレスのための適切な画像を見つけることができるように、
+     無理矢理小さくしてデータベースにまとめられた画像たちで、ネット上の
+     利用者やドメインを表現するために使われます。利用者とドメイン以外に、
+     Usenet ニュースグループや天気予報のための picon データベースがあり
+     ます。picon は白黒の `XBM' 形式、またはカラーの `XPM' 形式および
+     `GIF' 形式のいずれでも構いません。
+
+Picon データベースの入手とインストールの手順については、ウェブブラウザー
+で `http://www.cs.indiana.edu/picons/ftp/index.html' を訪ねてみて下さい。
+
+もし Debian GNU/Linux を使っているのなら、`apt-get install picons.*' と
+言えば、Gnus が見つけることができる picon がインストールされます。
+
+Picon の表示ができるようにするためには、picon データベースがあるディレ
+クトリーが、ただ単に `gnus-picon-databases' に設定されているようにして
+下さい。
+
+変数 `gnus-picon-style' は picon をどのように表示するかを制御します。
+`inline' だったらテキスト形式の表現が置き換えられます。
+`right' だったら、テキスト形式の表現の右側に picon が加えられます。
+
+ものごとの所在を管理するために、以下の変数を設けています。
+
+`gnus-picon-databases'
+     Picon データベースの場所です。これは `news', `domains', `users'
+     (などなど) のサブディレクトリーが含まれているディレクトリーのリス
+     トです。`("/usr/lib/picon" "/usr/local/faces")' がディフォルトです。
+
+`gnus-picon-news-directories'
+     `gnus-picon-databases' からニュースグループ用のフェースを探すため
+     のサブディレクトリーのリストです。ディフォルトは `("news")' です。
+
+`gnus-picon-user-directories'
+     `gnus-picon-databases' から利用者のフェースを探すためのサブディレ
+     クトリーのリストです。`("local" "users" "usenix" "misc")' がディフォ
+     ルトです。
+
+`gnus-picon-domain-directories'
+     `gnus-picon-databases' からドメイン名のフェースを探すためのサブディ
+     レクトリーのリストです。ディフォルトは `("domains")' です。このリ
+     ストに `"unknown"' を追加しておきたくなる人もいるでしょう。
+
+`gnus-picon-file-types'
+     Picon のファイル名として試してみる順に並べられた拡張子のリストです。
+     ディフォルトは `("xpm" "gif" "xbm")' から Emacs に組み込まれていな
+     いものを除外したものです。
+
+
+
+File: gnus-ja.info, Node: XVarious, Prev: Picons, Up: Image Enhancements
+
+さまざまな XEmacs 変数
+----------------------
+
+`gnus-xmas-glyph-directory'
+     これは Gnus が絵を探す場所です。Gnus は通常このディレクトリーを自
+     動検出しますが、もし標準的でないディレクトリー構造を持っている場合
+     は、これを手動で設定することができます。
+
+`gnus-xmas-modeline-glyph'
+     すべての Gnus のモード行で表示される画像。これはディフォルトではち
+     いさなヌー (gnu) の頭です。
+
+
+ツールバー
+..........
+
+`gnus-use-toolbar'
+     この変数はツールバーを表示する位置を指定します。`nil' だったらツー
+     ルバーを表示しません。非-`nil' の場合、それは `default', `top',
+     `bottom', `right' または `left' の中の一つのシンボルでなければなり
+     ません。`default' だったらディフォルトのツールバーを使い、他のもの
+     だったらその名前が示す場所にツールバーを表示します。ディフォルトは
+     `default' です。
+
+`gnus-toolbar-thickness'
+     高さと幅のコンス (cons) で、ツールバーの厚さを指定します。高さは上
+     辺か下辺に表示するツールバーで使われ、幅は右端か左端に表示するツー
+     ルバーで使われます。ディフォルトはディフォルトのツールバーの値です。
+
+`gnus-group-toolbar'
+     グループバッファー内のツールバーです。
+
+`gnus-summary-toolbar'
+     概略バッファー内のツールバーです。
+
+`gnus-summary-mail-toolbar'
+     メールグループの概略バッファー内のツールバーです。
+
+
+
+
+File: gnus-ja.info, Node: Fuzzy Matching, Next: Thwarting Email Spam, Prev: Image Enhancements, Up: Various
+
+ファジーな一致
+==============
+
+Gnus はスコア付け、スレッドの形成、およびスレッドの比較などを行なうとき
+に、`Subject' 行のファジーな合致 "fuzzy matching" を提供します。
+
+正規表現による合致とは違って、ファジーな合致はとってもファジーです。あ
+まりにもファジーすぎて、何がファジーであるかという定義さえ無いし、実装
+も何度も変更されています。
+
+基本的に、これは比較の前に行から邪魔物を取り除こうとします。`Re: '、挿
+入句の印、および空白文字等々が文字列から除去され、その結果を比較します。
+これはほとんどの場合妥当な結果をもたらします--たとえニュースリーダーの
+仮面をかぶった文字列切り刻み機で生成された文字列が差し出されても、です。
+
+
+
+File: gnus-ja.info, Node: Thwarting Email Spam, Next: Spam Package, Prev: Fuzzy Matching, Up: Various
+
+spam メールの裏をかく
+=====================
+
+ここ最近の USENET では、宣伝のハゲタカどもが彼らの詐欺や製品を押し付け
+るための電子メールアドレスを探そうとして、気違いのようにニュース上をう
+ろついて grep しまくっています。これに対する反動として、多くの人々が無
+意味なアドレスを `From' 行に入れはじめるようになってしまいました。私は
+これは逆効果を招くと思います--あなたが書いたことに対する返信として人々
+が正当なメールを送ることを面倒にさせるだけでなく、誰が書いたものなのか
+を分かりづらくします。こんな書き換えは、結局は押し付け宣伝メールそれ自
+身よりも大きな脅威となるかもしれません。
+
+私にとっての spam メールの最大の問題は、嘘の口実で入ってくるからです。
+私が `g' を押すと、Gnus は十通の新着メールがありますと陽気に私に教えて
+くれます。私は「おおっ、わーい! 僕って幸せ!」と言ってメールグループを選
+択します。しかしそこには、二つのネズミ講と、七つの広告 (「最新! 奇跡の
+育毛トニック、ふさふさでつやつやの髪をあなたのつま先(※)に!」) と、悔い
+改め神を信じよ、という一つのメールがあるだけなのです。
+
+これは迷惑千万です。あなたがそれに関してできることがあります。
+
+     訳注※: ホビット族用の育毛トニック。たぶん。
+
+* Menu:
+
+* The problem of spam::         背景、そして解決
+* Anti-Spam Basics::            たくさんの spam を減らす簡単な方法
+* SpamAssassin::                Spam 対策ツールの使い方
+* Hashcash::                    CPU 時間を費やして spam 退治する
+
+
+
+File: gnus-ja.info, Node: The problem of spam, Next: Anti-Spam Basics, Prev: Thwarting Email Spam, Up: Thwarting Email Spam
+
+Spam の問題
+-----------
+
+初めに spam の背景から。
+
+あなたが電子メールを使っているならば、spam (専門用語としては Unsolicited
+Commercial E-mail--望まれない商用電子メール--の頭文
+字 UCE) のことはよく知っているでしょう。簡単に言えばそれは紙の
+メールに比べて電子メールの配送がとても安くつくために存在し、非常に小さな
+割合の人々が UCE に応答するだけで広告主に利益をもたらすのです。皮肉なこ
+とに最も一般的な spam の一つは、さらに spam を助長するための電子メールア
+ドレスのデータベースを提供します。Spam の送信者はふつ
+う *spammers* と呼ばれますが、*vermin*、*scum*、
+*sociopaths* および *morons* のような用語もよく使われています。
+
+Spam は種々さまざまな出どころからやって来ます。有用なメッセージを捨てず
+にすべての spam を単に始末することは不可能です。良い例は TMDA (訳注: 送
+信する度にユニークなアドレスを使う) システムで、それは、あなたが知らな
+い送信者からの電子メールがあなたのもとに届くことができる前に、彼らに対
+して彼ら自身が正当な送信者であることの確認を求めます。正当な出どころか
+らの電子メールが、それらの出どころが TMDA システムを通して確認できない、
+または行なわれない場合は捨てられてしまうかもしれないというマイナス面は、
+TMDA の技術的な側面に立ち入らなくても明白です。もう一つの TMDA の問題は、
+電子メールの配送と処理への基本的な理解を、利用者に求めていることです。
+
+Spam の除去 (filtering) への最も単純な取り組みは、メールサーバーで、あ
+るいは入ってきたメールを分類するときに濾過すること (filtering) です。毎
+日 `random-address@vmadmin.com' から 200通の spam メッセージを受け取る
+のならば、`vmadmin.com' を阻止すれば良いでしょう。「バイアグラ」に関す
+るメッセージを 200通受け取るのならば、「バイアグラ」を含むすべてのメッ
+セージを捨ててしまえば良いでしょう。例えばブルガリアからたくさんの
+spam がやって来るのならば、ブルガリアの IP から来るすべてのメールを濾過
+すれば良いでしょう。
+
+これは、残念ながら正当な電子メールを捨てるためのすぐれた方法です。あな
+たに連絡しようとする国 (ブルガリア、ノルウェー、ナイジェリア、中国、等)
+全体、または大陸 (アジア、アフリカ、ヨーロッパ、等) さえも封じ込めてし
+まう危険は明らかなので、あなたに選択権があるのならば、そんなことはしな
+いで下さい。
+
+もう一つの例として、とても示唆に富んで有益な RISKS ダイジェストは、それ
+が spam メッセージと共通の語を *含んで* いるために、熱心すぎるメール濾
+過器によって阻止されてしまいます。それでもなお孤立した環境では、注意深
+く使うことによって直接の濾過は有益になり得ます。
+
+もう一つの電子メール濾過への取り組みは分散型 spam 処理で、DCC (訳注:
+Distributed Checksum
+Clearinghouse---`http://www.rhyolite.com/anti-spam/dcc/') がそのような
+システムを導入しています。本質的には、世界中の N 個のシステムが、ガーナ、
+エストニアあるいはカリフォルニアにあるマシン X が spam 電子メールを送出
+していることを認めたら、それら N 個のシステムは X または X からやって来
+た spam メールをデータベースに記入します。Spam 検出の基準は一様ではあり
+ません。それは送られたメッセージの数やメッセージの内容などであるかもし
+れません。メッセージが spam かどうかを分散処理システムの利用者が知りた
+い場合、彼はそれらの N 個のシステムのうちの一つを調べます。
+
+分散型 spam 処理は一度にたくさんのメッセージを送る spammers と非常によ
+く戦ってくれますが、それには利用者がかなり複雑なチェックを設定すること
+が必要です。商用とフリーな分散型 spam 処理システムがあります。分散型
+spam 処理は、それ自体の危険もはらんでいます。例えば、正当な送信者が
+spam を送ったかどで非難され、彼らのウェブサイトやメーリングリストがその
+事件のために暫くの間閉鎖されてしまう、とか。
+
+Spam の濾過への統計的な取り組みもまた普及しています。それは過去の spam
+メッセージの統計的な分析に基づいています。通常その分析は、おそらく単語
+の対か三つの単語の組合せの合成による、単語の出現頻度の単純な計数です。
+Spam の統計分析はほとんどの場合にとてもよく働くのですが、時として正当な
+電子メールを spam として分類してしまうことがあります。分析には時間がか
+かります。すべてのメッセージを分析しなければなりません。そして利用者は
+spam を分析するためのデータベースを蓄えなければなりません。サーバーでの
+統計分析は人気を得ています。これには、利用者は単にメールを読めば良いと
+いう長所と、しかしサーバーにそれが過ってメールを分類したことを伝えるの
+が困難だという短所があります。
+
+余人の言を待たずとも、spam との戦いは楽ではありません。ママからの電子メー
+ルとバイアグラ広告を区別する魔法のスイッチはありません。人々は非-spam
+と spam を区別するのに手を焼いているというのに。それは、spammers が懸命
+にそれらをママだと思わせようとしているのが本質だからです。Spamming は、
+世界が彼らに恩義があると思っている人々の一団からの、腹立たしく、無責任
+で、ばかげた行為です。以下の各章が spam なる疫病との戦いの助けになるこ
+とを望みます。
+
+
+
+File: gnus-ja.info, Node: Anti-Spam Basics, Next: SpamAssassin, Prev: The problem of spam, Up: Thwarting Email Spam
+
+Spam 退治の基礎
+---------------
+
+Spam に対処する一つの方法は、Gnus にすべての spam を `spam' メールグルー
+プに分離させてしまうことです (*Note Splitting Mail::)。
+
+最初に、あなたに連絡することができる正しいメールアドレスを一つ選び、そ
+れをすべてのあなたのニュース記事の `From' ヘッダーに入れましょう。(ここ
+では `larsi@trym.ifi.uio.no' を選びましたが、`larsi+usenet@ifi.uio.no'
+の形式のたくさんのアドレスの方が良い選択です。あなたのサイトの
+sendmail の設定がメールアドレスのローカル部としてどんなキーワードを受け
+付けるかは、あなたのサイトのシステム管理者に聞いて下さい。)
+
+     (setq message-default-news-headers
+           "From: Lars Magne Ingebrigtsen <larsi@trym.ifi.uio.no>\n")
+
+そして `nnmail-split-fancy' に以下の分割規則を入て下さい (*Note Fancy
+Mail Splitting::)。
+
+     (...
+      (to "larsi@trym.ifi.uio.no"
+          (| ("subject" "re:.*" "misc")
+             ("references" ".*@.*" "misc")
+             "spam"))
+      ...)
+
+この意味は、このアドレスに届いたすべてのメールが疑わしいが、`Re:' で始
+まる `Subject' が付いているか、`References' ヘッダーが付いていればおそ
+らく OK だろう、ということです。残りはすべて `spam' グループに行きます。
+(このアイデアはおそらく Tim Pierce 氏によるものです。)
+
+これに加えて、多くのメール spam 屋は、あなたのところの SMTP サーバーと
+直接話して、`To' ヘッダーにあなたのメールアドレスが明示されないようにし
+ます。なんでそんなことをするのかはわかりませんが--もしかしたら、この裏
+をかく機構の裏をかくためかな? どちらにしても、対処は簡単なことです--特
+級分割規則を以下のように終端させることによって、あなた宛てでないものを
+全部 `spam' グループに入れるだけです:
+
+     (
+      ...
+      (to "larsi" "misc")
+      "spam")
+
+私の経験では、これで実質的にはすべてが正しいグループに分類されます。ま
+あ、それでもときどき `spam' グループをチェックして、正しいメールがある
+かチェックしなくてはいけませんけどね。あなたが自分が良いネットワーク市
+民であると思っているなら、それぞれの押し付け宣伝メールの関係当局に苦情
+を送り付けることさえもできます--暇なときにでもね。
+
+これで私のところでは動いています。これでみんなは簡単な方法で私に連絡を
+取ることができ (普通に `r' を押すだけでできる)、私は spam に煩わされる
+ことはまったくありません。お互いに有利な状況です。私に言わせれば、
+`From' ヘッダーを偽造して存在しないドメインに送らせるのはすごく良くない
+です。
+
+     訳注: 以上の文章は 1997年4月に書かれました。
+
+この手法には注意して下さい。Spammers はそれに気付いています。
+
+
+
+File: gnus-ja.info, Node: SpamAssassin, Next: Hashcash, Prev: Anti-Spam Basics, Up: Thwarting Email Spam
+
+SpamAssassin, Vipul's Razor, DCC, etc
+-------------------------------------
+
+Spam を避けるための前章のヒントが十分だった日々は過ぎ去りました。今では
+受け取ったたくさんの spam を減らすという触れ込みの多くの道具があります。
+この章は、新しい道具が古いものに取って代わって行くにつれてすぐに時代遅
+れになってしまうでしょうが、幸いなことにこれらのほとんどの道具は類似の
+インターフェースを持っているようです。この章は例として SpamAssassin を
+使っていますが、他のほとんどの道具にも簡単に適合するはずです。
+
+この章は `spam.el' パッケージとは関係無いことに注意して下さい。それは次
+の章で論じられます。すべての `spam.el' の機能に関心が無いのならば、これ
+らの単純なレシピで間に合わせることができます。
+
+もしあなたが使う道具がメールサーバーにインストールされていないならば、
+あなた自身がそれを呼び出す必要があります。以下に `:postscript' メールソー
+ス指示子 (*Note Mail Source Specifiers::) を使う場合の考え方を示します。
+
+     (setq mail-sources
+           '((file :prescript "formail -bs spamassassin < /var/mail/%u")
+             (pop :user "jrl"
+                  :server "pophost"
+                  :postscript
+                  "mv %t /tmp/foo; formail -bs spamc < /tmp/foo > %t")))
+
+いったんメールを受けるスプールをどうにかして処理する、例えばそのメール
+に spam であることを表示するヘッダーを含めるようにすれば、それをふるい
+落とす準備は完了です。使うのは普通の分割方式 (*Note Splitting Mail::)
+です:
+
+     (setq nnmail-split-methods '(("spam"  "^X-Spam-Flag: YES")
+                                  ...))
+
+または特級分割方式 (*Note Fancy Mail Splitting::) です:
+
+     (setq nnmail-split-methods 'nnmail-split-fancy
+           nnmail-split-fancy '(| ("X-Spam-Flag" "YES" "spam")
+                                  ...))
+
+いくらかの人たちは `:prescript' を使ってメールをいろんなプログラムにパ
+イプすることを嫌うかもしれません (もし何かのプログラムにバグがあったら、
+すべてのメールを失ってしまうかもしれません)。あなたがそれらの一人ならば、
+別の解は分割するときに外部の道具を呼ぶことです。特級分割方式の例です:
+
+     (setq nnmail-split-fancy '(| (: kevin-spamassassin)
+                                  ...))
+     (defun kevin-spamassassin ()
+       (save-excursion
+         (widen)
+         (if (eq 1 (call-process-region (point-min) (point-max)
+                                        "spamc" nil nil nil "-c"))
+             "spam")))
+
+Nnimap バックエンドの場合、ディフォルトでは記事のボディーがダウンロード
+されないことに注意して下さい。それをするためには
+`nnimap-split-download-body' を `t' に設定する必要があります (*Note
+Splitting in IMAP::)。
+
+以上がこれに関することです。ある種の spam はどうしても素通りしてしまい
+がちなので、spam を読むはめになったときに呼ぶための気の利いた関数が必要
+でしょう。これがその気の利いた関数です:
+
+     (defun my-gnus-raze-spam ()
+       "SPAM の処理を Vipul の Razor に委ねてから、
+     それに期限切れ消去可能の印を付けます。"
+       (interactive)
+       (gnus-summary-show-raw-article)
+       (gnus-summary-save-in-pipe "razor-report -f -d")
+       (gnus-summary-mark-as-expirable 1))
+
+
+
+File: gnus-ja.info, Node: Hashcash, Prev: SpamAssassin, Up: Thwarting Email Spam
+
+Hashcash
+--------
+
+Spam と戦うための斬新な技法は、いくらか負担にはなるが明らかに独特なこと
+を、送信するメッセージに対して送信者が行なうことを求めることです。これ
+はインターネット標準の一部ではないので、世界中のすべての人がこの技法を
+使うことは当てにできないという明らかな欠点がありますが、小規模な集団で
+は役に立つでしょう。
+
+前章の道具類は実際にうまく働きますが、それらは新しい形式の spam が現れ
+るたびにしょっちゅう更新かつ整備されることによってのみ動作します。この
+ことは、小さなパーセンテージの spam がいつも素通りしてしまうことを意味
+します。それはまた、どこかでだれかがそれらの道具を更新するために、たく
+さんの spam を読まなければならないことをも意味します。Hashcash はそれを
+回避しますが、代わりにあなたが電子メールで連絡するすべての人たちに、な
+るべくその仕組みをサポートしてもらいたいのです。あなたは実際的
+(pragmatic) か独断的 (dogmatic) かの観点で、二つの取り組みを考えること
+ができます。それらのやり方には、それら自体の利点もあれば不利な点もあり
+ますが、現実の世の中ではしばしばあるように、それらを連係させたものはど
+ちらか一方より強力です。
+
+「いくらか負担にはなる」とは CPU 時間を消費することで、もっと具体的には
+一定数のビットまでハッシュの衝突 (hash collision) を計算することです。
+その結果としての hashcash クッキーは `X-Hashcash:' ヘッダーに挿入されま
+す。もっと詳しいこと、そしてこの機能を使うためにインストールする必要が
+ある外部アプリケーションの `hashcash' については
+`http://www.hashcash.org/' を参照して下さい。さらなる情報が
+`http://www.camram.org/' で見つかるでしょう。
+
+送信するメッセージのそれぞれについて hashcash を生成させようと思うなら、
+以下のように `message-generate-hashcash' (*Note メールヘッダー:
+(message-ja)Mail Headers.) をカスタマイズして下さい:
+
+     (setq message-generate-hashcash t)
+
+いくつかの追加の変数の設定もしなければなりません:
+
+`hashcash-default-payment'
+     この変数はハッシュの衝突を成すディフォルトのビット数を示します。ディ
+     フォルトは 20 です。提唱されている有効な値は 17 から 29 までの数で
+     す。
+
+`hashcash-payment-alist'
+     何人かの受取人は、あなたにディフォルトより多くの CPU 時間を費やす
+     ことを要求するかもしれません。この変数は `(ADDR AMOUNT)' の形式の
+     要素のリストで、ADDR は受取人 (メールアドレスかニュースグループ)、
+     AMOUNT は衝突で必要とされるビット数です。これはまた `(ADDR STRING
+     AMOUNT)' の要素を持つことも可能で、STRING は文字列 (通常はメールア
+     ドレスかニュースグループ名) として使われます。
+
+`hashcash-path'
+     `hashcash' バイナリーがインストールされている場所です。この変数は
+     `executable-find' によって自動的に設定されるはずですが、それが
+     `nil' だった (ありがちなのは `hashcash' バイナリーが実行 path 中に
+     無い) 場合は、hashcash payments をチェックするときに警告され、
+     hashcash payments を生成するときはエラーになるでしょう。
+
+Gnus は hashcash クッキーを認証することができますが、手でカスタマイズし
+たメール濾過スクリプトで行なうこともできます。メッセージ中の hashcash
+クッキーを認証するには、`hashcash.el' ライブラリーの
+`mail-check-payment' 関数を使って下さい。入ってきたメールの hashcash クッ
+キーを確認し、それによってメールを濾過するために、`spam-use-hashcash'
+バックエンドで `spam.el' を使うこともできます (*Note Anti-spam
+Hashcash Payments::)。
+
+
+
+File: gnus-ja.info, Node: Spam Package, Next: Other modes, Prev: Thwarting Email Spam, Up: Various
+
+Spam パッケージ
+===============
+
+Spam パッケージは spam を検出して濾過するために集結された機構を Gnus に
+提供します。それは新着メールを濾過し、spam か ham かに応じてメッセージ
+を処理します。("Ham" は spam ではないメッセージを示すために、このマニュ
+アルを通して使われる名前です。)
+
+* Menu:
+
+* Spam Package Introduction::
+* Filtering Incoming Mail::
+* Detecting Spam in Groups::
+* Spam and Ham Processors::
+* Spam Package Configuration Examples::
+* Spam Back Ends::
+* Extending the Spam package::
+* Spam Statistics Package::
+
+
+
+File: gnus-ja.info, Node: Spam Package Introduction, Next: Filtering Incoming Mail, Prev: Spam Package, Up: Spam Package
+
+Spam パッケージ序説
+-------------------
+
+Spam パッケージがどのように働くかを理解するために、必ずこの章を読んで下
+さい。読み飛ばし、速読、または斜め読みしてはいけません。
+
+`spam.el' シーケンスのイベントの章をちゃんと読みましょう。
+*Note Extending the Spam package:: を参照して下さい。
+
+Spam パッケージを使うには、*必ず* 最初に `spam-initialize' 関数を実行さ
+せて下さい:
+
+     (spam-initialize)
+
+これは `spam.el' を自動読み込み (autoload) して、Spam パッケージにその
+仕事をさせるために必要な諸機能が使えるようにします。Spam パッケージを利
+用するために、いくつかのグループパラメーターと変数を設定しなければなり
+ません。それらは以下で説明します。Spam パッケージを制御するすべての変数
+は、`spam' カスタマイズグループで見つかるでしょう。
+
+Spam パッケージと Gnus には二つの「接点」があります。それは新着メールが
+spam かどうかを検査するときと、グループを抜け出るときです。
+
+新着メールが spam かどうかの検査は、やって来たメールを分割するときか、
+グループに入るときのどちらかで行なわれます。
+
+最初のやり方、つまりやって来たメールを分割するときに検査をするのは、新
+着メールが単一のスプールファイルに入れられる `nnml' や `nnimap' のよう
+なメールバックエンドに適しています。Spam パッケージはやって来たメールを
+処理し、spam と見なすメールを“spam”用に指定したグループに送ります。
+*Note Filtering Incoming Mail::.
+
+二番目のやり方は、`nntp' のような (やって来たメールのためのスプールがな
+い) バックエンドや、やって来たメールの分割をサーバーが担当するバックエ
+ンドに適しています。この場合 Gnus のグループに入ると、そのグループにあ
+るまだ読まれたことが無い、または未読になっているメッセージに対して
+spam かどうかの検査が行なわれます。検出された spam メッセージには spam
+印が付けられます。*Note Detecting Spam in Groups::.
+
+どちらの場合でも、spam メッセージの検出にどの方法を使うかを Spam パッケー
+ジに指示しなければなりません。選択肢として複数の方法、と言うか「spam バッ
+クエンド」があります (Gnus のバックエンドと混同しないで下さい): spam の
+「ブラックリスト」と「ホワイトリスト」、辞書に基づいた濾過器、などです。
+*Note Spam Back Ends::.
+
+Gnus の概略バッファーで spam だと同定されたメッセージには、常に `$' 印
+が付きます。
+
+Spam パッケージは Gnus のグループを三つに分類します: ham グループ、
+spam グループ、および分類されないグループです。講読している各グループが
+ham グループと spam グループのどちらなのかを、`spam-contents' グループ
+パラメーターを使って指定して下さい (*Note Group Parameters::)。Spam グ
+ループには特別な属性があり、spam グループに入ると、まだ読まれたことが無
+いすべてのメッセージに spam 印が付きます。そのため、spam グループに分割
+されたメールには自動的に spam 印が付きます。
+
+Spam メッセージを同定することは、Spam パッケージの仕事の半分に過ぎませ
+ん。もう半分は、グループを抜け出るときに実行します。このとき Spam パッ
+ケージは複数のことを行ないます。
+
+最初に spam か ham かに応じて記事を処理するために "spam and ham
+processors" を呼び出します。各々の spam バックエンドと連係している
+spam と ham のプロセッサーの対があって、プロセッサーが行なうことはバッ
+クエンドに依存しています。現在のところ spam と ham プロセッサーの主な役
+割は、辞書に基づいた spam 濾過のためのものです: それらは将来の spam を
+検出する性能を改良するために、グループにあるメッセージの内容を濾過器の
+辞書に追加します。`spam-process' グループパラメーターで、どの spam プロ
+セッサーを使うかを指定します。*Note Spam and Ham Processors::.
+
+Spam 濾過器が spam メッセージに印を付けそこなったら、グループを抜け出る
+ときにそのメッセージが spam として処理されるようにするために、あなた自
+身がそれに印を付けても良いでしょう。
+
+`M-d'
+`M s x'
+`S x'
+     現在の記事に spam 印を付けて、`$' 印を表示します
+     (`gnus-summary-mark-as-spam')。
+
+同様に、記事に誤って付けられた spam 印を消すこともできます。
+*Note Setting Marks::.
+
+普通 ham ではないグループで見つかった ham メッセージは ham として処理さ
+れません。つまり、さらに処理されるために、それは ham グループに移動させ
+るべきであるということです (以下を見て下さい)。しかし
+`spam-process-ham-in-spam-groups' および
+`spam-process-ham-in-nonham-groups' を設定することによって、それらの記
+事を ham として処理することを強制することもできます。
+
+グループを抜け出るときに、二番目に Spam パッケージが行なうことは、ham
+記事を spam グループの外へ、spam 記事を ham グループの外へ移動させるこ
+とです。Spam グループの ham 記事は、変数
+`gnus-ham-process-destinations' またはグループパラメーター
+`ham-process-destination' で指定されたグループに移動させられます。Ham
+グループの spam 記事は、変数 `gnus-spam-process-destinations' またはグ
+ループパラメーター `spam-process-destination' で指定されたグループに移
+動させられます。これらの変数が設定されていない場合、記事はそれらの現在
+のグループに残されます。記事を移動させることができない場合 (例えば
+NNTP のような読み出し専用のバックエンドでは)、代わりに記事がコピーされ
+ます。
+
+記事が別のグループに移動させられると、その新しいグループを訪れたときに、
+記事は再び処理されます。普通これは問題になりませんが、それぞれの記事が
+一回だけ処理されるようにしたいならば、`gnus-registry.el' パッケージを読
+み込んで、変数 `spam-log-to-registry' を `t' に設定して下さい。*Note
+Spam Package Configuration Examples::.
+
+普通 spam グループは `gnus-spam-process-destinations' を無視します。し
+かし `spam-move-spam-nonspam-groups-only' を `nil' に設定すると、
+`spam-process-destination' パラメーターに従って spam は spam グループの
+外へ移動させられます。
+
+最後に Spam パッケージが行なうことは、spam 記事に期限切れ消去の印を付け
+ることです。普通それは正しい行ないです。
+
+これらのすべてがわけがわからなくても、心配は要りません (訳注: でも訳文
+が正確ではないかもしれないので、変だと思ったら原文を見てね :-p)。すぐに
+それは神経インターフェース上に Lisp で小話を書くように自然なことになり
+ます... え゛ごめん、それにはまだ 50年早いですね。ただ私たちを信頼して下
+さい。それは捨てたものではありません。
+
+
+
+File: gnus-ja.info, Node: Filtering Incoming Mail, Next: Detecting Spam in Groups, Prev: Spam Package Introduction, Up: Spam Package
+
+やって来るメールの濾過
+----------------------
+
+やって来るメールを濾過するために Spam パッケージを使うには、最初に特級
+メール分割を使うための設定を行なって下さい。*Note Fancy Mail
+Splitting::.  Spam パッケージは、特級分割のための変数 (メールバックエン
+ドによるが `nnmail-split-fancy' または `nnimap-split-fancy') に追加する
+ことができる、特別な分割関数を定義します:
+
+     (: spam-split)
+
+`spam-split' 関数は、あなたが選んだ spam バックエンド (一つまたは複数)
+に応じて、やって来たメールを走査します。ディフォルトでは spam グループ
+は `spam' という名前のグループですが、`spam-split-group' をカスタマイズ
+することによって変更することができます。`spam-split-group' の値に Gnus
+のバックエンド名やサーバー名を含めないで下さい。例えば `your-server' と
+いう `nnimap' のサーバーでは、`spam' という名前は
+`nnimap+your-server:spam' を意味します。したがって
+`nnimap+server:spam' という値は誤りで、それは
+`nnimap+your-server:nnimap+server:spam' というグループを指すことになっ
+てしまいます。
+
+`spam-split' はいかなる方法によってもメッセージの内容を変更しません。
+
+IMAP の利用者への注意: spam バックエンドとし
+て `spam-check-bogofilter'、`spam-check-ifile' およ
+び `spam-check-stat' を使う場合は、さらに変
+数 `nnimap-split-download-body' を `t' に設定しなければなりま
+せん。これらの spam バックエンドがメッセージの本文を「走査」(scan) する
+ことができれば、非常に有用です。ディフォルトでは nnimap バックエンドはメッ
+セージヘッダーだけを取り込みますが、`nnimap-split-download-body' で
+メッセージの本文も取り込むことを指示することができます。それ
+は IMAP を遅くしてしまうので、ディフォルトでは設定されません。
+そして、利用者に代わってそれを行なうことは、適切な判断ではありません。
+*Note Splitting in IMAP::.
+
+`spam-use-*' 変数を使って、`spam-split' が使う一つ以上の spam バックエ
+ンドを設定しなければなりません。*Note Spam Back Ends::.  通常
+`spam-use-*' は、あなたがこのようにして設定したすべての spam バックエン
+ドを、単に使います。しかし、それらのいくつかだけを使うように、
+`spam-split' に指示することもできます。それがなぜ役に立つのかって?
+Spam バックエンドとして `spam-use-regex-headers' と
+`spam-use-blackholes' を使っていて、かつ以下の分割規則を使っているとす
+ると:
+
+      nnimap-split-fancy '(|
+                           (any "ding" "ding")
+                           (: spam-split)
+                           ;; ディフォルトのメールボックス。
+                           "mail")
+
+問題は ding 宛てのメッセージをすべて ding フォルダーに入れようとしてい
+ることです。でもそれは、ding メーリングリスト宛てに送られた明らかな
+spam (例えば SpamAssassin と `spam-use-regex-headers' によって検出され
+る spam) を許してしまうでしょう。一方、いくつかの ding 宛てのメッセージ
+はブラックホールリストに載っているメールサーバーからやって来るので、
+ding の規則より前に `spam-split' を発動することができません。
+
+解決策は SpamAssassin ヘッダーに ding の規則を置き換えさせ、ding の規則
+の後で別の `spam-split' の規則 (二つ目の正規表現によるヘッダーの検査を
+含む) を作動させることです。これはパラメーターを `spam-split' に渡すこ
+とによって行なわれます:
+
+     nnimap-split-fancy
+           '(|
+             ;; `spam-use-regex-headers' で検出された
+             ;; spam は `regex-spam' へ。
+             (: spam-split "regex-spam" 'spam-use-regex-headers)
+             (any "ding" "ding")
+             ;; spam-split で検出された他のすべての spam は
+             ;; `spam-split-group' へ。
+             (: spam-split)
+             ;; ディフォルトのメールボックス。
+             "mail")
+
+これは、あなたの特別な必要に応じた特定の `spam-split' 検査を起動し、そ
+れらの検査の結果で特定の spam グループを指し示します。すべてのメールに
+対して、すべての spam 検査を行なう必要はありません。これが良いもう一つ
+の理由は、分割規則を設定してあるメーリングリスト宛てのメッセージに対し
+て、資源集約的なブラックホール・チェックを実行する必要がないということ
+です。さらに、nnmail の分割のために nnimap のものとは異なる spam 検査の
+やり方を設定することもできるでしょう。気が狂うー。
+
+使用するどんな spam バックエンドにも `spam-use-*' 変数を設定するべきで
+す。そのわけは、`spam.el' を読み込むときに、どんな `spam-use-xyz' 変数
+を設定したかによって、何らかの条件付きの読み込みが行なわれるからです。
+*Note Spam Back Ends::.
+
+
+
+File: gnus-ja.info, Node: Detecting Spam in Groups, Next: Spam and Ham Processors, Prev: Filtering Incoming Mail, Up: Spam Package
+
+グループにおける spam の検出
+----------------------------
+
+グループに入ったときに spam を検出するためには、そのグループの
+`spam-autodetect' と `spam-autodetect-methods' グループパラメーターを設
+定して下さい。これらは通常とおり `G c' か `G p' で行なうことができます
+(*Note Group Parameters::)。
+
+使用するどんな spam バックエンドにも `spam-use-*' 変数を設定するべきで
+す。そのわけは、`spam.el' を読み込むときに、どんな `spam-use-xyz' 変数
+を設定したかによって、何らかの条件付きの読み込みが行なわれるからです。
+
+ディフォルトでは、まだ読まれたことがない記事だけが spam かどうかを検査
+されます。`spam-autodetect-recheck-messages' を `t' に設定することによっ
+て、グループにあるすべての記事の再検査を Gnus に強制することができます。
+
+Spam の検査に `spam-autodetect' の手段を使う場合は、異なるグループで違
+う spam 検出手段を指定することができます。例えば `ding' グループは自動
+検出の手段として `spam-use-BBDB' を持つことができる一方で、`suspect' グ
+ループでは `spam-use-blacklist' および `spam-use-bogofilter' の手段を使
+うことができます。`spam-split' と違って検査の *順序* を制御できませんが、
+これはたぶん重要ではありません。
+
+
+
+File: gnus-ja.info, Node: Spam and Ham Processors, Next: Spam Package Configuration Examples, Prev: Detecting Spam in Groups, Up: Spam Package
+
+Spam と Ham プロセッサー
+------------------------
+
+Spam と ham プロセッサーには、グループバッファを抜け出るときに行なう動
+作に関して特別な性質があります。Spam プロセッサーは spam メッセージに作
+用し、ham プロセッサーは ham メッセージに作用するということです。現在の
+ところ、これらのプロセッサーの主な役割は、Bogofilter (*Note
+Bogofilter::) や Spam 統計パッケージのような辞書に基づいた spam バック
+エンドの辞書を更新することです (*Note Spam Statistics Filtering::)。
+
+それぞれのグループに適用される spam と ham プロセッサーは、そのグループ
+の `spam-process' グループパラメーターで決定されます。このグループパラ
+メーターが定義されていないと、それらは変数
+`gnus-spam-process-newsgroups' によって決められます。
+
+Gnus はあなたが受け取った spam から学びます。あなたは一つ以上の spam グ
+ループに spam 記事を集めて、変数 `spam-junk-mailgroups' を適切に設定も
+しくはカスタマイズしなければなりません。また、spam を含めるグループを、
+そのグループパラメーター `spam-contents' を
+`gnus-group-spam-classification-spam' に設定するか、またはそれに対応す
+る変数 `gnus-spam-newsgroup-contents' をカスタマイズすることによって宣
+言することができます。`spam-contents' グループパラメーターと
+`gnus-spam-newsgroup-contents' 変数は、それらの種別を
+`gnus-group-spam-classification-ham' に設定することによって、*ham* グルー
+プであることを宣言するために使うこともできます。グループが
+`spam-junk-mailgroups', `spam-contents' または
+`gnus-spam-newsgroup-contents' であることを示す分類が行なわれていないと、
+それらは *未分類* であると解釈されます。すべてのグループはディフォルト
+では未分類です。
+
+Spam グループでは、ディフォルトですべてのメッセージが spam であると解釈
+されます: そのグループに入ると、それらに `$' 印 (`gnus-spam-mark') が付
+きます。あるメッセージを見て、いったんそれに spam の印を付けても、後で
+取り消せば、その後そのグループに入ったときに、それには spam 印は付きま
+せん。`spam-mark-only-unseen-as-spam' パラメーターを `nil' にすれば、そ
+ういう動作をやめさせる、つまりすべての未読メッセージに spam 印が付くよ
+うにすることができます。そのグループの概略バッファーにいるときに、やっ
+ぱり spam ではなかったとわかった記事があったら、それらのすべてから `$'
+印を消さなければなりません。`$' 印を消すには `M-u' でその記事を「未読」
+にするか、あるいは `d' を使って spam ではないものとして読んだことを宣言
+すれば良いでしょう。グループを抜けるとき、すべての spam 印 (`$') が付い
+た記事は spam プロセッサーに送られ、それらを spam の標本として学習しま
+す。
+
+メッセージは他のいろいろな方法によっても消去されるかもしれないし、
+`ham-marks' グループパラメーターが無効にされなければ、`R' 印と `r' 印、
+および `X' 印と `K' は、`Y' 印と同様に、すべて spam では無い記事に関連
+付けられるものと解釈されます (それぞれ `R' はディフォルトの既読の印、
+`r' 明示的な消去の印、`X' は自動的な削除の印、`K' は明示的な削除の印、
+そして `Y' は低いスコアのため印です)。この仮定は、特に真性の spam を検
+出するために消去 (kill) ファイルかスコアファイルを使っている場合は、間
+違いかもしれません。そうであれば `ham-marks' グループパラメーターを調整
+するべきです。
+
+ -- Variable: ham-marks
+     このグループまたはトピックパラメーターを ham であると解釈したい印
+     のリストに設定することができます。ディフォルトでは、消去
+     (deleted)、既読 (read)、削除 (killed)、kill ファイルにあるもの
+     (kill-filed) および低いスコア (low-score、既読だけれども spam では
+     ないと考える) 印のリストです。Ham 印のリストに可視 (tick) 印を含め
+     ることが役立つこともあります。未読印を ham 印にすることは、通常そ
+     れが分類されていないことを表すので、勧められません。しかし、あなた
+     がそれを行なうことはできるし、私たちに不満はありません。
+
+ -- Variable: spam-marks
+     このグループまたはトピックパラメーターを spam であると解釈したい印
+     のリストに設定することができます。ディフォルトでは spam 印だけを持
+     つリストです。それを変更することは勧めませんが、本当にそうしたいの
+     ならご勝手に。
+
+グループを抜けるときに (そのグループが *何* であっても)、その
+`spam-contents' の分類にかかわらず、spam 印が付いているすべての記事は
+spam プロセッサーに送られ、それらを spam の標本として学習します。意図的
+にたくさんの消去を行なうと、たまにそれは見ていない `K' 印が付いた記事群
+で終わるかもしれません。そしてそれらは偶然に spam を含んでいるかもしれ
+ません。最も良いのは、本当の spam に `$' が付いていて、他に何も印が無い
+ことを確かめることです。
+
+*Spam* グループを抜けるときに、spam 印が付いているすべての記事には
+spam プロセッサーで処理した後で期限切れ消去の印が付けられます。これは
+*未分類* または *ham* グループに対しては行なわれません。さらに spam グ
+ループにあるどの *ham* 記事も、`ham-process-destination' グループパラメー
+ターが示す場所か `gnus-ham-process-destinations' 変数の中で合致する場所
+のどちらかに移されます。後者はグループ名に合致する正規表現のリストです
+(`M-x customize-variable RET gnus-ham-process-destinations' によってこ
+の変数をカスタマイズするのが最も簡単です)。変数を手でカスタマイズする方
+が好きな人のために言っておくと、それぞれのグループ名のリストは普通の
+Lisp の list です。`ham-process-destination' パラメーターが設定されてい
+ないと、ham 記事は移動させられません。
+`spam-mark-ham-unread-before-move-from-spam-group' パラメーターが設定さ
+れていると、ham 記事には移動させられる前に未読の印が付けられます。
+
+例えば NNTP のような読み込み専用バックエンドであるために ham が移動でき
+ない場合、それはコピーされます。
+
+グループごとに、または正規表現に合致するグループごとに、複数の移動先を
+指定できることに注目して下さい!  これによって ham 記事を正規のメールグ
+ループと *ham トレーニング* グループに送ることができます。
+
+*Ham* グループを抜けるときに、ham 印が付いているすべての記事は ham プロ
+セッサーに送られ、それらを spam ではない標本として学習します。
+
+変数 `spam-process-ham-in-spam-groups' はディフォルトでは `nil' です。
+Spam グループで見つかった ham がプロセッサーに送られるようにしたい場合
+は `t' にして下さい。通常これは行なわれません。その代わり、あなたが自分
+で ham 記事を ham グループに送って、そこで処理することが想定されていま
+す。
+
+変数 `spam-process-ham-in-nonham-groups' はディフォルトでは `nil' です。
+Ham ではない (spam または未分類の) グループで見つかった ham がプロセッ
+サーに送られるようにしたい場合は `t' にして下さい。通常これは行なわれま
+せん。その代わり、あなたが自分で ham 記事を ham グループに送って、そこ
+で処理することが想定されています。
+
+*Ham* または *未分類* グループを抜けるときに、すべての *spam* 記事は、
+`spam-process-destination' グループパラメーターが示す場所か
+`gnus-spam-process-destinations' 変数の中で合致する場所のどちらかに移さ
+れます。後者はグループ名に合致する正規表現のリストです (`M-x
+customize-variable RET gnus-spam-process-destinations' によってこの変数
+をカスタマイズするのが最も簡単です)。変数を手でカスタマイズする方が好き
+な人のために言っておくと、それぞれのグループ名のリストは普通の Lisp の
+list です。`spam-process-destination' パラメーターが設定されていないと、
+spam 記事は単に期限切れ消去されます。グループ名は完全形であること、すな
+わちグループバッファーでグループ名の前に `nntp:servername' のようなもの
+が見える場合は、ここでもそれを使う必要があります。
+
+例えば NNTP のような読み込み専用バックエンドであるために spam が移動で
+きない場合、それはコピーされます。
+
+グループごとに、または正規表現に合致するグループごとに、複数の移動先を
+指定できることに注目して下さい!  これによって spam 記事を正規のメールグ
+ループと *spam トレーニング* グループに送ることができます。
+
+Ham と spam に関する問題は、Gnus がディフォルトではこの処理を追跡してく
+れないことです。複数回にわたって処理することを回避するために、
+`spam.el' が `gnus-registry.el' を使って処理された記事を追跡するように、
+`spam-log-to-registry' 変数を有効にして下さい。`gnus-registry.el' が登
+録する数を制限してしまうと、制限が無い場合のように動作しないことを覚え
+ておいて下さい。
+
+Spam グループにある、まだ読まれたことが無い記事だけに spam の印を付けた
+い場合は、この変数をセットして下さい。ディフォルトではセットされていま
+す。これを `nil' にすると、未読の記事にも spam 印が付けられます。
+
+Ham が spam グループから移動される前に印を消したい場合は、この変数をセッ
+トして下さい。これは ham に印を付けるために可視 (tick) 印 (`!') のよう
+なものを使う場合に、とても役に立ちます。記事はあたかもそれがメールサー
+バーから来たばかりのように、無印で `ham-process-destination' に置かれる
+でしょう。
+
+この変数は `spam.el' が spam の自動検出を行なう場合に、まだ読まれたこと
+が無い記事だけか、またはすべての未読記事のどちらに対して spam 検査を行
+なうかを指示します。これはそのままにしておくことを勧めます。
+
+
+
+File: gnus-ja.info, Node: Spam Package Configuration Examples, Next: Spam Back Ends, Prev: Spam and Ham Processors, Up: Spam Package
+
+Spam パッケージの設定例
+-----------------------
+
+
+Ted の設定
+..........
+
+From Ted Zlatanov <tzz@lifelogs.com>.
+
+     ;; `gnus-registry-split-fancy-with-parent' と spam の自動検出のため。
+     ;; 詳細は `gnus-registry.el' を参照。
+     (gnus-registry-initialize)
+     (spam-initialize)
+
+     (setq
+      spam-log-to-registry t ;; Spam の自動検出のため。
+      spam-use-BBDB t
+      spam-use-regex-headers t ;; X-Spam-Flag (SpamAssassin) を捕まえる。
+      ;; 名前に `spam' を含むすべてのグループには spam 記事がある。
+      gnus-spam-newsgroup-contents '(("spam"
+                                      gnus-group-spam-classification-spam))
+      ;; これらの docstring を参照。
+      spam-move-spam-nonspam-groups-only nil
+      spam-mark-only-unseen-as-spam t
+      spam-mark-ham-unread-before-move-from-spam-group t
+      nnimap-split-rule 'nnimap-split-fancy
+      ;; あなたの設定に追加する前に、これが何をするか理解せよ!
+      nnimap-split-fancy '(|
+                           ;; References を親まで辿ってそれらのグループ
+                           ;; を入れる。
+                           (: gnus-registry-split-fancy-with-parent)
+                           ;; これはサーバー側の SpamAssassin タグを捕ま
+                           ;; える。
+                           (: spam-split 'spam-use-regex-headers)
+                           (any "ding" "ding")
+                           ;; Spam 記事はディフォルトで `spam' に行く
+                           ;; ことに注意。
+                           (: spam-split)
+                           ;; ディフォルトのメールボックス。
+                           "mail"))
+
+     ;; G p で設定した私のパラメーター。
+
+     ;; すべての nnml グループと、`nnimap+mail.lifelogs.com:train' と
+     ;; `nnimap+mail.lifelogs.com:spam' を除いたすべての nnimap グループ
+     ;; のためのパラメーター:
+     ;; それは手動で検出したはずなので、どの spam も nnimap のトレーニン
+     ;; ググループに送り込む。
+
+     ((spam-process-destination . "nnimap+mail.lifelogs.com:train"))
+
+     ;; すべての NNTP グループのためのパラメーター:
+     ;; Spam を blacklist で、ham を BBDB で自動検出。
+     ((spam-autodetect-methods spam-use-blacklist spam-use-BBDB)
+     ;; すべての spam をトレーニンググループに送る。
+      (spam-process-destination . "nnimap+mail.lifelogs.com:train"))
+
+     ;; 私が spam を自動検出させたい、ほんのいくつかの NNTP グループ
+     ;; のためのパラメーター:
+     ((spam-autodetect . t))
+
+     ;; 私の nnimap `nnimap+mail.lifelogs.com:spam' グループ (これは
+     ;; spam グループ) のためのパラメーター:
+
+     ((spam-contents gnus-group-spam-classification-spam)
+
+      ;; どんな spam も私が ham 印を付けなければ
+      ;; `nnimap+mail.lifelogs.com:train' に送り込まれる。(前述の
+      ;; `gnus-spam-newsgroup-contents' の設定により、すべての
+      ;; まだ読まれたことが無いメッセージを読むとそうなる。)
+
+      (spam-process-destination "nnimap+mail.lifelogs.com:train")
+
+      ;; どんな ham も私の `nnimap+mail.lifelogs.com:mail' フォルダー
+      ;; に送り込まれるが、私の `nnimap+mail.lifelogs.com:trainham'
+      ;; フォルダーにもトレーニングのために送り込む。
+
+      (ham-process-destination "nnimap+mail.lifelogs.com:mail"
+                               "nnimap+mail.lifelogs.com:trainham")
+      ;; このグループでは `!' 印が付いているものだけが ham。
+      (ham-marks
+       (gnus-ticked-mark))
+      ;; グループを抜けるときに blacklist に送信者を覚えさせる--これは
+      ;; 明らかに不要で、単に私の鬱憤を晴らすためにある。
+      (spam-process (gnus-group-spam-exit-processor-blacklist)))
+
+     ;; その後 IMAP サーバー上で、私は SpamAssassin が spam を
+     ;; 認識するトレーニングのために `train' グループを、ham を
+     ;; 認識するトレーニングのために `trainham' グループを使う。
+     ;; でも Gnus はそういうことはやってくれない。
+
+
+サーバー上の IMAP サーバーで、統計的な濾過器と `spam.el' を使う
+...............................................................
+
+From Reiner Steib <reiner.steib@gmx.de>.
+
+私のプロバイダーは (IMAP) メールサーバー上で (DCC と連係した)
+bogofilter を立ち上げました。認識された spam は `spam.detected' へ行き、
+残りには通常の濾過規則が適用される、すなわち `some.folder' か `INBOX'
+に行きます。誤検出と見逃しのトレーニングは、それぞれ `training.ham' ま
+たは `training.spam' に記事をコピーするか移動させることによって行なわれ
+ます。サーバー上の cron ジョブが、それらを適切な ham または spam オプショ
+ンとともに bogofilter に与え、`training.ham' および `training.spam' フォ
+ルダーからそれらを削除します。
+
+以下の `gnus-parameters' の要素群によって、`spam.el' はほとんどの仕事を
+私のためにこなします:
+
+        ("nnimap:spam\\.detected"
+         (gnus-article-sort-functions '(gnus-article-sort-by-chars))
+         (ham-process-destination "nnimap:INBOX" "nnimap:training.ham")
+         (spam-contents gnus-group-spam-classification-spam))
+        ("nnimap:\\(INBOX\\|other-folders\\)"
+         (spam-process-destination . "nnimap:training.spam")
+         (spam-contents gnus-group-spam-classification-ham))
+
+   * The Spam folder: `spam.detected' フォルダーにおいて、私は誤検出
+     (すなわち bogofilter か DCC が spam であると誤って判定した正当なメー
+     ル) のチェックをしなければなりません。
+
+     `gnus-group-spam-classification-spam' の項のために、すべてのメッセー
+     ジには spam の印 (`$') が付けられます。誤検出を見つけたら、私は記
+     事にいくつかの他の ham 印 (`ham-marks', *Note Spam and Ham
+     Processors::) を付けます。グループを出るとき、それらの記事は
+     `INBOX' (私が記事を置いておきたいところ) と `training.ham'
+     (bogofilter のトレーニング用) の両方のグループにコピーされ、
+     `spam.detected' フォルダーから削除されます。
+
+     `gnus-article-sort-by-chars' の項は、私の誤検出の発見を簡単にしま
+     す。私は、すべて似たサイズの、たくさんのワーム (sweN, ...) を受け
+     取ります。それらをサイズ (つまり文字数) でまとめると、他の誤検出を
+     見つけやすくなるのです。(もちろん厳密にはワームは spam (UCE, UBE)
+     ではありません。ともあれ、それらの要らないメールを濾過するのに
+     bogofilter は私にとって優秀な道具です。)
+
+   * Ham folders: 私の ham フォルダーで、認識されなかった spam メール
+     (見逃し) を見つけたときはいつでも、私は単に `S x'
+     (`gnus-summary-mark-as-spam') を叩きます。グループを出るとき、それ
+     らのメッセージは `training.spam' に移されます。
+
+
+`spam-report.el' で Gmane グループの spam を報告する
+....................................................
+
+From Reiner Steib <reiner.steib@gmx.de>.
+
+以下の `gnus-parameters' に納めた要素によって、`S x'
+(`gnus-summary-mark-as-spam') で `gmane.*' グループの spam 記事に印を付
+け、グループを出るときに Gmane に報告します:
+
+        ("^gmane\\."
+         (spam-process (gnus-group-spam-exit-processor-report-gmane)))
+
+加えて、私は news.gmane.org からではなくローカルニュースサーバー
+(leafnode) を通して記事を読んでいるので、`(setq
+spam-report-gmane-use-article-number nil)' を使っています。つまり、記事
+番号が news.gmane.org におけるものと異なるので、正しい記事番号を見つけ
+るために `spam-report.el' に `X-Report-Spam' ヘッダーを検査させなければ
+なりません。
+
+
+
+File: gnus-ja.info, Node: Spam Back Ends, Next: Extending the Spam package, Prev: Spam Package Configuration Examples, Up: Spam Package
+
+Spam バックエンド
+-----------------
+
+Spam パッケージは spam を検出するための様々なバックエンドを提供します。
+それぞれのバックエンドでは、spam を検出する手段の組 (*Note Filtering
+Incoming Mail::, *Note Detecting Spam in Groups::) と spam および ham
+プロセッサーの対が定義されています (*Note Spam and Ham Processors::)。
+
+* Menu:
+
+* Blacklists and Whitelists::
+* BBDB Whitelists::
+* Gmane Spam Reporting::
+* Anti-spam Hashcash Payments::
+* Blackholes::
+* Regular Expressions Header Matching::
+* Bogofilter::
+* SpamAssassin back end::
+* ifile spam filtering::
+* Spam Statistics Filtering::
+* SpamOracle::
+
+
+
+File: gnus-ja.info, Node: Blacklists and Whitelists, Next: BBDB Whitelists, Prev: Spam Back Ends, Up: Spam Back Ends
+
+ブラックリストとホワイトリスト
+..............................
+
+ -- Variable: spam-use-blacklist
+     入ってくるメールを分割するときにブラックリストを使いたい場合は、こ
+     の変数を `t' に設定して下さい。送信者がブラックリストに載っている
+     メッセージは `spam-split-group' に送られます。これは、送信者が
+     spammer であることが定義されているメールに対してだけ動作する、明示
+     的な濾過器です。
+
+ -- Variable: spam-use-whitelist
+     入ってくるメールを分割するときにホワイトリストを使いたい場合は、こ
+     の変数を `t' に設定して下さい。送信者がホワイトリストに載っていな
+     いメッセージは、次の spam-split 規則 (による検査工程) に送られます。
+     これは、ホワイトリストに載っていない誰かのメッセージは spam とも
+     ham とも見なされないことを意味する、明示的な濾過器です。
+
+ -- Variable: spam-use-whitelist-exclusive
+     送信者がホワイトリストに載っていないすべてのメッセージが spam だと
+     見なされることを意味する暗黙の濾過器としてホワイトリストを使いたい
+     場合は、この変数を `t' にして下さい。注意して使って下さい。
+
+ -- Variable: gnus-group-spam-exit-processor-blacklist
+     このシンボルを、グループパラメーターのカスタマイズによってグループ
+     の `spam-process' パラメーターに加えるか、または
+     `gnus-spam-process-newsgroups' 変数に加えて下さい。このシンボルが
+     グループの `spam-process' パラメーターに加えられると、spam 印が付
+     いた記事の送信者がブラックリストに追加されます。
+
+     *警告*
+
+     旧式の `gnus-group-spam-exit-processor-blacklist' の代わりに
+     `(spam spam-use-blacklist)' を使うことを推奨します。すべて同等に動
+     作することは保証されます。
+
+ -- Variable: gnus-group-ham-exit-processor-whitelist
+     このシンボルを、グループパラメーターのカスタマイズによってグループ
+     の `spam-process' パラメーターに加えるか、または
+     `gnus-spam-process-newsgroups' 変数に加えて下さい。このシンボルが
+     グループの `spam-process' パラメーターに加えられると、ham 印が付い
+     た *ham* グループの記事の送信者がホワイトリストに追加されます。
+
+     *警告*
+
+     旧式の `gnus-group-ham-exit-processor-whitelist' の代わりに `(ham
+     spam-use-whitelist)' を使うことを推奨します。すべて同等に動作する
+     ことは保証されます。
+
+ブラックリストは、あなたが spam の送信者だと考えるアドレスに合致する正
+規表現のリストです。例えば `vmadmin.com' の誰からでも来るメールを阻止す
+るには、あなたのブラックリストに `vmadmin.com' を入れて下さい。空のブラッ
+クリストで始めましょう。ブラックリストの各項目は Emacs の正規表現の構文
+を使います。
+
+逆に、ホワイトリストは何のアドレスが正当だと考えられるかを告げます。ホ
+ワイトリストにあるアドレスからやって来たすべてのメッセージは、非-spam
+だと見なされます。*Note BBDB Whitelists:: も見て下さい。ホワイトリスト
+の各項目は Emacs の正規表現の構文を使います。
+
+ブラックリストとホワイトリストのファイルの所在は、`spam-directory' 変数
+(ディフォルトは `~/News/spam') または直接 `spam-whitelist' と
+`spam-blacklist' 変数でカスタマイズすることができます。ホワイトリストと
+ブラックリストのファイルは、ディフォルトでは `spam-directory' のディレ
+クトリーにあり、それぞれ `whitelist' と `blacklist' という名前が付けら
+れます。
+
+
+

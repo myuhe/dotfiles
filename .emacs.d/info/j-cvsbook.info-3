@@ -1,0 +1,1142 @@
+これは j-cvsbook.info、j-main.texi より makeinfo バージョン 4.2
+によって作成されました。
+
+START-INFO-DIR-ENTRY
+* CVS Book: (cvsbook).          A CVS tutorial and reference.
+END-INFO-DIR-ENTRY
+
+Copyright (C) 1999 Karl Fogel <kfogel@red-bean.com>
+
+This document is free software; you can redistribute and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation; either version 2, or (at your option) any
+later version.
+
+This document is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+General Public License for more details.
+
+This manual describes how to use and administer CVS (Concurrent Versions
+System).  It is part of a larger work entitled `Open Source Development
+With CVS'; please see the introduction for details.
+
+This is version 1.12 of this manual.
+
+
+File: j-cvsbook.info,  Node: Getting Snapshots (Dates And Tagging),  Next: Acceptable Date Formats,  Prev: Avoiding Option Fatigue,  Up: Other Useful CVS Commands
+
+Getting Snapshots (Dates And Tagging)
+-------------------------------------
+
+バグレポートが舞い込んできて壊れた状態になったプログラムの話に戻りましょ
+う。開発者は突然、最後のリリースの時点のプロジェクト全体にアクセスしなく
+てはなりません。ファイルはあれもこれも変更してあって、おまけにリビジョン
+番号がファイルによってバラバラであろうとも、です。ログメッセージを見て、
+ファイルごとにリリースのときのリビジョン番号はどれだったか探して、それぞ
+れ -r でリビジョン番号指定して update 走らせて、なんて、考えただけで時間
+食いそうです。中規模から大規模のプロジェクト(数十から数百のファイルがあ
+るような…)でそんなことをして、ふりまわされたくないでしょう。
+
+そこで CVS はプロジェクト中の過去のリビジョンをひとまとめにアクセスでき
+る方法を提供しています。実際には2つの方法が用意されています。ひとつは日
+付指定で、コミットされた時刻をもとにリビジョンを選択する方法。もうひとつ
+はタグ指定で、過去にプロジェクトのスナップショットとしてマークをつけたも
+のにアクセスする方法。
+
+状況によってどちらを選択するかが決まってきます。日付指定アクセスは
+update に -D フラグを渡すことによって実行できます。-r に似ていますがリビ
+ジョン番号のかわりに日付を指定します:
+
+     floss$ cvs -q update -D "1999-04-19"
+     U hello.c
+     U a-subdir/subsubdir/fish.c
+     U b-subdir/random.c
+     floss$
+
+-D オプションを指定すると、update は指定された日付のなかで一番大きいリビ
+ジョンのファイルを取ってきて、必要があれば作業コピー中のファイルをそのリ
+ビジョンで置き換えます。
+
+日付だけでなく、時刻も指定できます(したほうがいいことも多いです)。たとえ
+ば上のコマンドでは全部リビジョン1.1を取ってきています(表示された3つのファ
+イルだけが変更されていますが、それは他のファイルが全て1.1のままだからで
+す)。hello.c のステータスを見て確認しましょう:
+
+     floss$ cvs -Q status hello.c
+     ===================================================================
+     File: hello.c                 Status: Up-to-date
+        Working revision:          1.1.1.1 Sat Apr 24 22:45:03 1999
+        Repository revision:       1.1.1.1 /usr/local/cvs/myproj/hello.c,v
+        Sticky Date:               99.04.19.05.00.00
+     floss$
+
+でもこの章の最初のほうにちょっと戻ってログメッセージを見てみると、
+hello.c のリビジョン1.2は確かに1999/4/19にコミットされているはずなのに。
+どうしてリビジョン1.2ではなく1.1を取ってきたのでしょう?
+
+これは、"1999-04-19" という日付が「1999-04-19が始まる真夜中」、つま
+りその日の最初の瞬間、という意味に解釈されてしまうことが問題なのです。こ
+れはたぶん、望んだことではないですね。1.2
+はその日のもうすこしあとでコミッ
+トされました。日付をもうすこし正確に指定して、リビジョン1.2を取ってきま
+しょう:
+
+     floss$ cvs -q update -D "1999-04-19 23:59:59"
+     U hello.c
+     U a-subdir/subsubdir/fish.c
+     U b-subdir/random.c
+     floss$ cvs status hello.c
+     ===================================================================
+     File: hello.c                 Status: Locally Modified
+        Working revision:  1.2     Sat Apr 24 22:45:22 1999
+        Repository revision:       1.2     /usr/local/cvs/myproj/hello.c,v
+        Sticky Tag:                (none)
+        Sticky Date:               99.04.20.04.59.59
+        Sticky Options:    (none)
+     floss$
+
+こんなもんでしょうか。Sticky Date の行の日付と時刻をよく見てみると、午前
+4:59:59を表示しているように見えますね、コマンドでは 11:59 を指定したはず
+なのに(sticky というのが何なのかというのは、あとで説明します)。御推察の
+通り、このずれは地方時と Universal Coordinated Time (グリニッジ標準時)の
+差が原因です。リポジトリは日付を Universal Time で保存しますが、クライア
+ント側の CVS は地方時を仮定します。今回の -D の場合、リポジトリ内の時刻
+を比較することに興味があって、手元のシステムの時刻のことは気にしていない
+ので、少々運が悪かったですね。コマンド中に GMT を指定すれば回避できます:
+
+     floss$ cvs -q update -D "1999-04-19 23:59:59 GMT"
+     U hello.c
+     floss$ cvs -q status hello.c
+     ===================================================================
+     File: hello.c                 Status: Up-to-date
+        Working revision:  1.2     Sun Apr 25 22:38:53 1999
+        Repository revision:       1.2     /usr/local/cvs/myproj/hello.c,v
+        Sticky Tag:                (none)
+        Sticky Date:               99.04.19.23.59.59
+        Sticky Options:    (none)
+     floss$
+
+いかがでしょう。こうすることで作業コピーは 4/19 の最終のコミットへと戻り
+ました(その日の最後の1秒のあいだにコミットしたのなら別ですが、しなかった
+ですから)。
+
+今 update を走らせたらどうなるんでしょう?
+
+     floss$ cvs update
+     cvs update: Updating .
+     cvs update: Updating a-subdir
+     cvs update: Updating a-subdir/subsubdir
+     cvs update: Updating b-subdir
+     floss$
+
+何も起きません。しかし、少なくとも3つのファイルに関してはもっと新しいバー
+ジョンがあったはずです。なぜそれらが作業コピーに入ってこないのでしょう。
+
+ここで「sticky」の出番です。-D
+フラグでアップデート(「ダウンデート」かな?)
+すると、作業コピーは永続的にその日付以前に制限されることになります。CVS
+用語で言うと、その作業コピーは「スティッキーデート」が設定された、という
+ことになります。作業コピーが一度スティッキーになると、そうでなくなるよう
+に指示されるまでスティッキーになったままです。ですから、続いて update を
+実行しても自動的に最新のリビジョンを取ってきたりはしないのです。スティッ
+キーかどうかは、cvs status を実行するか、CVS/Entries ファイルを調べれば
+わかります:
+
+     floss$ cvs -q update -D "1999-04-19 23:59:59 GMT"
+     U hello.c
+     floss$ cat CVS/Entries
+     D/a-subdir////
+     D/b-subdir////
+     D/c-subdir////
+     /README.txt/1.1.1.1/Sun Apr 18 18:18:22 1999//D99.04.19.23.59.59
+     /hello.c/1.2/Sun Apr 25 23:07:29 1999//D99.04.19.23.59.59
+     floss$
+
+ここで hello.c を変更してコミットしようとすると
+
+     floss$ cvs update
+     M hello.c
+     floss$ cvs ci -m "trying to change the past"
+     cvs commit: cannot commit with sticky date for file 'hello.c'
+     cvs [commit aborted]: correct above errors first!
+     floss$
+
+CVS はコミットさせてくれません。それは時間を遡って過去を変えようとするよ
+うなものだからです。CVS はあらゆる記録をとろうとし、その結果、その操作を
+許可しないのです。
+
+しかしこれは CVS がその日以来コミットされてきたリビジョンを知らないとい
+う意味ではありません。スティッキーデートの設定された作業コピーも、未来の
+リビジョンを含めて比較できます。
+
+     floss$ cvs -q diff -c -r 1.5 hello.c
+     Index: hello.c
+     ===================================================================
+     RCS file: /usr/local/cvs/myproj/hello.c,v
+     retrieving revision 1.5
+     diff -c -r1.5 hello.c
+     *** hello.c   1999/04/24 22:09:27     1.5
+     --- hello.c   1999/04/25 00:08:44
+     ***************
+     *** 3,9 ****
+       void
+       main ()
+       {
+         printf ("Hello, world!\n");
+     -   printf ("between hello and goodbye\n");
+         printf ("Goodbye, world!\n");
+       }
+     --- 3,9 --
+       void
+       main ()
+       {
+     +   /* this line was added to a downdated working copy */
+         printf ("Hello, world!\n");
+         printf ("Goodbye, world!\n");
+       }
+
+diff を見ると、1999/4/19 現在において hello の行と gooodbye の行の間の行
+はまだ追加されていなかったということがわかります。作業コピーに加えた変更
+も表示されていますね(コード断片の前にあるコメントを追加しました)。
+
+スティッキーデート(やほかのスティッキー)を取り除くこともできます。update
+で -A を指定してください(-A はリセットという意味です、理由は聞かないでく
+ださい)、作業コピーが最新のリビジョンに戻ります:
+
+     floss$ cvs -q update -A
+     U hello.c
+     floss$ cvs status hello.c
+     ===================================================================
+     File: hello.c                 Status: Up-to-date
+        Working revision:  1.5     Sun Apr 25 22:50:27 1999
+        Repository revision:       1.5     /usr/local/cvs/myproj/hello.c,v
+        Sticky Tag:                (none)
+        Sticky Date:               (none)
+        Sticky Options:    (none)
+     floss$
+
+
+File: j-cvsbook.info,  Node: Acceptable Date Formats,  Next: Marking A Moment In Time (Tags),  Prev: Getting Snapshots (Dates And Tagging),  Up: Other Useful CVS Commands
+
+Acceptable Date Formats
+-----------------------
+
+CVS は日付の指定の形式については幅広く受け入れます。前の例で使った形式は
+ISO 8601 のフォーマット(International Standards Organization standard
+#8601 のこと、www.saqqara.demon.co.uk/datefmt.htm も参照のこと)なのです
+が、これを使えばうまくいかないことはないでしょう。電子メールの日付フォー
+マット(RFC 822 と RFC 1123、 www.rfc-editor.org/rfc/ を参照のこと)も使え
+ます。現在の日付から相対的に日付を指定する曖昧な英単語すら使えます。
+
+全てのフォーマットを使える必要はないですが、CVS が何を受け付けるか理解す
+るためにいくつかの例を示します:
+
+     floss$ cvs update -D "19 Apr 1999"
+     floss$ cvs update -D "19 Apr 1999 20:05"
+     floss$ cvs update -D "19/04/1999"
+     floss$ cvs update -D "3 days ago"
+     floss$ cvs update -D "5 years ago"
+     floss$ cvs update -D "19 Apr 1999 23:59:59 GMT"
+     floss$ cvs update -D "19 Apr"
+
+日付を囲むダブルクオートは、日付が空白を含んでいても、Unix シェルがそれ
+をひとつの引数として扱うようにするためにつけています。空白を含んでいなく
+ても害はないのでいつも使うようにするのがよいでしょう。
+
+
+File: j-cvsbook.info,  Node: Marking A Moment In Time (Tags),  Prev: Acceptable Date Formats,  Up: Other Useful CVS Commands
+
+Marking A Moment In Time (Tags)
+-------------------------------
+
+日付を指定してアクセスする方法は、単なる時間の経過が主な関心事であれば便
+利かもしれません。しかし、本当は特定のイベントが起こった時点でのプロジェ
+クトの状態にアクセスしたい、ということのほうが多いと思います。それはたと
+えばリリースの時点であったり、ソフトウェア開発が安定したある時点であった
+り、主要な機能を追加または削除した時点であったりするわけです。
+
+そのイベントが起こった日付を思い出そうとしたり、ログメッセージを読んでそ
+の日付を推測したりするのは、さぞかし退屈な作業でしょう。おそらく、そのよ
+うなイベントは重要なのでしょうから、リビジョン履歴のなかにそのようにきち
+んと記録されています。CVS でそのようなマークをつける方法は "タグ付け
+(tagging)" といいます。
+
+タグはコミットとは違い、ファイルの特定の変更を記録するわけではなくて、開
+発者のファイルへの姿勢に変更があることを記録します。タグとは、ある開発者
+の作業コピーで表わされる、リビジョンの集合につけられたラベルです(通常、
+そのような作業コピーは完全に最新なので、タグ名はリポジトリ内の「最新で最
+良の」リビジョンにつけられます)。
+
+タグをセットするのは簡単です、こんな感じ:
+
+     floss$ cvs -q tag Release-1999_05_01
+     T README.txt
+     T hello.c
+     T a-subdir/whatever.c
+     T a-subdir/subsubdir/fish.c
+     T b-subdir/random.c
+     floss$
+
+このコマンドで、この作業コピーで表されるスナップショットにシンボル名
+"Release-1999_05_01" を関連づけます。きちんと定義すると、スナップショッ
+トとは、プロジェクトのファイルと関連づけられたリビジョン番号の集合です。
+これらのリビジョン番号はファイル同士で同じである必要はなく、実際、違うこ
+とのほうが多いです。たとえば、この章でずっと使っている myproj ディレクト
+リでタグをつけて、その作業コピーが完全に最新だったと仮定すると、
+シンボル名 "Release-1999_05_01" は hello.c はリビジョン1.5、fish.c はリ
+ビジョン1.2、random.c はリビジョン1.2、その他はリビジョン1.1につきます。
+
+タグを線で表わしてプロジェクト内のファイルのいろいろなリビジョンをつない
+で可視化するとわかりやすいと思います。Figure 2.1 では、あるプロジェクト
+内でタグ付けされた各ファイルのリビジョン番号を線でつないでみました。
+
+
+          File A      File B      File C      File D      File E
+          ------      ------      ------      ------      ------
+          1.1         1.1         1.1         1.1         1.1
+      ----1.2-.       1.2         1.2         1.2         1.2
+          1.3 |       1.3         1.3         1.3         1.3
+               \      1.4       .-1.4-.       1.4         1.4
+                \     1.5      /  1.5  \      1.5         1.5
+                 \    1.6     /   1.6   |     1.6         1.6
+                  \   1.7    /          |     1.7         1.7
+                   \  1.8   /           |     1.8       .-1.8------->
+                    \ 1.9  /            |     1.9      /  1.9
+                     `1.10'             |     1.10    /   1.10
+                      1.11              |     1.11    |
+                                        |     1.12    |
+                                        |     1.13    |
+                                         \    1.14    |
+                                          \   1.15   /
+                                           \  1.16  /
+                                            `-1.17-'
+     
+     [Figure 2.1: How a tag might stand in relation to files's revisions.]
+
+線をひっぱってピンとさせて、それに沿って見ると、そのプロジェクトの履歴中
+の特定の時点が見えてきます。すなわち、その時点でタグがセットされたのです
+(Figure 2.2)。
+
+
+          File A      File B      File C      File D      File E
+          ------      ------      ------      ------      ------
+                                              1.1
+                                              1.2
+                                              1.3
+                                              1.4
+                                              1.5
+                                              1.6
+                                              1.7
+                      1.1                     1.8
+                      1.2                     1.9
+                      1.3                     1.10        1.1
+                      1.4                     1.11        1.2
+                      1.5                     1.12        1.3
+                      1.6                     1.13        1.4
+                      1.7         1.1         1.14        1.5
+                      1.8         1.2         1.15        1.6
+          1.1         1.9         1.3         1.16        1.7
+      ----1.2---------1.10--------1.4---------1.17--------1.8------->
+          1.3         1.11        1.5         1.17        1.9
+                                  1.6         1.17        1.10
+     
+     [Figure 2.2: The same tag as a "straight sight" through the revision history.]
+
+続けてファイルを編集し、コミットしても、タグはリビジョン番号が増えるにつ
+れて動いたりしません。固定したまま、タグづけられた時点での各ファイルのリ
+ビジョン番号にくっついています(スティッキー)。
+
+タグは記述子として重要性があるにもかかわらず、ログメッセージにタグのこと
+が含まれなかったり、that the tags themselves can't be full paragraphs of
+prose というのは少し不幸です。前の例ではタグ自身が、そのプロジェクトが
+ある日付でのリリース状態であることを明白に説明しています。しかし、もう少
+し複雑な状態のスナップショットを作りたいこともあるでしょう、そうするとタ
+グ名はこんなに見苦しくなってしまいます:
+
+     floss$ cvs tag testing-release-3_pre-19990525-public-release
+
+一般的な規則として、タグ名はできるだけ簡潔に、そして記録しようとしている
+イベントについての情報を必要十分に含んでいるよう心がけるべきです。迷った
+時は、説明しすぎるほうへ振っておいたほうがいいでしょう。あとになって、そ
+の時の状況を正確に記述した冗長なタグ名から何かわかって、嬉しいこともある
+でしょう。
+
+タグ名にピリオドやスペースが使われていないのに気づいたと思います。CVS で
+は有効なタグ名を構成するものについてはちょっと厳しいのです。英字で始まり、
+英数字、ハイフン("-")、アンダスコア("_")で構成される、というのがそのルー
+ルです。スペースやピリオド、コロン、カンマ、記号は使えません。
+
+タグ名でスナップショットにアクセスするには、タグ名をリビジョン番号のよう
+に使えばいいのです。スナップショットへのアクセスには2通りの方法がありま
+す: あるタグを指定して新しい作業コピーをチェックアウトするか、またはタグ
+を指定して既存の作業コピーに上書きするか、です。どちらの方法でも、作業コ
+ピー中のファイルは指定したタグのリビジョンになっています。
+
+たいがいの場合やりたいことというのは、そのスナップショットの時点でプロジェ
+クトがどんなだったかちょっと見たい、というくらいのことだと思います。その
+ような場合だと、自分が今作業していて、コミットしていない変更があったり何
+か便利な状態が構築してあったりするようなメインの作業コピーでそんなことは
+あんまりしたくないでしょうから、タグを指定して別の作業コピーをチェックア
+ウトしたいんだということにしましょう。このようにします(これは今ある作業
+コピーとは別の場所、1つ上のディレクトリとか、に居ることを確認してから実
+行してくださいね!)
+
+     floss$ cvs checkout -r Release-1999_05_01 myproj
+     cvs checkout: Updating myproj
+     U myproj/README.txt
+     U myproj/hello.c
+     cvs checkout: Updating myproj/a-subdir
+     U myproj/a-subdir/whatever.c
+     cvs checkout: Updating myproj/a-subdir/subsubdir
+     U myproj/a-subdir/subsubdir/fish.c
+     cvs checkout: Updating myproj/b-subdir
+     U myproj/b-subdir/random.c
+     cvs checkout: Updating myproj/c-subdir
+
+update コマンドで -r オプションを見てきました、あれはそのあとにリビジョ
+ン番号をつけましたよね。多くの場合、タグはリビジョン番号のように使えます。
+それは、各ファイルにとってみればタグというのは単に、対応するひとつのリビ
+ジョン番号をさしているだけだからです(ひとつのプロジェクトで同じ名前のタ
+グをふたつ持つというのは違反ですし、一般には不可能です)。実際、CVS でリ
+ビジョン番号を使うようなところではどこでも、かわりにタグ名が使えます(タ
+グがセットされていさえすれば)。あるファイルについて、現状と最後のリリー
+ス時点間の diff を取りたければこのようにします:
+
+     floss$ cvs diff -c -r Release-1999_05_01 hello.c
+
+一時的にそのリビジョンに戻したければこのようにします:
+
+     floss$ cvs update -r Release-1999_05_01 hello.c
+
+タグとリビジョンのこの変換可能性から、有効なタグ名の厳しいルールの理由が
+説明できます。タグ名にピリオドを許したらどうなりますか? 実際のリビジョン
+番号"1.47"に"1.3"というタグ名をつけることができてしまいますよね。その後
+にこういうコマンドを実行したとすると
+
+     floss$ cvs update -r 1.3 hello.c
+
+これが "1.3" というタグを指定しているのか、もっと前のリビジョン1.3を指定
+しているのか、CVS はどうやって判断すればよいのでしょう。このせいでタグ名
+が制限してあって、CVS はタグ名とリビジョン番号の区別を容易に判断できるよ
+うになっています。リビジョン番号にはピリオドがあって、タグ名にはありませ
+ん。(ほかの制限も同じ理由によります、CVS
+がタグ名を認識しやすいようになっ ているのです)
+
+さてここで、そろそろだろうなと思ったことと思いますが、スナップショットに
+アクセスする2つめの方法を紹介します。既存の作業コピーをタグ付けされたリ
+ビジョンに切り替えるやつです、これも update でやります:
+
+     floss$ cvs update -r Release-1999_05_01
+     cvs update: Updating .
+     cvs update: Updating a-subdir
+     cvs update: Updating a-subdir/subsubdir
+     cvs update: Updating b-subdir
+     cvs update: Updating c-subdir
+     floss$
+
+上記のコマンドは、以前 hello.c を `Release-1999_05_01' に戻すときに
+使ったものとほとんど同じです。ファイル名の指定がないところだけが違います、
+今回はプロジェクト全体を元に戻したいですからね。(もしやりたければプロジェ
+クトのサブツリーだけをタグの時点に戻すこともできます。上のコマンドをトッ
+プレベルではなくてサブツリー内で実行してください。あんまりそうしたい機会
+が多いとも思えませんけど)
+
+アップデートの時点では、どのファイルも変更されていないように見えることに
+注意してください。作業コピーはタグ付けされた時点では最新でしたし、それ以
+来変更はコミットされていません。
+
+しかしこれは何も変更されていないということを意味しません。作業コピーはこ
+れがタグ付けされたリビジョンであることを知っています。ここで変更を加えて
+コミットしようとすると(hello.c を変更したとしましょう):
+
+     floss$ cvs -q update
+     M hello.c
+     floss$ cvs -q ci -m "trying to commit from a working copy on a tag"
+     cvs commit: sticky tag 'Release-1999_05_01' for file 'hello.c' is not a branch
+     cvs [commit aborted]: correct above errors first!
+     floss$
+
+CVS はコミットを許しません。(エラメッセージの正確な意味についてはいまの
+ところ放っておいていいです、ブランチについては次で説明します) これはタグ
+で指定されたこの作業コピーがチェックアウトされたものかアップデートされた
+ものかには関係ありません。いったんタグで指定したら、CVS はその作業コピー
+を履歴のある一時点でのスタティックなスナップショットだと見なし、履歴を変
+更させなくなります。少なくとも簡単にはさせてくれません。cvs status を実
+行するか、CVS/Entries ファイルを見ると、スティッキータグが各ファイルに設
+定されているのがわかります。たとえばトップレベルの Entries ファイルはこ
+うなっています:
+
+     floss$ cat CVS/Entries
+     D/a-subdir////
+     D/b-subdir////
+     D/c-subdir////
+     /README.txt/1.1.1.1/Sun Apr 18 18:18:22 1999//TRelease-1999_05_01
+     /hello.c/1.5/Tue Apr 20 07:24:10 1999//TRelease-1999_05_01
+     floss$
+
+ほかのスティッキーと同じように、タグも -A フラグつきの update を実行すれ
+ば削除できます:
+
+     floss$ cvs -q update -A
+     M hello.c
+     floss$
+
+hello.c に加えた変更は失われません、CVS is still aware that the file
+changed with respect to the repository:
+
+     floss$ cvs -q diff -c hello.c
+     Index: hello.c
+     ===================================================================
+     RCS file: /usr/local/cvs/myproj/hello.c,v
+     retrieving revision 1.5
+     diff -c -r1.5 hello.c
+     *** hello.c   1999/04/20 06:12:56     1.5
+     --- hello.c   1999/05/04 20:09:17
+     ***************
+     *** 6,9 ****
+     --- 6,10 --
+         printf ("Hello, world!\n");
+         printf ("between hello and goodbye\n");
+         printf ("Goodbye, world!\n");
+     +   /* a comment on the last line */
+       }
+     floss$
+
+update でリセットしたので、CVS はコミットさせてくれます:
+
+     floss$ cvs ci -m "added comment to end of main function"
+     cvs commit: Examining .
+     cvs commit: Examining a-subdir
+     cvs commit: Examining a-subdir/subsubdir
+     cvs commit: Examining b-subdir
+     cvs commit: Examining c-subdir
+     Checking in hello.c;
+     /usr/local/cvs/myproj/hello.c,v  <-  hello.c
+     new revision: 1.6; previous revision: 1.5
+     done
+     floss$
+
+もちろん、`Release-1999_05_01' というタグはリビジョン1.5についたま
+まです。タグ以前と以降のリビジョンのステータスを比べてみてください:
+
+     floss$ cvs -q status hello.c
+     ===================================================================
+     File: hello.c                 Status: Up-to-date
+        Working revision:  1.6     Tue May  4 20:09:17 1999
+        Repository revision:       1.6     /usr/local/cvs/myproj/hello.c,v
+        Sticky Tag:                (none)
+        Sticky Date:               (none)
+        Sticky Options:            (none)
+     floss$ cvs -q update -r Release-1999_05_01
+     U hello.c
+     floss$ cvs -q status hello.c
+     ===================================================================
+     File: hello.c                 Status: Up-to-date
+        Working revision:  1.5     Tue May  4 20:21:12 1999
+        Repository revision:       1.5     /usr/local/cvs/myproj/hello.c,v
+        Sticky Tag:                Release-1999_05_01 (revision: 1.5)
+        Sticky Date:               (none)
+        Sticky Options:            (none)
+     floss$
+
+CVS は歴史を変えさせてくれない、と言いました。さて、今から歴史を変える方
+法を教えます。
+
+
+File: j-cvsbook.info,  Node: Branches,  Prev: Other Useful CVS Commands,  Up: An Overview of CVS
+
+Branches
+========
+
+ここまで、CVS をインテリジェントで整備された図書館の一種のように見てきま
+した。しかし、CVS はタイムマシンであると考えることもできます(このたとえ
+は Jim Blandy によります)。今までは CVS で過去に影響は与えずに調べる方法
+だけを見てきました。CVS ではすてきなタイムマシンのように、時を遡って過去
+を変えることもできます。そうするとどうなるでしょう? SF ファンならその答
+えを知っていますよね: わたしたちの世界と並行するもうひとつの世界が、変え
+た過去のその時点から分岐するのです。CVS のブランチはプロジェクトの開発を
+並行する別々の歴史に分ける働きがあります。あるブランチに加えた変更は別の
+ブランチには影響しません。
+
+* Menu:
+
+* Branching Basics::
+* Merging Changes From Branch To Trunk::
+* Multiple Merges::
+* Creating A Tag Or Branch Without A Working Copy::
+
+
+File: j-cvsbook.info,  Node: Branching Basics,  Next: Merging Changes From Branch To Trunk,  Up: Branches
+
+Branching Basics
+----------------
+
+ブランチは何故便利なのでしょう?
+
+ここであのシナリオに戻りましょう。プログラムの新しいバージョンを作ってい
+る最中の開発者が、ひとつ前のリリースのバグレポートを受けとったところです。
+開発者が問題を解決したとしても、顧客にそのバグフィクス版を届ける方法がわ
+かりません。いえ、プログラムの古いコピーを取ってきて、CVS の知らないとこ
+ろでそれを直して出荷する、というのは難しいことではありません。でもこれで
+は、何をしたか記録が残らないのです。CVS は直しに気づかないまま。もしあと
+でそのパッチによくないところが発見されても、誰にも問題を再生するスタート
+地点さえわかりません。
+
+現在の不安定なバージョンのソースのバグを直して顧客に出荷する、というのは
+もっと悪いアドバイスですね。そりゃ確かにレポートされたバグについては直っ
+ているかもしれませんが、その他のところは実装途中でテストもされていない状
+態です。動きはするでしょうが、but it's certainly not ready for prime
+time.
+
+最後のリリースバージョンは、そのバグを除いては安定しているのですから、理
+想的な解決策は、時間を戻してその古いリリースのバグを直すことです。つまり、
+最後のリリースがこのバグフィクスを取り込むような、もうひとつの世界を作るということです。
+
+ここでブランチの登場です。開発者は、開発のメインライン(トランク(幹))の、
+最新リビジョンでなく最後のリリースのところに根を下ろすブランチを作ります。
+彼女はこのブランチの作業コピーをチェックアウトして、バグフィクスに必要な
+変更を加え、それらをブランチにコミットします。こうすればバグフィクスの記
+録ができるというわけです。これで、ブランチに基づく暫定リリースをパッケー
+ジにして、顧客に出荷できます。
+
+****************************************************************
+彼女の変更はトランクにあるコードに何の影響も与えません
+
+同じバグフィクスがトランクのほうにも必要かどうか見つけだす
+
+Her change won't have affected the code on the trunk, nor would she
+want it to without first finding out (whether the trunk needs the same
+bug fix or not).
+****************************************************************
+
+もし必要なら、ブランチの変更をトランクにマージすることもできます。CVS は
+分岐点からブランチの先端(最新の状態のところ)までに加えられた変更を計算し、
+その違いをプロジェクトのトランクの先端に適用します。ブランチの根と先端の
+相違分のマージはもちろんうまくいって、バグフィクスになります。
+
+マージはアップデートの特別な場合と考えることもできます。マージでの相違分
+というのは、作業コピーとリポジトリを比較するかわりに、ブランチの根と先端
+を比較することによって算出されるものです。
+
+アップデートの動作というのは、その変更のパッチを作者から直接受け取って、
+それを手でパッチするのと同じです。事実アップデートを実行する際、CVS は作
+業コピーとリポジトリの相違分を計算して(相違分というのは diff プログラム
+がやるわけですが)、その diff を作業コピーに適用します、patch プログラム
+がやるのと同じようにです。これは、開発者が外の世界からの変更を取りいれる
+やりかた、パッチを作った人からパッチファイルをもらって手でパッチを当てる
+というやつですが、それを真似ています。
+
+バグフィクスブランチをトランクにマージするというのは、外のコントリビュー
+タのパッチを当ててバグを直すのと似ています。コントリビュータは最新のリリー
+スバージョンへのパッチを作ります。ブランチの変更がそのバージョンに対して
+なされるのと同じです。現在のソースコードのその領域が最後のリリースからそ
+う変わっていなければ、マージは問題なく成功するでしょう。しかし、コードが
+とても変わってしまっていたら、マージはコンフリクトを起こして失敗に終わる
+でしょう(パッチがリジェクトされるでしょうという意味です)、手で直接ゴソゴ
+ソやる必要があるわけです。これは通常、コンフリクト領域を読み、手で必要な
+変更を施し、そしてコミットすればいいのです。Figure 2.3 はブランチとマー
+ジで何が起こるかを示した図です。
+
+
+                  (branch on which bug was fixed)
+                .---------------->---------------.
+               /                                 |
+              /                                  |
+             /                                   |
+            /                                    |
+           /                                     V (<------ point of merge)
+      ====*===================================================================>
+                     (main line of development)
+     
+     
+     [Figure 2.3: A branch and then a merge.  Time flows left to right.]
+
+**************************************************************** We'll
+now walk through the steps necessary to make this picture happen.
+****************************************************************
+図で左から右へ流れているのは実際の時間ではなく、リビジョン履歴です。ブラ
+ンチはリリースの時点で作られたわけではなく、リリースのリビジョンに根を下
+ろすように後で作られるものです。
+
+プロジェクト中のファイルは `Release-1999_05_01' とタグ付けされてか
+らもたくさんリビジョンを増やして、ファイルも追加された、と仮定しましょう。
+古いリリースに関するバグレポートが舞い込んできたときに最初にしたいのは、
+例の古いリリース、`Release-1999_05_01' というタグをつけたところに根
+を下ろすブランチを作ることです。
+
+ひとつの方法として、まずそのタグに基づいた作業コピーをチェックアウトして、
+それから -b (ブランチ, branch) オプションで再度タグづけしてブランチを作
+ります。
+
+     floss$ cd ..
+     floss$ ls
+     myproj/
+     floss$ cvs -q checkout -d myproj_old_release -r Release-1999_05_01 myproj
+     U myproj_old_release/README.txt
+     U myproj_old_release/hello.c
+     U myproj_old_release/a-subdir/whatever.c
+     U myproj_old_release/a-subdir/subsubdir/fish.c
+     U myproj_old_release/b-subdir/random.c
+     floss$ ls
+     myproj/      myproj_old_release/
+     floss$ cd myproj_old_release
+     floss$ ls
+     CVS/      README.txt  a-subdir/   b-subdir/   hello.c
+     floss$ cvs -q tag -b Release-1999_05_01-bugfixes
+     T README.txt
+     T hello.c
+     T a-subdir/whatever.c
+     T a-subdir/subsubdir/fish.c
+     T b-subdir/random.c
+     floss$
+
+最後のコマンドを良く見てください。ブランチを作るのに使うタグは適当でいい
+ように見えるかもしれませんが、これにはちゃんと理由があります: このブラン
+チをあとでアクセスするためのラベルとしてこのタグ名は使われます。ブランチ
+用のタグはブランチでないタグと変わらないように見えますし、同じネーミング
+制限に従っています。ブランチのタグ名には必ず「branch」という単語を居れる
+ようにしている人もいます(たとえば`Release-1999_05_01-bugfix-branch'
+のように)。こうするとブランチタグとほかの種類のタグを区別できます。よく
+タグ名をまちがってアクセスしてしまうようなら、そういう風にするのもよいで
+しょう。
+
+(あと、最初のコマンドでチェックアウトに -d myproj_old_release というオプ
+ションがつけてあることに注意してください。これはチェックアウトのときに、
+作業コピーを myproj_old_release という名前のディレクトリに置くことを指示
+するもので、こうしておくと myproj にある現在のバージョンと混同してしまう
+こともありません。グローバルオプションの -d や、update の -d と混同しな
+いようにしてください。)
+
+もちろん、単に tag コマンドを実行したからといってこの作業コピーがブラン
+チに切り替わってしまったりするわけではありません。タグ付けは作業コピーに
+は影響ありません。作業コピーのリビジョンにあとでアクセスできるように、リ
+ポジトリ内にちょっとした情報を記録するだけです(履歴内の1コマとして、ある
+いはブランチとして、場合によります)。
+
+2つのうちどちらかの方法でアクセスできます(もうこのフレーズはそろそろ耳タ
+コかなあ)。ブランチ上の新しい作業コピーをチェックアウトしましょう:
+
+     floss$ pwd
+     /home/whatever
+     floss$ cvs co -d myproj_branch -r Release-1999_05_01-bugfixes myproj
+
+あるいは、今ある作業コピーをそっちに切り替えますか:
+
+     floss$ pwd
+     /home/whatever/myproj
+     floss$ cvs update -r Release-1999_05_01-bugfixes
+
+結果は同じです(新しい作業コピーのトップレベルディレクトリの名前は違いま
+すが、CVS
+に関してはあまり重要ではないですね)。現在の作業コピーに未コミッ
+トの変更があれば、ブランチにアクセスするのに update ではなくて checkout
+を使いたいだろうと思います。でないと、ブランチに切り替えようとした際、作
+業コピーに対して変更をマージしようとしてしまいます。この場合、コンフリク
+トが起こるかもしれませんし、起こらなくても純粋でないブランチになります。
+これでは、作業コピー中のいくつかのファイルは変更されたままの状態なので、
+プログラムは指定されたタグをちゃんと反映していないことになります。
+
+とにかく、どちらかの方法でお望みのブランチの作業コピーを取得できたとしま
+しょう:
+
+     floss$ cvs -q status hello.c
+     ===================================================================
+     File: hello.c                 Status: Up-to-date
+        Working revision:  1.5     Tue Apr 20 06:12:56 1999
+        Repository revision:       1.5     /usr/local/cvs/myproj/hello.c,v
+        Sticky Tag:                Release-1999_05_01-bugfixes
+     (branch: 1.5.2)
+        Sticky Date:               (none)
+        Sticky Options:            (none)
+     floss$ cvs -q status b-subdir/random.c
+     ===================================================================
+     File: random.c                Status: Up-to-date
+        Working revision:  1.2     Mon Apr 19 06:35:27 1999
+        Repository revision:       1.2 /usr/local/cvs/myproj/b-subdir/random.c,v
+        Sticky Tag:                Release-1999_05_01-bugfixes (branch: 1.2.2)
+        Sticky Date:               (none)
+        Sticky Options:            (none)
+     floss$
+
+(これらの `Sticky Tag' 行の内容を手短に説明します)hello.c と random.c
+を変更したら、コミットをかけます
+
+     floss$ cvs -q update
+     M hello.c
+     M b-subdir/random.c
+     floss$ cvs ci -m "fixed old punctuation bugs"
+     cvs commit: Examining .
+     cvs commit: Examining a-subdir
+     cvs commit: Examining a-subdir/subsubdir
+     cvs commit: Examining b-subdir
+     Checking in hello.c;
+     /usr/local/cvs/myproj/hello.c,v  <-  hello.c
+     new revision: 1.5.2.1; previous revision: 1.5
+     done
+     Checking in b-subdir/random.c;
+     /usr/local/cvs/myproj/b-subdir/random.c,v  <-  random.c
+     new revision: 1.2.2.1; previous revision: 1.2
+     done
+     floss$
+
+リビジョン番号を見ると、なんだかおもしろいことが起こっている様子なのに気
+づきませんか:
+
+     floss$ cvs -q status hello.c b-subdir/random.c
+     ===================================================================
+     File: hello.c                 Status: Up-to-date
+        Working revision:  1.5.2.1 Wed May  5 00:13:58 1999
+        Repository revision:       1.5.2.1 /usr/local/cvs/myproj/hello.c,v
+        Sticky Tag:                Release-1999_05_01-bugfixes (branch: 1.5.2)
+        Sticky Date:               (none)
+        Sticky Options:            (none)
+     ===================================================================
+     File: random.c                Status: Up-to-date
+        Working revision:  1.2.2.1 Wed May  5 00:14:25 1999
+        Repository revision:       1.2.2.1 /usr/local/cvs/myproj/b-subdir/random.c,v
+        Sticky Tag:                Release-1999_05_01-bugfixes (branch: 1.2.2)
+        Sticky Date:               (none)
+        Sticky Options:            (none)
+     floss$
+
+数字が2つではなくて、4つになっています!
+
+よく見ると、各ファイルのリビジョン番号はブランチ時の番号( `Sticky Tag'
+行に示されています)の最後に余分な数字をつけ加えて あるようですね:
+
+いま見ているのは CVS の内部作業の片鱗です。ほとんどいつもは、プロジェク
+ト全体の分岐をマークするためにブランチを使いますが、CVS は実際はファイル
+毎にブランチを記録しています。このプロジェクトには、このブランチの分岐時
+に5つのファイルがあったので、5つの個別のブランチが作成され、みな同じタグ
+名がつけられました(`Release-1999_05_01-bugfixes')。
+
+CVS の実装のうち、このようなファイルごとのやりかたは、少々エレガントでな
+いという意見が多いです。これは RCS の遺物なのです、RCS ではファイルをま
+とめてプロジェクトにしたりできませんでした。CVS は、RCS のブランチを扱う
+ところのコードを受け継いでいるのでこうなっているのです。
+
+通常は CVS がファイル等を内部的にどのように追跡しているかなんてあまり考
+える必要はありませんが、今回の場合は、ブランチ番号とリビジョン番号の関係
+について理解する助けになります。hello.c を見ていきましょう、これから
+hello.c に関して言うことは、ブランチの他のファイルについてもあてはまりま
+す(リビジョン/ブランチ番号は適当に読み替えてください)
+
+hello.c のリビジョンは、ブランチが根を下ろした点で1.5でした。ブランチを
+作成した時、その端には番号がつけられてそれがブランチ番号になります(CVS
+は、まだ使われていない非ゼロの偶数整数値をひとつ選んでつけます)。そうす
+るとこの場合、ブランチ番号は `1.5.2' となります。ブランチ番号そのも
+のはリビジョン番号ではないですが、ブランチ番号はそのブランチ上の hello.c
+のリビジョン番号の根(プレフィクス)になります。
+
+しかし、ブランチ後の作業コピーで status コマンドを実行すると、hello.c の
+リビジョン番号は単に `1.5' となっていて、`1.5.2.0' とかではな
+いようです。これは、ブランチ上の最初のリビジョン番号というのは、枝分かれ
+した点のトランク上のリビジョン番号とつねに同じだからです。ですから、その
+ファイルがブランチ上で変更されずにトランク上のと同じあいだは、CVS は
+status の出力にトランクのリビジョン番号を出力します。
+
+hello.c の新しいリビジョンをコミットすれば、hello.c はトランク上とブラン
+チ上で違ってしまいます。ブランチ上のファイルは変わってしまいますが、トラ
+ンク上のファイルは変わりませんから。従って、ブランチ上の hello.c には最
+初のブランチリビジョン番号が割り当てられます。コミットしたあとに status
+の出力を見れば、リビジョン番号が `1.5.2.1' になったことがわかります。
+
+random.c ファイルについても同じことが言えます。ブランチ時点でのリビジョ
+ン番号は `1.2' ですから最初のブランチは `1.2.2'、random.c をブ
+ランチ上に最初にコミットした時には `1.2.2.1' となります。
+
+`1.5.2.1' と `1.2.2.1' の間に数字的なつながりはなにもありませ
+ん。同じ時にブランチしたものだということすらわかりません。両者に
+`Release-1999_05_01-bugfixes' というタグがあって、そのタグはそれぞ れ
+`1.5.2' と `1.2.2' というブランチ番号についている、というこ
+と以外には。従って、プロジェクト全体にわたるものとしてブランチを指定する
+ためにはタグ名を使うしかありません。リビジョン番号を直接指定してファイル
+をブランチ上のものにすることは可能ですが、
+
+     floss$ cvs update -r 1.5.2.1 hello.c
+     U hello.c
+     floss$
+
+これはよくないやりかたです。ブランチリビジョンのファイルを1つ、他のブラ
+ンチでないリビジョンのファイルと混ぜてしまうことになります。その結果どん
+な損失があるかわかりません。ブランチにアクセスするときはブランチタグを使
+ってすべてのファイルに一度にアクセスすることです。特定のファイルだけ指定
+してはいけません。そうすれば、各ファイルの実際のブランチリビジョン番号に
+ついて知らなくても気にしなくてもかまいません。
+
+ブランチを持つブランチを作ることもでき、不合理なくらいのレベルさえ可能で
+す。たとえば、あるファイルがリビジョン番号 `1.5.4.37.2.3' の場合、
+次の図のような履歴になっていると思います:
+
+                       1.1
+                        |
+                       1.2
+                        |
+                       1.3
+                        |
+                       1.4
+                        |
+                       1.5
+                      /   \
+                     /     \
+                    /       \
+                (1.5.2)   (1.5.4)         <--- (these are branch numbers)
+                  /           \
+              1.5.2.1        1.5.4.1
+                 |              |
+              1.5.2.2        1.5.4.2
+                 |              |
+               (etc)          (...)       <--- (collapsed 34 revisions for brevity)
+                                |
+                             1.5.4.37
+                               /
+                              /
+                        (1.5.4.37.2)      <--- (this is also a branch number)
+                            /
+                           /
+                    1.5.4.37.2.1
+                          |
+                    1.5.4.37.2.2
+                          |
+                    1.5.4.37.2.3
+     
+     [Figure 2.4: An unusually high degree of branching.  Time flows downward.]
+
+こんなに深いブランチを作るような状況になることはめったにありませんが、し
+たいと思ったときにはいつでもできるのです。普通のブランチと同じように、ネ
+ストしたブランチを作成することもできます。ブランチ `N' の作業コピー
+をチェックアウトして、その中で cvs tag -b branchname を実行すれば、ブラ
+ンチ `N.M' がリポジトリの中にできます(`N' は各ファイルのブラン
+チリビジョン番号で(`1.5.2.1'など)、`M' はその番号で終わる次の
+ブランチを表しています(`2'など))。
+
+
+File: j-cvsbook.info,  Node: Merging Changes From Branch To Trunk,  Next: Multiple Merges,  Prev: Branching Basics,  Up: Branches
+
+Merging Changes From Branch To Trunk
+------------------------------------
+
+さて、ブランチ上にバグフィクスがコミットされました。ここで作業コピーをト
+ランクのリビジョンの一番大きいものに切り替えて、そっちでもそのバグフィク
+スをする必要があるかどうか見てみます。update -A を使って作業コピーをブラ
+ンチから脱出させます(この点、ブランチタグはほかのスティッキーと同じです)。
+そのあと、いま離れてきたブランチと diff をとってみましょう:
+
+     floss$ cvs -q update -A
+     U hello.c
+     U b-subdir/random.c
+     floss$ cvs -q diff -c -r Release-1999_05_01-bugfixes
+     Index: hello.c
+     ===================================================================
+     RCS file: /usr/local/cvs/myproj/hello.c,v
+     retrieving revision 1.5.2.1
+     retrieving revision 1.6
+     diff -c -r1.5.2.1 -r1.6
+     *** hello.c   1999/05/05 00:15:07     1.5.2.1
+     --- hello.c   1999/05/04 20:19:16     1.6
+     ***************
+     *** 4,9 ****
+       main ()
+       {
+         printf ("Hello, world!\n");
+     !   printf ("between hello and good-bye\n");
+         printf ("Goodbye, world!\n");
+       }
+     --- 4,10 --
+       main ()
+       {
+         printf ("Hello, world!\n");
+     !   printf ("between hello and goodbye\n");
+         printf ("Goodbye, world!\n");
+     +   /* a comment on the last line */
+       }
+     Index: b-subdir/random.c
+     ===================================================================
+     RCS file: /usr/local/cvs/myproj/b-subdir/random.c,v
+     retrieving revision 1.2.2.1
+     retrieving revision 1.2
+     diff -c -r1.2.2.1 -r1.2
+     *** b-subdir/random.c 1999/05/05 00:15:07     1.2.2.1
+     --- b-subdir/random.c 1999/04/19 06:35:27     1.2
+     ***************
+     *** 4,8 ****
+       void main ()
+       {
+     !   printf ("A random number.\n");
+       }
+     --- 4,8 --
+       void main ()
+       {
+     !   printf ("a random number\n");
+       }
+     floss$
+
+diff の結果では、ブランチリビジョンでは good-bye がハイフンつきになって
+いて、そのファイルのトランクリビジョンのほうには最後近くにブランチのほう
+にないコメントがついています。一方 random.c ですが、ブランチリビジョンの
+ほうでは A がキャピタライズされてピリオドがついていますが、トランクのほ
+うではそうなっていません。
+
+ブランチを実際に現在の作業コピーにマージするには、update を -j フラグを
+つけて実行します(以前、古いリビジョンに戻すときに使った j と同じ、join
+という意味です):
+
+     floss$ cvs -q update -j Release-1999_05_01-bugfixes
+     RCS file: /usr/local/cvs/myproj/hello.c,v
+     retrieving revision 1.5
+     retrieving revision 1.5.2.1
+     Merging differences between 1.5 and 1.5.2.1 into hello.c
+     RCS file: /usr/local/cvs/myproj/b-subdir/random.c,v
+     retrieving revision 1.2
+     retrieving revision 1.2.2.1
+     Merging differences between 1.2 and 1.2.2.1 into random.c
+     floss$ cvs -q update
+     M hello.c
+     M b-subdir/random.c
+     floss$ cvs -q ci -m "merged from branch Release-1999_05_01-bugfixes"
+     Checking in hello.c;
+     /usr/local/cvs/myproj/hello.c,v  <-  hello.c
+     new revision: 1.7; previous revision: 1.6
+     done
+     Checking in b-subdir/random.c;
+     /usr/local/cvs/myproj/b-subdir/random.c,v  <-  random.c
+     new revision: 1.3; previous revision: 1.2
+     done
+     floss$
+
+こうすると、ブランチの根から先端までの変更を計算し、それを現在の作業コピー
+にマージします(その後に、まるでそのファイルを手で編集してその状態にした
+かのように、変更を表示しています)。そして、作業コピーにマージしただけで
+はリポジトリには変更は反映されないので、この変更をトランクにコミットしま
+す。
+
+この例ではコンフリクトは起きませんでしたが、通常のマージでは起こりがちな
+(たぶん起こる)ことです。そうなったら、ほかのコンフリクトを解消するのと同
+じように解消作業をして、それからコミットしてください。
+
+
+File: j-cvsbook.info,  Node: Multiple Merges,  Next: Creating A Tag Or Branch Without A Working Copy,  Prev: Merging Changes From Branch To Trunk,  Up: Branches
+
+Multiple Merges
+---------------
+
+トランクにマージした後にも、ブランチ上での開発が続くことがあります。たと
+えば前のリリース版に2つめのバグが見つかった場合、それはブランチ上でバグ
+フィクスされますね。random.c の冗談がわからない人がいたとしましょう、そ
+うするとブランチ上でそれを説明する行をつけ加えなければいけません、
+
+     floss$ pwd
+     /home/whatever/myproj_branch
+     floss$ cat b-subdir/random.c
+     /* Print out a random number. */
+     #include <stdio.h>
+     void main ()
+     {
+       printf ("A random number.\n");
+       printf ("Get the joke?\n");
+     }
+     floss$
+
+そしてコミットします。このバグフィクスもトランクにマージする必要がある場
+合、トランクの作業コピーに再マージするため、前回と同じように update コマ
+ンドを走らせようとしてしまうと思います:
+
+     floss$ cvs -q update -j Release-1999_05_01-bugfixes
+     RCS file: /usr/local/cvs/myproj/hello.c,v
+     retrieving revision 1.5
+     retrieving revision 1.5.2.1
+     Merging differences between 1.5 and 1.5.2.1 into hello.c
+     RCS file: /usr/local/cvs/myproj/b-subdir/random.c,v
+     retrieving revision 1.2
+     retrieving revision 1.2.2.2
+     Merging differences between 1.2 and 1.2.2.2 into random.c
+     rcsmerge: warning: conflicts during merge
+     floss$
+
+ごらんの通り、望んだ結果は得られません。あれからトランクには変更を加えて
+いないからコンフリクトは起こらないはず、のような気がするのに、起こってし
+まいました。
+
+この問題は update コマンドが説明した通りの動作をしたことによって起こりま
+した: ブランチの根と先端の変更を計算して、現在の作業コピーにマージする、
+のです。問題はこれらの変更のうちのいくつかが既に作業コピーにマージされて
+いた、ということにありました。だからコンフリクトしたのです:
+
+     floss$ pwd
+     /home/whatever/myproj
+     floss$ cat b-subdir/random.c
+     /* Print out a random number. */
+     #include <stdio.h
+     void main ()
+     {
+     <<<<<<< random.c
+       printf ("A random number.\n");
+     =======
+       printf ("A random number.\n");
+       printf ("Get the joke?\n");
+     >>>>>>> 1.2.2.2
+     }
+     floss$
+
+これらのコンフリクトを手で解消してもかまいません、各ファイルそれぞれやっ
+てね、と言うのは簡単なことです。まあでも最初っからコンフリクトしないよう
+にするほうがいいですよね。-j フラグを1つではなく2つ渡すことによって、ブ
+ランチの根からでなく以前のマージのところから先端までの変更をマージするこ
+とができます。最初の -j はブランチ上の開始地点、2つめはただブランチ名だ
+けを書けばいいです(これはブランチの先端という意味になります)。
+
+問題は、どうやってブランチ上で以前のマージの点を指定すればいいか、という
+ことです。ブランチタグ名に日付をつけて指定するのが1つの方法です。CVS は
+このために特別な書きかたを用意しています:
+
+     floss$ cvs -q update -j "Release-1999_05_01-bugfixes:2 days ago" \
+                          -j Release-1999_05_01-bugfixes
+     RCS file: /usr/local/cvs/myproj/b-subdir/random.c,v
+     retrieving revision 1.2.2.1
+     retrieving revision 1.2.2.2
+     Merging differences between 1.2.2.1 and 1.2.2.2 into random.c
+     floss$
+
+ブランチタグ名にコロンと日付をつなげると(普通の CVS の日付指定のやりかた
+ならどれでもいいです)、CVS はその日付以降の変更を取ってきます。最初のバ
+グフィクスが3日前にコミットされたのを知っていれば、上記のコマンドで2つめ
+のバグフィクスだけをマージできます。
+
+もう少し良い方法は、前もってやっとかないとだめなんですが、各バグフィクス
+の後にブランチにタグをつけておく方法です(普通のタグです、新しいブランチ
+を分岐させたりするようなやつではなくて)。バグをフィクスしてコミットした
+ら、ブランチの作業コピーでこういうのを実行してください:
+
+     floss$ cvs -q tag Release-1999_05_01-bugfixes-fix-number-1
+     T README.txt
+     T hello.c
+     T a-subdir/whatever.c
+     T a-subdir/subsubdir/fish.c
+     T b-subdir/random.c
+     floss$
+
+こうしておけば、2つめの変更をトランクにマージする時にはこのタグを使って、
+簡単に前のリビジョンと区別をつけられます。
+
+     floss$ cvs -q update -j Release-1999_05_01-bugfixes-fix-number-1 \
+                          -j Release-1999_05_01-bugfixes
+     RCS file: /usr/local/cvs/myproj/b-subdir/random.c,v
+     retrieving revision 1.2.2.1
+     retrieving revision 1.2.2.2
+     Merging differences between 1.2.2.1 and 1.2.2.2 into random.c
+     floss$
+
+変更を加えたのが何日前だったか、とか思い出さないといけない方法より、この
+方法のほうが断然いいのですが、この方法を使おうとするとトランクにマージす
+るたびにブランチにタグをつけるのを忘れないようにせねばなりません。この話
+の教訓は、前もって、度々タグをつけよ、ということですね。タグは少なすぎる
+より多すぎるほうがマシです(説明的な名前をつけている限りにおいてはです)。
+たとえば上の例で言うと、ブランチ上の新しいタグ名はブランチタグと似ている
+必要はないわけです。ですから簡単に `fix1' という名前をつけてもよかっ
+たのですが、`Release-1999_05_01-bugfixes-fix-number-1' という名前に
+しました。他のブランチのタグと混同しないためには後者のほうがいいのです。
+(タグ名はブランチ内でユニークではなく、ファイル内でユニークであることを
+思い出してください。別のブランチだからといって、同じファイルに `fix1'
+という名前のタグをふたつつけたりはできません。)
+

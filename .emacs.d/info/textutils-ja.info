@@ -1,0 +1,124 @@
+Info file: textutils-ja.info,    -*-Text-*-
+produced by `texinfo-format-buffer'
+from file `textutils-ja.texi'
+using `texinfmt.el' version 2.38 of 3 July 1998.
+
+
+
+
+
+
+START-INFO-DIR-ENTRY
+* Text utilities(ja): (textutils-ja).           GNU text utilities.
+* cat(ja): (textutils-ja)cat invocation.        Concatenate and write files.
+* cksum(ja): (textutils-ja)cksum invocation.    Print POSIX CRC checksum.
+* comm(ja): (textutils-ja)comm invocation.      Compare sorted files by line.
+* csplit(ja): (textutils-ja)csplit invocation.  Split by context.
+* cut(ja): (textutils-ja)cut invocation.        Print selected parts of lines.
+* expand(ja): (textutils-ja)expand invocation.  Convert tabs to spaces.
+* fmt(ja): (textutils-ja)fmt invocation.        Reformat paragraph text.
+* fold(ja): (textutils-ja)fold invocation.      Wrap long input lines.
+* head(ja): (textutils-ja)head invocation.      Output the first part of files.
+* join(ja): (textutils-ja)join invocation.      Join lines on a common field.
+* md5sum(ja): (textutils-ja)md5sum invocation.  Print or check message-digests.
+* nl(ja): (textutils-ja)nl invocation.          Number lines and write files.
+* od(ja): (textutils-ja)od invocation.          Dump files in octal, etc.
+* paste(ja): (textutils-ja)paste invocation.    Merge lines of files.
+* pr(ja): (textutils-ja)pr invocation.          Paginate or columnate files.
+* ptx(ja): (textutils-ja)ptx invocation.        Produce permuted indexes.
+* sort(ja): (textutils-ja)sort invocation.      Sort text files.
+* split(ja): (textutils-ja)split invocation.    Split into fixed-size pieces.
+* sum(ja): (textutils-ja)sum invocation.        Print traditional checksum.
+* tac(ja): (textutils-ja)tac invocation.        Reverse files.
+* tail(ja): (textutils-ja)tail invocation.      Output the last part of files.
+* tsort(ja): (textutils-ja)tsort invocation.    Topological sort.
+* tr(ja): (textutils-ja)tr invocation.          Translate characters.
+* unexpand(ja): (textutils-ja)unexpand invocation.  Convert spaces to tabs.
+* uniq(ja): (textutils-ja)uniq invocation.      Uniquify files.
+* wc(ja): (textutils-ja)wc invocation.          Byte, word, and line counts.
+END-INFO-DIR-ENTRY
+
+This file documents the GNU text utilities.
+
+Copyright (C) 1994, 95, 96 Free Software Foundation, Inc.
+
+Permission is granted to make and distribute verbatim copies of this
+manual provided the copyright notice and this permission notice are
+preserved on all copies.
+
+Permission is granted to copy and distribute modified versions of this
+manual under the conditions for verbatim copying, provided that the
+entire resulting derived work is distributed under the terms of a
+permission notice identical to this one.
+
+Permission is granted to copy and distribute translations of this
+manual into another language, under the above conditions for modified
+versions, except that this permission notice may be stated in a
+translation approved by the Foundation.
+
+
+
+
+
+Indirect:
+textutils-ja.info-1: 2947
+textutils-ja.info-2: 50472
+
+Tag table:
+(Indirect)
+Node: Top2950
+Node: Introduction6617
+Node: Common options7334
+Node: Output of entire files7822
+Node: cat invocation8311
+Node: tac invocation10025
+Node: nl invocation10787
+Node: od invocation13123
+Node: Formatting file contents16717
+Node: fmt invocation17131
+Node: pr invocation18741
+Node: fold invocation26043
+Node: Output of parts of files26812
+Node: head invocation27279
+Node: tail invocation28291
+Node: split invocation32135
+Node: csplit invocation33228
+Node: Summarizing files35481
+Node: wc invocation35949
+Node: sum invocation37085
+Node: cksum invocation37965
+Node: md5sum invocation38660
+Node: Operating on sorted files40697
+Node: sort invocation41226
+Node: uniq invocation47826
+Node: comm invocation49070
+Node: tsort invocation49820
+Node: ptx invocation50475
+Node: General options in ptx52104
+Node: Charset selection in ptx52539
+Node: Input processing in ptx53099
+Node: Output formatting in ptx56154
+Node: Compatibility in ptx59662
+Node: Operating on fields within a line61481
+Node: cut invocation61846
+Node: paste invocation63197
+Node: join invocation63806
+Node: Operating on characters65887
+Node: tr invocation66274
+Node: Character sets67045
+Node: Translating69209
+Node: Squeezing70257
+Node: Warnings in tr71421
+Node: expand invocation72103
+Node: unexpand invocation72973
+Node: Opening the software toolbox73903
+Node: Toolbox introduction74603
+Node: I/O redirection75995
+Node: The who command77499
+Node: The cut command78089
+Node: The sort command78726
+Node: The uniq command79161
+Node: Putting the tools together79592
+Node: Index86820
+
+End tag table

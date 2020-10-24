@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xbel version="1.0"
+      xmlns:bookmark="http://www.freedesktop.org/standards/desktop-bookmarks"
+      xmlns:mime="http://www.freedesktop.org/standards/shared-mime-info"
+>
+  <bookmark href="sftp://192.168.0.6/" added="2017-01-09T21:27:26Z" modified="2017-06-24T08:25:09Z" visited="2017-06-24T08:25:09Z">
+    <title>/ on 192.168.0.6</title>
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <bookmark:applications>
+          <bookmark:application name="nautilus" exec="&apos;nautilus %u&apos;" modified="2017-06-24T08:25:09Z" count="6"/>
+        </bookmark:applications>
+      </metadata>
+    </info>
+  </bookmark>
+  <bookmark href="sftp://root@192.168.0.6/" added="2017-01-16T06:57:19Z" modified="2017-07-01T04:58:46Z" visited="2017-07-01T04:58:46Z">
+    <title>/ on 192.168.0.6</title>
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <bookmark:applications>
+          <bookmark:application name="nautilus" exec="&apos;nautilus %u&apos;" modified="2017-07-01T04:58:46Z" count="9"/>
+        </bookmark:applications>
+      </metadata>
+    </info>
+  </bookmark>
+  <bookmark href="sftp://yuhei@192.168.0.6/" added="2017-02-11T22:30:47Z" modified="2017-07-01T04:58:13Z" visited="2017-07-01T04:58:13Z">
+    <title>/ on 192.168.0.6</title>
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <bookmark:applications>
+          <bookmark:application name="nautilus" exec="&apos;nautilus %u&apos;" modified="2017-07-01T04:58:13Z" count="8"/>
+        </bookmark:applications>
+      </metadata>
+    </info>
+  </bookmark>
+  <bookmark href="smb://192.168.0.6/" added="2017-02-12T04:11:07Z" modified="2017-07-01T04:31:26Z" visited="2017-07-01T04:31:26Z">
+    <title>Windows shares on 192.168.0.6</title>
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <bookmark:applications>
+          <bookmark:application name="nautilus" exec="&apos;nautilus %u&apos;" modified="2017-07-01T04:31:26Z" count="4"/>
+        </bookmark:applications>
+      </metadata>
+    </info>
+  </bookmark>
+  <bookmark href="smb://192.168.0.6/yuhei/" added="2017-02-12T09:18:04Z" modified="2017-02-12T11:47:53Z" visited="2017-02-12T11:47:53Z">
+    <title>yuhei on 192.168.0.6</title>
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <bookmark:applications>
+          <bookmark:application name="nautilus" exec="&apos;nautilus %u&apos;" modified="2017-02-12T11:47:53Z" count="4"/>
+        </bookmark:applications>
+      </metadata>
+    </info>
+  </bookmark>
+</xbel>

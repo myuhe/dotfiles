@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+#name: amazon
+#key : amazon
+# --
+[tmkm-amazon]$1[/tmkm-amazon]

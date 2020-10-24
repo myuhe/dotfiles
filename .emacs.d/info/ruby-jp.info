@@ -1,0 +1,197 @@
+This is ruby-jp.info, produced by makeinfo version 3.12o (+ Japanese
+Patch 0.61) from Ruby.texi.
+
+INFO-DIR-SECTION Languages
+START-INFO-DIR-ENTRY
+* ruby-jp: (ruby-jp).           Ruby Language Reference Manual (Japanese)
+END-INFO-DIR-ENTRY
+
+     このinfoファイルは、Rubyリファレンスマニュアル(HTML版)
+
+     <http://www.netlab.co.jp/ruby/jp/man-1.3/>
+     for `Ruby' Version 1.4.0
+     written by まつもと ゆきひろ <matz@netlab.co.jp>
+     Last modified: Mon Aug 16 15:46:22 1999
+
+     を元に機械的にTexinfo形式へ変換して作成しました。したがって、本文
+     に対する著作権はまつもと ゆきひろ氏にあるものとします。
+
+
+Indirect:
+ruby-jp.info-1: 612
+ruby-jp.info-2: 50232
+ruby-jp.info-3: 94080
+ruby-jp.info-4: 143179
+ruby-jp.info-5: 191194
+ruby-jp.info-6: 240221
+ruby-jp.info-7: 263438
+
+Tag Table:
+(Indirect)
+Node: Top612
+Node: Preface5402
+Node: Options8360
+Node: Ruby Syntax14114
+Node: syntax_lexical16687
+Node: syntax_ident17178
+Node: syntax_comment17506
+Node: syntax_embed_doc17855
+Node: syntax_resword18380
+Node: syntax_program19148
+Node: syntax_expression19494
+Node: syntax_string19771
+Node: syntax_command21357
+Node: syntax_regexp21833
+Node: syntax_exprsub23978
+Node: syntax_here_doc24560
+Node: syntax_numeric26135
+Node: syntax_variable26760
+Node: syntax_gvar27215
+Node: syntax_ivar27577
+Node: syntax_lvar27962
+Node: syntax_pvar28800
+Node: syntax_const29372
+Node: syntax_array30418
+Node: syntax_hash30974
+Node: syntax_method31478
+Node: syntax_super32782
+Node: syntax_assign33160
+Node: syntax_operator35746
+Node: syntax_control36790
+Node: syntax_if37208
+Node: syntax_if-mod38109
+Node: syntax_unless38365
+Node: syntax_unless-mod38820
+Node: syntax_case39107
+Node: syntax_and40399
+Node: syntax_or40743
+Node: syntax_not41079
+Node: syntax_range41460
+Node: syntax_while42213
+Node: syntax_while-mod42541
+Node: syntax_until42876
+Node: syntax_until-mod43212
+Node: syntax_iter43552
+Node: syntax_for44957
+Node: syntax_yield45582
+Node: syntax_raise46075
+Node: syntax_begin47410
+Node: syntax_retry48911
+Node: syntax_return49804
+Node: syntax_break50232
+Node: syntax_next50715
+Node: syntax_redo50949
+Node: syntax_BEGIN_proc51190
+Node: syntax_END_proc51834
+Node: syntax_cdef52529
+Node: syntax_scdef52887
+Node: syntax_mdef53383
+Node: syntax_method-def53812
+Node: syntax_singleton-def55658
+Node: syntax_alias56296
+Node: syntax_undef57072
+Node: syntax_defined_p57680
+Node: Ruby Functions58108
+Node: Pre-defined variables and constants74940
+Node: variables75174
+Node: constants82282
+Node: ENV83842
+Node: Pre-defined classes and modules86122
+Node: classes86427
+Node: Object87321
+Node: Array94080
+Node: Dir104345
+Node: Hash107350
+Node: IO112415
+Node: File121832
+Node: Module129602
+Node: Class137442
+Node: Numeric138685
+Node: Integer140105
+Node: Bignum141844
+Node: Fixnum143179
+Node: Float144596
+Node: Proc145846
+Node: Range146747
+Node: Regexp148375
+Node: String150792
+Node: Struct164753
+Node: Time166766
+Node: NilClass172438
+Node: modules172860
+Node: Comparable173401
+Node: Enumerable174293
+Node: FileTest177040
+Node: GC179764
+Node: Kernel180360
+Node: Marshal180826
+Node: Math182779
+Node: ObjectSpace184094
+Node: Precision185283
+Node: Process186504
+Node: Bundled Libraries190103
+Node: DBM191194
+Node: Kconv193760
+Node: getopts194478
+Node: parsearg196025
+Node: ftplib197566
+Node: The Socket Library202600
+Node: Socket__Constants203128
+Node: BasicSocket203388
+Node: IPSocket205239
+Node: TCPSocket206173
+Node: TCPServer207933
+Node: UDPSocket209932
+Node: UNIXSocket211078
+Node: UNIXServer212187
+Node: Socket212590
+Node: hostname215386
+Node: The Thread Library215684
+Node: Thread216578
+Node: Mutex219782
+Node: Queue221163
+Node: The Tk Library222071
+Node: Pseudo BNF Syntax of Ruby223654
+Node: Ruby Glossary231717
+Node: glossary_a233046
+Node: glossary_b233261
+Node: glossary_c233365
+Node: glossary_d233897
+Node: glossary_e234646
+Node: glossary_f236911
+Node: glossary_g237203
+Node: glossary_h237487
+Node: glossary_i237591
+Node: glossary_j237695
+Node: glossary_k237799
+Node: glossary_l237903
+Node: glossary_m238007
+Node: glossary_n239311
+Node: glossary_o239415
+Node: glossary_p239519
+Node: glossary_q239825
+Node: glossary_r239929
+Node: glossary_s240221
+Node: glossary_t241671
+Node: glossary_u241913
+Node: glossary_v242367
+Node: glossary_w242471
+Node: glossary_x242575
+Node: glossary_y242679
+Node: glossary_z242783
+Node: glossary_aa242888
+Node: glossary_ka245988
+Node: glossary_sa248470
+Node: glossary_ta250467
+Node: glossary_na252889
+Node: glossary_ha252998
+Node: glossary_ma256680
+Node: glossary_ya257738
+Node: glossary_ra257847
+Node: glossary_wa259894
+Node: glossary__symbol260008
+Node: Variable Index260110
+Node: Function Index263438
+Node: Concept Index297118
+
+End Tag Table

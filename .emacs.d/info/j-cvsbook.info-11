@@ -1,0 +1,1468 @@
+これは j-cvsbook.info、j-main.texi より makeinfo バージョン 4.2
+によって作成されました。
+
+START-INFO-DIR-ENTRY
+* CVS Book: (cvsbook).          A CVS tutorial and reference.
+END-INFO-DIR-ENTRY
+
+Copyright (C) 1999 Karl Fogel <kfogel@red-bean.com>
+
+This document is free software; you can redistribute and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation; either version 2, or (at your option) any
+later version.
+
+This document is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+General Public License for more details.
+
+This manual describes how to use and administer CVS (Concurrent Versions
+System).  It is part of a larger work entitled `Open Source Development
+With CVS'; please see the introduction for details.
+
+This is version 1.12 of this manual.
+
+
+File: j-cvsbook.info,  Node: Shared Variables,  Next: User Variables,  Prev: Shared Syntax,  Up: Repository Administrative Files
+
+Shared Variables
+----------------
+
+これらのファイルでは実行時に変数を展開することもできます。変数を展開す
+る場合は先頭にドルマークをつけてください(また、念のため中括弧で囲んで
+ください)。CVS がわかっている変数は次の通りです:
+
+   * ${CVSROOT} - リポジトリのトップ。
+
+   * ${RCSBIN} - (Obsolete) この変数は使用しないでください。CVS のバージ
+     ョン1.9.18以前でのみ意味があります。これを指定するとエラーになります。
+
+   * ${CVSEDITOR} ${VISUAL} ${EDITOR} - CVS がログメッセージ用に使用
+     するエディタの名前に展開されます。
+
+   * ${USER} - CVS を実行しているユーザ(サーバ側)。
+
+
+
+File: j-cvsbook.info,  Node: User Variables,  Next: checkoutlist,  Prev: Shared Variables,  Up: Repository Administrative Files
+
+User Variables
+--------------
+
+CVS の任意のコマンドの実行時に、ユーザが独自の変数を設定することもでき
+ます。(グローバルオプションの -s を参照のこと) これらの変数は `*info'
+ファイル中で、${=VAR} のように等号を先頭につけて参照す
+ることができます。
+
+
+File: j-cvsbook.info,  Node: checkoutlist,  Next: commitinfo,  Prev: User Variables,  Up: Repository Administrative Files
+
+checkoutlist
+------------
+
+チェックアウトコピーをリポジトリに保存しておくファイルのリストです。各
+行にはファイル名と、 CVS が何らかの理由でリポジトリ中にそのファイルを
+チェックアウトできなかった場合のエラーメッセージを書きます。
+
+     FILENAME  ERROR_MESSAGE
+
+CVS は存在している管理ファイルのチェックアウトコピーについてはもうわか
+っているので、それらを checkoutlist に書く必要はありません。
+checkoutlist に書く必要のないファイルは、具体的には次のとおりです:
+loginfo, rcsinfo, editinfo, verifymsg, commitinfo, taginfo, ignore,
+checkoutlist, cvswrappers, notify, modules, readers, writers, config
+
+
+File: j-cvsbook.info,  Node: commitinfo,  Next: config,  Prev: checkoutlist,  Up: Repository Administrative Files
+
+commitinfo
+----------
+
+コミット時に、コミット中のものに基づいて実行するプログラムを指定します。
+各行には正規表現とコマンドテンプレートを書きます:
+
+     REGULAR_EXPRESSION PROGRAM [ARGUMENTS]
+
+PROGRAM にはテンプレート中に書いた引数に続いて追加の引数が渡されます。
+追加の引数とは、リポジトリのフルパス、コミットしようとするファイル名、
+です。これらのファイルは PROGRAM によって検査することができます。ファ
+イル内容はコミットしようとしている作業コピー中のファイルと同じです。
+PROGRAM がノンゼロで終了した場合、コミットは失敗します。それ以外の場合
+は成功します。(この章で既に出てきたきた *Note Shared Syntax:: も参照のこ
+と)
+
+
+File: j-cvsbook.info,  Node: config,  Next: cvsignore,  Prev: commitinfo,  Up: Repository Administrative Files
+
+config
+------
+
+グローバルな(プロジェクトごとでない)リポジトリパラメータを制御します。
+各行の書式は次の通りです(LockDir パラメータ以外):
+
+     ParameterName=yes|no
+
+LockDir パラメータだけは引数にフルパスを書きます。
+
+以下のパラメータがサポートされています:
+
+   * RCSBIN (default: `=no') - (Obsolete) 下位互換性のためこのオプシ
+     ョンは黙って受理されますが、何の効果もありません。
+
+   * SystemAuth (default: `=no') - `yes' にすると、認証の際に
+     `CVSROOT/passwd' にユーザ名が見つからなかった場合システムユーザデ
+     ータベース(通常 `/etc/passwd')に問い合わせます。 `no' にする
+     と、`:pserver:' メソッド経由でアクセスする場合には
+     `CVSROOT/passwd' にユーザ名が存在しなければなりません。
+
+   * PreservePermissions (default: `=no') - `yes' にすると、CVS
+     はパーミション及び他のファイルシステム情報(デバイス番号やシンボリック
+     リンクなど)を保存しようとします。必ずしも思ったようには動作しないので、
+     あまり `yes' にはしたくないと思います。(詳しくは Cederqvist マニ
+     ュアルの `Special Files' をご参照下さい)
+
+   * TopLevelAdmin (default: `=no') - `yes' にすると、チェックア
+     ウトの際に各作業コピーツリーの隣に `CVS/' サブディレクトリを作成
+     します(作業コピーの親ディレクトリ内に作成します)。同じリポジトリから作
+     業コピーを多数チェックアウトする場合に便利です。一方、ここでこの設定を
+     するとそのリポジトリを使っているすべてのユーザに影響があります。
+
+   * LockDir (unset by default) - 等号のあとの引数には CVS
+     がロックファイ
+     ルを作成するディレクトリへのパスを指定します。設定されていない場合、ロ
+     ックファイルはリポジトリ中の各プロジェクトの RCS
+     ファイルに対応する位
+     置に作成されます。この場合それらのプロジェクトのユーザはリポジトリディ
+     レクトリにファイルシステムレベルの書込み権限が必要です。
+
+
+
+File: j-cvsbook.info,  Node: cvsignore,  Next: cvswrappers,  Prev: config,  Up: Repository Administrative Files
+
+cvsignore
+---------
+
+update, import, release 時に特定のファイルを無視します。デフォルトで既
+に CVS は数種類のファイルを無視するようになっています。(それらの一覧は
+既にこの章で述べた import の -I オプションをご覧ください。) cvsignore
+ファイルに追加のファイル名、ワイルドカードパターンを書けばこのリストに
+追加できます。各行はファイル名またはパターンです。たとえば:
+
+     README.msdos
+     *.html
+     blah?.out
+
+こう設定すると CVS は`README.msdos' と、 `.html' で終わる名
+前のファイルすべて、`blah' で始まり `.out' で終わる名前のフ
+ァイルすべてを無視します。(技術的には各行に複数のファイル名またはパタ
+ーンを空白で区切って書いても構わないのですが、1行に1つにしておいたほう
+が読みやすいです。空白で区切る規則は空白を含むファイル名を指定しようと
+するとワイルドカードに頼る以外方法がなくなります)
+
+リスト中に `!' を書くとそれまでのエントリがすべて取り消されます。
+(無視リストの処理についてはこの章の *Note Environment Variables:: 節の
+*Note $CVSIGNORE:: をご参照下さい。)
+
+
+File: j-cvsbook.info,  Node: cvswrappers,  Next: editinfo,  Prev: cvsignore,  Up: Repository Administrative Files
+
+cvswrappers
+-----------
+
+ファイル名に基づいてフィルタリングの動作を指定します。各行にはファイル
+グロブパターン(つまりファイル名またはファイルワイルドカード)、フィルタ
+タイプを示すオプション、そのオプションの引数、を指定します。
+
+Options:
+
+   * -m - update メソッドを指定します。使用可能な引数は MERGE と COPY
+     で、 MERGE は変更を自動的に作業ファイルにマージすることを意味し、
+     COPY は自 動マージはせず、 COPY, which means don't try to
+     automerge but present the user with both versions of the file and
+     let them work it out.  デフォルトは MERGE
+     ですが、バイナリファイル(キーワード展開モードが -kb
+     のファイル)は例外です。(この章の *Note Keyword Substitution (RCS
+     Keywords):: 節を参照のこと)
+     バイナリとしてマークしてあるファイルは自動で COPY
+     メソッドを使用します ので -m COPY
+     ラッパを指定する必要はありません。
+
+   * -k -
+     キーワード展開モードを指定します。通常のモードはすべて指定できま
+     す。(モードの一覧はこの章の *Note Keyword Substitution (RCS
+     Keywords):: 節を参照のこと)
+
+
+cvswrappers ファイルの例を示します:
+
+     *.blob    -m COPY
+     *.blink   -k o
+
+この cvswrappers ファイルでは、`.blob' で終わる名前のファイルは
+マージしないように、`.blink' で終わる名前のファイルはキーワード展
+開をしないように設定しています。(この章の *Note Working Copy Files:: の
+`.cvswrappers' もご参照下さい)
+
+
+File: j-cvsbook.info,  Node: editinfo,  Next: history,  Prev: cvswrappers,  Up: Repository Administrative Files
+
+editinfo
+--------
+
+このファイルは廃止されました。
+
+
+File: j-cvsbook.info,  Node: history,  Next: loginfo,  Prev: editinfo,  Up: Repository Administrative Files
+
+history
+-------
+
+リポジトリ中の活動履歴を累積して保存します。cvs history コマンドが使用
+します。この機能を使えないようにするには、単にこの履歴ファイルを削除し
+てください。削除しない場合はパーミションの問題を避けるためこのファイル
+をワールドライタブルにします。
+
+このファイルの内容は CVS の動作を変更したりはしません(当たり前ですが
+cvs history の出力は別です)。
+
+
+File: j-cvsbook.info,  Node: loginfo,  Next: modules,  Prev: history,  Up: Repository Administrative Files
+
+loginfo
+-------
+
+各コミット時にコミットされるものに基づいてログメッセージを対象に実行す
+るプログラムを指定します。各行には正規表現とコマンドテンプレートを書き
+ます:
+
+     REGULAR_EXPRESSION PROGRAM [ARGUMENTS]
+
+PROGRAM には標準入力からログメッセージが渡されます。
+
+引数のところで使用可能な特殊コードがいくつかあります: `%s' はコミ
+ットされつつあるファイルの名前に、`%V' はコミット前の旧リビジョン
+に番号、`%v' はコミット後の新リビジョン番号に展開されます。複数の
+ファイルを含む場合には各要素は空白で区切られます。たとえばあるコミット
+がファイルを2つ含む場合、`%s' は `hello.c README.txt' に、 `%v' は
+`1.17 1.12' に展開されます。
+
+コードを組み合わせて中括弧で囲むこともできて、その場合には展開単位内は
+コンマで区切られ、各単位は空白で区切られます。さっきの例だと、 `%{sv}'
+は `hello.c,1.17 README.txt,1.12' に展開されます。
+
+`%' の展開が済んだら、展開後文字列の前にリポジトリのフルパスがつ
+きます。ですから、展開がすべてすむと次のようになります:
+
+     /usr/local/newrepos  hello.c,1.17  README.txt,1.12
+
+PROGRAM がノンゼロで終了した場合コミットは失敗し、それ以外の場合は成功
+します。(この章の *Note Shared Syntax:: 節を参照のこと)
+
+
+File: j-cvsbook.info,  Node: modules,  Next: notify,  Prev: loginfo,  Up: Repository Administrative Files
+
+modules
+-------
+
+このファイルでは、リポジトリのディレクトリに名前をマッピングします。各
+行の書式は次の通りです:
+
+     MODULE [OPTIONS] [&OTHERMODULE...] [DIR] [FILES]
+
+DIR はトップレベルプロジェクトディレクトリである必要はなく、サブディレ
+クトリでも構いません。FILES を指定した場合、そのモジュールはそのディレ
+クトリの指定したファイルだけから構成されることになります。
+
+モジュール名の先頭にアンパサンド(&)をつけると、その位置にそのモジュー
+ルを展開して指定するのと同じ意味になります。
+
+Options:
+
+   * -a - "別名(alias)"モジュール。OPTIONS 以降すべてを文字どおりに展
+     開します。この場合、普通に DIR/FILES
+     を指定した場合の動作は実行されず、 OPTIONS
+     以降に指定したものはすべて他のモジュールまたはリポジトリディレ
+     クトリとして解釈されます。
+
+     -a
+     オプションを使う場合、ディレクトリ名の先頭にエクスクラメーションマ
+     ーク(!)をつけて指定するとそのディレクトリを対象外にすることができます。
+     たとえば、
+
+          top_proj -a !myproj/a-subdir !myproj/b-subdir myproj
+
+     と指定した場合に `top_proj' をチェックアウトすると、 `a-subdir',
+     `b-subdir' を除いた `myproj' 全体を取得す ることになります。
+
+   * -d NAME - 作業コピーのディレクトリ名を、モジュール名ではなく NAME
+     に します。
+
+   * -e PROGRAM - そのモジュール中のファイルを export する時に PROGRAM
+     を 実行します。
+
+   * -i PROGRAM - このモジュール中のファイルを commit する時に PROGRAM
+     を
+     実行します。プログラムに渡される引数は1つだけで、対象のファイルのリポ
+     ジトリ中のパスが渡されます(コミットをトリガにプログラムを実行したい場
+     合、*Note commitinfo::, *Note loginfo::, *Note verifymsg::
+     にもう少し洗練さ れた方法があります)。
+
+   * -o PROGRAM - そのモジュール中のファイルを checkout する時に PROGRAM
+     を実行します。プログラムには引数としてモジュール名が渡されます。
+
+   * -s STATUS - そのモジュールの状態を宣言します。modules ファイルを
+     cvs checkout -s
+     で表示する際、モジュールはまず状態、次に名前でソートされま
+     す。このオプションを指定してもこれ以外の影響はありません。(This
+     option has no other effects in CVS, so go wild.)
+     これを使っていろいろとソート
+     できます。たとえば状態、そのモジュールの担当者、モジュールファイルの言
+     語など。
+
+   * -t PROGRAM - このモジュール中のファイルに cvs rtag
+     でタグ付けする時に PROGRAM
+     を実行します。プログラムに渡される引数は、モジュール名とタグ名
+     の2つです。このプログラムは tag では起動されず、rtag
+     でだけ起動されま
+     す。何故こういう違いがあるか、筆者にはわかりません。tag をトリガに
+     プログラムを起動したければ、taginfo ファイルが役に立つと思います。
+     ジトリ中のパスが渡されます
+
+   * -u PROGRAM -
+     このモジュールの作業コピーをトップレベルディレクトリにて update
+     する時に PROGRAM を実行します。プログラムに渡される引数はモジュ
+     ールのリポジトリのフルパス1つだけです。
+
+
+
+File: j-cvsbook.info,  Node: notify,  Next: passwd,  Prev: modules,  Up: Repository Administrative Files
+
+notify
+------
+
+監視中のファイルについての通知をどのように行うかをコントロールします。
+(ここまでに watch, edit コマンドのところを全部読むか、 *Note Advanced
+CVS:: の *Note Watches (CVS As Telephone):: 節を読むことを
+おすすめします)。各行の通常の書式は:
+
+REGULAR_EXPRESSION PROGRAM [ARGUMENTS]
+
+ARGUMENTS 中に `%s' と書くと通知されるユーザ名に展開され、通知に
+関するその他の情報は標準入力を通じて PROGRAM に渡されます(たいていはユ
+ーザにメールするための短いメッセージです)。(この章の *Note Shared
+Syntax:: を参照のこと)
+
+配布時のままの状態の CVS だと notify ファイルは次の1行だけです:
+
+     ALL mail %s -s "CVS notification"
+
+たいていはこれで事足りると思います。
+
+
+File: j-cvsbook.info,  Node: passwd,  Next: rcsinfo,  Prev: notify,  Up: Repository Administrative Files
+
+passwd
+------
+
+pserver アクセスメソッドについての認証情報を設定します。各行の書式は次
+の通りです:
+
+USER:ENCRYPTED_PASSWORD[:SYSTEM_USER]
+
+SYSTEM_USER が指定されない場合、 USER をシステムユーザ名とみなします。
+
+
+File: j-cvsbook.info,  Node: rcsinfo,  Next: taginfo,  Prev: passwd,  Up: Repository Administrative Files
+
+rcsinfo
+-------
+
+エディタで対話的に書くログメッセージのための記入フォームを指定します。
+rcsinfo の各行は次のように書きます:
+
+REGULAR_EXPRESSION FILE_CONTAINING_TEMPLATE
+
+このテンプレートはチェックアウト時にリモートの作業コピーのほうにコピー
+されますので、チェックアウト後にテンプレートファイルや rcsinfo ファイ
+ルを変更するとリモート作業コピーはそれを認識せず、古いテンプレートを使
+い続けます。(この章の *Note Shared Syntax:: も参照のこと。)
+
+
+File: j-cvsbook.info,  Node: taginfo,  Next: users,  Prev: rcsinfo,  Up: Repository Administrative Files
+
+taginfo
+-------
+
+タグ付け時にプログラムを実行します(通常はタグ名をつけるときにあるパタ
+ーンとマッチしているかどうかチェックします)。各行の書式は次の通りです:
+
+REGULAR_EXPRESSION PROGRAM
+
+プログラムには一群の引数が渡されます。順に、タグ名、オペレーション(下
+記参照)、リポジトリ、そのタグ付けに含まれるファイル名/リビジョン番号の
+ペアの繰り返し(空白区切り)、となります。
+
+オペレーションとは `add', `mov', `del' のうちのいずれか です(`mov'は
+tag コマンドに -F オプションをつけたことを意味します)。
+
+PROGRAM がノンゼロで終了すると、tag コマンドは失敗します。(この章の
+*Note Shared Syntax:: 節を参照のこと)
+
+
+File: j-cvsbook.info,  Node: users,  Next: val-tags,  Prev: taginfo,  Up: Repository Administrative Files
+
+users
+-----
+
+ユーザ名とメールアドレスのマッピングを設定します。各行は次のとおりです:
+
+USERNAME:EMAIL_ADDRESS
+
+監視の通知をリポジトリマシンの USERNAME ではなく、EMAIL_ADDRESS に送信
+します。(単に notify ファイルの %s の展開をコントロールするだけです。)
+EMAIL_ADDRESS が空白文字を含む場合クオートで囲むことをお忘れなく。
+
+passwd ファイルでユーザの別名を設定している場合、マッチ対象のユーザ名
+はシステムユーザ名(あれば右側のユーザ名)ではなく CVS ユーザ名の方にな
+ります(左側のユーザ名)。
+
+
+File: j-cvsbook.info,  Node: val-tags,  Next: verifymsg,  Prev: users,  Up: Repository Administrative Files
+
+val-tags
+--------
+
+タグ名をより素早く検索するため、有効なタグ名をキャッシュします。このフ
+ァイルの内容は決して編集してはいけませんが、ユーザがタグをアクセスした
+り作成したりする際にトラブルが発生した場合にはパーミションやオーナをい
+じることがあります。
+
+
+File: j-cvsbook.info,  Node: verifymsg,  Prev: val-tags,  Up: Repository Administrative Files
+
+verifymsg
+---------
+
+ログメッセージのフォーマットを検査するため、rcsinfo と組み合わせて使い
+ます。各行の書式は次の通りです:
+
+REGULAR_EXPRESSION PROGRAM [ARGUMENTS]
+
+verifymsg ファイルに書いた最後の引数のあとに、現在のログメッセージのテ
+ンプレート(この章の *Note rcsinfo::
+を参照のこと)が追加されて渡されます。 PROGRAM
+がノンゼロで終了すると、commit は失敗します。
+
+
+File: j-cvsbook.info,  Node: Run Control Files,  Next: Working Copy Files,  Prev: Repository Administrative Files,  Up: CVS Reference
+
+Run Control Files
+=================
+
+クライアント(作業コピー)側にも CVS の動作に影響するファイルが二三あり
+ます。いくつかはリポジトリの管理ファイルと同じようなもので、ほかのはク
+ライアント側だけの動作を制御するものです。
+
+`.cvsrc'
+--------
+
+CVS コマンドを実行する際に自動的につけておきたいオプションを指定します。
+各行の書式は次の通りです:
+
+COMMAND OPTIONS
+
+COMMAND は CVS コマンドの正式名称(省略しない形式)で、たとえば checkout
+や update のように指定します(co, up ではだめです)。OPTIONS にはそのコ
+マンドを実行する時にはいつもつけておきたいオプションを指定します。
+よくある `.cvsrc' の行を記します:
+
+     update -d -P
+
+グローバルオプションを指定するには COMMAND のところに cvs と書いてくだ
+さい。
+
+`.cvsignore'
+------------
+
+追加の無視パターンを指定します。(この章の *Note Repository
+Administrative Files:: 節の *Note cvsignore:: を参照のこ と。)
+
+ホームディレクトリに .cvsignore ファイルを置けば、CVS を使う時常に適
+用されます。作業コピーの各プロジェクトディレクトリにも置けて、その場合
+はそのディレクトリごとの設定になります(.cvsignore が置いてあるディレク
+トリにだけ適用され、サブディレクトリには適用されません)。
+
+(無視リストの処理については、この章の *Note Environment Variables:: 節の
+*Note $CVSIGNORE:: を参照のこと。)
+
+`.cvspass'
+----------
+
+pserver メソッド経由でアクセスする各リポジトリのパスワードを保存します。
+各行の書式は次の通り:
+
+REPOSITORY LIGHTLY_SCRAMBLED_PASSWORD
+
+パスワードは本質的に平文で保存されています。うっかり見てしまう(root ユ
+ーザが何の気無しにファイルの中身を見てしまったりするような)のを防ぐた
+めに、ほんのちょっとスクランブルがかけてあるだけです。このスクランブル
+では、このファイルにアクセスしてパスワードを盗もうと真剣に思っているよ
+うな人間には歯が立ちません。
+
+.cvspass ファイルはポータブルですので、あるマシンの .cvspass ファイル
+を別のマシンにコピーすると、新しいマシンではパスワードをすべて持ってい
+る状態になり、cvs login する必要がありません。(*Note login:: と *Note
+logout:: コマンドを参照のこと)
+
+`.cvswrappers'
+--------------
+
+cvswrappers ファイルのクライアント側バージョンです。(この章の *Note
+Repository Administrative Files:: 節を参照のこと) `.cvswrappers'
+ファイルはホームディレクトリにも作業コピーの各ディ
+レクトリ中にも置けます。`.cvsignore' と同様です。
+
+
+File: j-cvsbook.info,  Node: Working Copy Files,  Next: Environment Variables,  Prev: Run Control Files,  Up: CVS Reference
+
+Working Copy Files
+==================
+
+作業コピーの各ディレクトリには CVS/ 管理サブディレクトリには、次のファ
+イルの一部が置いてあります。
+
+   * CVS/Base/
+
+   * CVS/Baserev
+
+   * CVS/Baserev.tmp
+
+   * CVS/Checkin.prog
+
+   * CVS/Entries
+
+   * CVS/Entries.Backup
+
+   * CVS/Entries.Log
+
+   * CVS/Entries.Static
+
+   * CVS/Notify
+
+   * CVS/Notify.tmp
+
+   * CVS/Repository
+
+   * CVS/Root
+
+   * CVS/Tag
+
+   * CVS/Template
+
+   * CVS/Update.prog
+
+各ファイル、ディレクトリが何をするものなのか説明しますと:
+
+`CVS/Base/'  (directory)
+------------------------
+
+監視をオンにしてある場合、`cvs edit' はこのディレクトリにその
+ファイルのオリジナルコピーを置きます。これのおかげでサーバに接続できな
+い時にも `cvs unedit' が動作するわけです。
+
+`CVS/Baserev'
+-------------
+
+`Base/' 中の各ファイルのリビジョンの一覧です。各行は次のようです:
+
+     FILE/REVISION/EXPANSION
+
+EXPANSION は無視してください、ええと、将来の機能拡張のためなんです。
+
+`CVS/Baserev.tmp'
+-----------------
+
+一時ファイルです。(後で述べる `CVS/Notify.tmp', `CVS/Entries.Backup'
+を参照のこと)
+
+`CVS/Checkin.prog'
+------------------
+
+modules ファイルで指定した -i オプションのプログラム名を記録します。
+(この章の *Note Repository Administrative Files:: 節を参照のこと)
+
+`CVS/Entries'
+-------------
+
+このディレクトリ中のファイルのリビジョンを保存しています。各行は次の形
+式です:
+
+     [CODE_LETTER]/FILE/REVISION/DATE/[KEYWORD_MODE]/[STICKY_OPTION]
+
+CODE_LETTER があるとすれば `D' になっている筈で(それ以外は CVS に
+ただ無視されます。将来の機能拡張のため)、それはディレクトリを意味しま
+す。その場合、行の残りの項目はありません。
+
+このファイルは常に存在します。
+
+`CVS/Entries.Backup'
+--------------------
+
+ただの一時ファイルです。もし `Entries' ファイルを変更するようなプ
+ログラムを書く場合には、新しい内容をまず `Entries.backup' に書込
+み、その後アトミックにファイル名を `Entries' に変更してください。
+
+`CVS/Entries.Log'
+-----------------
+
+これは基本的に `Entries' を読んだ後に `Entries' に適用される
+パッチファイルです(このハックはちょっとした変更のたびに `Entries'
+を全部書き直すのを避けるために効果的です)。 書式は `Entries'
+と同じですが、ただし各行の冒頭にコード文字が追加
+されている点が違います。`A' は `Entries' に追加する行で、 `R' は
+`Entries' から削除する行です。その他の文字は将来の機能
+拡張のため、ただ無視されます。
+
+`CVS/Entries.Static'
+--------------------
+
+このファイルが存在するということは、リポジトリからはこのディレクトリの
+一部のみが取得されており、CVS はそのディレクトリの追加のファイルを作成
+しないということを意味します。この状態は通常 `update -d' を実
+行するとクリアされます。
+
+`CVS/Notify'
+------------
+
+まだサーバに送信していない通知を保存しておくファイルです。
+
+`CVS/Notify.tmp'
+----------------
+
+`Notify' の一時ファイルです。`Notify' ファイルを変更する際に は、まず
+`Notify.tmp' に書込み、その後ファイル名を  `Notify'
+に変更する、という手続きをとるのが普通です。
+
+`CVS/Repository'
+----------------
+
+そのプロジェクトのリポジトリ中のパスです。絶対パスか、または Root で示
+されたところからの相対パスです。
+
+このファイルは常に存在しています。
+
+`CVS/Root'
+----------
+
+リポジトリです。つまり、`$CVSROOT' 環境変数の値か、または -d グロ
+ーバルオプションで指定したパスです。
+
+このファイルは常に存在します。
+
+`CVS/Tag'
+---------
+
+このディレクトリにスティッキータグまたはスティッキー日付が存在する場合、
+このファイルの1行目に記録されます。冒頭1文字はタグの種別を表します。
+`T', `N', `D' で、各々の意味はタグ、ノンブランチタグ、
+日付です。行の残りはタグまたは日付です。
+
+`CVS/Template'
+--------------
+
+rcsinfo ファイルで指定されたログメッセージのテンプレートを保存します。
+(この章で既に述べた*Note Repository Administrative Files::を参照のこと)
+これはリモート作業コピーにのみ関係あることです。リポジトリと同じマシン
+上の作業コピーは rcsinfo ファイルを直接読みます。
+
+`CVS/Update.prog'
+-----------------
+
+modules ファイルの -u オプションで指定したプログラム名を記録します。
+(この章の *Note Repository Administrative Files::節を参照のこと)
+
+
+File: j-cvsbook.info,  Node: Environment Variables,  Prev: Working Copy Files,  Up: CVS Reference
+
+Environment Variables
+=====================
+
+CVS に影響する環境変数の全リストです。
+
+* Menu:
+
+* $COMSPEC::
+* $CVS_CLIENT_LOG::
+* $CVS_CLIENT_PORT::
+* $CVSEDITOR::
+* $CVSIGNORE::
+* $CVS_IGNORE_REMOTE_ROOT::
+* $CVS_PASSFILE::
+* $CVS_RCMD_PORT::
+* $CVSREAD::
+* $CVSROOT::
+* $CVS_RSH::
+* $CVS_SERVER::
+* $CVS_SERVER_SLEEP::
+* $CVSUMASK::
+* $CVSWRAPPERS::
+* $EDITOR::
+* $HOME %HOMEDRIVE% %HOMEPATH%::
+* $PATH::
+* $TEMP $TMP $TMPDIR::
+* $VISUAL::
+
+
+File: j-cvsbook.info,  Node: $COMSPEC,  Next: $CVS_CLIENT_LOG,  Up: Environment Variables
+
+$COMSPEC
+--------
+
+OS/2 でのみ使用します。コマンドインタプリタ名を指定します。デフォルト
+は `CMD.EXE' です。
+
+
+File: j-cvsbook.info,  Node: $CVS_CLIENT_LOG,  Next: $CVS_CLIENT_PORT,  Prev: $COMSPEC,  Up: Environment Variables
+
+$CVS_CLIENT_LOG
+---------------
+
+クライアント/サーバプロトコルのデバッグに使用します。CVS を使う前に、
+この変数にファイル名 filename を設定してください。サーバへのトラフィッ
+クがすべて filename.in に、サーバからのトラフィックがすべて
+filename.out に記録されます。
+
+
+File: j-cvsbook.info,  Node: $CVS_CLIENT_PORT,  Next: $CVSEDITOR,  Prev: $CVS_CLIENT_LOG,  Up: Environment Variables
+
+$CVS_CLIENT_PORT
+----------------
+
+ケルベロス認証のクライアント/サーバアクセスで使用します。
+
+
+File: j-cvsbook.info,  Node: $CVSEDITOR,  Next: $CVSIGNORE,  Prev: $CVS_CLIENT_PORT,  Up: Environment Variables
+
+$CVSEDITOR
+----------
+
+コミット時のログメッセージを編集する際に使用するプログラムを指定します。
+これは `$EDITOR' や `$VISUAL' より優先されます。
+
+
+File: j-cvsbook.info,  Node: $CVSIGNORE,  Next: $CVS_IGNORE_REMOTE_ROOT,  Prev: $CVSEDITOR,  Up: Environment Variables
+
+$CVSIGNORE
+----------
+
+CVS に無視させたいファイル名やワイルドカードパターンを空白で区切ったリ
+ストで指定します。(*Note import:: の -I オプションを参照のこと)
+
+この変数の内容はコマンド実行中に無視リストの最後に追加されます。無視リ
+ストは、`CVSROOT/cvsignore'、ホームディレクトリの`.cvsignore'
+ファイル、`$CVSIGNORE' 環境変数、-I コマンドオプション、そして CVS
+が動作している各ディレクトリの `.cvsignore' ファイル、の順で
+作成されます。`!' を指定するとその時点までに作成された無視リスト
+がすべて破棄されます。
+
+
+File: j-cvsbook.info,  Node: $CVS_IGNORE_REMOTE_ROOT,  Next: $CVS_PASSFILE,  Prev: $CVSIGNORE,  Up: Environment Variables
+
+$CVS_IGNORE_REMOTE_ROOT
+-----------------------
+
+最近廃止されました。
+
+
+File: j-cvsbook.info,  Node: $CVS_PASSFILE,  Next: $CVS_RCMD_PORT,  Prev: $CVS_IGNORE_REMOTE_ROOT,  Up: Environment Variables
+
+$CVS_PASSFILE
+-------------
+
+CVS に対し別の名前の .cvspass ファイルを使用するよう指示します。
+(この章の *Note Run Control Files:: 節の `.cvspass' を参照のこと)
+
+
+File: j-cvsbook.info,  Node: $CVS_RCMD_PORT,  Next: $CVSREAD,  Prev: $CVS_PASSFILE,  Up: Environment Variables
+
+$CVS_RCMD_PORT
+--------------
+
+サーバ側の rcmd デーモンに接続する際のポーと番号を指定します。
+(この変数は現在の Unix CVS クライアントでは無視されます。)
+
+
+File: j-cvsbook.info,  Node: $CVSREAD,  Next: $CVSROOT,  Prev: $CVS_RCMD_PORT,  Up: Environment Variables
+
+$CVSREAD
+--------
+
+作業コピーを checkout, update する際、可能ならファイルを読み出し専用に
+します(デフォルトでは読み書きモードになります)。(-r グローバルオプショ
+ンを参照のこと)
+
+
+File: j-cvsbook.info,  Node: $CVSROOT,  Next: $CVS_RSH,  Prev: $CVSREAD,  Up: Environment Variables
+
+$CVSROOT
+--------
+
+リポジトリのパスを指定します。-d グローバルオプションや、作業コピー中
+の環境でのリポジトリの方が優先されます。リポジトリへのパスの冒頭にはア
+クセスメソッド、ユーザ名、ホストの指定が来ることもあります。書式は次の
+通りです:
+
+     [[:METHOD:][[USER@]HOST]:]/REPOSITORY_PATH
+
+この章の最初の方にある *Note Global Options:: 節の -d グローバルオプショ
+ンのところに指定できるアクセスメソッドの一覧があります。
+
+
+File: j-cvsbook.info,  Node: $CVS_RSH,  Next: $CVS_SERVER,  Prev: $CVSROOT,  Up: Environment Variables
+
+$CVS_RSH
+--------
+
+`:ext:' アクセスメソッドの場合に、サーバへの接続で使用する外部プ
+ログラムを指定します。デフォルトは `rsh' ですが、代わりに `ssh'
+を使うのが普通です。
+
+
+File: j-cvsbook.info,  Node: $CVS_SERVER,  Next: $CVS_SERVER_SLEEP,  Prev: $CVS_RSH,  Up: Environment Variables
+
+$CVS_SERVER
+-----------
+
+サーバ側で起動する CVS プログラムを指定します。デフォルトは当然 `cvs'
+です。
+
+
+File: j-cvsbook.info,  Node: $CVS_SERVER_SLEEP,  Next: $CVSUMASK,  Prev: $CVS_SERVER,  Up: Environment Variables
+
+$CVS_SERVER_SLEEP
+-----------------
+
+サーバの子プロセスの開始を指定した秒数だけ遅らせます。デバッグの時に使
+用して、デバッガが接続するための時間を作ります。
+
+
+File: j-cvsbook.info,  Node: $CVSUMASK,  Next: $CVSWRAPPERS,  Prev: $CVS_SERVER_SLEEP,  Up: Environment Variables
+
+$CVSUMASK
+---------
+
+リポジトリ中のファイルやディレクトリのパーミションを指定します。(これ
+は普通設定しません。いずれにせよクライアント/サーバでは動作しません)
+
+
+File: j-cvsbook.info,  Node: $CVSWRAPPERS,  Next: $EDITOR,  Prev: $CVSUMASK,  Up: Environment Variables
+
+$CVSWRAPPERS
+------------
+
+CVS がラッパーとして使用するファイル名、ワイルドカード、引数のリストを
+指定します(空白区切り)。(詳しくはこの章の *Note Repository
+Administrative Files:: 節の *Note cvswrappers:: を参照の こと)
+
+
+File: j-cvsbook.info,  Node: $EDITOR,  Next: $HOME %HOMEDRIVE% %HOMEPATH%,  Prev: $CVSWRAPPERS,  Up: Environment Variables
+
+$EDITOR
+-------
+
+(*Note $CVSEDITOR:: を参照のこと)
+
+
+File: j-cvsbook.info,  Node: $HOME %HOMEDRIVE% %HOMEPATH%,  Next: $PATH,  Prev: $EDITOR,  Up: Environment Variables
+
+$HOME %HOMEDRIVE% %HOMEPATH%
+----------------------------
+
+`.cvsrc', `.cvspass' を置く場所を指定します(Unix では `$HOME'
+のみが使用されます)。Windows NT では `%HOMEDRIVE%' と `%HOMEPATH%'
+が設定されていますが、 Windows 95 では自分で設定する必要があります。
+
+Windows 95 では `%HOME%' も設定しなければなりません。最後にバック
+スラッシュを書かないことに注意してください。set `HOME=C:' などを
+使ってください。
+
+
+File: j-cvsbook.info,  Node: $PATH,  Next: $TEMP $TMP $TMPDIR,  Prev: $HOME %HOMEDRIVE% %HOMEPATH%,  Up: Environment Variables
+
+$PATH
+-----
+
+廃止。
+
+
+File: j-cvsbook.info,  Node: $TEMP $TMP $TMPDIR,  Next: $VISUAL,  Prev: $PATH,  Up: Environment Variables
+
+$TEMP $TMP $TMPDIR
+------------------
+
+一時ファイルをどこに置くかを指定します(サーバは TMPDIR を使用します、
+Windows NT は TMP を使用します)。クライアント側でこれを設定してもサー
+バ側には影響ありません。どちらで指定しても CVS が一時ロックファイルを
+作る場所には影響しません。(これについて詳しくはこの章の *Note
+Repository Administrative Files:: 節の *Note config:: を参照のこと)
+
+
+File: j-cvsbook.info,  Node: $VISUAL,  Prev: $TEMP $TMP $TMPDIR,  Up: Environment Variables
+
+$VISUAL
+-------
+
+(See *Note $CVSEDITOR::.)
+
+
+File: j-cvsbook.info,  Node: Third-Party Tools,  Next: Index,  Prev: CVS Reference,  Up: Top
+
+Third-Party Tools
+*****************
+
+多くの人々が CVS を強化するプログラムを書いてきました。これらのプロ
+グラムは CVS 開発チームとは別にそれぞれメインテナが居るので、わたし
+はこれらを"サードパーティツール"と呼びます。いくつかを除き、これ
+らのプログラムの大半は CVS と一緒には配布されていません。この章では、
+CVS と一緒には配布されていないけれども便利なサードパーティツールを説
+明します。
+
+とてもポピュラーで広く使われている、コマンドライン形式でない、または
+Unix ベースではない CVS のインタフェースがいくつかありますが (*Note
+Repository Administration:: にダウンロードサイトの一覧がありま
+す)、この章ではそれら大半について議論しません。ポピュラーなので、メー
+リングリストやニュースグループでいろいろと情報が見つけやすいと思いま
+す。例外は Emacs pcl-cvs インタフェースで、これはとても便利なのです
+が、インストールにコツがいるのです。
+
+* Menu:
+
+* pcl-cvs -- An Emacs Interface To CVS::
+* cvsutils -- General Utilities For Use With CVS::
+* cvs2cl -- Generate GNU-Style ChangeLogs::
+* cvslock -- Lock Repositories For Atomicity::
+* Other Packages::
+* Writing Your Own Tools::
+
+
+File: j-cvsbook.info,  Node: pcl-cvs -- An Emacs Interface To CVS,  Next: cvsutils -- General Utilities For Use With CVS,  Up: Third-Party Tools
+
+pcl-cvs - An Emacs Interface To CVS
+===================================
+
+Depends on: Emacs, Elib
+
+URLs:
+
+   * `ftp://rum.cs.yale.edu/pub/monnier/pcl-cvs/'
+
+   * `ftp://ftp.lysator.liu.se/pub/emacs/pcl-cvs-1.05.tar.gz'
+
+   * `ftp://ftp.red-bean.com/pub/kfogel/pcl-cvs-1.05.tar.gz'
+
+Authors: Per Cederqvist and Stefan Monnier (current maintainer)
+
+`pcl-cvs' は、2つある Emacs/CVS インタフェースのうちのひとつで
+す。もうひとつは Emacs にビルトインされている、ネイティブVC(Version
+Control)インタフェースです。pcl-cvs は CVS 専用に書かれていて、CVSで
+いろいろするのにスムースに動作しますので、わたしは pcl-cvs のほうが
+好きです。一方、VC はいくつかの違うバックエンドバージョン管理システ
+ム(RCS と SCCS、CVS もです)上で動くよう設計されているので、CVS 向け
+に調整されているわけではありません。例えば、VC はディレクトリベース
+ではなくファイルベースのリビジョン管理インタフェースを提供しています。
+
+pcl-cvs の利点は、たくさんの人が VC を使うより pcl-cvs をダウンロー
+ドしてインストールする手間をかけているのを補って余りあります。残念な
+ことに、pcl-cvs には2つ欠点があります: インストールがちょっとややこ
+しいことと(この節の多くはインストールでつまづきそうなハードルを越え
+るために費されています)、最近のリリースが少し不安定なことです。
+
+後者の問題は一時的なものではありますが、どのバージョンを使えばよいか
+という疑問がでてきます。Stefan Monnier は最近 pcl-cvs の保守を引き継
+ぎました; 最新のリリース 2.9.6 (上記のリストの最初のURLからどうぞ)は
+わたしが試してみたときにはちょっとがたぴししている感じでした。すぐに
+スムーズに動くようになるとは思うのですが、さしあたっては古いバージョ
+ンを使いたいだろうと思います。バージョン1.05を毎日長い間使い続けて、
+とてもよく動いてくれていたので、ここではそのバージョンを書いておこう
+と思います。幸い、インストール手順はバージョン間で違いはありません。
+pcl-cvs を使うことを決めたら、Monnier のダウンロードサイトをチェック
+して 2.9.6 より新しいバージョンがでているかどうか見てみることをお勧
+めします。もしあったら、1.05 に退行してしまう前に試してみてください。
+
+2つのURLがバージョン1.05用であることに気づいたと思います。最初のほう は
+Per Cederqvist のサイトで、彼は pcl-cvs の古いアーカイブを入手で
+きるようにしてくれています。しかし、彼のアーカイブがいつまであるかは
+わからないので、1.05 ディストリビューションを ftp.red-bean.com でも
+入手できるようにしておきました。
+
+以降の手順ではバージョン1.05からの例を使用していますが、それより新し
+いバージョンでも同じように適用できると思います。
+
+* Menu:
+
+* Installing pcl-cvs::
+* Using pcl-cvs::
+* Error Handling In pcl-cvs::
+* The Future Of pcl-cvs::
+
+
+File: j-cvsbook.info,  Node: Installing pcl-cvs,  Next: Using pcl-cvs,  Up: pcl-cvs -- An Emacs Interface To CVS
+
+Installing pcl-cvs
+------------------
+
+もし Emacs のインストールやサイトメンテナンスについて普段かかわって
+いなければ、pcl-cvs のインストール手順はちょっと気が遠くなるような感
+じかもしれません。Emacs がどう動いているか、ちょっとした背景を知って
+いれば役に立つかもしれませんね。
+
+Emacs の最も高レベルな機能は"Emacs Lisp"と呼ばれる言語で書かれていま
+す(Emacs はそれ自体この言語のインタプリタなのです)。人々は Emacs に
+新しい機能を追加するために、Emacs Lisp コードのファイルを配布します。
+`pcl-cvs' はこの言語で書かれており、"Elib" と呼ばれる、便利 で汎用的な
+Emacs Lisp 関数に依存しています(一部 Per Cederqvistが書き
+ましたが、pcl-cvs とは別に配布されています)。
+
+Elib は通常の Emacs ディストリビューションには含まれていませんので
+(少なくとも FSF Emacs には; XEmacs のことはわたしにはわからないです)、
+pcl-cvs を使う前にそれをダウンロードしてインストールする必要がありま
+す。`ftp://ftp.lysator.liu.se/pub/emacs/elib-1.0.tar.gz' から入
+手できます。インストール手順はパッケージの中に同梱されています。
+
+Elib がインストールできたら、pcl-cvs を作ってインストールする準備が
+できました。これらの手順はバージョン1.05にも2.xシリーズにも適用でき
+ます(新しいディストリビューションでは何か変わったことがないか、NEWS と
+INSTALL ファイルをチェックしてくださいね)。
+
+まず、pcl-cvs をほどきます(バージョン1.05を使っていますが、2.9.6 で
+も同様です)
+
+     floss$ zcat pcl-cvs-1.05.tar.gz | tar xvf -
+     pcl-cvs-1.05/
+     pcl-cvs-1.05/README
+     pcl-cvs-1.05/NEWS
+     pcl-cvs-1.05/INSTALL
+     pcl-cvs-1.05/ChangeLog
+     pcl-cvs-1.05/pcl-cvs.el
+     pcl-cvs-1.05/pcl-cvs.texinfo
+     pcl-cvs-1.05/compile-all.el
+     pcl-cvs-1.05/pcl-cvs-lucid.el
+     pcl-cvs-1.05/pcl-cvs-startup.el
+     pcl-cvs-1.05/pcl-cvs.info
+     pcl-cvs-1.05/Makefile
+     pcl-cvs-1.05/texinfo.tex
+
+次にソースツリーのトップレベルに移動してください:
+
+     floss$ cd pcl-cvs-1.05/
+
+Makefile がありますね。INSTALL ファイル中の手順に従って、Makefile の
+冒頭のパスをいくつか編集したとして、次を実行します:
+
+     floss$ make install
+
+うまく動いたら、やったね。でも、エラーになることもあります(pcl-cvs
+のコード自体は移植性があるのですが、インストール手順はそうでないこと
+もあります)。エラーになったら、こうしてください:
+
+     floss$ make clean
+     floss$ make
+
+すべてうまくいったら、これらのコマンドはインストールの重要な部分を達
+成する Emacs Lisp ファイルすべてをバイトコンパイルすることによって。
+(バイトコンパイルは人間に読める Emacs Lisp コードのファイル(.el ファ
+イル)を、コンパクトで実効性のある形式(.elc ファイル)に変換します。
+Emacs は .elc ファイルをロード及び実行する、よりよい性能で、素の .el
+ファイルよりも。)
+
+バイトコンパイルの段階が成功したとして話を進めます。バイトコンパイル
+が成功しなくても気にしなくて構いません: .elc ファイルは贅沢品であっ
+て、必須のものではありません。.elc だとちょっとパフォーマンスがよく
+なるだけで、生の .el を使っても pcl-cvs の実行には支障ありません。
+
+make intall が失敗した場合、次のステップでは Emacs Lisp (.el でも .elc
+でもかまいません)を、自動的にロードされるディレクトリへ移します。 Emacs
+はローカルにインストールされた Lisp 用のディレクトリをシステム
+上に持っています。そのディレクトリをみつけるには(そのディレクトリに は
+`default.el' があるはずです)、次の順で調べて下さい:
+
+  1. /usr/share/emacs/site-lisp/
+
+  2. /usr/local/share/emacs/site-lisp/
+
+  3. /usr/lib/emacs/site-lisp/
+
+  4. /usr/local/lib/emacs/site-lisp/
+
+site-lisp ディレクトリを見つけたら、そこへ Lisp ファイルを全部コピー
+して下さい(root になる必要があります):
+
+     floss# cp -f *.el *.elc /usr/share/emacs/site-lisp/
+
+最後のステップでは、pcl-cvs のエントリポイントについて Emacs に指示
+し(主なエントリポイントは cvs-update 関数)、オンデマンドで pcl-cvs
+コードをロードできるようにします。Emacs は起動時にいつも default.el
+ファイルを読みますので、そこへ pcl-cvs のエントリポイントの一覧を書
+きましょう。
+
+pcl-cvs には幸い、default.el に書くべき内容が示してあります。単純に、
+pcl-cvs-startup.el の内容を default.el にコピーして下さい(または自分 の
+.emacs でよいです、自分のためだけにインストールしたんなら)。そし て
+Emacs を再起動してください。
+
+info ディレクトリに .info ファイルをコピーして、dir ファイルの目次に
+pcl-cvs を追加してもいいでしょう。
+
+
+File: j-cvsbook.info,  Node: Using pcl-cvs,  Next: Error Handling In pcl-cvs,  Prev: Installing pcl-cvs,  Up: pcl-cvs -- An Emacs Interface To CVS
+
+Using pcl-cvs
+-------------
+
+インストールさえ済めば、pcl-cvs は非常に使いやすいものです。 cvs-update
+関数を実行すると、pcl-cvs はバッファをひとつ立ち上げ、作
+業コピー内で変更または更新されたファイルを示すます。ここからコミット
+したり、 diff をとったりできます。
+
+cvs-update が主なエントリポイントなので、何よりも先に、それに便利な
+キーシーケンスを割り当てることをお勧めします。わたしは .emacs で
+`Ctrl+c v' に割り当てるよう設定しています:
+
+     (global-set-key "\C-cv" 'cvs-update)
+
+キーを割り当てないなら、`M-x cvs-update' (`Esc-x cvs-update'
+とも言います)とタイプして起動することもできます。
+
+起動されると、cvs-update はカレントバッファのファイルのあるディレク
+トリにいるかのように cvs update を実行します。つまり、そのディレクト
+リ内においてコマンドラインで cvs update とタイプしたかのように、とい
+うことです。Emacs のなかでどのようなものが見えるかの例を示します:
+
+     PCL-CVS release 1.05 from CVS release $Name:  $.
+     Copyright (C) 1992, 1993 Per Cederqvist
+     Pcl-cvs comes with absolutely no warranty; for details consult the manual.
+     This is free software, and you are welcome to redistribute it under certain
+     conditions; again, consult the TeXinfo manual for details.
+      Modified ci README.txt
+      Modified ci fish.c
+     ---------- End ----
+
+ローカルに変更されたファイルが2つあります(pcl-cvs のバージョンによっ
+てはファイルのあるサブディレクトリが表示されることもあります)。理屈
+から言うと次のアクションは、ファイルを1つまたは2つ両方ともをコミット
+することですが、各行に ci とあるのはそのことを指しています。1つだけ
+コミットする場合、その行にカーソルを移動して、`c' とタイプしてく
+ださい。ログメッセージバッファが出てきて、書きたければそこでログメッ
+セージをタイプすることができます(実際にログメッセージが編集できるの
+は、コマンドラインより pcl-cvs が優れている主な点です)。書けたら
+`Ctrl+c Ctrl+c' とタイプしてコミットを完了して下さい。
+
+複数のファイルを共通のログメッセージで一度にコミットしたい場合、まず
+コミットしたいファイルに m でマークをつけてください。マークしたもの
+はファイルの隣にアスタリスクが表示されます。
+
+     PCL-CVS release 1.05 from CVS release $Name:  $.
+     Copyright (C) 1992, 1993 Per Cederqvist
+     Pcl-cvs comes with absolutely no warranty; for details consult the manual.
+     This is free software, and you are welcome to redistribute it under certain
+     conditions; again, consult the TeXinfo manual for details.
+     * Modified ci README.txt
+     * Modified ci fish.c
+     ---------- End ----
+
+どこでもかまいませんので c をタイプしてください、マークしたファイル
+すべてに(またはマークしたファイルのみに)適用されます。ログメッセージ
+を書き、前と同じように `Ctrl+c Ctrl+c' でコミットして下さい。
+
+`d'をタイプするとファイルの(またはマークしたファイルの) cvs diff
+を実行します。`f' をタイプするとそのファイルを Emacs に読み込み、
+編集できるようにします。コマンドは他にもあります; アップデートバッファ
+で `Ctrl+h' m とタイプすると、他にどんな事ができるかわかると思い ます。
+
+
+File: j-cvsbook.info,  Node: Error Handling In pcl-cvs,  Next: The Future Of pcl-cvs,  Prev: Using pcl-cvs,  Up: pcl-cvs -- An Emacs Interface To CVS
+
+Error Handling In pcl-cvs
+-------------------------
+
+pcl-cvs は歴史的に、 CVS から来たエラーやメッセージを扱うやりかたが
+ちょっと変です(最新のバージョンでは多分直してあります)。CVS から受け
+取ったメッセージを pcl-cvs が知らないと、ヒステリーになって pcl-cvs
+の作者にバグレポートを送るメールバッファを立ち上げます。pcl-cvs の知
+らない CVS メッセージは、コンフリクトの起こるマージ関連のもので、あ
+まり普通には起こりませんが、確実に時々起こるのです。
+
+pcl-cvs が突然メールバッファを起こしてもパニックにならないでください。
+バッファ内容を注意して読んで下さい、問題となった CVS からの出力がそ
+のバッファの中のどこかに書いてあります。マージのようであれば、メール
+バッファを削除して、cvs-update を再度実行してください。今度は多分う
+まくいくでしょう、なぜなら CVS はマージのメッセージを出力しないから
+です(マージは既に起こりましたからね)。
+
+(Update: この問題は pcl-cvs の最近のバージョンでは解決されているよう
+なので、ここに書いてある注意は多分無視することになるでしょう)
+
+
+File: j-cvsbook.info,  Node: The Future Of pcl-cvs,  Prev: Error Handling In pcl-cvs,  Up: pcl-cvs -- An Emacs Interface To CVS
+
+The Future Of pcl-cvs
+---------------------
+
+pcl-cvs があんまりメンテされてなくて、リスキーな投資であるかのような
+印象を与えてしまったかもしれませんが、不安定なのは一時的なことです。
+Stefan Monnier は信頼できるメインテナです(この章を書いている間、彼と
+何度か連絡を取りましたが、いつもすぐ答えてくれました; 彼はバージョン
+2.9.6 のバグをいくつか、既に進捗させています)。これが出版される頃に
+は確信を持って 2.9.7 かそれ以降をダウンロードできるでしょう。
+
+実際、今ちょうどこのトピックについて、pcl-cvs の元メンテナ Greg Woods
+から嬉しいメールが来ました、許可を得て引用します:
+
+     From: woods@most.weird.com (Greg A. Woods)
+     Subject: Re: pcl-cvs maintenance status, stability of recent "release"s?
+     To: kfogel@red-bean.com
+     Date: Sun, 29 Aug 1999 18:59:19 -0400 (EDT)
+     
+     [...]
+     今 Stefan のリリースをしばらく使ってみて、わたし、自分のブランチを捨
+     ててしまいました。
+     
+     2.9.6 バージョンの変なクセを除いて、彼は PCL-CVS において素晴らしい
+     仕事をたくさんしています。今わたしこれを毎日使っているんですが、かな
+     り使いやすいです(今の CVS と一緒に使うと、以前 CVS ディストリビュー
+     ションに入っていたのより、断然使いやすいです! ;-)。
+     
+     わたしの FTP サイトに、pcl-cvs.README を置きました。そこに、そのへん
+     のファイルはえらい古いんだよ(少なくともインターネット時間ではね! ;-)、
+     と指摘して、Stefan の FTP サイトへのポインタを示しておきました。
+     
+     [...]
+
+この後のメールで Greg が言うには、FSF が Emacs の次のリリース(20.5) に
+pcl-cvs を含めることを検討しているから、上に書いたインストールア
+ドバイスの大半が obsolete になってしまうよね、ということでした。あー
+あ。フリーソフトについていくのって大変。時々ね。
+
+
+File: j-cvsbook.info,  Node: cvsutils -- General Utilities For Use With CVS,  Next: cvs2cl -- Generate GNU-Style ChangeLogs,  Prev: pcl-cvs -- An Emacs Interface To CVS,  Up: Third-Party Tools
+
+cvsutils - General Utilities For Use With CVS
+=============================================
+
+Depends on: Perl
+
+URLs:
+
+   * `http://www.typhoon.spb.ru/~proski/cvsu/'
+
+   * `ftp://ftp.red-bean.com/pub/kfogel/cvsu-0.1.4.tar.gz'
+
+Authors: Tom Tromey (原作者), Pavel Roskin (現メインテナ)
+
+普通(いつもではないです) `cvsutils' と呼ばれている一組の小さな
+プログラムは、CVS の作業コピー内で"オフライン"操作を行います。
+
+オフライン操作とは、リポジトリにアクセスせずに行われる操作のことです。
+次にリポジトリにアクセスするまで作業コピーの一貫性を保ったまま操作し
+ます。リポジトリまでのネットワーク接続が遅かったり、信頼性に欠けてい
+たりする場合には、オフラインでの動作は非常に便利です。
+
+バージョン 0.1.4 の README ファイルには次のように書いてあります:
+
+     CVSU のホームページは
+     http://www.typhoon.spb.ru/~proski/cvsu/
+     です。
+     
+     このアドレスは1999年の年末に変わる予定です。
+
+この節の最初に並べてある `red-bean.com' FTP サイトに cvsutils
+のコピーを置いておきました。cvsutils の新しいホームページのアドレス
+が公開されたら、それも `red-bean.com' のほうに置きます。
+
+cvsutils のプログラムの一覧を、だいたい便利な順(わたしの考えでですよ)
+に並べました。便利なほど最初に来ています。偶然ですが、これは安全な順
+でもあります。
+
+これらのユーティリティーのうちのいくつかは通常の操作において、作業
+コピー中のローカルな変更やファイルを失うので、安全性が問題になります。
+ですから、これらのユーティリティを使う前に説明をよく読んで下さい。
+
+このドキュメントはバージョン 0.1.4 現在において正確です。それ以降の
+バージョンでは、README ファイルを読んで最新の情報をチェックしてくだ
+さい。
+
+* Menu:
+
+* cvsu::
+* cvsdo::
+* cvschroot::
+* cvsrmadm::
+* cvspurge::
+* cvsdiscard::
+* cvsco::
+* cvsdate::
+
+
+File: j-cvsbook.info,  Node: cvsu,  Next: cvsdo,  Up: cvsutils -- General Utilities For Use With CVS
+
+cvsu
+----
+
+Danger level: None
+
+Contacts repository: No
+
+ディスク中のファイルのタイムスタンプと、CVS/Entries に記録されたタイ
+ムスタンプを比較することによって、オフラインの cvs update を実現しま
+す。どのファイルがローカルに変更されていて、どのファイルが CVS の管
+理下にないかを知ることができます。 `cvs update' とは違って、
+リポジトリから作業コピーへ変更を持ってきたりはしません。
+
+いろんなオプションがありますが、cvsu はたいがいの場合オプションなし
+で起動されます:
+
+     floss$ cvsu
+     ? ./bar
+     ? ./chapter-10.html
+     M ./chapter-10.sgml
+     D ./out
+     ? ./safe.sh
+     D ./tools
+
+左側のコードは cvs update と同様です、`D' がディレクトリを意味
+するところだけ違います。この例は chapter-10.sgml がローカルに変更さ
+れています。例には、cvsu が瞬間的に実行されたことは表示されていない
+ですね。わたしの遅いモデム回線では、通常の cvs update だと30秒くらい
+かかるのです。
+
+次のようにタイプするとオプション一覧が見られます
+
+     floss$ cvsu --help
+
+
+File: j-cvsbook.info,  Node: cvsdo,  Next: cvschroot,  Prev: cvsu,  Up: cvsutils -- General Utilities For Use With CVS
+
+cvsdo
+-----
+
+Danger level: Low to none
+
+Contacts repository: No
+
+このコマンドは cvs add と cvs remove の作業コピーへの効果をシミュレー
+トします。リポジトリにはアクセスしません。もちろん、リポジトリに更新
+を反映させるには、コミットする必要がありますが、少なくとも add と
+remove コマンドに関してはこの方法でスピードアップできます。使い方は
+次のとおり:
+
+     floss$ cvsdo add FILENAME
+
+または
+
+     floss$ cvsdo remove FILENAME
+
+To see a list of further options, run:
+
+     floss$ cvsdo --help
+
+
+File: j-cvsbook.info,  Node: cvschroot,  Next: cvsrmadm,  Prev: cvsdo,  Up: cvsutils -- General Utilities For Use With CVS
+
+cvschroot
+---------
+
+Danger level: Low
+
+Contacts repository: No
+
+このコマンドは作業コピーをいじって新しいリポジトリを指すようにするこ
+とにより、リポジトリの移動を処理します。リポジトリが新しい場所に大量
+にコピーされたときに便利です。リビジョンに変化はなく、作業コピーの全
+ての CVS/Root (と、もしかすると CVS/Repository) ファイルを変更して新
+しいリポジトリを指すようにします。cvschroot を使うと、新しい作業コピー
+をチェックアウトし直すよりもだいぶ速いです。あと、ローカルの変更を失
+わずに済むのも利点です。
+
+Usage:
+
+     floss$ cvschroot NEW_REPOS
+
+For example:
+
+     floss$ cvschroot :pserver:newuser@newhost.wherever.com:/home/cvs/myproj
+
+
+File: j-cvsbook.info,  Node: cvsrmadm,  Next: cvspurge,  Prev: cvschroot,  Up: cvsutils -- General Utilities For Use With CVS
+
+cvsrmadm
+--------
+
+Danger level: Low to medium
+
+Contacts repository: No
+
+作業コピー中の全ての CVS/ 管理サブディレクトリを削除します。あとには
+cvs export で作成したようなディレクトリツリーが残ります。
+
+cvsrmadm を使ってもローカルの変更は失われませんが、その作業コピーは
+作業コピーとは言えなくなります。
+
+注意して使って下さい。
+
+
+File: j-cvsbook.info,  Node: cvspurge,  Next: cvsdiscard,  Prev: cvsrmadm,  Up: cvsutils -- General Utilities For Use With CVS
+
+cvspurge
+--------
+
+Danger level: Medium
+
+Contacts repository: No
+
+作業コピー中の CVS 管理下にない全てのファイルを削除します。CVS の管
+理下にあるファイルのローカルな変更を取り消したりはしません。
+
+注意して使って下さい。
+
+
+File: j-cvsbook.info,  Node: cvsdiscard,  Next: cvsco,  Prev: cvspurge,  Up: cvsutils -- General Utilities For Use With CVS
+
+cvsdiscard
+----------
+
+Danger level: Medium to high
+
+Contacts repository: Maybe
+
+これは cvspurge の逆のコマンドです。未知のファイルを消してローカルな
+変更をそのままにするのではなく、cvsdiscard はローカルな変更を全て取
+り消して(リポジトリから取ってきた新鮮なコピーで置き換わります)、未知
+のファイルはそのまま置いておきます。
+
+特に注意して使って下さい。
+
+
+File: j-cvsbook.info,  Node: cvsco,  Next: cvsdate,  Prev: cvsdiscard,  Up: cvsutils -- General Utilities For Use With CVS
+
+cvsco
+-----
+
+Danger level: High
+
+Contacts repository: Maybe
+
+cvspurge と cvsdiscard のあわさったコマンドです。ローカルな変更を全
+て取り消し、未知のファイルを作業コピーから削除します。
+
+偏執狂のような注意をもって使って下さい。
+
+
+File: j-cvsbook.info,  Node: cvsdate,  Prev: cvsco,  Up: cvsutils -- General Utilities For Use With CVS
+
+cvsdate
+-------
+
+このスクリプトは明らかに未完成で、多分完成することはないでしょう。
+(詳しくは README ファイルを参照してください。)
+

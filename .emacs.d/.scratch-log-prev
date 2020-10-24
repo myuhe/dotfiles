@@ -1,0 +1,76 @@
+
+dd if=/dev/sda of=/dev/sdd bs=64K conv=noerror,sync status=progress
+
+
+
+
+
+\\\\
+"ッツやゆうぱぴぱー。エイエイ"
+ッタットットッタッカ
+よいよいよいゆびゆんちぇんちぇちぇんじぃんヤスイヤスイヤスイヤスイヤスイ
+とらとらヤスイ
+きゃくきゅうぐらきゅうきゅうきゅうきゅう
+ごとッキえいふゅーやからからからからからからかんがえ考えます。ほどほどのでほどほ
+
+今回は、emacsの矩形選択
+.p.
+		   ((?s ? ?d ?a) . "された" "sda" ))	
+		   ((?s ? ?d ?u) . "される" "sdu" ))
+		   ((?s ? ?d ?e) . "されて" "sde" ))
+		   ((?s ? ?d ?o) . "されろ" "sdo" ))
+
+		   ((?c ? ?g ?n) . "ところ" "cgn" ))
+           ("sd," nil ("サレヨウ" . "されよう"))
+
+よんちぇんじぃんヤスイヤスイヤスイ
+(require 'init-helm)
+(require 'init-skk)ひゅうひゅうちぇいちょう、えいためためためちゅうちゅうちゅちゃとしててゃちょうときがごとごとごとごとごとがするするするするするするするするにゅうそれぞれしゃすろぱがしましたしたちゅうちゅうそしましたされたされたまくさくさきさきすつすつ
+(require 'magit)  前田 ▽まえ  
+
+(require 'init-yasnippet)rdられられじゅうじゅうじょうじゅうじゅうじゅうざるざるざくざくそまくますもじゅうじゅじゅうじょくみゃみゃみゅますむくまらまらまらまらまたまた
+ひゃはなひゃひとひゅうにおいてひゅうにおいてひゅううひゅうひゃひゅうひゅうあひゅうひょうひょうひゅうあ
+
+(require 'helm)
+(require 'init-el-get)
+たい(autoload 'dired-async-mode "dired-async.el" nil t)
+
+
+(require 'skk-aot)'''ッチやくやくッタえ
+(featurep 'skk-aot)  ん
+(require 'skk)
+(require 'bind-key)'
+；；；；；；たたた；；；；；；
+へい
+''''。'''''たつててて'
+''''た
+おおおおおああああかか
+(defvar linux-p (eq system-type 'gnu/linux))
+
+(setq skk-tut-file "/home/yuhei/Documents/dotfiles/.emacs.d/share/skk/SKK.tut")
+(setq skk-user-directory "~/.emacs.d/.ddskk")
+
+それぞれそれぞれについて
+
+なず   おなじ  それぞれ
+
+;; (when linux-p
+;;   (eval-after-load "skk"
+;;   '(require 'skk-bayesian)))
+ ("C-c o s" . org-download-screenshot)
+
+
+
+(defun tv/extend-faces-matching (regexp)
+  (cl-loop for f in (face-list)
+           for face = (symbol-name f)
+           when (and (string-match regexp face)
+                     (eq (face-attribute f :extend t 'default)
+                         'unspecified))
+           do (set-face-attribute f nil :extend t)))
+
+(when (fboundp 'set-face-extend)
+  (with-eval-after-load "magit"
+    (tv/extend-faces-matching "\\`magit"))
+  (with-eval-after-load "helm"
+    (tv/extend-faces-matching "\\`helm")))

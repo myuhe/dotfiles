@@ -1,0 +1,15 @@
+# -*- mode: snippet -*-
+#name : Definition Local Variable
+#key : LocalVar
+#contributor : myuhe
+# --
+${1:`(cond
+        ((string= mode-name "Org")
+          (insert "#"))
+        ((string= mode-name "Emacs-Lisp")
+          (insert ";;;"))
+        ((string= mode-name "Text")
+          (insert "#"))
+
+)`} -*- mode: ${2:$$(yas/choose-value '("org" "emacs-lisp"))}${3:$$(yas/choose-value '("; fill-column: 80" ""))}; coding: utf-8 -*-
+$0

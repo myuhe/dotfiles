@@ -1,0 +1,1900 @@
+This is ruby-jp.info, produced by makeinfo version 3.12o (+ Japanese
+Patch 0.61) from Ruby.texi.
+
+INFO-DIR-SECTION Languages
+START-INFO-DIR-ENTRY
+* ruby-jp: (ruby-jp).           Ruby Language Reference Manual (Japanese)
+END-INFO-DIR-ENTRY
+
+     このinfoファイルは、Rubyリファレンスマニュアル(HTML版)
+
+     <http://www.netlab.co.jp/ruby/jp/man-1.3/>
+     for `Ruby' Version 1.4.0
+     written by まつもと ゆきひろ <matz@netlab.co.jp>
+     Last modified: Mon Aug 16 15:46:22 1999
+
+     を元に機械的にTexinfo形式へ変換して作成しました。したがって、本文
+     に対する著作権はまつもと ゆきひろ氏にあるものとします。
+
+
+File: ruby-jp.info,  Node: Top,  Next: Preface,  Prev: (dir),  Up: (dir)
+
+Ruby Language Reference Manual
+******************************
+
+                     written by まつもと ゆきひろ <matz@netlab.co.jp>
+                              Last modified: Mon Aug 16 15:46:22 1999
+                                This text is for `Ruby' Version 1.4.0
+
+* Menu:
+
+* Preface::                     はじめに
+* Options::                     コマンドラインオプション
+* Ruby Syntax::                 Rubyの文法
+* Ruby Functions::              組込み関数
+* Pre-defined variables and constants::  組み込み変数と組み込み定数
+* Pre-defined classes and modules::  組込みクラスと組込みモジュール
+* Bundled Libraries::           添付ライブラリ
+* Pseudo BNF Syntax of Ruby::   疑似BNFによるRubyの文法
+* Ruby Glossary::               Ruby用語集
+* Variable Index::              変数索引
+* Function Index::              関数索引
+* Concept Index::               概念索引
+
+ --- The Detailed Node Listing ---
+
+Rubyの文法
+
+* syntax_lexical::              字句構造
+*   syntax_ident::              識別子
+*   syntax_comment::            コメント
+*   syntax_embed_doc::          埋め込みドキュメント
+*   syntax_resword::            予約語
+* syntax_program::              プログラム
+* syntax_expression::           式
+*   syntax_string::             文字列リテラル
+*   syntax_command::            コマンド出力
+*   syntax_regexp::             正規表現
+*   syntax_exprsub::            文字列中の式展開
+*   syntax_here_doc::           ヒアドキュメント (行指向文字列リテラル)
+*   syntax_numeric::            数値リテラル
+*   syntax_variable::           変数と定数
+*   syntax_gvar::               グローバル変数
+*   syntax_ivar::               インスタンス変数
+*   syntax_lvar::               ローカル変数
+*   syntax_pvar::               疑似変数
+*   syntax_const::              定数
+*   syntax_array::              配列式
+*   syntax_hash::               ハッシュ式
+*   syntax_method::             メソッド呼出し
+*   syntax_super::              super
+*   syntax_assign::             代入
+*   syntax_operator::           演算子式
+*   syntax_control::            制御構造
+*     syntax_if::               if
+*     syntax_if-mod::           if修飾子
+*     syntax_unless::           unless
+*     syntax_unless-mod::       unless修飾子
+*     syntax_case::             case
+*     syntax_and::              and
+*     syntax_or::               or
+*     syntax_not::              not
+*     syntax_range::            範囲式
+*     syntax_while::            while
+*     syntax_while-mod::        while修飾子
+*     syntax_until::            until
+*     syntax_until-mod::        until修飾子
+*     syntax_iter::             イテレータ
+*     syntax_for::              for
+*     syntax_yield::            yield
+*     syntax_raise::            raise
+*     syntax_begin::            begin
+*     syntax_retry::            retry
+*     syntax_return::           return
+*     syntax_break::            break
+*     syntax_next::             next
+*     syntax_redo::             redo
+*     syntax_BEGIN_proc::       BEGIN
+*     syntax_END_proc::         END
+*   syntax_cdef::               クラス定義
+*   syntax_scdef::              特異クラス定義
+*   syntax_mdef::               モジュール定義
+*   syntax_method-def::         メソッド定義
+*   syntax_singleton-def::      特異メソッド定義
+*   syntax_alias::              alias
+*   syntax_undef::              undef
+*   syntax_defined_p::          defined?
+
+組込みクラスと組込みモジュール
+
+* classes::                     組み込みクラス
+* modules::                     組み込みモジュール
+
+Ruby用語集
+
+* glossary_a::                A
+* glossary_b::                B
+* glossary_c::                C
+* glossary_d::                D
+* glossary_e::                E
+* glossary_f::                F
+* glossary_g::                G
+* glossary_h::                H
+* glossary_i::                I
+* glossary_j::                J
+* glossary_k::                K
+* glossary_l::                L
+* glossary_m::                M
+* glossary_n::                N
+* glossary_o::                O
+* glossary_p::                P
+* glossary_q::                Q
+* glossary_r::                R
+* glossary_s::                S
+* glossary_t::                T
+* glossary_u::                U
+* glossary_v::                V
+* glossary_w::                W
+* glossary_x::                X
+* glossary_y::                Y
+* glossary_z::                Z
+* glossary_aa::               あ
+* glossary_ka::               か
+* glossary_sa::               さ
+* glossary_ta::               た
+* glossary_na::               な
+* glossary_ha::               は
+* glossary_ma::               ま
+* glossary_ya::               や
+* glossary_ra::               ら
+* glossary_wa::               わ
+* glossary__symbol::          Symbol
+
+
+File: ruby-jp.info,  Node: Preface,  Next: Options,  Up: Top
+
+はじめに
+********
+
+  Rubyは手軽なオブジェクト指向プログラミングのためのインタプリタ言語
+です．Rubyは(perlのような)テキスト処理やシステム管理のための豊富な機
+能を持っています．また，Rubyは単純で，分かりやすく，簡単に拡張できま
+す．
+
+  もし，簡単なオブジェクト指向のための言語を求めていたり，perl は見に
+くいと感じていたり，lispの考え方は好きだがあの括弧の多さには困ると感
+じているなら，Rubyはまさにぴったりです．
+
+  Rubyの特長は次の通りです．
+
+   - インタプリタ
+
+     Rubyはインタプリタ言語ですのでプログラムを実行するためにコンパイ
+     ルする必要はありません．
+
+   - 変数に型が無い (動的型付け)
+
+     Rubyの変数はどのような型のデータも格納する事ができますので，変数
+     の型について心配する必要はありません．半面，コンパイル時のチェッ
+     クは弱くなります．
+
+   - 変数宣言が不要
+
+     Rubyでは変数を宣言無しで使う事ができます．変数の種類(ローカル変
+     数，グローバル変数，インスタンス変数など) は変数名から知る事がで
+     きます．
+
+   - 単純な文法
+
+     Rubyの文法はEiffelからわずかに影響を受けた単純なものです．
+
+   - ユーザによるメモリ管理が不要
+
+     Rubyはメモリ管理を自動的に行います．どこからもアクセスされなくなっ
+     たオブジェクトはインタプリタに組込みのガーベージコレクタによって
+     回収されます．
+
+   - 全てがオブジェクト
+
+     Rubyははじめから純粋なオブジェクト指向言語として設計されています．
+     整数のような基本的なデータ型をはじめとして，全てのデータをオブジェ
+     クトとして統一的に取り扱えます．
+
+   - クラス，継承，メソッド
+
+     Rubyはクラス，継承，メソッドのようなオブジェクト指向言語として基
+     本的な機能は当然持っています．
+
+   - 特異メソッド
+
+     ある特定のオブジェクトにメソッドを付加することができます．たとえ
+     ば，GUIのあるボタンを押された時の動作をメソッドとして記述するよ
+     うな使い方ができますし，これを応用してプロトタイプベースのオブジェ
+     クトプログラミングも可能です(やりたければね)．
+
+   - モジュールによるMix-in
+
+     rubyは多重継承は複雑さの源であるという見地から，意図的に多重継承
+     を持っていませんが，モジュールを使ってクラス階層を横断して実装を
+     共有できます．この機能を"Mix-in"と呼びます．
+
+   - イテレータ
+
+     ループの抽象化を行うイテレータという機能があります．
+
+   - クロージャ
+
+     手続きをオブジェクトとして扱う機能があります．このオブジェクト化
+     された手続きのことをクロージャと呼びます．
+
+   - 強力な文字列操作/正規表現
+
+     perlをお手本とした強力な文字列操作や正規表現検索の機能があります．
+
+   - 多倍長整数
+
+     組込みの多倍長整数機能がありますので，メモリが許す限り，非常に大
+     きな整数の演算もできます．たとえば，400の階乗なども簡単に計算で
+     きます．
+
+   - 例外処理機能
+
+     例外処理機能は例外的な状況への対処が簡単に書けます．
+
+   - OSへの直接アクセス
+
+     rubyは(UNIXの)ほとんどのシステムコールの呼び出し機能を持っていま
+     す．rubyだけでシステムプログラミングも可能です．
+
+   - ダイナミックローディング
+
+     OSが許せば，オブジェクトファイルを実行時に読み込む機能が提供され
+     ます．
+
+
+File: ruby-jp.info,  Node: Options,  Next: Ruby Syntax,  Prev: Preface,  Up: Top
+
+コマンドラインオプション
+************************
+
+  rubyインタプリタは以下のコマンドラインオプションを受け付けます．基
+本的にperlのものと良く似ています．
+
+`-0数字'
+     入力レコードセパレータ(``$/'')の8進数で指定します．数字を指定し
+     ない場合はヌルキャラクタがセパレータになります．数の後に他のスイッ
+     チがあっても構いません．`-00'で, パラグラフモード, `-0777'で(そ
+     のコードを持つ文字は存在しないので)全ファイルを一度に読み込むモー
+     ドに設定できます．
+
+`-a'
+     `-n'や`-p'とともに用いて, オートスプリットモードをONにします．オー
+     トスプリットモードでは各ループの先頭で,
+
+          $F = $_.split
+
+     が実行されます．`-n'か`-p'オプションが同時に指定されない限り, こ
+     のオプションは意味を持ちません．
+
+`-c'
+     スクリプトの内部形式へのコンパイルのみを行い, 実行しません．コン
+     パイル終了後, 文法エラーが無ければ, "Syntax OK"と出力します．
+
+`-Kc'
+     rubyの処理する漢字コードを指定します． rubyは指定された文字が
+     `E'または`e'の場合は文字列やアクセスするファイルの内容のコードが
+     EUCであると仮定します．同様に`S'または`s'の場合はSJISとして処理
+     します．`N'は漢字を処理しません．デフォルトはEUCです．
+
+     このオプションは将来文字コードの取扱いが変更された場合等には変更
+     される可能性があります．
+
+`-d'
+`--debug'
+     デバッグモードをonにします．このフラグがセットされるとシステム変
+     数``$DEBUG''がセットされます．
+
+`-e script'
+     コマンドラインからスクリプトを指定します．`-e'オプションを付けた
+     時には引数からスクリプトファイル名を取りません．
+
+`-F regexp'
+     入力フィールドセパレータ(``$;'')の値を文字列にセットします．
+
+`-h'
+`--help'
+     コマンドラインオプションの概要を表示します．
+
+`-i [extension]'
+     引数で指定されたファイルの内容を置き換える(in-place edit)ことを
+     指定します．元のファイルは拡張子をつけた形で保存されます．拡張子
+     がなければ，バックアップは行われず，変更されたファイルだけが残り
+     ます．
+
+     例:
+
+          % echo matz > /tmp/junk
+          % cat /tmp/junk
+          matz
+          % ruby -p -i.bak -e '$_.upcase!' /tmp/junk
+          % cat /tmp/junk
+          MATZ
+          % cat /tmp/junk.bak
+          matz
+
+`-I directory'
+     ファイルをロードするパスを指定(追加)します．指定されたディレクト
+     リはrubyの配列変数(`$:')に追加されます．
+
+`-l'
+     行末の自動処理を行います．まず，`$\'を`$/'と同じ値に設定し,
+     `print'での出力時に改行を付加するようにします．それから, `-n' フ
+     ラグまたは`-p'フラグが指定されていると`gets' (*note 組込み関数:
+     Ruby Functions.)  で読み込まれた各行の最後に対して`chop!'
+     (*note String::)を行います．
+
+`-n'
+     このフラグがセットされるとプログラム全体が`sed -n'や`awk'.  のよ
+     うに
+
+          while gets
+          ...
+          end
+
+     で囲まれているように動作します.
+
+`-p'
+     `-n'フラグとほぼ同じだが, 各ループの最後に変数``$_'' の値を出力す
+     るようになります．
+
+     例:
+
+          % echo matz | ruby -p -e '$_.tr! "a-z", "A-Z"'
+          MATZ
+
+`-r ファイル名'
+     スクリプト実行前にファイル名で指定されるファイルを`require'
+     (*note 組込み関数: Ruby Functions.)します．`-n'オプション，
+     `-p'オプションとともに使う時に特に有効です．
+
+`-s'
+     スクリプト名に続く, `-'で始まる引数を解釈して, 同名の大域変数に値
+     を設定します．`-'なる引数以降は解釈を行ないません．該当する引数は
+     ``$ARGV''から取り除かれます．
+
+     例:
+
+          #! /usr/local/bin/ruby -s
+          # prints "true" if invoked with `-xyz' switch.
+          print "true\n" if $xyz
+
+`-S'
+     スクリプト名が`/'で始まっていない場合, 環境変数`PATH'の値を使っ
+     てスクリプトを探すことを指定します． これは、`#!'をサポートして
+     いないマシンで、`#!' による実行をエミュレートするために、以下の
+     ようにして使うことができます:
+
+          #!/bin/sh
+          exec ruby -S -x $0 "$@"
+          #! ruby
+
+     システムは最初の行により，スクリプトを`/bin/sh' に渡します．
+     `/bin/sh'は2行目を実行しrubyインタプリタを起動します．rubyインタ
+     プリタは`-x (*note コマンドラインオプション: Options.)' オプショ
+     ンにより`#!'で始まり, "ruby"という文字列を含む行までを読み飛ばし
+     ます．
+
+     システムによっては `$0'は必ずしもフルパスを含まないので，`-S'を
+     用いてrubyに必要に応じてスクリプトを探すように指示する必要があり
+     ます．
+
+     ファイル名に含まれるスペースなどを正しく扱うには，`$*'よりも
+     `${1+"$@"}'のほうがよいかもしれませんが，cshが解釈する場合には動
+     作しなくなります．
+
+`-T [level]'
+     不純度チェックを行います．レベルを指定すると安全度レベルをそのレ
+     ベルに設定します．CGIプログラムなどでは`-T1' 程度を指定しておく方
+     が良いでしょう．
+
+`-v'
+`--verbose'
+     冗長モード．起動時にバージョンの表示を行い, システム変数
+     `$VERBOSE'をTRUEにセットします．この変数がTRUEである時, いくつか
+     のメソッドは実行時に冗長なメッセージを出力します．`-v'オプション
+     が指定されて, それ以外の引数がない時にはバージョンを表示した後,
+     実行を終了します(標準入力からのスクリプトを待たない).
+
+`--version'
+     rubyのバージョンを表示します．
+
+`-w'
+     バージョンの表示を行う事無く冗長モードになります．
+
+`-x[directory]'
+     メッセージ中のスクリプトを取り出して実行します．スクリプトを読み
+     込む時に，`#!'で始まり, "ruby"という文字列を含む行までを読み飛ば
+     します．スクリプトの終りは`EOF'(ファイルの終り), `^D'(コントロー
+     ルD), `^Z'(コントロールZ)または予約語`__END__'で指定されます．
+     ディレクトリ名を指定すると，スクリプト実行前に指定されたディレク
+     トリに移動します．
+
+`-X directory'
+     スクリプト実行前に指定されたディレクトリに移動します．
+
+`-y'
+`--yydebug'
+     コンパイラデバッグモード．スクリプトを内部表現にコンパイルする時
+     の構文解析の過程を表示します．この表示は非常に冗長なので, コンパ
+     イラそのものをデバッグする人以外には必要ないと思います．
+
+
+File: ruby-jp.info,  Node: Ruby Syntax,  Next: Ruby Functions,  Prev: Options,  Up: Top
+
+Rubyの文法
+**********
+
+* Menu:
+
+* syntax_lexical::              字句構造
+*   syntax_ident::              識別子
+*   syntax_comment::            コメント
+*   syntax_embed_doc::          埋め込みドキュメント
+*   syntax_resword::            予約語
+* syntax_program::              プログラム
+* syntax_expression::           式
+*   syntax_string::             文字列リテラル
+*   syntax_command::            コマンド出力
+*   syntax_regexp::             正規表現
+*   syntax_exprsub::            文字列中の式展開
+*   syntax_here_doc::           ヒアドキュメント (行指向文字列リテラル)
+*   syntax_numeric::            数値リテラル
+*   syntax_variable::           変数と定数
+*   syntax_gvar::               グローバル変数
+*   syntax_ivar::               インスタンス変数
+*   syntax_lvar::               ローカル変数
+*   syntax_pvar::               疑似変数
+*   syntax_const::              定数
+*   syntax_array::              配列式
+*   syntax_hash::               ハッシュ式
+*   syntax_method::             メソッド呼出し
+*   syntax_super::              super
+*   syntax_assign::             代入
+*   syntax_operator::           演算子式
+*   syntax_control::            制御構造
+*     syntax_if::               if
+*     syntax_if-mod::           if修飾子
+*     syntax_unless::           unless
+*     syntax_unless-mod::       unless修飾子
+*     syntax_case::             case
+*     syntax_and::              and
+*     syntax_or::               or
+*     syntax_not::              not
+*     syntax_range::            範囲式
+*     syntax_while::            while
+*     syntax_while-mod::        while修飾子
+*     syntax_until::            until
+*     syntax_until-mod::        until修飾子
+*     syntax_iter::             イテレータ
+*     syntax_for::              for
+*     syntax_yield::            yield
+*     syntax_raise::            raise
+*     syntax_begin::            begin
+*     syntax_retry::            retry
+*     syntax_return::           return
+*     syntax_break::            break
+*     syntax_next::             next
+*     syntax_redo::             redo
+*     syntax_BEGIN_proc::       BEGIN
+*     syntax_END_proc::         END
+*   syntax_cdef::               クラス定義
+*   syntax_scdef::              特異クラス定義
+*   syntax_mdef::               モジュール定義
+*   syntax_method-def::         メソッド定義
+*   syntax_singleton-def::      特異メソッド定義
+*   syntax_alias::              alias
+*   syntax_undef::              undef
+*   syntax_defined_p::          defined?
+
+
+File: ruby-jp.info,  Node: syntax_lexical,  Next: syntax_ident,  Up: Ruby Syntax
+
+字句構造
+========
+
+  Rubyの現在の実装はASCIIキャラクタセットを用いています．アルファベッ
+トの大文字と小文字は区別されます．識別子と一部のリテラルの途中を除い
+ては任意の場所に空白文字やコメントを置くことができます．空白文字とは
+スペース，タブ，垂直タブ，バックスペース，キャリッジリターン，改ペー
+ジです．改行は行が明らかに次の行に継続する時だけ，空白文字として，そ
+れ以外では文の区切りとして解釈されます．
+
+
+File: ruby-jp.info,  Node: syntax_ident,  Next: syntax_comment,  Prev: syntax_lexical,  Up: Ruby Syntax
+
+識別子
+------
+
+  例:
+
+             foobar
+             ruby_is_simple
+
+  rubyの識別子は英文字またはアンダースコア(`'_'')から始まり，英文字，
+アンダースコア(`'_'')または数字からなります．識別子の長さに制限はあり
+ません．
+
+
+File: ruby-jp.info,  Node: syntax_comment,  Next: syntax_embed_doc,  Prev: syntax_ident,  Up: Ruby Syntax
+
+コメント
+--------
+
+  例:
+
+             # this is a comment line
+
+  スクリプト言語の習慣にならい，文字列中や文字表現(`?#')以外の`#'から
+行末までをコメントと見なします．コメント行末のバックスラッシュは次の
+行へのコメントの継続を意味します．
+
+
+File: ruby-jp.info,  Node: syntax_embed_doc,  Next: syntax_resword,  Prev: syntax_comment,  Up: Ruby Syntax
+
+埋め込みドキュメント
+--------------------
+
+  例:
+
+             =begin
+             the everything between a line beginning with `=begin' and
+             that with `=end' will be skipped by the interpreter.
+             =end
+
+  rubyのソースコードにドキュメントを埋め込む事ができます．文が始まる
+部分の行頭に`=begin'があると，そこからはじまって，`=end'で始まる行ま
+では埋め込みドキュメントとして読み飛ばされます．
+
+
+File: ruby-jp.info,  Node: syntax_resword,  Next: syntax_program,  Prev: syntax_embed_doc,  Up: Ruby Syntax
+
+予約語
+------
+
+  予約語は以下にあげるものです:
+
+             BEGIN    class    ensure   nil      self     when
+             END      def      false    not      super    while
+             alias    defined  for      or       then     yield
+             and      do       if       redo     true
+             begin    else     in       rescue   undef
+             break    elsif    module   retry    unless
+             case     end      next     return   until
+
+  予約語はクラス名，変数名などに用いることはできません．しかし，`$',
+`@'が先頭についたものは予約語と見なされません．明示的にメソッド名であ
+ると分かる場合にはメソッド名として用いることができます．
+
+
+File: ruby-jp.info,  Node: syntax_program,  Next: syntax_expression,  Prev: syntax_resword,  Up: Ruby Syntax
+
+プログラム
+==========
+
+  例:
+
+             print "hello world!\n"
+
+  プログラムは式を並べたものです．式と式の間はセミコロン(`;')または改
+行で区切られます．ただし，バックスラッシュに続く改行は文の区切りにな
+らず，次の行へ継続します．
+
+
+File: ruby-jp.info,  Node: syntax_expression,  Next: syntax_string,  Prev: syntax_program,  Up: Ruby Syntax
+
+式
+==
+
+  例:
+
+             true
+             (1+2)*3
+             foo()
+             if test then ok else ng end
+
+  式は括弧によってグルーピングすることができます．
+
+
+File: ruby-jp.info,  Node: syntax_string,  Next: syntax_command,  Prev: syntax_expression,  Up: Ruby Syntax
+
+文字列リテラル
+--------------
+
+  例:
+
+             "this is a string expression\n"
+             "concat#{foobar}"
+             'concat#{foobar}'
+             %q!I said, "You said, 'She said it.'"!
+             %!I said, "You said, 'She said it.'"!
+             %Q('This is it.'\n)
+
+  文字列はダブルクォートまたはシングルクォートで囲まれています．ダブ
+ルクォートで囲まれた文字列ではバックスラッシュによるエスケープと式展
+開(後述)が有効になります．シングルクォートで囲まれた文字列では，
+`\\'(バックスラッシュそのもの)と`\''(シングルクォート)を除いて文字列
+の中身の解釈は行われません．
+
+  `%'で始まる形式の文字列を用いることでバックスラッシュの数を減らすこ
+とができます．`%q!STRING!' はシングルクォート文字列，`%Q!STRING!'
+(または`%!STRING!')はダブルクォート文字列と同じ展開を行います．`!'の
+部分には改行を含めた任意の非英数字を使うことができます．始まりの区切
+り文字が括弧(`(',`[',`{',`<')である時には，終りの区切り文字は対応する
+括弧になります．
+
+バックスラッシュ記法
+....................
+
+`\t'
+     タブ(0x09)
+
+`\n'
+     改行(0x0a)
+
+`\r'
+     キャリッジリターン(0x0d)
+
+`\f'
+     改ページ(0x0c)
+
+`\b'
+     バックスペース)
+
+`\a'
+     ベル(0x07)
+
+`\e'
+     エスケープ(0x1b)
+
+`\s'
+     空白(0x20)
+
+`\nnn'
+     8進数表記(nは0-7)
+
+`\xnn'
+     16進数表記(nは0-9,a-f)
+
+`\cx'
+`\C-x'
+     コントロール文字(xはASCII文字)
+
+`\M-x'
+     メタ x (c | 0x80)
+
+`\M-\C-x'
+     メタ コントロール x
+
+`\x'
+     文字xそのもの
+
+  文字列式は評価されるたびに毎回新しい文字列オブジェクトを生成します．
+
+
+File: ruby-jp.info,  Node: syntax_command,  Next: syntax_regexp,  Prev: syntax_string,  Up: Ruby Syntax
+
+コマンド出力
+------------
+
+  例:
+
+             `date`
+             %x{ date }
+
+  バッククォート(``')で囲まれた文字列は，ダブルクォートで囲まれた文字
+列と同様にバックスラッシュ記法の解釈と式展開が行なわれた後，コマンド
+として実行され，その標準出力が文字列として与えられます．コマンドは評
+価されるたびに実行されます．
+
+  `%x/STRING/'形式はコマンド出力式の別の形式です．
+
+
+File: ruby-jp.info,  Node: syntax_regexp,  Next: syntax_exprsub,  Prev: syntax_command,  Up: Ruby Syntax
+
+正規表現
+--------
+
+  例:
+
+             /^ruby the OOPL/
+             /ruby/i
+             /my name is #{myname}/o
+
+  `/'で囲まれた文字列は正規表現です．終りの`/'の直後の文字は正規表現
+に対するオプションになります．オプションの機能は以下の通りです．
+
+   - `i'
+
+     正規表現はマッチ時に大文字小文字の区別を行わない
+
+   - `o'
+
+     一番最初に正規表現の評価が行われた時に一度だけ式展開 (*note
+     Rubyの文法: Ruby Syntax.)を行う
+
+   - `x'
+
+     正規表現中の空白を無視する．コメントも付けられる
+
+   - `p'
+
+     POSIXモード．改行も通常文字と見なす
+
+
+  rubyは日本語化されているので，上記のオプションの他に`n', `e',`s'の
+オプションが指定できます．これらは`$KCODE'の値にかかわらず，正規表現
+がマッチに使用する文字コードを指定するものです．
+
+  `%r/STRING/'形式は正規表現式の別の形式です．
+
+`^'
+     行頭
+
+`$'
+     行末
+
+`.'
+     改行を除く任意の1文字
+
+`\w'
+     英数字．[0-9A-Za-z_]と同じ日本語のいわゆる全角文字も含む
+
+`\W'
+     非英数字
+
+`\s'
+     空白文字．[ \t\n\r\f]と同じ
+
+`\S'
+     非空白文字
+
+`\d'
+     数字．[0-9] と同じ
+
+`\D'
+     非数字
+
+`\A'
+     文字列先頭
+
+`\Z'
+     文字列末尾
+
+`\b'
+     語境界(文字クラス外)
+
+`\B'
+     非語境界
+
+`\b'
+     バックスペース(0x08)([]内)
+
+`\<'
+     語先頭
+
+`\>'
+     語末尾
+
+`[ ]'
+     文字クラス指定
+
+`*'
+     直前の表現の0回以上の繰り返し
+
+`*?'
+     直前の表現の0回以上の繰り返し(最短一致)
+
+`+'
+     直前の表現の1回以上の繰り返し
+
+`+?'
+     直前の表現の1回以上の繰り返し(最短一致)
+
+`{m,n}'
+     直前の表現のm回からn回の繰り返し
+
+`{m,n}?'
+     直前の表現のm回からn回の繰り返し(最短一致)
+
+`?'
+     0または1回の直前の表現
+
+`|'
+     選択
+
+`( )'
+     正規表現をグループ化
+
+`(?# )'
+     コメント
+
+`(?: )'
+     後方参照を伴わないグループ化
+
+`(?= )'
+     パターンによる位置指定(幅を持たない)
+
+`(?! )'
+     パターンの否定による位置指定(幅を持たない)
+
+`(?ixp-ixp)'
+     正規表現中でのiオプション，xオプション，pオプションのon/off．括弧
+     の範囲内で設定
+
+`(?ixp-ixp: )'
+     括弧内のiオプション，xオプション，pオプションのon/off．
+
+  正規表現の中では文字列と同じバックスラッシュ記法や変数展開も有効で
+す．
+
+
+File: ruby-jp.info,  Node: syntax_exprsub,  Next: syntax_here_doc,  Prev: syntax_regexp,  Up: Ruby Syntax
+
+文字列中の式展開
+----------------
+
+  例:
+
+             "my name is #{$ruby}"
+
+  ダブルクォート(`"')で囲まれた文字列式，コマンド文字列および正規表現，
+の中では`#{式}'という形式で式の内容(を文字列化したもの)を埋め込むこと
+ができます．式が変数記号(`$',`@')で始まる変数の場合には`{}'を省略し
+て，`#変数名'という形式でも展開できます．文字`#'に続く文字が
+`{',`$',`@'でなければ，そのまま文字`#'として解釈されます．明示的に式
+展開を止めるには`#'の前にバックスラッシュを置きます．
+
+
+File: ruby-jp.info,  Node: syntax_here_doc,  Next: syntax_numeric,  Prev: syntax_exprsub,  Up: Ruby Syntax
+
+ヒアドキュメント (行指向文字列リテラル)
+---------------------------------------
+
+  シェルのような行指向の文字列リテラルの表現もあります．このような文
+字列リテラルを「ヒアドキュメント」と呼びます．`<<'に続いて，引用終了
+記号になる文字列または識別子を指定します．文字列を指定した場合は，そ
+の文字列の種別(`""，''，``')が文字列全体の性質を決定します．`<<'の後
+ろには空白を置くことはできません．
+
+  識別子または文字列の前に`-'が置かれた場合，区切り文字列の前の空白文
+字(タブとスペース)が取り除かれます．これによって区切り文字をインデン
+トに合わせることが出来ます．
+
+               print <<EOF
+             The price is #{$Price}.
+             EOF
+     
+               print <<"EOF"                   # 上と同じ
+             The price is #{$Price}.
+             EOF
+     
+               print <<`EOC`                   # コマンドを実行
+             echo hi there
+             echo lo there
+             EOC
+     
+               print <<"foo", <<"bar"    # 連ねられます
+             I said foo.
+             foo
+             I said bar.
+             bar
+     
+               myfunc(<<"THIS", 23, <<'THAT')
+             Here's a line
+             or two.
+             THIS
+             and here's another.
+             THAT
+     
+               if need_define_foo
+                 eval <<-EOS                   # 区切り文字列をインデントできます
+                   def foo
+                     print "foo\n"
+                   end
+                 EOS
+               end
+
+
+File: ruby-jp.info,  Node: syntax_numeric,  Next: syntax_variable,  Prev: syntax_here_doc,  Up: Ruby Syntax
+
+数値リテラル
+------------
+
+`123'
+     整数
+
+`-123'
+     符号つき整数
+
+`1_234'
+     整数(10進整数は`_'を含むことができる)
+
+`123.45'
+     浮動小数点数
+
+`1.2e-3'
+     浮動小数点数
+
+`0xffff'
+     16進整数
+
+`0b1011'
+     2進整数
+
+`0377'
+     8進整数
+
+`?a'
+     文字`a'のコード(97)
+
+`?\C-a'
+     コントロール a のコード(1)
+
+`?\M-a'
+     メタ a のコード(225)
+
+`?\M-\C-a'
+     メタ-コントロール a のコード(129)
+
+`:symbol'
+     識別子/変数名/演算子と一対一対応する整数．
+
+  ?表現では全てのバックスラッシュ記法が有効です．
+
+
+File: ruby-jp.info,  Node: syntax_variable,  Next: syntax_gvar,  Prev: syntax_numeric,  Up: Ruby Syntax
+
+変数と定数
+----------
+
+  Rubyの変数と定数の種別は変数名の最初の一文字によって，グローバル変
+数，インスタンス変数，ローカル変数，クラス定数のいずれかに区別されま
+す．通常の変数の2文字目以降は英数字または`_'であるが，システム変数の
+一部には「``$''+1文字の記号」という変数があります．変数名の長さに関
+してメモリのサイズ以外に特別な制限はありません．
+
+
+File: ruby-jp.info,  Node: syntax_gvar,  Next: syntax_ivar,  Prev: syntax_variable,  Up: Ruby Syntax
+
+グローバル変数
+--------------
+
+  例:
+
+             $foobar
+             $/
+
+  ``$''で始まる変数はグローバル変数で，プログラムのどこからでも参照で
+きます．グローバル変数には宣言は必要ありません．初期化されていないグ
+ローバル変数を参照した時の値は`nil'です．
+
+
+File: ruby-jp.info,  Node: syntax_ivar,  Next: syntax_lvar,  Prev: syntax_gvar,  Up: Ruby Syntax
+
+インスタンス変数
+----------------
+
+  例:
+
+             @foobar
+
+  ``@''で始まる変数はインスタンス変数であり，特定のオブジェクトに所属
+しています．インスタンス変数はそのクラスまたはサブクラスのメソッドか
+ら参照できます．初期化されていないインスタンス変数を参照した時の値は
+`nil'です．
+
+
+File: ruby-jp.info,  Node: syntax_lvar,  Next: syntax_pvar,  Prev: syntax_ivar,  Up: Ruby Syntax
+
+ローカル変数
+------------
+
+  例:
+
+             foobar
+
+  小文字または``_''で始まる識別子はローカル変数またはメソッド呼出しで
+す．ローカル変数スコープ(クラス，モジュール，メソッド定義の本体)にお
+ける小文字で始まる識別子への最初の代入はそのスコープに属するローカル
+変数の宣言になります．宣言されていない識別子の参照は引数の無いメソッ
+ド呼び出しとみなされます．
+
+  ローカル変数のスコープは，その変数が宣言されたブロック，メソッド定
+義，またはクラス/モジュール定義の終りまでです．寿命もそのブロックの終
+りまで(トップレベルのローカル変数はプログラムの終了まで)ですが，例外
+としてブロックが手続きオブジェクト化された場合は，そのオブジェクトが
+消滅するまで存在します．同じスコープを参照する手続きオブジェクト間で
+はローカル変数は共有されます．
+
+
+File: ruby-jp.info,  Node: syntax_pvar,  Next: syntax_const,  Prev: syntax_lvar,  Up: Ruby Syntax
+
+疑似変数
+--------
+
+  通常の変数以外に疑似変数と呼ばれる特殊な変数があります．
+
+`self'
+     現在のメソッドの実行主体
+
+`nil'
+     NilClassクラスの唯一のインスタンス
+
+`true'
+     TrueClassクラスの唯一のインスタンス．真の代表値
+
+`false'
+     FalseClassクラスの唯一のインスタンス．nilとfalseは偽を表します．
+
+`__FILE__'
+     現在のソースファイル名
+
+`__LINE__'
+     現在のソースファイル中の行番号
+
+  疑似変数の値を変更することはできません．変数への代入は例外を発生さ
+せます．
+
+
+File: ruby-jp.info,  Node: syntax_const,  Next: syntax_array,  Prev: syntax_pvar,  Up: Ruby Syntax
+
+定数
+----
+
+  例:
+
+             FOOBAR
+
+  大文字([A-Z])で始まる識別子は定数です．定数の定義(と初期化) は代入に
+よって行われますが，メソッドの中では定義できません．一度定義された定
+数に再び代入を行おうとすると例外が発生します．定義されていない定数の
+アクセスは例外を発生させます．
+
+  定数はその定数が定義されたクラス/モジュール定義の中(メソッド本体や
+ネストしたクラス/モジュール定義中を含みます)，クラスを継承しているク
+ラス，モジュールをインクルードしているクラスまたはモジュールから参照
+することができます．クラス定義の外で定義された定数は`Object' (*note
+Object::) に所属することになります．
+
+  クラス定義は自動的に定数を定義するので，クラス名は定数です．
+
+  あるクラスまたはモジュールで定義された定数を外部から参照するために
+は``::''演算子を用います．
+
+  `Object'クラスで定義されている定数を参照するためには左辺無しの
+``::''演算子を用います．
+
+  例:
+
+             Foo::Bar
+             ::Bar
+
+  ただし，``::''演算子を用いた代入はできません．
+
+
+File: ruby-jp.info,  Node: syntax_array,  Next: syntax_hash,  Prev: syntax_const,  Up: Ruby Syntax
+
+配列式
+------
+
+  例:
+
+             [1, 2, 3]
+
+  文法:
+
+             `[' 式`,'...`]'
+
+  それぞれの式を評価した結果を含む配列を返します．配列はArray (*note
+組込みクラスと組込みモジュール: Pre-defined classes and modules.)クラ
+スのインスタンスです．
+
+  `%w'という形式で文字列の配列を簡単に表現できます．これはシングルクォー
+トで囲んだ文字列を空白文字で分割したのと同じです．たとえば，
+
+             %w(foo bar baz)
+
+  は`["foo", "bar", "baz"]'と等価です．
+
+
+File: ruby-jp.info,  Node: syntax_hash,  Next: syntax_method,  Prev: syntax_array,  Up: Ruby Syntax
+
+ハッシュ式
+----------
+
+  例:
+
+             {1=>2, 2=>4, 3=>6}
+
+  文法:
+
+             `{' 式 `=>' 式...`}'
+             `{' 式 `,' 式...`}'
+
+  それぞれの式を評価した結果をキーと値とするハッシュオブジェクトを返
+します．ハッシュとは任意のオブジェクトをキー(添字)として持つ配列で，
+Hash (*note Hash::)クラスのインスタンスです．
+
+  ハッシュの要素が1つ以上ある場合，曖昧でなければ`{', `}'は省略できま
+す．
+
+
+File: ruby-jp.info,  Node: syntax_method,  Next: syntax_super,  Prev: syntax_hash,  Up: Ruby Syntax
+
+メソッド呼出し
+--------------
+
+  例:
+
+             foo.bar()
+             foo.bar
+             bar()
+             print "hello world\n"
+             print
+             Class::new
+
+  文法:
+
+     [式 `.'] 識別子 [`(' 式...[`*' [式]],[`&' 式] `)']
+     [式 `::'] 識別子 [`(' 式...[`*' [式]],[`&' 式] `)']
+
+  メソッド呼出し式はレシーバ(``.''の右側の式の値)のメソッドを呼び出し
+ます．レシーバが指定されない時は`self' のメソッドを呼び出します．
+
+  メソッド名には通常の識別子の他，識別子に`?'または`!'の続いたものが
+許されます．慣習として，述語(真偽値を返すメソッド)には`?'を，同名の
+(`!'の無い)メソッドに比べてより破壊的な作用をもつメソッド(例:`tr'と
+`tr!')には`!'をつけるようになっています．
+
+  最後の引数の直前に`*'がついている場合，その引数の値が展開されて渡さ
+れます．つまり:
+
+             foo(*[1,2,3])
+
+  は
+
+             foo(1,2,3)
+
+  と同じです．
+
+  最後の引数の直前に`&'がついている場合，その引数で指定した手続きオブ
+ジェクトがブロックとしてメソッドに渡されます．
+
+  メソッドの際，privateなメソッドは関数形式(レシーバを省略した形式)で
+しか呼び出すことができません．またprotectedなメソッドは`self'がそのメ
+ソッドが定義されたのと同じクラス(またはそのサブクラス)でなければ呼び
+出すことができません．
+
+
+File: ruby-jp.info,  Node: syntax_super,  Next: syntax_assign,  Prev: syntax_method,  Up: Ruby Syntax
+
+`super'
+-------
+
+  例:
+
+             super
+             super(1,2,3)
+
+  文法:
+
+             super
+             super(式,...)
+
+  `super'は現在のメソッドがオーバーライドしているメソッドを呼び出しま
+す．引数が省略された場合には現在のメソッドの引数がそのまま引き渡され
+ます．
+
+
+File: ruby-jp.info,  Node: syntax_assign,  Next: syntax_operator,  Prev: syntax_super,  Up: Ruby Syntax
+
+代入
+----
+
+  例:
+
+             foo = bar
+             foo[0] = bar
+             foo.bar = baz
+
+  文法:
+
+             変数 '=' 式
+             定数 '=' 式
+             式`['expr..`]' '=' 式
+             式`.'識別子 '=' 式
+
+  代入式は変数などに値を設定するために用いられます．代入はローカル変
+数やクラス定数の宣言にも用いられます．代入式の左辺は以下のいずれかで
+無ければなりません．
+
+   * 変数
+
+                  変数 `=' 式
+
+     左辺値が変数の場合，式を評価した値が変数に代入される．
+
+   * 配列参照
+
+                  式1`[' 式2...`]' `=' 式n
+
+     この形式の代入は，式1を評価して得られるオブジェクトに対しての式
+     2から式nまでを引数とする `[]=' というメソッド呼出しとして評価さ
+     れます．
+
+   * 属性参照
+
+                  式1 `.' 識別子 `=' 式2
+
+     上記の形式の属性参照ヘの代入は，式1を評価して得られるオブジェク
+     トに対して，`識別子='というメソッドを，式2を引数として呼び出しま
+     す．
+
+
+自己代入
+........
+
+  例:
+
+             foo += 12
+
+  文法:
+
+             式1 op= 式2     # 式1は代入可能でなければならない．
+
+  この形式の代入は `式1 = 式1 op 式2' と同様に評価されます．ただし，
+式1は1度しか評価されません．op は以下のいずれかの演算子で無ければなり
+ません．
+
+             +, -, *, /, %, **, &, |, ^, <<, >>, &&, ||
+
+  演算子と`='の間にスペースを空けてはいけません．
+
+多重代入
+........
+
+  例:
+
+             foo, bar, baz = 1, 2, 3
+             foo, = list()
+             foo, *rest = list2()
+
+  文法:
+
+             式 `,' [式 `,'...] [`*' 式] = 式 [, 式...][`*' [式]]
+             `*' 式 = 式 [, 式...][`*' expr]
+
+  多重代入は複数の式または配列から同時に代入を行います．左辺の各式は
+それぞれ代入可能でなければなりません．右辺の式が一つしか与えられなかっ
+た場合，式を評価した値は配列に変換されて，各要素が左辺のそれぞれの式
+に代入されます．左辺の要素の数よりも配列の要素の数の方が多い場合には，
+余った要素は無視されます．配列の要素が足りない場合には対応する要素の
+無い左辺には`nil' が代入されます．
+
+  左辺の最後の式の直前に `*' がついていると，対応する左辺のない余った
+要素が配列として代入されます．余った要素が無い時には空の配列が代入さ
+れます．
+
+  例:
+
+             foo, bar = [1, 2]       # foo = 1; bar = 2
+             foo, bar = 1, 2         # foo = 1; bar = 2
+             foo, bar = 1            # foo = 1; bar = nil
+     
+             foo, bar, baz = 1, 2    # foo = 1; bar = 2; baz = nil
+             foo, bar = 1, 2, 3      # foo = 1; bar = 2
+             foo,*bar = 1, 2, 3      # foo = 1; bar = [2, 3]
+
+  多重代入の値は配列に変換された右辺です．
+
+
+File: ruby-jp.info,  Node: syntax_operator,  Next: syntax_control,  Prev: syntax_assign,  Up: Ruby Syntax
+
+演算子式
+--------
+
+  例:
+
+             1+2*3/4
+
+  プログラミングの利便のために一部のメソッド呼び出しと制御構造は演算子
+形式をとります．Rubyには以下にあげる演算子があります．
+
+             high   ::
+                    []
+                    **
+                    -(unary)  +(unary)  !  ~
+                    *  /  %
+                    +  -
+                    <<  >>
+                    &
+                    |  ^
+                    >  >=  <  <=
+                    <=> ==  === !=  =~  !~
+                    &&
+                    ||
+                    .. ...
+                    =(+=, -=...)
+                    not
+             low    and or
+
+  ほとんどの演算子は特別な形式のメソッド呼び出しですが，一部のものは
+言語に組み込みで，再定義できません．再定義できない演算子形式の制御構
+造は以下の通りです．
+
+             =, .., ..., !, not, &&, and, ||, or, ::
+
+  演算子の組合せである自己代入演算子と`!=', `!~' も再定義できません．
+
+
+File: ruby-jp.info,  Node: syntax_control,  Next: syntax_if,  Prev: syntax_operator,  Up: Ruby Syntax
+
+制御構造
+--------
+
+  Rubyでは(Cなどとは異なり)制御構造は式であって，何らかの値を持ちます．
+RubyはC言語やPerlから引き継いだ制御構造を持ちますが，その他にイテレー
+タ (*note Rubyの文法: Ruby Syntax.)というループ抽象化の機能があります．
+イテレータは繰り返しを始めとする制御構造をユーザが定義する事が出来る
+ものです.
+
+
+File: ruby-jp.info,  Node: syntax_if,  Next: syntax_if-mod,  Prev: syntax_control,  Up: Ruby Syntax
+
+`if'
+....
+
+  例:
+
+             if age >= 12 then
+               print "adult fee\n"
+             else
+               print "child fee\n"
+             end
+             gender = if foo.gender == "male" then "male" else "female" end
+
+  文法:
+
+             if 式 [then]
+               式...
+             [elsif 式 [then]
+               式...]...
+             [else
+               式...]
+             end
+
+  `if'式は条件実行に用いられます．条件式を評価した値が `false' または
+`nil' の時，偽であると見なされ，それら以外の全ての値は真である見なさ
+れます．rubyではifを繋げるのに，`elsif'を用い，`else if'(Cのように)で
+も，`elif'(shのように)でも無いことに注意してください．
+
+  `if' の条件式の部分が文字列または正規表現のリテラルである時には，
+
+             $_ =~ リテラル
+
+  であるかのように評価されます．
+
+
+File: ruby-jp.info,  Node: syntax_if-mod,  Next: syntax_unless,  Prev: syntax_if,  Up: Ruby Syntax
+
+`if'修飾子
+..........
+
+  例:
+
+             print "debug\n" if $debug
+
+  文法:
+
+             式 if 式
+
+  右辺の条件が成立する時に，左辺の式を評価します．
+
+
+File: ruby-jp.info,  Node: syntax_unless,  Next: syntax_unless-mod,  Prev: syntax_if-mod,  Up: Ruby Syntax
+
+`unless'
+........
+
+  例:
+
+             unless $baby
+               feed_meat
+             else
+               feed_milk
+             end
+
+  文法:
+
+             unless 式 [then]
+               式...
+             [else
+               式...]
+             end
+
+  `unless'は条件実行を行いますが，条件が`if' と反対で，条件が偽の時に
+実行を行います．
+
+
+File: ruby-jp.info,  Node: syntax_unless-mod,  Next: syntax_case,  Prev: syntax_unless,  Up: Ruby Syntax
+
+`unless'修飾子
+..............
+
+  例:
+
+             print "stop\n" unless valid($passwd)
+
+  文法:
+
+             式 unless 式
+
+  右辺の条件が成立しない時に，左辺の式を評価します．
+
+
+File: ruby-jp.info,  Node: syntax_case,  Next: syntax_and,  Prev: syntax_unless-mod,  Up: Ruby Syntax
+
+`case'
+......
+
+  例:
+
+             case $age
+             when 0 .. 2
+               "baby"
+             when 3 .. 6
+               "little child"
+             when 7 .. 12
+               "child"
+             when 12 .. 18
+               "youth"
+             else
+               "adult"
+             end
+
+  文法:
+
+             case 式
+             [when 式 [, 式]...[then]
+               式..]..
+             [else
+               式..]
+             end
+
+  `case'は一つの式に対する一致判定による分岐を行います．`when'節で指
+定された値と最初の式を評価した結果とを演算子 `===' を用いて比較して，
+一致する場合には`when'節の本体を実行します．
+
+  つまり，
+
+             case 式0
+             when 式1, 式2
+               stmt1
+             when 式3, 式4
+               stmt2
+             else
+               stmt3
+             end
+
+  は以下の`if'式とほぼ等価です．
+
+  `==='がどのような条件で真になるかは，各クラスの`==='メソッドの動作
+についてのドキュメントを参照して下さい．
+
+             _tmp = 式0
+             if 式1 === _tmp || 式2 === _tmp
+               stmt1
+             elsif 式3 === _tmp || 式4 === _tmp
+               stmt2
+             else
+               stmt3
+             end
+
+
+File: ruby-jp.info,  Node: syntax_and,  Next: syntax_or,  Prev: syntax_case,  Up: Ruby Syntax
+
+`and'
+.....
+
+  例:
+
+             test && set
+             test and set
+
+  文法:
+
+             式 `&&' 式
+             式 `and' 式
+
+  まず，左辺を評価して，結果が真であった場合には右辺も評価します．
+`and'は同じ働きをする優先順位の低い演算子です．
+
+
+File: ruby-jp.info,  Node: syntax_or,  Next: syntax_not,  Prev: syntax_and,  Up: Ruby Syntax
+
+`or'
+....
+
+  例:
+
+             demo || die
+             demo or die
+
+  文法:
+
+             式 `||' 式
+             式 or 式
+
+  まず，左辺を評価して，結果が偽であった場合には右辺も評価します．
+`or'は同じ働きをする優先順位の低い演算子です．
+
+
+File: ruby-jp.info,  Node: syntax_not,  Next: syntax_range,  Prev: syntax_or,  Up: Ruby Syntax
+
+`not'
+.....
+
+  例:
+
+             ! me
+             not me
+             i != you
+
+  文法:
+
+             `!' 式
+             not 式
+
+  式の値が真である時偽を，偽である時真を返します．
+
+             式 `!=' 式
+
+  `!(式 == 式)'と同じ．
+
+             式 `!~' 式
+
+  `!(式 =~ 式)'と同じ．
+
+
+File: ruby-jp.info,  Node: syntax_range,  Next: syntax_while,  Prev: syntax_not,  Up: Ruby Syntax
+
+範囲式
+......
+
+  例:
+
+             1 .. 20
+             /first/ ... /second/
+
+  文法:
+
+             式1 `..' 式2
+             式1 `...' 式2
+
+  条件式以外の場所では式1から式2までの範囲オブジェクトを返します．範
+囲オブジェクトはRangeクラス (*note 組込みクラスと組込みモジュール:
+Pre-defined classes and modules.)  のインスタンスです．`...'で生成され
+た範囲オブジェクトは終端を含みません．
+
+  条件式として範囲指定式が用いられた場合には，式1が真になるまでは偽を
+返し，その後は式2が真を返すまでは真を返します．式2が真になれば状態は
+偽に戻ります．`..'は式1が真になった時にすぐに式2を評価し(awkのように)，
+`...'は次の評価まで式2を評価しません(sedのように)．
+
+
+File: ruby-jp.info,  Node: syntax_while,  Next: syntax_while-mod,  Prev: syntax_range,  Up: Ruby Syntax
+
+`while'
+.......
+
+  例:
+
+             while sunshine
+               work()
+             end
+
+  文法:
+
+             while 式 [do]
+               ...
+             end
+
+  式を評価した値が真の間，本体を繰り返して実行します．
+
+
+File: ruby-jp.info,  Node: syntax_while-mod,  Next: syntax_until,  Prev: syntax_while,  Up: Ruby Syntax
+
+`while'修飾子
+.............
+
+  例:
+
+             sleep while idle
+
+  文法:
+
+             式 while 式
+
+  右辺の式を評価した値が真の間，左辺を繰り返して実行します．左辺の式
+が `begin' である場合には，それを最低一度は評価します．
+
+
+File: ruby-jp.info,  Node: syntax_until,  Next: syntax_until-mod,  Prev: syntax_while-mod,  Up: Ruby Syntax
+
+`until'
+.......
+
+  例:
+
+             until sunrise
+               sleep
+             end
+
+  文法:
+
+             until 式 [do]
+               ...
+             end
+
+  式を評価した値が真になるまで，本体を繰り返して実行します．
+
+
+File: ruby-jp.info,  Node: syntax_until-mod,  Next: syntax_iter,  Prev: syntax_until,  Up: Ruby Syntax
+
+`until'修飾子
+.............
+
+  例:
+
+             work until tired
+
+  文法:
+
+             式 until 式
+
+  右辺の式を評価した値が真になるまで，左辺を繰り返して実行します．左
+辺の式が `begin' である場合には，左辺を最低一度は評価します．
+
+
+File: ruby-jp.info,  Node: syntax_iter,  Next: syntax_for,  Prev: syntax_until-mod,  Up: Ruby Syntax
+
+イテレータ
+..........
+
+  例:
+
+             [1,2,3].each do |i| print i*2, "\n" end
+             [1,2,3].each{|i| print i*2, "\n"}
+
+  文法:
+
+             method_call do [`|' expr...`|'] expr...end
+             method_call `{' [`|' 式...`|'] 式...`}'
+
+  イテレータとは制御構造(特にループ)の抽象化のために用いられるメソッ
+ドの一種です．`do ... end'または` { ... } 'で囲まれたコードの断片(ブロッ
+クと呼ばれる)を後ろに付けてメソッドを呼び出すと，そのメソッドの内部か
+らブロックを評価できます(おそらくは複数回)．このようなブロックを呼び
+出すメソッドをイテレータと呼びます．イテレータからのブロックの呼び出
+しは`yield' (*note Rubyの文法: Ruby Syntax.)式を用います．yieldに渡さ
+れた値は `|' と `|' の間にはさまれた変数に代入されます．
+
+  `{ ... }'の方が`do ... end'ブロックよりも結合強度が強いです．例えば:
+
+             foobar a, b do .. end   # foobar がイテレータとして呼び出されます
+             foobar a, b { .. }      # b がイテレータとして呼び出されます
+
+  ブロックの中で初めて代入された(宣言された)ローカル変数はそのブロッ
+クの中でだけ有効です．例えば
+
+             foobar {
+               i = 20                # ローカル変数 `i' が宣言された
+               ...
+             }
+             print defined? i        # `i' はここでは未定義
+             foobar a, b { .. }      # ブロック内部でだけ有効
+
+
+File: ruby-jp.info,  Node: syntax_for,  Next: syntax_yield,  Prev: syntax_iter,  Up: Ruby Syntax
+
+`for'
+.....
+
+  例:
+
+             for i in [1, 2, 3]
+               print i*2, "\n"
+             end
+
+  文法:
+
+             for lhs... in 式 [do]
+               式..
+             end
+
+  式を評価した結果のオブジェクトの各要素に対して本体を繰り返して実行
+します．これは以下の式とほぼ等価です．
+
+             (式).each `{' `|' lhs..`|' 式.. `}'
+
+  「ほぼ」というのは，`do ... end'または`{ } 'によるブロックは新しいロー
+カル変数の有効範囲を導入するのに対し，`for'文はローカル変数のスコープ
+に影響を及ぼさない点が異なるからです．
+
+
+File: ruby-jp.info,  Node: syntax_yield,  Next: syntax_raise,  Prev: syntax_for,  Up: Ruby Syntax
+
+`yield'
+.......
+
+  例:
+
+             yield data
+
+  文法:
+
+             yield `(' [式 [`,' 式...]])
+             yield [式 [`,' 式...]]
+
+  引数をブロックの引数として代入して，ブロックの評価(あるいは実行)を
+行ないます．引数の代入は多重代入と同じルールで行われます．`yield'を実
+行したメソッドがイテレータとして呼び出されていない時には例外が発生し
+ます．`yield' の値はブロックを評価した値です．
+
+
+File: ruby-jp.info,  Node: syntax_raise,  Next: syntax_begin,  Prev: syntax_yield,  Up: Ruby Syntax
+
+`raise'
+.......
+
+  例:
+
+             raise "you lose"  # 例外RuntimeErrorを発生させる
+             # 以下の二つは SyntaxError を発生させる
+             raise SyntaxError, "invalid syntax"
+             raise SyntaxError.new("invalid syntax")
+             raise             # 最後の例外の再発生
+
+  文法:
+
+             raise
+             raise messageまたはexception
+             raise error_type, message
+             raise error_type, message, traceback
+
+  例外を発生させます．第一の形式では直前の例外を再発生させます．第二
+の形式では，引数が文字列であった場合，その文字列をメッセージとする
+`RuntimeError' 例外を発生させます．引数が例外であった場合にはその例外
+を発生させます．第三の形式では第一引数で指定された例外を，第二引数を
+メッセージとして発生させます．第四の形式の第三引数は$@ (*note 組込み
+変数と組込み定数: Pre-defined variables and constants.)または
+`caller' (*note 組込み関数: Ruby Functions.)で得られるスタック情報で，
+例外が発生した場所を示します．
+
+  発生した例外は変数 $! に格納されます．また例外が発生したソースコー
+ド上の位置は変数 $@ に格納されます．
+
+  `raise' は ruby の予約語ではなく，`Kernel' (*note Kernel::) モジュー
+ルで定義されている関数的メソッドです．`raise' には `fail' という別名
+も定義されています．
+
+
+File: ruby-jp.info,  Node: syntax_begin,  Next: syntax_retry,  Prev: syntax_raise,  Up: Ruby Syntax
+
+`begin'
+.......
+
+  例:
+
+             begin
+               do_something
+             rescue
+               recover
+             ensure
+               must_to_do
+             end
+
+  文法:
+
+             begin
+               式..
+             [rescue [error_type,..]
+               式..]..
+             [else
+               式..]
+             [ensure
+               式..]
+             end
+
+  `begin'は本体を評価し，最後に評価された式の値を返します．
+
+  本体の実行中に例外が発生した場合，`rescue' 節が与えられていた場合例
+外を捕捉できます．発生した例外と一致する`rescue'節が存在する時には
+`rescue'節の本体が実行されます．例外の一致判定は例外のクラスが
+`rescue'節で指定したクラスと同じかまたはサブクラスであるかどうか
+`kind_of?' (*note Object::) を用いて判定されます．クラスが省略された時
+は`StandardError'のサブクラスである全ての例外を捕捉します．Rubyの組
+み込み例外は(`SystemExit'や`Interrupt'のような脱出を目的としたものを
+除いて) `DefaultRescue'をインクルードしている`StandardError'のサブク
+ラスです．
+
+  `rescue'では`error_type'は通常の引数と同じように評価され，そのいず
+れかが一致すれば本体が実行されます．`error_type'を評価した値がクラス
+やモジュールでない場合には例外`TypeError'が発生します．
+
+  `begin'には省略可能な`else'節を指定することができて，本体の実行によっ
+て例外が発生しなかった時に実行されます．
+
+  `ensure'節が存在する時は`begin'式を終了する直前に必ず`ensure'節の本
+体を評価します．
+
+
+File: ruby-jp.info,  Node: syntax_retry,  Next: syntax_return,  Prev: syntax_begin,  Up: Ruby Syntax
+
+`retry'
+.......
+
+  例:
+
+             retry
+
+  文法:
+
+             retry
+
+  `begin'式の`rescue'節で使われた場合，`begin'式を始めからもう一度実
+行します．
+
+             begin
+               do_something # exception raised
+             rescue
+               # handles error
+               retry  # restart from beginning
+             end
+
+  イテレータ，ブロックまたはfor文の中で使われた場合には，そのイテレー
+タを起動しなおします．イテレータの引数も再評価されます．
+
+             for i in 1..5
+               retry if some_condition # i == 1 からやり直し
+             end
+
+             # ユーザ定義の "untilループ"
+             def UNTIL(cond)
+               yield
+               retry if not cond
+             end
+
+  `rescue'節やイテレータ以外でretryが用いられた場合にはエラーになりま
+す．
+
+
+File: ruby-jp.info,  Node: syntax_return,  Next: syntax_break,  Prev: syntax_retry,  Up: Ruby Syntax
+
+`return'
+........
+
+  例:
+
+             return
+             return 12
+             return 1,2,3
+
+  文法:
+
+             return [式[`,' 式...]]
+
+  式の値を戻り値としてメソッドの実行を終了します．式が2つ以上与えられ
+た時には，それらを要素とする配列をメソッドの戻り値とします．式が一つ
+もない場合には `nil' が戻り値となります．
+

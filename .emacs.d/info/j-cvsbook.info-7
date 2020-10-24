@@ -1,0 +1,1241 @@
+これは j-cvsbook.info、j-main.texi より makeinfo バージョン 4.2
+によって作成されました。
+
+START-INFO-DIR-ENTRY
+* CVS Book: (cvsbook).          A CVS tutorial and reference.
+END-INFO-DIR-ENTRY
+
+Copyright (C) 1999 Karl Fogel <kfogel@red-bean.com>
+
+This document is free software; you can redistribute and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation; either version 2, or (at your option) any
+later version.
+
+This document is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+General Public License for more details.
+
+This manual describes how to use and administer CVS (Concurrent Versions
+System).  It is part of a larger work entitled `Open Source Development
+With CVS'; please see the introduction for details.
+
+This is version 1.12 of this manual.
+
+
+File: j-cvsbook.info,  Node: Annotations -- A Detailed View Of Project Activity,  Next: Annotations And Branches,  Prev: History -- A Summary Of Repository Activity,  Up: Advanced CVS
+
+Annotations - A Detailed View Of Project Activity
+=================================================
+
+The annotate Command
+====================
+
+history コマンドがプロジェクトの活動を表示するものだとすると、
+"annotate" コマンドはそれにズームレンズをつけるものだと言えます。
+`annotate' を使うとあるファイルの各行を最後に触った人が誰か、ど
+のリビジョンで触ったかまでわかるのです:
+
+     floss$ cvs annotate
+     Annotations for README.txt
+     ***************
+     1.14         (jrandom  25-Jul-99): blah
+     1.13         (jrandom  25-Jul-99): test 3 for history
+     1.12         (qsmith   19-Jul-99): test 2
+     1.11         (qsmith   19-Jul-99): test
+     1.10         (jrandom  12-Jul-99): blah
+     1.1          (jrandom  20-Jun-99): Just a test project.
+     1.4          (jrandom  21-Jun-99): yeah.
+     1.5          (jrandom  21-Jun-99): nope.
+     Annotations for hello.c
+     ***************
+     1.1          (jrandom  20-Jun-99): #include <stdio.h>
+     1.1          (jrandom  20-Jun-99):
+     1.1          (jrandom  20-Jun-99): void
+     1.1          (jrandom  20-Jun-99): main ()
+     1.1          (jrandom  20-Jun-99): {
+     1.15         (jrandom  25-Jul-99):   /* another test for history */
+     1.13         (qsmith   19-Jul-99):   /* random change number two */
+     1.10         (jrandom  12-Jul-99):   /* test */
+     1.21         (jrandom  25-Jul-99):   printf ("Hellooo, world!\n");
+     1.3          (jrandom  21-Jun-99):   printf ("hmmm\n");
+     1.4          (jrandom  21-Jun-99):   printf ("double hmmm\n");
+     1.11         (qsmith   18-Jul-99):   /* added this comment */
+     1.16         (qsmith   25-Jul-99):   /* will merge these changes */
+     1.18         (jrandom  25-Jul-99):   /* will merge these changes too */
+     1.2          (jrandom  21-Jun-99):   printf ("Goodbye, world!\n");
+     1.1          (jrandom  20-Jun-99): }
+     Annotations for a-subdir/whatever.c
+     ***************
+     1.3          (jrandom  25-Jul-99): /* A completely non-empty C file. */
+     Annotations for a-subdir/subsubdir/fish.c
+     ***************
+     1.2          (jrandom  25-Jul-99): /* An almost completely empty C file. */
+     Annotations for b-subdir/random.c
+     ***************
+     1.1          (jrandom  20-Jun-99): /* A completely empty C file. */
+     floss$
+
+annotate の出力はとても直観的です。左側は、その行が追加、または最後
+に変更されたリビジョン番号、開発者、日付です。右側は現在のリビジョン
+のその行自体です。全ての行に注釈がついているので、そのファイルの内容
+全体を見ようと思えば、注釈情報を無視して右側だけ見ればよいのです。
+
+リビジョン番号かタグを指定すれば、そのリビジョンについての注釈が表示
+されます。各行についてそのリビジョン以前の最も最近の変更が表示される、
+ということです。ある1つのファイルの特定のリビジョンを調べ、どの開発
+者がファイル中のどの部分で活動したかはっきりさせる、というのが annotate
+の最も普通の使い道です。
+
+例えば上の例の出力で、hello.c の最新のリビジョンは 1.21 で、jrandom
+がこの行:
+
+     printf ("Hellooo, world!\n");
+
+に何かした、というのがわかると思います。
+
+なにをしたか調べるにはは、そのリビジョンと一つ前のリビジョンの diff
+を取ってみるのが1つの方法です:
+
+     floss$ cvs diff -r 1.20 -r 1.21 hello.c
+     Index: hello.c
+     ===================================================================
+     RCS file: /usr/local/newrepos/myproj/hello.c,v
+     retrieving revision 1.20
+     retrieving revision 1.21
+     diff -r1.20 -r1.21
+     9c9
+     <   printf ("Hello, world!\n");
+     --
+     >   printf ("Hellooo, world!\n");
+     floss$
+
+もう一つの方法は、現在の注釈を一つ前のリビジョンの注釈と比較すること
+です。ファイル全体での全員の活動を見たままで調べられます。
+
+     floss$ cvs annotate -r 1.20 hello.c
+     Annotations for hello.c
+     ***************
+     1.1          (jrandom  20-Jun-99): #include <stdio.h>
+     1.1          (jrandom  20-Jun-99):
+     1.1          (jrandom  20-Jun-99): void
+     1.1          (jrandom  20-Jun-99): main ()
+     1.1          (jrandom  20-Jun-99): {
+     1.15         (jrandom  25-Jul-99):   /* another test for history */
+     1.13         (qsmith   19-Jul-99):   /* random change number two */
+     1.10         (jrandom  12-Jul-99):   /* test */
+     1.1          (jrandom  20-Jun-99):   printf ("Hello, world!\n");
+     1.3          (jrandom  21-Jun-99):   printf ("hmmm\n");
+     1.4          (jrandom  21-Jun-99):   printf ("double hmmm\n");
+     1.11         (qsmith   18-Jul-99):   /* added this comment */
+     1.16         (qsmith   25-Jul-99):   /* will merge these changes */
+     1.18         (jrandom  25-Jul-99):   /* will merge these changes too */
+     1.2          (jrandom  21-Jun-99):   printf ("Goodbye, world!\n");
+     1.1          (jrandom  20-Jun-99): }
+     floss$
+
+diff ではテキストの変更がより簡潔に示されますが、annotate では the
+annotation may be preferable because it places them in their historical
+context by showing how long the previous incarnation of the line had
+been present (in this case, all the way since revision 1.1).  That
+knowledge can help you decide whether to look at the logs to find out
+the motivation for the change:
+
+     floss$ cvs log -r 1.21 hello.c
+     RCS file: /usr/local/newrepos/myproj/hello.c,v
+     Working file: hello.c
+     head: 1.21
+     branch:
+     locks: strict
+     access list:
+     symbolic names:
+            random-tag: 1.20
+            start: 1.1.1.1
+            jrandom: 1.1.1
+     keyword substitution: kv
+     total revisions: 22;    selected revisions: 1
+     description:
+     ----------------------------
+     revision 1.21
+     date: 1999/07/25 20:17:42;  author: jrandom;  state: Exp;  lines: +1 -1
+     say hello with renewed enthusiasm
+     ============================================================================
+     floss$
+
+-r の他に -D DATE オプションを使って注釈をフィルタリングすることがで
+きます:
+
+     floss$ cvs annotate -D "5 weeks ago" hello.c
+     Annotations for hello.c
+     ***************
+     1.1          (jrandom  20-Jun-99): #include <stdio.h>
+     1.1          (jrandom  20-Jun-99):
+     1.1          (jrandom  20-Jun-99): void
+     1.1          (jrandom  20-Jun-99): main ()
+     1.1          (jrandom  20-Jun-99): {
+     1.1          (jrandom  20-Jun-99):   printf ("Hello, world!\n");
+     1.1          (jrandom  20-Jun-99): }
+     floss$ cvs annotate -D "3 weeks ago" hello.c
+     Annotations for hello.c
+     ***************
+     1.1          (jrandom  20-Jun-99): #include <stdio.h>
+     1.1          (jrandom  20-Jun-99):
+     1.1          (jrandom  20-Jun-99): void
+     1.1          (jrandom  20-Jun-99): main ()
+     1.1          (jrandom  20-Jun-99): {
+     1.1          (jrandom  20-Jun-99):   printf ("Hello, world!\n");
+     1.3          (jrandom  21-Jun-99):   printf ("hmmm\n");
+     1.4          (jrandom  21-Jun-99):   printf ("double hmmm\n");
+     1.2          (jrandom  21-Jun-99):   printf ("Goodbye, world!\n");
+     1.1          (jrandom  20-Jun-99): }
+     floss$
+
+
+File: j-cvsbook.info,  Node: Annotations And Branches,  Next: Using Keyword Expansion,  Prev: Annotations -- A Detailed View Of Project Activity,  Up: Advanced CVS
+
+Annotations And Branches
+========================
+
+デフォルトでは annotate は開発のメイントランクの動きを表示します。ブ
+ランチの作業コピーで起動した場合でも指定しない限りはトランクのほうを
+表示します。(トランクに固執するのはバグか仕様か…それはあなたの見方
+によります。) ブランチタグを -r で渡すとそのブランチの annotate を取
+ることができます。以下の例は hello.c が `Brancho_Gratuito' とい
+う名前のブランチにある作業コピーからの例です。このブランチ上では少な
+くとも1つの変更がコミットされました:
+
+     floss$ cvs status hello.c
+     ===================================================================
+     File: hello.c           Status: Up-to-date
+     
+       Working revision:    1.10.2.2        Sun Jul 25 21:29:05 1999
+       Repository revision: 1.10.2.2        /usr/local/newrepos/myproj/hello.c,v
+       Sticky Tag:          Brancho_Gratuito (branch: 1.10.2)
+       Sticky Date:         (none)
+       Sticky Options:      (none)
+     
+     floss$ cvs annotate hello.c
+     Annotations for hello.c
+     ***************
+     1.1          (jrandom  20-Jun-99): #include <stdio.h>
+     1.1          (jrandom  20-Jun-99):
+     1.1          (jrandom  20-Jun-99): void
+     1.1          (jrandom  20-Jun-99): main ()
+     1.1          (jrandom  20-Jun-99): {
+     1.10         (jrandom  12-Jul-99):   /* test */
+     1.1          (jrandom  20-Jun-99):   printf ("Hello, world!\n");
+     1.3          (jrandom  21-Jun-99):   printf ("hmmm\n");
+     1.4          (jrandom  21-Jun-99):   printf ("double hmmm\n");
+     1.2          (jrandom  21-Jun-99):   printf ("Goodbye, world!\n");
+     1.1          (jrandom  20-Jun-99): }
+     floss$ cvs annotate -r Brancho_Gratuito hello.c
+     Annotations for hello.c
+     ***************
+     1.1          (jrandom  20-Jun-99): #include <stdio.h>
+     1.1          (jrandom  20-Jun-99):
+     1.1          (jrandom  20-Jun-99): void
+     1.1          (jrandom  20-Jun-99): main ()
+     1.1          (jrandom  20-Jun-99): {
+     1.10         (jrandom  12-Jul-99):   /* test */
+     1.1          (jrandom  20-Jun-99):   printf ("Hello, world!\n");
+     1.10.2.2     (jrandom  25-Jul-99):   printf ("hmmmmm\n");
+     1.4          (jrandom  21-Jun-99):   printf ("double hmmm\n");
+     1.10.2.1     (jrandom  25-Jul-99):   printf ("added this line");
+     1.2          (jrandom  21-Jun-99):   printf ("Goodbye, world!\n");
+     1.1          (jrandom  20-Jun-99): }
+     floss$
+
+ブランチ番号そのものを渡すこともできます:
+
+     floss$ cvs annotate -r 1.10.2 hello.c
+     Annotations for hello.c
+     ***************
+     1.1          (jrandom  20-Jun-99): #include <stdio.h>
+     1.1          (jrandom  20-Jun-99):
+     1.1          (jrandom  20-Jun-99): void
+     1.1          (jrandom  20-Jun-99): main ()
+     1.1          (jrandom  20-Jun-99): {
+     1.10         (jrandom  12-Jul-99):   /* test */
+     1.1          (jrandom  20-Jun-99):   printf ("Hello, world!\n");
+     1.10.2.2     (jrandom  25-Jul-99):   printf ("hmmmmm\n");
+     1.4          (jrandom  21-Jun-99):   printf ("double hmmm\n");
+     1.10.2.1     (jrandom  25-Jul-99):   printf ("added this line");
+     1.2          (jrandom  21-Jun-99):   printf ("Goodbye, world!\n");
+     1.1          (jrandom  20-Jun-99): }
+     floss$
+
+ブランチ上のリビジョン番号をフルに渡しても良いです:
+
+     floss$ cvs annotate -r 1.10.2.1 hello.c
+     Annotations for hello.c
+     ***************
+     1.1          (jrandom  20-Jun-99): #include <stdio.h>
+     1.1          (jrandom  20-Jun-99):
+     1.1          (jrandom  20-Jun-99): void
+     1.1          (jrandom  20-Jun-99): main ()
+     1.1          (jrandom  20-Jun-99): {
+     1.10         (jrandom  12-Jul-99):   /* test */
+     1.1          (jrandom  20-Jun-99):   printf ("Hello, world!\n");
+     1.3          (jrandom  21-Jun-99):   printf ("hmmm\n");
+     1.4          (jrandom  21-Jun-99):   printf ("double hmmm\n");
+     1.10.2.1     (jrandom  25-Jul-99):   printf ("added this line");
+     1.2          (jrandom  21-Jun-99):   printf ("Goodbye, world!\n");
+     1.1          (jrandom  20-Jun-99): }
+     floss$
+
+こうする場合には、そのリビジョン番号はそのファイルにだけ有効だという
+ことを忘れないようにして下さい。一般的にはできるだけブランチ名を使っ
+たほうが良いと思います。
+
+
+File: j-cvsbook.info,  Node: Using Keyword Expansion,  Next: Going Out On A Limb (How To Work With Branches And Survive),  Prev: Annotations And Branches,  Up: Advanced CVS
+
+Using Keyword Expansion
+=======================
+
+*Note An Overview of CVS:: で `keyword expansion' について少し書
+いたことを思い出せると思います。RCS キーワードはドル記号でくくった特
+殊な単語で、CVS はテキストファイル中にそれらがないか探し、リビジョン
+管理情報に展開します。例えばファイルにこういう文字列があった場合
+
+     $Author$
+
+そのファイルがあるリビジョンへアップデートされる時に、CVS はこれをそ
+のリビジョンをコミットした人のユーザ名に展開します:
+
+     $Author: jrandom $
+
+CVS は展開後の形も認識しますので、展開された後も適切に更新されつづけ
+ます。
+
+Although keywords don't actually offer any information that's not
+available by other means, they give people a convenient way to see
+revision control facts embedded in the text of the file itself, rather
+than by invoking some arcane CVS operation.
+
+良く使われるほかのキーワードを紹介します:
+
+     $Date$       ==>  最終コミット日時。展開後 ==>
+     $Date: 1999/07/26 06:39:46 $
+     
+     $Id$         ==>  ファイル名、リビジョン、日時、著者。展開後 ==>
+     $Id: hello.c,v 1.11 1999/07/26 06:39:46 jrandom Exp $
+     
+     $Revision$   ==>  あなたの考えた通りです、展開後 ==>
+     $Revision: 1.11 $
+     
+     $Source$     ==> 対応するリポジトリファイルのパス。展開後 ==>
+     $Source: /usr/local/newrepos/tossproj/hello.c,v $
+     
+     $Log$        ==>  そのファイルへのログメッセージを蓄積。展開後 ==>
+     $Log: hello.c,v $
+     Revision 1.2  1999/07/26 06:47:52  jrandom
+     ...and this is the second log message.
+     
+     Revision 1.1  1999/07/26 06:39:46  jrandom
+     This is the first log message...
+
+$Log$ キーワードはこの中では唯一、展開後複数行にわたります。他のもの
+と違い、以前の展開結果が今回の展開結果で置き換えられるのではなく、最
+新の展開結果に挿入されます。キーワードの直後に、空行1行とともに挿入
+されます(従って、過去の展開結果は下へ押しやられていきます)。
+
+さらに、行頭と $Log の間にある文字列は展開のプレフィクスになります
+(ログメッセージをプログラム内コメントにするために利用されます)。例え
+ばファイルにこう書くと
+
+     // $Log$
+
+最初のコミットで次のように展開されるでしょう:
+
+     // $Log: hello.c,v $
+     // Revision 1.14  1999/07/26 07:03:20  jrandom
+     // this is the first log message...
+     //
+
+2度目のコミットではこうなります:
+
+     // $Log: hello.c,v $
+     // Revision 1.15  1999/07/26 07:04:40  jrandom
+     // ...and this is the second log message...
+     //
+     // Revision 1.14  1999/07/26 07:03:20  jrandom
+     // this is the first log message...
+     //
+
+以降も同じように:
+
+     // $Log: hello.c,v $
+     // Revision 1.16  1999/07/26 07:05:34  jrandom
+     // ...and this is the third!
+     //
+     // Revision 1.15  1999/07/26 07:04:40  jrandom
+     // ...and this is the second log message...
+     //
+     // Revision 1.14  1999/07/26 07:03:20  jrandom
+     // this is the first log message...
+     //
+
+いつもいつもログ履歴全部をファイルに保存したりしたくはないとお思いで
+しょう。その場合、長くなったらいつでも古いほうを削除して下さい。 cvs
+log を実行するよりも便利ですし、みんながログをコンスタントに読んでい
+なくてはいけないようなプロジェクトにおいても役に立つでしょう。
+
+ファイル中に $Revision$ を持たせ、それをプログラムのバージョン番号と
+して使用するのは、良く使われるテクニックです。このやり方はプロジェク
+トが本質的に1つのファイルで構成されているか、または頻繁にリリースさ
+れていて、リリースごとの更新が保証されているファイルが少なくとも一つ
+ある場合にうまくいきます。プログラムのコード中に値として RCS キーワー
+ドを使うこともできます:
+
+     VERSION = "$Revision: 1.114 $";
+
+CVS はキーワードを他の場合と同じようにただ展開します; プログラミング
+言語での意味を考慮したりはしませんし、文字列がダブルクオートで保護さ
+れていると仮定したりもしません。
+
+キーワードの完全な一覧(あまり知られていないようなのがあといくつかあ
+るんです)は *Note CVS Reference:: に書いてあります。
+
+
+File: j-cvsbook.info,  Node: Going Out On A Limb (How To Work With Branches And Survive),  Next: Tracking Third-Party Sources (Vendor Branches),  Prev: Using Keyword Expansion,  Up: Advanced CVS
+
+Going Out On A Limb (How To Work With Branches And Survive)
+===========================================================
+
+ブランチは CVS の最も重要な機能であると同時に、最も誤用されやすい機
+能でもあります。危険または混乱するような変更を、その変更が安定するま
+で別の開発ラインに隔離しておけるのは便利です。しかしながら、ブランチ
+はきちんと管理しなければ、どの変更をいつマージしたかわからなくなり、
+プロジェクトを容易に混乱に陥れることになります。
+
+* Menu:
+
+* Some Principles For Working With Branches::
+* Merging Repeatedly Into The Trunk::
+* The Dovetail Approach -- Merging In And Out Of The Trunk::
+* The Flying Fish Approach -- A Simpler Way To Do It::
+* Branches And Keyword Expansion -- Natural Enemies::
+
+
+File: j-cvsbook.info,  Node: Some Principles For Working With Branches,  Next: Merging Repeatedly Into The Trunk,  Up: Going Out On A Limb (How To Work With Branches And Survive)
+
+Some Principles For Working With Branches
+-----------------------------------------
+
+ブランチを使った作業を成功させるためには、開発グループはこれらの原則
+を守るべきでしょう:
+
+   *
+     同時にアクティブになっているブランチの数をできるだけ減らします。同時
+     に開発が進んでいるブランチが多くなれば、トランクへのマージ時にそれだ
+     けコンフリクトが起こりやすくなります。実際にこれを実現する方法は、で
+     きるだけ頻繁にマージすること(ブランチが安定するたびに)、また、開発を
+     できるだけ早くトランクに戻すこと。並行して走っている開発の数を最小化
+     すれば、各ブランチで何が起こっているかを見逃さないようになりますし、
+     マージ時のコンフリクトの可能性も減ります。
+
+     プロジェクトのブランチの絶対数を減らせと言っているわけではありません。
+     ある時刻において作業中のブランチの数を、という意味です。
+
+   *
+     ブランチの複雑度を減らすこと(つまり深さということですが)。ブランチか
+     らブランチを生やすのが適切な状況もないことはないですが、まあまずあり
+     ません(プログラミング生活の最後までそういう状況にならずに済んでしま
+     うと思います)。CVS では技術的にブランチをいくらでもネストすることが
+     できますし、任意のブランチを他のブランチにマージすることができますが、
+     実際そういうことをしたいかどうかというのは別の話です。たいていの場合、
+     ブランチは全てトランクに根を下ろし、ブランチからトランクにマージした
+     ら手を引く、というのが一番良い方法です。
+
+   *
+     全てのブランチとマージイベントを、統一されたタグ名でマークすること。
+     理想を言えば、各タグと、その他のブランチやタグとの関係は、タグ名から
+     明らかであるべきです。(これの重要な点は以下の例を見るにつれ明らかに
+     なります)
+
+
+これらの原則を心に留めつつ、典型的なブランチ開発シナリオを見ていくこ
+とにしましょう。jrandom がトランク上、qsmith がブランチ上に居ること
+にします。が、トランク及び/またはブランチ上には複数の開発者が居る可
+能性があることに注意して下さい。各開発ライン上には通常何人いても構い
+ません。しかし、タグづけとマージは各ラインについて一人だけが実行する
+のがよいでしょう。
+
+
+File: j-cvsbook.info,  Node: Merging Repeatedly Into The Trunk,  Next: The Dovetail Approach -- Merging In And Out Of The Trunk,  Prev: Some Principles For Working With Branches,  Up: Going Out On A Limb (How To Work With Branches And Survive)
+
+Merging Repeatedly Into The Trunk
+---------------------------------
+
+qsmith はトランクを jrandom と共有していて、それを不安定にさせたくな
+いのでしばらくブランチ上で開発をする必要があるとします。最初のステッ
+プはブランチの作成です。qsmith がまず通常の(ブランチでない)タグを作
+成し、その後ブランチを作っていることに注意してください:
+
+     paste$ pwd
+     /home/qsmith/myproj
+     paste$ cvs tag Root-of-Exotic_Greetings
+     cvs tag: Tagging .
+     T README.txt
+     T foo.gif
+     T hello.c
+     cvs tag: Tagging a-subdir
+     T a-subdir/whatever.c
+     cvs tag: Tagging a-subdir/subsubdir
+     T a-subdir/subsubdir/fish.c
+     cvs tag: Tagging b-subdir
+     T b-subdir/random.c
+     paste$ cvs tag -b Exotic_Greetings-branch
+     cvs tag: Tagging .
+     T README.txt
+     T foo.gif
+     T hello.c
+     cvs tag: Tagging a-subdir
+     T a-subdir/whatever.c
+     cvs tag: Tagging a-subdir/subsubdir
+     T a-subdir/subsubdir/fish.c
+     cvs tag: Tagging b-subdir
+     T b-subdir/random.c
+     paste$
+
+最初トランクにタグづけした点は、将来、ブランチを作成した時点のトラン
+クにアクセスするときに必要になるでしょう。そういう必要がでてきた場合
+に、ブランチ自体を参照することなくトランクのスナップショットを参照す
+ることができます。ブランチタグでは、ブランチの根のあるトランクではな
+く、ブランチにアクセスしてしまうので使えません。ブランチが生えている
+その同じリビジョンに、通常のタグを作るしか方法はありません。(「ブラ
+ンチの原則4、ブランチポイントにはノン-ブランチタグを作成する」とでも
+言うべきこのルールを忠実に守っている人も居ますが、多くのサイトではこ
+れが守られていませんし、まあかまわないようにも思えます。趣味の問題で
+すね) これ以降ではこのようなノン-ブランチタグを"ブランチポイント
+タグ"と呼びます。
+
+ブランチポイントタグは `Root-of-' で始まり、ハイフンではなくア
+ンダスコアで単語を区切った実際のブランチ名を続ける、という命名規則に
+も注意してください。実際のブランチを作成する時には、そのタグ名の最後 は
+`-branch' とします。タグ名を見ればそのタグがブランチタグだと
+わかるようにするためです。(ブランチポイントタグ
+`Root-of-Exotic_Greetings' には -branch とは書いてありません、
+これはブランチタグではありませんので。) もちろん、この命名規則を使う
+必要は特にありませんが、何らかの規則を用いるべきだと思います。
+
+ああ、ちょっとうるさく言いすぎましたね。小さなプロジェクトでは、誰が
+何をしているかをみんながが知っていて、混乱が起こっても容易に回復でき
+るので、このような規則を使わねばならないわけではありません。ブランチ
+ポイントタグを使うとかタグに厳しい命名規則を課すかどうかというのは、
+プロジェクトの複雑度やブランチのやりかたによります。(あとでいつでも
+戻って古いタグを新しい規則に沿うように直すことができることを忘れない
+でください。古いタグのバージョンにアクセスして、新しいタグをつけ、古
+いタグを削除すればよいのです)
+
+さて、qsmith はブランチで作業を開始します:
+
+     paste$ cvs update -r Exotic_Greetings-branch
+     cvs update: Updating .
+     cvs update: Updating a-subdir
+     cvs update: Updating a-subdir/subsubdir
+     cvs update: Updating b-subdir
+     paste$
+
+ファイルをいくつか変更し、それをブランチへコミットします:
+
+     paste$ emacs README.txt a-subdir/whatever.c b-subdir/random.c
+     ...
+     paste$ cvs ci -m "print greeting backwards, etc"
+     cvs commit: Examining .
+     cvs commit: Examining a-subdir
+     cvs commit: Examining a-subdir/subsubdir
+     cvs commit: Examining b-subdir
+     Checking in README.txt;
+     /usr/local/newrepos/myproj/README.txt,v  <--  README.txt
+     new revision: 1.14.2.1; previous revision: 1.14
+     done
+     Checking in a-subdir/whatever.c;
+     /usr/local/newrepos/myproj/a-subdir/whatever.c,v  <--  whatever.c
+     new revision: 1.3.2.1; previous revision: 1.3
+     done
+     Checking in b-subdir/random.c;
+     /usr/local/newrepos/myproj/b-subdir/random.c,v  <--  random.c
+     new revision: 1.1.1.1.2.1; previous revision: 1.1.1.1
+     done
+     paste$
+<<<<<<< j-chapter-6.texi =======
+
+この間、jrandom はトランクでの作業を続行しています。qsmith が触った
+3つのファイルのうち2つを変更しました。 >>>>>>> 1.4
+
+<<<<<<< j-chapter-6.texi Meanwhile, jrandom is continuing to work on
+the trunk.  She modifies two of the three files that qsmith touched.
+Just for kicks, we'll have her make changes that conflict with qsmith's
+work:
+
+======= 一方、 jrandom はトランク上で作業を続行しています。qsmith
+が触った3 つのファイルのうち、2つを変更しました。試しに、qsmith
+とコンフリクト するような変更を施してみましょう:
+
+>>>>>>> 1.4
+     floss$ emacs README.txt whatever.c
+      ...
+     floss$ cvs ci -m "some very stable changes indeed"
+     cvs commit: Examining .
+     cvs commit: Examining a-subdir
+     cvs commit: Examining a-subdir/subsubdir
+     cvs commit: Examining b-subdir
+     Checking in README.txt;
+     /usr/local/newrepos/myproj/README.txt,v  <--  README.txt
+     new revision: 1.15; previous revision: 1.14
+     done
+     Checking in a-subdir/whatever.c;
+     /usr/local/newrepos/myproj/a-subdir/whatever.c,v  <--  whatever.c
+     new revision: 1.4; previous revision: 1.3
+     done
+     floss$
+
+コンフリクトがあるようには見えません。当たり前ですね、ブランチとトラン
+クをマージしようとしたわけではありませんから。ではここで jrandom が
+マージを実行します:
+
+     floss$ cvs update -j Exotic_Greetings-branch
+     cvs update: Updating .
+     RCS file: /usr/local/newrepos/myproj/README.txt,v
+     retrieving revision 1.14
+     retrieving revision 1.14.2.1
+     Merging differences between 1.14 and 1.14.2.1 into README.txt
+     rcsmerge: warning: conflicts during merge
+     cvs update: Updating a-subdir
+     RCS file: /usr/local/newrepos/myproj/a-subdir/whatever.c,v
+     retrieving revision 1.3
+     retrieving revision 1.3.2.1
+     Merging differences between 1.3 and 1.3.2.1 into whatever.c
+     rcsmerge: warning: conflicts during merge
+     cvs update: Updating a-subdir/subsubdir
+     cvs update: Updating b-subdir
+     RCS file: /usr/local/newrepos/myproj/b-subdir/random.c,v
+     retrieving revision 1.1.1.1
+     retrieving revision 1.1.1.1.2.1
+     Merging differences between 1.1.1.1 and 1.1.1.1.2.1 into random.c
+     floss$ cvs update
+     cvs update: Updating .
+     C README.txt
+     cvs update: Updating a-subdir
+     C a-subdir/whatever.c
+     cvs update: Updating a-subdir/subsubdir
+     cvs update: Updating b-subdir
+     M b-subdir/random.c
+     floss$
+
+ファイルが2つ、コンフリクトを起こしました。たいした問題ではありません、
+jrandom はいつものように機転を利かせてコンフリクトを解消し、コミット
+した後、トランクにマージ成功のタグをつけます:
+
+     floss$ emacs README.txt a-subdir/whatever.c
+      ...
+     floss$ cvs ci -m "merged from Exotic_Greetings-branch (conflicts resolved)"
+     cvs commit: Examining .
+     cvs commit: Examining a-subdir
+     cvs commit: Examining a-subdir/subsubdir
+     cvs commit: Examining b-subdir
+     Checking in README.txt;
+     /usr/local/newrepos/myproj/README.txt,v  <--  README.txt
+     new revision: 1.16; previous revision: 1.15
+     done
+     Checking in a-subdir/whatever.c;
+     /usr/local/newrepos/myproj/a-subdir/whatever.c,v  <--  whatever.c
+     new revision: 1.5; previous revision: 1.4
+     done
+     Checking in b-subdir/random.c;
+     /usr/local/newrepos/myproj/b-subdir/random.c,v  <--  random.c
+     new revision: 1.2; previous revision: 1.1
+     done
+     floss$ cvs tag merged-Exotic_Greetings
+     cvs tag: Tagging .
+     T README.txt
+     T foo.gif
+     T hello.c
+     cvs tag: Tagging a-subdir
+     T a-subdir/whatever.c
+     cvs tag: Tagging a-subdir/subsubdir
+     T a-subdir/subsubdir/fish.c
+     cvs tag: Tagging b-subdir
+     T b-subdir/random.c
+     floss$
+
+qsmith は開発を続行するのにマージが終わるのを待つ必要はありません。
+qsmith は jrandom がマージした後の一連の変更に対し、タグをつけておけ
+ばよいのです。(あとで jrandom はこのタグ名を知る必要があります; 一般
+に、ブランチというものは開発者が頻繁かつ綿密に連絡を取り合って初めて
+成り立つものなのです):
+
+     paste$ cvs tag Exotic_Greetings-1
+     cvs tag: Tagging .
+     T README.txt
+     T foo.gif
+     T hello.c
+     cvs tag: Tagging a-subdir
+     T a-subdir/whatever.c
+     cvs tag: Tagging a-subdir/subsubdir
+     T a-subdir/subsubdir/fish.c
+     cvs tag: Tagging b-subdir
+     T b-subdir/random.c
+     paste$ emacs a-subdir/whatever.c
+      ...
+     paste$ cvs ci -m "print a randomly capitalized greeting"
+     cvs commit: Examining .
+     cvs commit: Examining a-subdir
+     cvs commit: Examining a-subdir/subsubdir
+     cvs commit: Examining b-subdir
+     Checking in a-subdir/whatever.c;
+     /usr/local/newrepos/myproj/a-subdir/whatever.c,v  <--  whatever.c
+     new revision: 1.3.2.2; previous revision: 1.3.2.1
+     done
+     paste$
+
+もちろん、qsmith は変更が終わり次第タグをつけるべきです:
+
+     paste$ cvs -q tag Exotic_Greetings-2
+     T README.txt
+     T foo.gif
+     T hello.c
+     T a-subdir/whatever.c
+     T a-subdir/subsubdir/fish.c
+     T b-subdir/random.c
+     paste$
+
+これをやっている間、qsmith が一連の編集で触ったのとは別のファイルを
+jrandom が変更したとします:
+
+     floss$ emacs README.txt
+      ...
+     floss$ cvs ci -m "Mention new Exotic Greeting features" README.txt
+     Checking in README.txt;
+     /usr/local/newrepos/myproj/README.txt,v  <--  README.txt
+     new revision: 1.17; previous revision: 1.16
+     done
+     floss$
+
+ここで qsmith は新たな変更をブランチにコミットし、jrandom は別のファ
+イルのコンフリクトしない変更をトランクにコミットします。jrandom がブ
+ランチをもう一度マージしようとしたときに何が起こるか見てみましょう:
+
+     floss$ cvs -q update -j Exotic_Greetings-branch
+     RCS file: /usr/local/newrepos/myproj/README.txt,v
+     retrieving revision 1.14
+     retrieving revision 1.14.2.1
+     Merging differences between 1.14 and 1.14.2.1 into README.txt
+     rcsmerge: warning: conflicts during merge
+     RCS file: /usr/local/newrepos/myproj/a-subdir/whatever.c,v
+     retrieving revision 1.3
+     retrieving revision 1.3.2.2
+     Merging differences between 1.3 and 1.3.2.2 into whatever.c
+     rcsmerge: warning: conflicts during merge
+     RCS file: /usr/local/newrepos/myproj/b-subdir/random.c,v
+     retrieving revision 1.1
+     retrieving revision 1.1.1.1.2.1
+     Merging differences between 1.1 and 1.1.1.1.2.1 into random.c
+     floss$ cvs -q update
+     C README.txt
+     C a-subdir/whatever.c
+     floss$
+
+コンフリクトが起きてしまいました! これ、予測していましたか?
+
+マージの意味に問題があるようです。先に *Note An Overview of CVS:: で述
+べた通り、作業コピー中で
+
+     floss$ cvs update -j BRANCH
+
+を実行すると、CVS はブランチの根と先端の相違を作業コピーにマージする
+のです。今回の場合、それらの変更の大半は、jrandom が最初に行ったマー
+ジの時に既にトランクに組み込まれているので、この動作は問題になります。
+CVS がその変更を再びマージしようとすると(その変更自身に上書きするよ
+うなことになります)、当然コンフリクトだと見なされるわけです。
+
+jrandom が本当にやりたかったことは、ブランチのうち、一番最後に実行し
+たマージ時点と現在のブランチ先端の間の変更を作業コピーにマージする、
+ということだったのです。これをするには update に -j フラグを2つ渡せ
+ばよいのです。*Note An Overview of CVS:: を思い出して下さい。これをす
+るには、各フラグでどのリビジョンを指定すれば良いかを知っておかなけれ
+ばなりません。幸い、qsmith は最後のマージポイントにタグをつけておき
+ましたので(hurrah for planning ahead!)、これについて問題はありません。
+まずは jrandom の作業コピーを元のきれいな状態に戻しましょう。そこか
+ら再マージするのです:
+
+     floss$ rm README.txt a-subdir/whatever.c
+     floss$ cvs -q update
+     cvs update: warning: README.txt was lost
+     U README.txt
+     cvs update: warning: a-subdir/whatever.c was lost
+     U a-subdir/whatever.c
+     floss$
+
+さて、これでマージの準備ができました、今回は qsmith がつけてくれたタ
+グを使うことにしましょう:
+
+     floss$ cvs -q update -j Exotic_Greetings-1 -j Exotic_Greetings-branch
+     RCS file: /usr/local/newrepos/myproj/a-subdir/whatever.c,v
+     retrieving revision 1.3.2.1
+     retrieving revision 1.3.2.2
+     Merging differences between 1.3.2.1 and 1.3.2.2 into whatever.c
+     floss$ cvs -q update
+     M a-subdir/whatever.c
+     floss$
+
+いいカンジです。qsmith の変更が whatever.c に組み込まれました; jrandom
+はコミットし、タグをつけます:
+
+     floss$ cvs -q ci -m "merged again from Exotic_Greetings (1)"
+     Checking in a-subdir/whatever.c;
+     /usr/local/newrepos/myproj/a-subdir/whatever.c,v  <--  whatever.c
+     new revision: 1.6; previous revision: 1.5
+     done
+     floss$ cvs -q tag merged-Exotic_Greetings-1
+     T README.txt
+     T foo.gif
+     T hello.c
+     T a-subdir/whatever.c
+     T a-subdir/subsubdir/fish.c
+     T b-subdir/random.c
+     floss$
+
+qsmith がマージポイントにタグをつけるのを忘れても、望みがなくなって
+しまったわけではありません。 jrandom が qsmith の最初の変更を大体い
+つ頃コミットしたか覚えていれば、日付でフィルタリングしてみることがで
+きます:
+
+     floss$ cvs update -j Exotic_Greetings-branch:3pm -j Exotic_Greetings_branch
+
+日付でフィルタリングするのは、最後の切り札にはなりますが、あまり理想
+的な方法とは言えません。なぜなら、信頼に足る開発上の名称ではなく、人
+の記憶に頼った方法だからです。qsmith の初回マージ分の変更が、1回のコ
+ミットではなく何度かに分けてコミットされていた場合、jrandom が間違っ
+て日付や時刻を指定すると、変更全てではなく一部分だけを取ってきてしま
+う可能性があります。
+
+qsmith の変更のタグづけできる各ポイントが、1回のコミットでリポジトリ
+に送られなければならない理由はありません。この例でたまたまこうなって
+いるだけなのです。実際には、qsmith はタグとタグの間に何度かコミット
+するかもしれません。qsmith はブランチ上でひとりで作業したければ、そ
+うすることができます。タグというのはつまり、トランクへマージできると
+思う点をブランチ上に連続的に記録していくことなのです。jrandom が常に -j
+フラグを2つ使ってマージし、qsmith のマージタグを正しい順序で注意深
+く用いてそれぞれを1度だけ使う限り、トランクでダブルマージの問題が起
+こることはないでしょう。コンフリクトは起こるかもしれませんが、それは
+人の手で解決しなければならない、不可避なものなのでしょう。同じ領域に
+おいて、ブランチでもトランクでも変更があるような状況だというわけです。
+
+
+File: j-cvsbook.info,  Node: The Dovetail Approach -- Merging In And Out Of The Trunk,  Next: The Flying Fish Approach -- A Simpler Way To Do It,  Prev: Merging Repeatedly Into The Trunk,  Up: Going Out On A Limb (How To Work With Branches And Survive)
+
+The Dovetail Approach - Merging In And Out Of The Trunk
+-------------------------------------------------------
+
+ブランチからトランクへ何度もマージするというのは、トランク上に居る人々
+にとっては良いことです。なぜなら、自分たちの変更も、ブランチからの変
+更も全てわかるからです。しかしながら、ブランチ上の開発者はトランク上
+での作業分を組み込めないのです。
+
+これをするためには、ブランチ開発者は時々余分なステップを踏む必要があ
+ります。(最新のトランクの変更をマージしたいと思ったり、避けられない
+コンフリクトをどうにかしたいと思った時はいつでも、という意味です):
+
+     paste$ cvs update -j HEAD
+
+特別に予約されたタグ `HEAD' は、トランクの先端を意味しています。こ
+のコマンドは、現在のブランチの根(`Exotic_Greetings-branch')から、ト
+ランク上の現在の最大のリビジョンまでの変更をすべてマージします。もちろん、
+qsmithはこれを実行したあと再度タグをつけなければなりません。トランク上の
+開発者が qsmith の変更をマージしようとしたときに、誤って自分自身の変更を
+マージしてしまうことを避けられるようにするためです。
+
+ブランチ開発者も同様に、最後にマージしてから現在状態までのトランクの変更
+を正確にブランチにマージするために、トランクのマージタグを境界として使用
+することができます(トランクがマージするのと同じ方法で)。例えば、jrandom
+がブランチからマージした後 hello.c に変更を施したとします:
+
+     floss$ emacs hello.c
+      ...
+     floss$ cvs ci -m "clarify algorithm" hello.c
+     Checking in hello.c;
+     /usr/local/newrepos/myproj/hello.c,v  <--  hello.c
+     new revision: 1.22; previous revision: 1.21
+     done
+     floss$
+
+その後、qsmith がこれらの変更をブランチにマージし、コミットし、タグをつ
+けます:
+
+     paste$ cvs -q update -j merged-Exotic_Greetings-1 -j HEAD
+     RCS file: /usr/local/newrepos/myproj/hello.c,v
+     retrieving revision 1.21
+     retrieving revision 1.22
+     Merging differences between 1.21 and 1.22 into hello.c
+     paste$ cvs -q update
+     M hello.c
+     paste$ cvs -q ci -m "merged trunk, from merged-Exotic_Greetings-1 to HEAD"
+     Checking in hello.c;
+     /usr/local/newrepos/myproj/hello.c,v  <--  hello.c
+     new revision: 1.21.2.1; previous revision: 1.21
+     done
+     paste$ cvs -q tag merged-merged-Exotic_Greetings-1
+     T README.txt
+     T foo.gif
+     T hello.c
+     T a-subdir/whatever.c
+     T a-subdir/subsubdir/fish.c
+     T b-subdir/random.c
+     paste$
+
+jrandom は hello.c の変更をコミットした後にタグづけせず、qsmith がそれを
+したということに注意してください。ここでの原則では、ちょっとした変更のあ
+とにいちいちタグをつける必要はなくて、マージの後、及び自分の開発ラインの
+マージできる状態をコミットした後に常にタグをつけるべきなのです。こうすれ
+ば、他の人(別のブランチにいるのでしょう)に自分自身のマージの基礎となる参
+照の点がわかります。
+
+
+File: j-cvsbook.info,  Node: The Flying Fish Approach -- A Simpler Way To Do It,  Next: Branches And Keyword Expansion -- Natural Enemies,  Prev: The Dovetail Approach -- Merging In And Out Of The Trunk,  Up: Going Out On A Limb (How To Work With Branches And Survive)
+
+The Flying Fish Approach - A Simpler Way To Do It
+-------------------------------------------------
+
+albeit slightly limiting ちょっと制限してはいますが
+
+前述のものよりも少々制限はありますが、より簡単な方法があります。ブラン
+チ開発者はトランクがマージしている間開発を停止し、トランク開発者は今
+までのブランチを置き換えるような全く新しいブランチを作成します。ブラン
+チ開発者はその新しいブランチに移り、開発を続けます。そのサイクルはブ
+ランチ開発が必要なくなるまで続きます。こんな感じになります(要約です。
+今まで通り、jrandom@floss がトランクに、 qsmith@paste がブランチに
+居ることにします):
+
+     floss$ cvs tag -b BRANCH-1
+     paste$ cvs checkout -r BRANCH-1 myproj
+
+トランク、ブランチともに作業を始めます。そして開発者たちは協議し、ブ
+ランチをトランクにマージする時であると決定します:
+
+     paste$ cvs ci -m "committing all uncommitted changes"
+     floss$ cvs update -j BRANCH-1
+
+ブランチでの変更が全てマージされます: ブランチ開発者はトランク開発者
+がコンフリクトを解消し、コミットしてタグをつけ、新しいブランチを作成
+するまで作業を停止します:
+
+     floss$ cvs ci -m "merged from BRANCH-1"
+     floss$ cvs tag merged-from-BRANCH-1
+     floss$ cvs tag -b BRANCH-2
+
+ここでブランチ開発者は自分の作業コピーを新しいブランチで上書きします;
+マージが起こった時には最新で、新しいブランチは古いブランチの変更が組
+み込まれたトランクからのものですから、そうしても未コミットの変更を失っ
+たりしないのです。
+
+     paste$ cvs update -r BRANCH-2
+
+BRANCH-1 を BRANCH-2 に、BRANCH-2 を BRANCH-3 に置き換えて、
+限りなくこのサイクルは続いていきます。
+
+筆者はこれを "トビウオ" テクニックと呼んでいます。ブランチがたえ
+ずトランクから生え、短く伸びてはまたトランクへ再接合するからです。こ
+のやりかたの利点は、シンプルであること(トランクは常に指定されたブラン
+チの全ての変更をマージする)、それとブランチ開発者はコンフリクトを解
+消しなくてもいいということです(新しくてきれいなブランチをただ渡され
+て、その上で作業すればいいのです)。欠点は当然、トランクのマージを実
+施している間、ブランチ開発者はただ座ってボケっとしていなければならな
+いということです(解決すべきコンフリクトがいくつあるかによって、それ
+なりの時間がかかるでしょう)。あまり重要ではないですが、もうひとつ欠
+点があります。それは、使われないノンブランチタグの代わりに、使われて
+いない小さなブランチがたくさんできることです。しかし、小さくて使われ
+ていないブランチがたくさんあっても気にならなくて、トラブルのないマー
+ジを期待しているのなら、トビウオは一番簡単なやり方になるでしょう。心
+に留めておいてもいいと思います。
+
+どちらのやり方を取るにしろ、分離状態は出来るだけ短い間にするよう努力
+したほうが良いでしょう。ブランチとトランクをずっとマージしないままに
+すると、ただのテキストのズレだけでは済まず、意味上のズレに悩まされる
+ことになります。テキスト上のコンフリクトを起こす変更は簡単に解消でき
+ますが、テキストではなく考え方においてコンフリクトを起こすような変更
+は、見つけるのも解決するのも大変です。ブランチを隔離するというのは、
+開発者を自由にしますが、他の人の変更からしばらくの間でも遮蔽されると
+いうのは危険なことです。ブランチを使う場合は普段よりも活発にコミュニ
+ケーションをとるようになります。全員がお互いの計画を検討し、同じ軌道
+に乗っているかどうか確認する必要があります。
+
+
+File: j-cvsbook.info,  Node: Branches And Keyword Expansion -- Natural Enemies,  Prev: The Flying Fish Approach -- A Simpler Way To Do It,  Up: Going Out On A Limb (How To Work With Branches And Survive)
+
+Branches And Keyword Expansion - Natural Enemies
+------------------------------------------------
+
+ファイルに RCS キーワードがあると、ブランチ上とトランク上では違った
+ように展開されるので、マージするたびににせのコンフリクトが起こること
+になります。何も変更していなくてもキーワードはオーバラップし、展開結
+果は一致しません。例えば README.txt に、トランクではこのように書いて
+あるとします
+
+     $Revision: 1.14 $
+
+ブランチ上ではこうです
+
+     $Revision: 1.14.2.1 $
+
+マージを実行した時に、以下のようなコンフリクトが起こるでしょう:
+
+     floss$ cvs update -j Exotic_Greetings-branch
+     RCS file: /usr/local/newrepos/myproj/README.txt,v
+     retrieving revision 1.14
+     retrieving revision 1.14.2.1
+     Merging differences between 1.14 and 1.14.2.1 into README.txt
+     rcsmerge: warning: conflicts during merge
+     floss$ cat README.txt
+      ...
+     <<<<<<< README.txt
+     key $Revision: 1.14 $
+     =======
+     key $Revision: 1.14.2.1 $
+     >>>>>>> 1.14.2.1
+      ...
+     floss$
+
+こうならないようにするために、マージ時に一時的に -kk オプション(何の
+略なのか知らないんですが、多分 "kill keywords" かな?)を渡して展開を
+抑制することができます:
+
+     floss$ cvs update -kk -j Exotic_Greetings-branch
+     RCS file: /usr/local/newrepos/myproj/README.txt,v
+     retrieving revision 1.14
+     retrieving revision 1.14.2.1
+     Merging differences between 1.14 and 1.14.2.1 into README.txt
+     floss$ cat README.txt
+      ...
+     $Revision$
+      ...
+     floss$
+
+しかし、気をつけることがひとつだけあります: -kk を使うと、そのファイ
+ルに設定してあるほかのキーワード展開モードを上書きしてしまいます。特
+にバイナリファイルにおいては問題になります。バイナリファイルは普通 -kb
+になっているからです(-kb はキーワード展開と行末コード変換を全て
+抑制します)。ブランチからバイナリファイルをマージする時には -kk を使
+わないようにして、コンフリクトは手で直して下さい。
+
+
+File: j-cvsbook.info,  Node: Tracking Third-Party Sources (Vendor Branches),  Next: Exporting For Public Distribution,  Prev: Going Out On A Limb (How To Work With Branches And Survive),  Up: Advanced CVS
+
+Tracking Third-Party Sources (Vendor Branches)
+==============================================
+
+外部の配布元から取ってきたソフトウェアに、あるサイトでローカルな変更
+が加えられることがあります。そのローカルな変更を配布元が受け入れない
+場合(そうできないについて正当な理由はいくらでも考えられます)、そのサ
+イトはそのソフトウェアのアップグレードを受け取るたびにその変更をメン
+テせねばなりません。
+
+CVS の "ベンダブランチ(vendor branches)" という機能がこの仕事に
+役立ちます。ベンダブランチというのは cvs import のわけのわからない最
+後の2つの引数の説明でした(今まではね)。*Note An Overview of CVS:: でこ
+じつけたベンダタグとリリースタグのことです。
+
+ここで、それがどのように動くか示します。最初のインポートは他の CVS
+プロジェクトの最初のインポートと同様です(ちょっと注意してベンダタグ
+とリリースタグを決めないといけませんが):
+
+     floss$ pwd
+     /home/jrandom/theirproj-1.0
+     floss$ cvs import -m "Import of TheirProj 1.0" theirproj Them THEIRPROJ_1_0
+     N theirproj/INSTALL
+     N theirproj/README
+     N theirproj/src/main.c
+     N theirproj/src/parse.c
+     N theirproj/src/digest.c
+     N theirproj/doc/random.c
+     N theirproj/doc/manual.txt
+     
+     No conflicts created by this import
+     
+     floss$
+
+そしてどこかに作業コピーをチェックアウトして、ローカルな変更を施し、
+その後コミットして下さい:
+
+     floss$ cvs -q co theirproj
+     U theirproj/INSTALL
+     U theirproj/README
+     U theirproj/doc/manual.txt
+     U theirproj/doc/random.c
+     U theirproj/src/digest.c
+     U theirproj/src/main.c
+     U theirproj/src/parse.c
+     floss$ cd theirproj
+     floss$ emacs src/main.c src/digest.c
+      ...
+     floss$ cvs -q update
+     M src/digest.c
+     M src/main.c
+     floss$ cvs -q ci -m "changed digestion algorithm; added comment to main"
+     Checking in src/digest.c;
+     /usr/local/newrepos/theirproj/src/digest.c,v  <--  digest.c
+     new revision: 1.2; previous revision: 1.1
+     done
+     Checking in src/main.c;
+     /usr/local/newrepos/theirproj/src/main.c,v  <--  main.c
+     new revision: 1.2; previous revision: 1.1
+     done
+     floss$
+
+1年後、そのソフトウェアの次のバージョンが Them, Inc. から届きます。
+ローカルの変更をそのバージョンにも取り入れなければなりません。配布元
+での変更とローカルの変更は、少しだけ重なっているところがあります。配
+布元では新しいファイルを一つ追加し、あなたの触ってないファイル2つを
+変更し、あなたが触ったファイル2つにも変更を加えています。
+
+まずやることは、もう1度インポートすることです。今回は新しいソースか
+らインポートします。初回インポートとほとんど同じです。リポジトリ中、
+以前と同じプロジェクトの、同じベンダブランチにインポートします。違う
+のはリリースタグだけです:
+
+     floss$ pwd
+     /home/jrandom/theirproj-2.0
+     floss$ cvs -q import -m "Import of TheirProj 2.0" theirproj Them THEIRPROJ_2_0
+     U theirproj/INSTALL
+     N theirproj/TODO
+     U theirproj/README
+     cvs import: Importing /usr/local/newrepos/theirproj/src
+     C theirproj/src/main.c
+     U theirproj/src/parse.c
+     C theirproj/src/digest.c
+     cvs import: Importing /usr/local/newrepos/theirproj/doc
+     U theirproj/doc/random.c
+     U theirproj/doc/manual.txt
+     
+     2 conflicts created by this import.
+     Use the following command to help the merge:
+     
+            cvs checkout -jThem:yesterday -jThem theirproj
+     
+     floss$
+
+おやまあ、CVS がこんな風に助けようとしてくれたのは今まで見たことがあ
+りませんね。変更をマージするためにどんなコマンドを実行するか教えてく
+れています。それに、ほとんど正しいですよ! 実際、示されたコマンドは動
+きますが(yesterday のところを、最初のインポートを含んでいるが2番目の
+インポートを含んでいない時間間隔に調整したとして)、著者は代わりにリ
+リースタグを使うほうが好きです:
+
+     floss$ cvs checkout -j THEIRPROJ_1_0 -j THEIRPROJ_2_0 theirproj
+     cvs checkout: Updating theirproj
+     U theirproj/INSTALL
+     U theirproj/README
+     U theirproj/TODO
+     cvs checkout: Updating theirproj/doc
+     U theirproj/doc/manual.txt
+     U theirproj/doc/random.c
+     cvs checkout: Updating theirproj/src
+     U theirproj/src/digest.c
+     RCS file: /usr/local/newrepos/theirproj/src/digest.c,v
+     retrieving revision 1.1.1.1
+     retrieving revision 1.1.1.2
+     Merging differences between 1.1.1.1 and 1.1.1.2 into digest.c
+     rcsmerge: warning: conflicts during merge
+     U theirproj/src/main.c
+     RCS file: /usr/local/newrepos/theirproj/src/main.c,v
+     retrieving revision 1.1.1.1
+     retrieving revision 1.1.1.2
+     Merging differences between 1.1.1.1 and 1.1.1.2 into main.c
+     U theirproj/src/parse.c
+     floss$
+
+インポートでコンフリクトが2つあるというふうに表示されたのに、マージ
+ではコンフリクトが1つしかないことに注意して下さい。インポートとその
+他ではコンフリクトが少し違うものだと CVS が思っているように見えます。
+インポートでは基本的に、前回のインポートと今回のインポートの間に、あ
+なたとベンダ両方が変更したファイルをコンフリクトとして報告します。し
+かしマージの時点になると、「コンフリクト」の通常の定義に忠実なのです。
+つまり、変更が重なっている、という意味になります。重なり合っていない
+変更は通常の方法でマージされ、そのファイルはただの変更として示されま
+す。
+
+ちょっと diff を取ってみると、ファイルのうち1つだけにコンフリクトマー
+カがあることがわかります:
+
+     floss$ cvs -q update
+     C src/digest.c
+     M src/main.c
+     floss$ cvs diff -c
+     Index: src/digest.c
+     ===================================================================
+     RCS file: /usr/local/newrepos/theirproj/src/digest.c,v
+     retrieving revision 1.2
+     diff -c -r1.2 digest.c
+     *** src/digest.c        1999/07/26 08:02:18     1.2
+     -- src/digest.c        1999/07/26 08:16:15
+     ***************
+     *** 3,7 ****
+     -- 3,11 ----
+      void
+      digest ()
+      {
+     + <<<<<<< digest.c
+        printf ("gurgle, slorp\n");
+     + =======
+     +   printf ("mild gurgle\n");
+     + >>>>>>> 1.1.1.2
+      }
+     Index: src/main.c
+     ===================================================================
+     RCS file: /usr/local/newrepos/theirproj/src/main.c,v
+     retrieving revision 1.2
+     diff -c -r1.2 main.c
+     *** src/main.c  1999/07/26 08:02:18     1.2
+     -- src/main.c  1999/07/26 08:16:15
+     ***************
+     *** 7,9 ****
+     -- 7,11 ----
+      {
+        printf ("Goodbye, world!\n");
+      }
+     +
+     + /* I, the vendor, added this comment for no good reason. */
+     floss$
+
+こうなると他のマージと同じように、ただコンフリクトを解消すればいいだ
+けの話になります:
+
+     floss$ emacs  src/digest.c  src/main.c
+      ...
+     floss$ cvs -q update
+     M src/digest.c
+     M src/main.c
+     floss$ cvs diff src/digest.c
+     cvs diff src/digest.c
+     Index: src/digest.c
+     ===================================================================
+     RCS file: /usr/local/newrepos/theirproj/src/digest.c,v
+     retrieving revision 1.2
+     diff -r1.2 digest.c
+     6c6
+     <   printf ("gurgle, slorp\n");
+     --
+     >   printf ("mild gurgle, slorp\n");
+     floss$
+
+そして変更をコミットします
+
+     floss$ cvs -q ci -m "Resolved conflicts with import of 2.0"
+     Checking in src/digest.c;
+     /usr/local/newrepos/theirproj/src/digest.c,v  <--  digest.c
+     new revision: 1.3; previous revision: 1.2
+     done
+     Checking in src/main.c;
+     /usr/local/newrepos/theirproj/src/main.c,v  <--  main.c
+     new revision: 1.3; previous revision: 1.2
+     done
+     floss$
+
+あとはベンダからの次のリリースを待つだけです。(もちろん、ローカルの
+変更がちゃんと動くかどうかテストしたいだろうと思いますけれど!)
+
+-------------------------------------------------------------
+

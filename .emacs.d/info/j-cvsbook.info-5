@@ -1,0 +1,1196 @@
+これは j-cvsbook.info、j-main.texi より makeinfo バージョン 4.2
+によって作成されました。
+
+START-INFO-DIR-ENTRY
+* CVS Book: (cvsbook).          A CVS tutorial and reference.
+END-INFO-DIR-ENTRY
+
+Copyright (C) 1999 Karl Fogel <kfogel@red-bean.com>
+
+This document is free software; you can redistribute and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation; either version 2, or (at your option) any
+later version.
+
+This document is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+General Public License for more details.
+
+This manual describes how to use and administer CVS (Concurrent Versions
+System).  It is part of a larger work entitled `Open Source Development
+With CVS'; please see the introduction for details.
+
+This is version 1.12 of this manual.
+
+
+File: j-cvsbook.info,  Node: RCS Format,  Next: What Happens When You Remove A File,  Prev: Repository Structure,  Up: Repository Administration
+
+RCS Format
+==========
+
+CVS を使うにあたり、RCS 形式について知っておく必要は一切ありません(ソー
+スディストリビューションに素晴らしい記事がありますけれど。doc/RCSFILES
+をご覧ください)。しかし、この形式の基本的なところを理解していると CVS
+のトラブルシューティングに非常に役に立ちますので、ファイルの1つ `
+hello.c,v' をちょっと覗いてみることにしましょう。ファイル内容を示します:
+
+     head     1.1;
+     branch   1.1.1;
+     access   ;
+     symbols  start:1.1.1.1 jrandom:1.1.1;
+     locks    ; strict;
+     comment  @ * @;
+     
+     1.1
+     date     99.06.20.17.47.26;  author jrandom;  state Exp;
+     branches 1.1.1.1;
+     next;
+     
+     1.1.1.1
+     date     99.06.20.17.47.26;  author jrandom;  state Exp;
+     branches ;
+     next;
+     
+     desc
+     @@
+     
+     1.1
+     log
+     @Initial revision
+     @
+     text
+     @#include <stdio.h>
+     
+     void
+     main ()
+     {
+       printf ("Hello, world!\n");
+     }
+     @
+     
+     1.1.1.1
+     log
+     @initial import into CVS
+     @
+     text
+     @@
+
+うひゃー! もうほとんど無視してもかまわないです; 例えば 1.1 と 1.1.1.1
+の関連や、暗黙の 1.1.1 ブランチとかは気にしないで下さい、ユーザ、管理
+者、どちらの観点からもあまり重要なことではありません。理解すべきは全体
+のフォーマットです。最初はヘッダフィールドのコレクションです:
+
+     head     1.1;
+     branch   1.1.1;
+     access   ;
+     symbols  start:1.1.1.1 jrandom:1.1.1;
+     locks    ; strict;
+     comment  @ * @;
+
+そのあとは各リビジョンのメタ情報のグループです(リビジョンの中身はまだ
+先です)、こんな感じ:
+
+     1.1
+     date     99.06.20.17.47.26;  author jrandom;  state Exp;
+     branches 1.1.1.1;
+     next     ;
+
+最後にログメッセージと実際のリビジョンのテキストが来ます:
+
+     1.1
+     log
+     @Initial revision
+     @
+     text
+     @#include <stdio.h>
+     
+     void
+     main ()
+     {
+       printf ("Hello, world!\n");
+     }
+     @
+     
+     1.1.1.1
+     log
+     @initial import into CVS
+     @
+     text
+     @@
+
+よくみると、最初のリビジョンの内容が 1.1 という見出しの下にあって、そ
+のログメッセージがなぜか "Initial revision" になっています。インポート
+時に使ったのは "initial import into CVS" というログメッセージなのに。
+そっちのログメッセージはもっと下のほう、`Revision 1.1.1.1' の下に
+あります。今この矛盾を気にする必要はありません。これはインポートが特別
+な場合だから起こることなのです。It happens because imports are a special
+circumstance: Inorder to make repeated imports into the same project
+have a usefuleffect, import actually places the initial revision on both
+the maintrunk and on a special branch (これの理由は *Note Advanced CVS::
+でベンダブランチについて述べるときにもう少し明らかになります). 今のと
+ころは `1.1' と `1.1.1.1' を同じものとして扱っても構いません。
+
+hello.c の最初の変更をコミットすると、このファイルのことがもう少しわか
+ってきます:
+
+     floss$ cvs -Q co myproj
+     floss$ cd myproj
+     floss$ emacs hello.c
+         (ファイルを変更してみる)
+     
+     floss$ cvs ci -m "print goodbye too"
+     cvs commit: Examining .
+     cvs commit: Examining a-subdir
+     cvs commit: Examining a-subdir/subsubdir
+     cvs commit: Examining b-subdir
+     Checking in hello.c;
+     /usr/local/newrepos/myproj/hello.c,v  <--  hello.c
+     new revision: 1.2; previous revision: 1.1
+     done
+
+ここでリポジトリ内の hello.c,v を見ると、コミットの結果がわかります:
+
+     head  1.2;
+     access;
+     symbols
+           start:1.1.1.1 jrandom:1.1.1;
+     locks; strict;
+     comment   @ * @;
+     
+     1.2
+     date   99.06.21.01.49.40;   author jrandom;   state Exp;
+     branches;
+     next   1.1;
+     
+     1.1
+     date   99.06.20.17.47.26;   author jrandom;   state Exp;
+     branches
+            1.1.1.1;
+     next   ;
+     
+     1.1.1.1
+     date   99.06.20.17.47.26;   author jrandom;   state Exp;
+     branches;
+     next   ;
+     
+     desc
+     @@
+     
+     1.2
+     log
+     @print goodbye too
+     @
+     text
+     @#include <stdio.h>
+     
+     void
+     main ()
+     {
+       printf ("Hello, world!\n");
+       printf ("Goodbye, world!\n");
+     }
+     @
+     
+     1.1
+     log
+     @Initial revision
+     @
+     text
+     @d7 1
+     @
+     
+     1.1.1.1
+     log
+     @initial import into CVS
+     @
+     text
+     @@
+
+リビジョン1.2全体の内容がファイルに保存されており、リビジョン1.1の内容
+は暗号ちっくな形式に置き換わっています:
+
+     d7 1
+
+`d7 1' は「7行目から始めて、1行削除する」という意味の diff コー
+ドです。言い換えると、リビジョン1.1を導出するにはリビジョン1.2から7行
+目を削除する、ということなのです! 自分で実際にやってみてください。これ
+でリビジョン1.1ができるのがわかると思います。単純に、ファイルに追加し
+た行をなくすだけです。
+
+これは RCS 形式の基本原則を示しています: リビジョン間の相違のみを保存
+し、そうすることによって各リビジョンそれぞれの全体を保存するのに比べて
+容量を節約します。一番新しいリビジョンから以前のリビジョンへ戻るには、
+保存してある diff をより最近のリビジョンに対して patch すればよろしい。
+つまりこれは、過去に戻ろうとすればするほど、より多くの patch 操作が必
+要になる、ということです(たとえばリビジョン1.7のファイルがあって、その
+ファイルのリビジョン1.4へのアクセスを要求された場合、patch で 1.7 から
+1.6 を生成し、1.6 から 1.5 を、そして 1.5 から 1.4 を生成します)。幸い、
+古いリビジョンはあまりアクセスされませんので、実用上 RCS システムはう
+まく動きます。最近のファイルになるほど取得するコストが低いわけです。
+
+ファイルの冒頭のヘッダ情報が何を意味するか、全てを理解する必要はありませ
+ん。しかし、ある種の操作は、結果がとても明確にヘッダに示されますので、ヘッ
+ダに親しんでおくと便利には違いありません。
+
+トランクに新しいリビジョンをコミットした時、`head' ラベルが更新され
+ます(先に示した例で、2回目に hello.c をコミットした時、そのラベルがどの
+ように 1.2 になったか注意して見てみてください)。あるファイルをバイナリと
+して追加した時、あるいはタグをつけた時にも、それらの操作はヘッダに記録さ
+れます。例として foo.jpg をバイナリファイルとして追加し、その後二度ほど
+タグづけしてみましょう:
+
+     floss$ cvs add -kb foo.jpg
+     cvs add: scheduling file 'foo.jpg' for addition
+     cvs add: use 'cvs commit' to add this file permanently
+     floss$ cvs -q commit -m "added a random image; ask jrandom@red-bean.com why"
+     RCS file: /usr/local/newrepos/myproj/foo.jpg,v
+     done
+     Checking in foo.jpg;
+     /usr/local/newrepos/myproj/foo.jpg,v  <--  foo.jpg
+     initial revision: 1.1
+     done
+     floss$ cvs tag some_random_tag foo.jpg
+     T foo.jpg
+     floss$ cvs tag ANOTHER-TAG foo.jpg
+     T foo.jpg
+     floss$
+
+さて、リポジトリ内の foo.jpg,v のヘッダ部分を見てみましょう:
+
+     head   1.1;
+     access;
+     symbols
+           ANOTHER-TAG:1.1
+           some_random_tag:1.1;
+     locks; strict;
+     comment   @# @;
+     expand	@b@;
+
+最後の expand の行の b を見て下さい。これはこのファイルを -kb つきで add
+したためにこうなっています。通常のテキストファイルでは、チェックアウトと
+アップデートの時にキーワードや改行コードの変換が行われるのですが、このファ
+イルではそれが行われない、という意味です。タグは symbols セクションに 1
+タグ1行で記してあります。最初のリビジョンに2回タグをつけたので、タグは両
+方とも最初のリビジョンについています。(タグ名に英数字、ハイフン、アンダ
+スコアしか使えない理由もこれで説明できます。タグがコロンやピリオドを含ん
+でいたとしたら、RCS
+ファイルのこの欄のタグとリビジョンの区切りが曖昧になっ
+てしまうからですね。)
+
+RCS Format Always Quotes @ Signs
+================================
+
+RCS ファイル中の `@' シンボルはフィールド(訳注: フィールドとは各リ
+ビジョンの領域のことのようです)の区切りに使用されますので、ファイルのテ
+キスト中やログメッセージに出てくる場合にはクオートする必要があります(そ
+うしないと CVS はそれをフィールドの最後だと誤解してしまいます)。クオート
+するには  を2つ続けます。つまり、CVS は `@@' が出てくると、フィー
+ルドの終わりという意味ではなく、@ 記号であると解釈します。foo.jpg をコ
+ミットしたときのログメッセージは
+
+     "added a random image; ask jrandom@red-bean.com why"
+
+でした、これは foo.jpg,v 中ではこのようになります:
+
+     1.1
+     log
+     @added a random image; ask jrandom@@red-bean.com why
+     @
+
+ログメッセージにアクセスするときにはj random@@red-bean.com の中の @
+記号は自動的にクオートがはずされます:
+
+     floss$ cvs log foo.jpg
+     RCS file: /usr/local/newrepos/myproj/foo.jpg,v
+     Working file: foo.jpg
+     head: 1.1
+     branch:
+     locks: strict
+     access list:
+     symbolic names:
+           ANOTHER-TAG: 1.1
+           some_random_tag: 1.1
+     keyword substitution: b
+     total revisions: 1;	selected revisions: 1
+     description:
+     ----------------------------
+     revision 1.1
+     date: 1999/06/21 02:56:18;  author: jrandom;  state: Exp;
+     added a random image; ask jrandom@red-bean.com why
+     ============================================================================
+     
+     floss$
+
+RCS ファイルを手で編集する時くらいしか気にすることはないです(ほとんどな
+いとは思いますが、全然ないわけではありません)。その場合はリビジョン内容
+とログメッセージで  記号を2つ重ねて書くことを思い出してください。もし忘
+れたら、RCS ファイルはむちゃくちゃになり、思いもかけないヘンな動作をする
+でしょう。
+
+Speaking of hand-editing RCS files, don't be fooled by the permissions
+in the repository:
+
+     floss$ ls -l
+     total 6
+     -r--r--r--   1 jrandom   users         410 Jun 20 12:47 README.txt,v
+     drwxrwxr-x   3 jrandom   users        1024 Jun 20 21:56 a-subdir/
+     drwxrwxr-x   2 jrandom   users        1024 Jun 20 21:56 b-subdir/
+     -r--r--r--   1 jrandom   users         937 Jun 20 21:56 foo.jpg,v
+     -r--r--r--   1 jrandom   users         564 Jun 20 21:11 hello.c,v
+     
+     floss$
+
+(Unix の ls の出力に詳しくない人へ、左のほうの `-r--r--r--' は、そ
+のファイルは読めるけど変更できないよ、という意味です) これらのファイルは
+誰に対してもリードオンリーのように見えますが、ディレクトリパーミッション
+のほうを考慮に入れなくてはなりません:
+
+     floss$ ls -ld .
+     drwxrwxr-x   4 jrandom   users        1024 Jun 20 22:16 ./
+     floss$
+
+myproj/ 自身とそのサブディレクトリは、オーナ(jrandom)とグループ(users)の
+書き込み権限があります。これはつまり、(jrandom 及び users グループの
+メンバーなら誰でも、の権限で実行される) CVS はそれらのディレクトリでファ
+イルを作ったり削除したりできるということです、既に存在するファイルを直接
+編集することができないとしても。CVS は RCS ファイルのコピーを取って編集
+するので、あなたも一時コピーを好きなように変更し、既存の RCS ファイルを
+その新しいファイルで置き換えたっていいのです。(なんでファイルがリードオ
+ンリーなのかというのは聞かないでください、RCS がスタンドアロンで動く時の
+動作のしかたに関係のある歴史的経緯があるのです)
+
+ついでに言うと、リポジトリのトップレベルディレクトリのグループが `cvs'
+であることを考えれば、それらのファイルのグループが `users'
+になっているのは望ましいことではないと思います。リポジトリ
+内でこのコマンドを実行すれば問題を解決できます:
+
+     floss$ cd /usr/local/newrepos
+     floss$ chgrp -R cvs myproj
+
+リポジトリ内に新しく作成されるファイルのグループについては、Unix の通常
+のファイル作成時のルールが適用されてしまうので、たまにリポジトリ内のファ
+イルやディレクトリを chgrp または chmod してやる必要があると思います。
+リポジトリのパーミッションをどう構成するかについて、難しい固定した規則
+はありません、単にどのプロジェクトで誰が作業しているかによります。
+
+
+File: j-cvsbook.info,  Node: What Happens When You Remove A File,  Next: The CVSROOT/ Administrative Directory,  Prev: RCS Format,  Up: Repository Administration
+
+What Happens When You Remove A File
+===================================
+
+あるプロジェクトからファイルを削除する場合、そのファイルは単になくなる
+だけではありません。 プロジェクトの古いスナップショットを要求されても、
+CVS はそのようなファイルにもちゃんとアクセスできなければならないのです。
+なくなるかわりに、そのファイルは文字通り `Attic'(訳注: Attic=屋根
+裏)に移されます:
+
+     floss$ pwd
+     /home/jrandom/src/myproj
+     floss$ ls /usr/local/newrepos/myproj/
+     README.txt,v  a-subdir/     b-subdir/     foo.jpg,v   hello.c,v
+     floss$ rm foo.jpg
+     floss$ cvs rm foo.jpg
+     cvs remove: scheduling 'foo.jpg' for removal
+     cvs remove: use 'cvs commit' to remove this file permanently
+     floss$ cvs ci -m "Removed foo.jpg" foo.jpg
+     Removing foo.jpg;
+     /usr/local/newrepos/myproj/foo.jpg,v  <--  foo.jpg
+     new revision: delete; previous revision: 1.1
+     done
+     floss$ cd /usr/local/newrepos/myproj/
+     floss$ ls
+     Attic/      README.txt,v  a-subdir/     b-subdir/   hello.c,v
+     floss$ cd Attic
+     floss$ ls
+     foo.jpg,v
+     floss$
+
+プロジェクトのリポジトリ内ディレクトリに `Attic/' というサブディレ
+クトリがある場合、それは、少なくとも1ファイルはそのディレクトリから削除
+された、ということを意味します(つまりプロジェクトで Attic という名前の
+ディレクトリは使ってはいけないということです)。CVS は RCS ファイルを
+Attic/ に移すだけではなく、そのファイルの新しいリビジョンを、 `dead'
+という特別なリビジョン状態でコミットします。Attic/foo.jpg,v
+から関係個所を示します:
+
+     1.2
+     date   99.06.21.03.38.07;   author jrandom;   state dead;
+     branches;
+     next	1.1;
+
+あとでファイルを生き返らせた場合CVS は、過去のある時点でこのファイルが
+死に、今は再び生きている、ということを記録します。
+
+これはつまり、削除したファイルを元に戻したい場合に Attic/ ディレクトリ
+から出してプロジェクトに戻しただけではダメだということを意味します。そ
+うではなくて、作業コピー内で次のようにしてください:
+
+     floss$ pwd
+     /home/jrandom/src/myproj
+     floss$ cvs -Q update -p -r 1.1 foo.jpg > foo.jpg
+     floss$ ls
+     CVS/       README.txt   a-subdir/   b-subdir/   foo.jpg     hello.c
+     floss$ cvs add -kb foo.jpg
+     cvs add: re-adding file foo.jpg (in place of dead revision 1.2)
+     cvs add: use 'cvs commit' to add this file permanently
+     floss$ cvs ci -m "revived jpg image" foo.jpg
+     Checking in foo.jpg;
+     /usr/local/newrepos/myproj/foo.jpg,v  <-- foo.jpg
+     new revision: 1.3; previous revision: 1.2
+     done
+     floss$ cd /usr/local/newrepos/myproj/
+     floss$ ls
+     Attic/	      a-subdir/     foo.jpg,v
+     README.txt,v  b-subdir/     hello.c,v
+     floss$ ls Attic/
+     floss$
+
+RCS 形式について知るべきことはもっとたくさんありますが、CVS のリポジト
+リの管理者としてはこれで十分だと思います。RCS ファイルを直接いじること
+は滅多にないことです。普通はせいぜいリポジトリ内のファイルのパーミッショ
+ンをいじったりする程度です、少なくともわたしが経験してきたところでは。
+そうは言っても、CVS の動作が変になりはじめたら(稀ではありますが可能な範
+疇を越えているわけではありませんから)、実際に RCS の中身を見てみて、何
+が起こっているのか調べたくなるだろうと思います。
+
+
+File: j-cvsbook.info,  Node: The CVSROOT/ Administrative Directory,  Next: Commit Emails,  Prev: What Happens When You Remove A File,  Up: Repository Administration
+
+The CVSROOT/ Administrative Directory
+=====================================
+
+newrepos/CVSROOT/ の中のファイルはどのプロジェクトにも属していませんが、
+そのリポジトリ内での CVS
+の動作を制御するために使用されます。それらのファ
+イルを編集するときには、普通のプロジェクトと同様、CVSROOT の作業コピー
+をチェックアウトするのがよいでしょう:
+
+     floss$ cvs co CVSROOT
+     cvs checkout: Updating CVSROOT
+     U CVSROOT/checkoutlist
+     U CVSROOT/commitinfo
+     U CVSROOT/config
+     U CVSROOT/cvswrappers
+     U CVSROOT/editinfo
+     U CVSROOT/loginfo
+     U CVSROOT/modules
+     U CVSROOT/notify
+     U CVSROOT/rcsinfo
+     U CVSROOT/taginfo
+     U CVSROOT/verifymsg
+     floss$
+
+さて、重要な順(だいたい)にファイルを見ていくことにしましょう。各ファイ
+ルの最初には説明のコメントが入っていますので見てみてください(コメントの
+書きかたはどのファイルも同じです。行頭に `#' があればコメントで、 CVS
+はファイルを解釈する時にそのような行を無視します)。チェックアウトし
+た作業コピー中の管理ファイルを変更しても、コミットするまでは CVS の動作
+に何の影響も及ぼさない、ということを忘れないでください。
+
+セキュリティを気にするのであれば、CVSROOT の Unix レベルのパーミッショ
+ンを適切に設定して、リポジトリの他のところのパーミッションと違うように
+しておきたいかもしれません。そうしておけば CVSROOT にコミットできるユー
+ザをきめ細かく制御できます。あとで出てきますが、CVSROOT のファイルを変
+更可能にしておくということは、どんな CVS ユーザにも(リモートのユーザに
+も)リポジトリマシン上で任意のコマンドを実行する権利を与えてしまうことを
+意味するのです。
+
+* Menu:
+
+* The config File::
+* The modules File::
+* The commitinfo And loginfo And rcsinfo Files::
+* The verifymsg And rcsinfo Files::
+* The taginfo File::
+* The cvswrappers File::
+* The editinfo File::
+* The notify File::
+* The checkoutlist File::
+
+
+File: j-cvsbook.info,  Node: The config File,  Next: The modules File,  Up: The CVSROOT/ Administrative Directory
+
+The config File
+---------------
+
+"config" ファイルでは、グローバルな動作を決定するパラメータを設定し
+ます。形式は非常に厳しくて
+
+     PARAMETER=VALUE
+     (etc)
+
+余分なスペースは許されません。例えば、ありそうな config ファイルはこん
+な感じです:
+
+     SystemAuth=yes
+     TopLevelAdmin=no
+     PreservePermissions=no
+
+(ここにないエントリは `no' と設定するのと等価です)
+
+`SystemAuth' パラメータは、指定されたユーザ名が CVSROOT/passwd ファ
+イルに見つからなかった場合に、システムの passwd ファイルを見に行くかど
+うかを決定します。システムのセキュリティを守るため、ディストリビューショ
+ンでは`no' に設定して出荷してあります。
+
+`TopLevelAdmin' は作業コピーをチェックアウトするときに兄弟 CVS/ ディ
+レクトリを作るかどうかを決定します。兄弟 CVS/ ディレクトリは作業ディレ
+クトリ内ではなく、作業ディレクトリの隣に作成されます。同じリポジトリか
+ら多数のいろいろなプロジェクトをチェックアウトしたいと思う場合はこれを
+オンにすると便利です。そうでなければこれはオフのままにしておいたほうが
+いいでしょう、思いがけないところに余分な CVS/ ディレクトリができて混乱
+しますからね。
+
+`PreservePermissions' はファイルのパーミッションを保存し、同様のメ
+タデータをリビジョン履歴に記録します。これはある種の隠れ機能で、たぶん
+詳しく説明する価値もありません。もし興味があるなら Cederqvist の
+`Special Files' ノードを見てください("ノード"というのは、 Texinfo
+で、Info ドキュメントの中の特定の場所を示す言葉です。Info を読
+んでいるときにあるノードに行きたければ、`g' をタイプしたあとにその
+ノードの名前を打てば、そのドキュメント中のどこからでも飛べます)
+
+`LockDir' はほとんど使われない機能です。特殊な状況では、パーミッショ
+ンの問題で、CVS のロックファイルをプロジェクトのサブディレクトリ内に直
+接作るのではなくもっと別のところに作るようにしたいかもしれません。ロッ
+クファイルというのは、同じリポジトリディレクトリ上で同時に複数の操作が
+行われたとき、CVS がやりそこねるのを防いでいるものです。普通気にする必
+要はありませんが、ときどきロックファイルを作れないことが原因でアップデー
+トやチェックアウトができなくて困るユーザがでてくるかもしれません(読むだ
+けの操作においても、CVS はロックファイルを作ります。他の CVS が書き込ん
+でいる最中に読んでしまうような状況を避けるためです)。通常このような問題
+を解決するにはリポジトリのパーミッションを変更するのが普通ですが、それ
+ができないようなら LockDir パラメータが便利でしょう。
+
+現在のところパラメータはこれだけですが、CVS の将来のバージョンでは新し
+いものが追加されるでしょう、Cederqvist やディストリビューション中の
+config ファイル自体をいつもチェックしておいてくださいね。
+
+
+File: j-cvsbook.info,  Node: The modules File,  Next: The commitinfo And loginfo And rcsinfo Files,  Prev: The config File,  Up: The CVSROOT/ Administrative Directory
+
+The modules File
+----------------
+
+modules ファイルではリポジトリ内のプロジェクトの別名や alternate
+grouping を定義します。module の行は基本的に次の形式です:
+
+     MODULE_NAME   DIRECTORY_IN_REPOSITORY
+
+例えば、
+
+     mp    myproj
+     asub  myproj/a-subdir
+
+(右側で指定するパスはリポジトリのトップからの相対パスです。) 開発者がプ
+ロジェクトやプロジェクトの一部分をチェックアウトする時の別名を指定して
+います:
+
+     floss$ cvs co mp
+     cvs checkout: Updating mp
+     U mp/README.txt
+     U mp/foo.jpg
+     U mp/hello.c
+     cvs checkout: Updating mp/a-subdir
+     U mp/a-subdir/whatever.c
+     cvs checkout: Updating mp/a-subdir/subsubdir
+     U mp/a-subdir/subsubdir/fish.c
+     cvs checkout: Updating mp/b-subdir
+     U mp/b-subdir/random.c
+
+あるいは
+
+     floss$ cvs -d /usr/local/newrepos/ co asub
+     cvs checkout: Updating asub
+     U asub/whatever.c
+     cvs checkout: Updating asub/subsubdir
+     U asub/subsubdir/fish.c
+
+両方の場合で、モジュールの名前がどのように作業コピーのディレクトリ名になっ
+ているかを見てください。asub の場合、中間に myproj/ ディレクトリができな
+いですが、代りにトップレベルに asub ができました。リポジトリの
+myproj/a-subdir からできたにもかかわらずです。それらの作業コピー内では、
+アップデート、コミット、その他の CVS コマンドがすべて正常に動きます。普
+通と違うのは名前だけです。
+
+ディレクトリ名のあとにファイル名をつけることによって、リポジトリディレ
+クトリ内の指定されたファイルで構成されたモジュールを定義することができ
+ます。例えば
+
+     readme  myproj  README.txt
+
+と
+
+     no-readme  myproj  hello.c  foo.jpg
+
+とすると、それぞれ、次のようなチェックアウトができるようになります:
+
+     floss$ cvs -q co readme
+     U readme/README.txt
+     floss$ cvs -q co no-readme
+     U no-readme/hello.c
+     U no-readme/foo.jpg
+     floss$
+
+-a (alias という意味) を使えば複数のリポジトリディレクトリを含むモジュー
+ルを定義することができますが、チェックアウトするともとの名前のディレクト
+リができるので注意してください。たとえば、この行を書くと
+
+     twoproj  -a  myproj  yourproj
+
+下のようになります(myproj/ と yourproj/ がリポジトリに存在するとします):
+
+     floss$ cvs co twoproj
+     U myproj/README.txt
+     U myproj/foo.jpg
+     U myproj/hello.c
+     U myproj/a-subdir/whatever.c
+     U myproj/a-subdir/subsubdir/fish.c
+     U myproj/b-subdir/random.c
+     U yourproj/README
+     U yourproj/foo.c
+     U yourproj/some-subdir/file1.c
+     U yourproj/some-subdir/file2.c
+     U yourproj/some-subdir/another-subdir/blah.c
+
+`twoproj' はプロジェクトを両方持ってくるのに便利な名前ではあります
+が、作業コピーの名前には使われません。(There is no requirement that
+alias modules refer to multiple directories, by the way; we could have
+omitted twoproj, in which case myproj would still have been checked out
+under the name `myproj'.)
+
+前にアンパサンドをつけることによって、別のモジュールを参照することもでき
+ます:
+
+     mp    myproj
+     asub  myproj/a-subdir
+     twoproj -a myproj yourproj
+     tp  &twoproj
+
+`tp' をチェックアウトすると、`twoproj' のチェックアウトと完全
+に同一の結果が得られます。
+
+モジュールを処理する仕掛けはまだいくつかありますが、その大半は今述べたも
+のより使う機会が少ないです。それらについて知りたければ、Cederqvist の
+modules ノードを参照してください。
+
+
+File: j-cvsbook.info,  Node: The commitinfo And loginfo And rcsinfo Files,  Next: The verifymsg And rcsinfo Files,  Prev: The modules File,  Up: The CVSROOT/ Administrative Directory
+
+The commitinfo And loginfo And rcsinfo Files
+--------------------------------------------
+
+他の管理ファイルは、大半がコミット処理のさまざまな部分に programmatic な
+"フック"をしかけるためのものです(たとえばコミットを許可する前にログ
+メッセージやファイルの状態を検証するようにもできますし、リポジトリの特定
+ディレクトリへのコミットが発生したら開発者グループに知らせるようにもでき
+ます)。
+
+それらのファイルでは共通の文法を用います。各行はこのような形式です:
+
+     REGULAR_EXPRESSION    PROGRAM_TO_RUN
+
+この正規表現は、コミットが起こるディレクトリに対してテストされます(リポ
+ジトリのトップディレクトリからの相対パス名)。マッチすれば指定したプログ
+ラムが実行されます。コミット処理中の各ファイル名がプログラムに渡されます;
+プログラムはそれらのファイル名を使って何でも好きなことができます、ファイ
+ルをオープンして内容を調べたりすることも含めてです。プログラムの終了コー
+ドがノンゼロの場合、コミットは実行されません。
+
+("Regular expressions" とは文字列のクラスを簡潔に記述するシステムで
+す。正規表現をよく知らないかたは、概略を手短に示しますので、これでとりあ
+えずなんとかなると思います: `foo' は文字列 `foo' を含むファイ
+ル名にマッチします。`foo.*bar' は、`foo' を含み、任意の数の文
+字が続き、そのあとに文字列 `bar' が続くファイル名にマッチします。通
+常の文字列はそれ自体にマッチしますが、`.' と `*' は特殊だから です。`.'
+は任意の文字にマッチし、`*' は前の文字が任意の数(0含
+む)だけ続いたものにマッチします。`^' と `$' はそれぞれ、文字列
+の最初と最後にマッチします: ですから、`^foo.*bar.*baz$' は
+`foo'で始まり、中ほどのどこかに `bar' を含んでおり、そして `baz'
+で終わる文字列とマッチします。ここではこのくらいにしておきま
+しょう、この概略説明は正規表現の文法全てのうち、かなり省略されたサブセッ
+トです)
+
+"commitinfo" ファイルでは全てのコミット時に実行したい汎用的フックを
+書きます。commitinfo の行の例をいくつか示します:
+
+     ^a-subdir*     /usr/local/bin/check-asubdir.sh
+     ou             /usr/local/bin/validate-project.pl
+
+myproj/a-subdir へコミットすると最初の行にマッチするので、
+check-asubdir.sh スクリプトが実行されます。文字列 `ou' を含む名前の
+プロジェクト(実際のリポジトリディレクトリ名であってモジュール名である必
+要はありませ)へコミットすると、 validate-project.pl スクリプトが実行され
+ます。ただし、既に a-subdir の行にマッチしたコミットは除きます。
+
+正規表現の個所に `DEFAULT' あるいは `ALL' という語を使うことが
+できます。DEFAULT 行(もし2つ以上ある場合は最初の DEFAULT 行)はどの正規表
+現にもマッチしなかった場合に実行され、各 ALL 行はマッチする他の行に加え
+て実行されます。
+
+プログラムに渡されるファイル名は RCS ファイルを指すものではありません、
+コミットされつつある作業コピーと同じ内容の通常のファイルを指します。CVS
+はそのファイルをリポジトリ内に一時的に置き、プログラムはリポジトリの中で
+そのファイルを使うことができます、あまり普通ではありませんね。
+
+"loginfo" ファイルは commitinfo と同じですが、ファイルの内容ではなく
+ログメッセージに作用します。loginfo ファイルの左側は正規表現で、DEFAULT
+や ALL 行も書けます。右側のプログラムは標準入力からログメッセージを受け
+取ります。その入力を使って好きなことができます。
+
+右側にあるプログラムは任意の数のコマンドライン引数を取ることもできま
+す。引数のうちのひとつは特殊な `%' コードを書いてもよく、それは CVS
+によって実行時に次のように展開されます:
+
+     %s    ------>      コミットされつつあるファイルの名前
+     %V    ------>      コミット前のリビジョン番号
+     %v    ------>      コミット後のリビジョン番号
+
+展開された文字列の最初はリポジトリサブディレクトリ(リポジトリのトッ
+プディレクトリからの相対パス)で、そのあとに各ファイルの情報が続きま
+す。たとえば、コミットされたファイルが foo, bar, baz で、それらがす
+べて `myproj/a-subdir' の中にあった場合、`%s' は次のように
+展開されます。
+
+     myproj/a-subdir  foo  bar  baz
+
+そして `%V' は古いリビジョン番号に展開されます
+
+     myproj/a-subdir  1.7  1.134  1.12
+
+and `%v' their new revision numbers:
+
+     myproj/a-subdir  1.8  1.135  1.13
+
+`%' 記号に続けて中括弧でくくることによって、`%' 表現を結合
+することができます。コミット時に、各ファイルごとの対応する情報をカン
+マで区切ったサブリストに展開されます。例えば、 `%{sv}' は次の
+ように展開されます:
+
+     myproj/a-subdir  foo,1.8  bar,1.135  baz,1.13
+
+`%{sVv}' だとこのように展開されます:
+
+     myproj/a-subdir  foo,1.7,1.8  bar,1.134,1.135  baz,1.12,1.13
+
+(カンマとピリオドを見間違えないよう、注意して見て下さい)
+
+loginfo ファイルのサンプルを示します:
+
+     ^myproj$   /usr/local/newrepos/CVSROOT/log.pl -m myproj-devel@foobar.com %s
+     ou         /usr/local/bin/ou-notify.pl  %{sv}
+     DEFAULT    /usr/local/bin/default-notify.pl  %{sVv}
+
+最初の行では、リポジトリの myproj サブディレクトリへのコミットが発生
+すると `log.pl' を起動するよう設定しています。`log.pl' の
+引数として、電子メールアドレス(`log.pl' はそのアドレスへログメッ
+セージを送信すします)、リポジトリ、コミットされたファイルを渡します。
+
+2行目では、リポジトリの文字列 `ou' を含むサブディレクトリへのコ
+ミットが発生すると `ou-notify.pl' (架空のものです)を起動するよ
+う設定しています。リポジトリのあとに、ファイル名と新しいリビジョン番
+号をリストで渡します。
+
+3行目では、上記2行にマッチしないコミットが発生した時に
+`default-notify.pl' を起動するよう設定しています。渡せる情報は
+渡しています(リポジトリパス、ファイル名、古いリビジョン番号、新しい
+リビジョン番号)。
+
+
+File: j-cvsbook.info,  Node: The verifymsg And rcsinfo Files,  Next: The taginfo File,  Prev: The commitinfo And loginfo And rcsinfo Files,  Up: The CVSROOT/ Administrative Directory
+
+The verifymsg And rcsinfo Files
+-------------------------------
+
+ログメッセージがある一定の標準に従っているかどうか自動的に検証して、
+従っていなければコミットを中止するようなプログラムが欲しいこともある
+と思います。これは、`verifymsg' を使えば実現できます。 補助に `rcsinfo'
+も使うかもしれません。
+
+"verifymsg" ファイルは例によって正規表現とプログラムを結び付ける
+ものです。プログラムは標準入力からログメッセージを受け取って、そのロ
+グメッセージがある基準に沿っているかどうかチェックして、ゼロまたはノン
+ゼロの終了コードで終了します。ノンゼロで終了した場合はそのコミットは
+失敗します。
+
+一方、rcsinfo の左側はいつもの正規表現ですが、右側はプログラムではな
+くてテンプレートファイルを指定します。テンプレートファイルというのは
+このようなものです
+
+     Condition:
+     Fix:
+     Comments:
+
+こんな感じの、有効なログメッセージの形式を満たすために記入する必要の
+あるフィールドの集合です。開発者みんなが -m オプションを使ってコミッ
+トする場合にはあまり有用ではありませんが、多くはそうではないでしょう。
+-m で指定するかわりに
+
+     floss$ cvs commit
+
+を実行して、CVS が自動的にテキストエディタ(EDITOR 環境変数で指定して
+あるやつです)を起動するのを待って、そこにログメッセージを記入し、セー
+ブして終了します。そのあと、CVS はコミット処理を続けます。
+
+このシナリオに沿う場合、rcsinfo テンプレートはユーザがタイプする前に
+エディタ中に挿入されますので、記入すべきフィールドが表示されます。
+ユーザがコミットした時点で `verifymsg' 中で指定された適切なプロ
+グラムが起動されます。ログメッセージがフォーマットに沿っているかチェッ
+クし、結果が終了コードに反映されます(ゼロの場合成功)。
+
+検証プログラムに便利なように、`verifymsg' のプログラムの最後の
+引数として、テンプレートへのパスが rcsinfo ファイルから追加されます。
+なので、お望みならテンプレートをもとに検証処理ができます。
+
+リモートマシンへ作業コピーをチェックアウトした場合には、対応する
+rcsinfo テンプレートファイルもクライアントに送信されます(作業コピー の
+CVS/ サブディレクトリに保存されます)。しかしこれは、チェックアウ
+トより後にサーバ上の rcsinfo ファイルが変更された場合、クライアント
+側からはその変更が再度チェックアウトしない限りわからないということに
+なるので注意して下さい(update しただけではダメなんです)。
+
+また、verifymsg ファイルでは ALL キーワードがサポートされていないこ
+とに注意して下さい(DEFAULT はサポートされているのですが)。デフォルト
+の検証スクリプトを、サブディレクトリ向けのスクリプトでオーバライドし
+やすくなっているのです。
+
+
+File: j-cvsbook.info,  Node: The taginfo File,  Next: The cvswrappers File,  Prev: The verifymsg And rcsinfo Files,  Up: The CVSROOT/ Administrative Directory
+
+The taginfo File
+----------------
+
+loginfo がログメッセージに対して行うようなことを、taginfo はタグに対
+して行います。taginfo の左側は例によって正規表現で、右側はプログラム
+です。cvs tag の起動時、各プログラムには自動的に引数が渡されます。順
+序は次の通り:
+
+     arg 1:          タグ名
+     arg 2:          オペレーション種別 ("add" => tag, "mov" => tag -F, "del" => tag -d)
+     arg 3:          リポジトリ
+     arg 4, 5, etc:  ファイルリビジョン [ファイルリビジョン ...]
+
+プログラムがノンゼロを返した場合、tag コマンドは中断されます。
+
+tag コマンドの -F オプションについてまだ説明していませんでしたね、で
+も上に書いてあることでわかると思います: タグをあるリビジョンから別の
+リビジョンへ移動します。例えば、`Known_Working' というタグがあ
+るファイルのリビジョン1.7につけられていて、それをリビジョン1.11につ
+けなおしたい場合には、こうします
+
+     cvs tag -r 1.11 -F Known_Working foo.c
+
+こうすると1.7(またはそのファイルでそのタグがつけられていたところ)か
+らはタグが削除され、1.11につけられます。
+
+
+File: j-cvsbook.info,  Node: The cvswrappers File,  Next: The editinfo File,  Prev: The taginfo File,  Up: The CVSROOT/ Administrative Directory
+
+The cvswrappers File
+--------------------
+
+cvswrappers ファイル(くどい名前ですよね)は、どのファイルをバイナリと
+して扱うかをファイル名によって指定するものです。CVS は、たとえば .jpg
+ファイルをすべて JPG 画像データと見なしたりはしないので、JPG ファ
+イルを追加するときに自動的に -kb オプションをつけたりはしてくれません。
+ですが、プロジェクトによっては JPG ファイルはすべてバイナリだと指定
+できればとても便利です。次のような行を cvswrappers ファイルに書けば
+そのようなことができます:
+
+     *.jpg -k 'b'
+
+`b' が離れており、クオートされています。RCS の展開モードキーワー ドは
+`b' だけではないからです。`o' を指定すると `$'
+は展開するが改行の変換は行わないという意味になります。しかし、 `b'
+は最も普通のパラメータではあります。
+
+wrappers ファイルから指定できるモードはあといくつかありますが、滅多
+にない状況のためのものなので、ここに書くほどの価値はありません(意訳:
+著者はそれらを使ったことがありません)。好奇心旺盛なアナタは Cederqvist
+の `Wrappers' ノードを参照してくださいね。
+
+
+File: j-cvsbook.info,  Node: The editinfo File,  Next: The notify File,  Prev: The cvswrappers File,  Up: The CVSROOT/ Administrative Directory
+
+The editinfo File
+-----------------
+
+このファイルはもう obsolete です、ディストリビューションにただ含まれ
+ているだけです。無視して下さい。
+
+
+File: j-cvsbook.info,  Node: The notify File,  Next: The checkoutlist File,  Prev: The editinfo File,  Up: The CVSROOT/ Administrative Directory
+
+The notify File
+---------------
+
+このファイルは CVS の `watch' 機能とともに用いられるものです。 `watch'
+機能については *Note Advanced CVS:: を参照のこと。watch
+(便利ですが必須の機能ではありません)というのが何かわからなければ何を
+書いても意味ありませんので、このファイルと watch について詳しくは *Note
+Advanced CVS:: をお読み下さい。
+
+
+File: j-cvsbook.info,  Node: The checkoutlist File,  Prev: The notify File,  Up: The CVSROOT/ Administrative Directory
+
+The checkoutlist File
+---------------------
+
+CVSROOT/ の中を見ると、ファイルの作業コピーが RCS リビジョンファイル
+と並んでいるのが見えると思います:
+
+     floss$ ls /usr/local/newrepos/CVSROOT
+     checkoutlist     config,v       history     notify     taginfo
+     checkoutlist,v   cvswrappers    loginfo     notify,v   taginfo,v
+     commitinfo       cvswrappers,v  loginfo,v   passwd     verifymsg
+     commitinfo,v     editinfo       modules     rcsinfo    verifymsg,v
+     config           editinfo,v     modules,v   rcsinfo,v
+     
+     floss$
+
+CVS がその動作を決める際にはその作業バージョンだけを見て、RCS ファイ
+ルは見ません。従って、CVSROOT/ の作業コピーをコミットすると(別のマシン
+にチェックアウトされていようとも)、CVS は自動的にリポジトリ内のファ
+イルを更新します。コミットの最後に次のようなメッセージが表示されるの
+で、何が起きたかわかると思います:
+
+     floss$ cvs ci -m "added mp and asub modules" modules
+     Checking in modules;
+     /usr/local/newrepos/CVSROOT/modules,v  <--  modules
+     new revision: 1.2; previous revision: 1.1
+     done
+     cvs commit: Rebuilding administrative file database
+
+CVS は標準の管理ファイルに何があったか知っていて必要に応じて CVSROOT/
+を再構築します。CVSROOT/ 中にカスタムファイルを置きたければ
+(プログラムや rcsinfo テンプレートファイル等)、他のファイルと同様に
+扱うよう、CVS に明示的に伝えなければなりません。
+
+これを伝えるために、checkoutlist ファイルがあります。今まで見てきた
+ファイルとは違うフォーマットになります。
+
+     FILENAME     ERROR_MESSAGE_IF_FILE_CANNOT_BE_CHECKED_OUT
+
+例えば、
+
+     log.pl           unable to check out / update log.pl in CVSROOT
+     
+     bugfix.tmpl      unable to check out / update bugfix.tmpl in CVSROOT
+
+CVSROOT 中のいくつかのファイルは、伝統的にリビジョン管理下には置かな
+いことになっています。1つは "history" で、これはリポジトリ中の全
+ての操作の a running record を保持しており、`cvs history'
+コマンドが使用します(このコマンドは指定されたファイルまたはプロジェ
+クトディレクトリについて、チェックアウト、アップデート、タグ付けの状
+況の一覧を表示します)。 偶然 `history' ファイルを削除してしまっ
+たら、CVS はログを取るのをやめます。
+
+注意: history ファイルがパーミッション問題の原因になることがあります
+が、解決するにはファイルをワールドライタブルにするか、ただ削除するか
+してください。
+
+`リビジョン管理されていない'ファイルには他に passwd ファイルが
+あります。それがネットワーク越しにチェックアウトされたとしたら、パス
+ワードの信頼性を損うからです(たとえ暗号化されていようとも)。passwd を
+checkoutlist に追加するかどうかは、守るべきキュリティの状況を鑑み
+て決定してください。デフォルトでは checkoutlist に入っていません。
+
+CVSROOT/ ディレクトリについて最後に2つほど: すごいミスをして、壊れた
+管理ファイルをコミットしたあげくどんなコミットも全く実行できなくなっ
+たとしましょう。ありうる話です。もしそうなったら、管理ファイルを直し
+てコミットしなおそうとしても、当然できないわけです。これを解決するに
+は、管理ファイルのリポジトリ内の作業コピーを手で編集して直します。直
+せるまで、リポジトリ全体がアクセス不可の状態のままになります。
+
+また、セキュリティを確保するため、CVSROOT/ ディレクトリは信頼できる
+ユーザのみが書き込めることを確認してください(`信頼できる'という
+のは、その人にパスワードの信頼性を損わないだけの能力があってその努力
+ができることを信頼できる、という意味です)。`*info' ファイルは任
+意のプログラムを実行できる権限を与えてしまうので、CVSROOT/ ディレク
+トリ中のファイルをコミットまたは編集できる人はすなわち、基本的にはシ
+ステムのどんなコマンドでも実行できるということです。このことは心に留
+めておくべきです。
+
+
+File: j-cvsbook.info,  Node: Commit Emails,  Next: Finding Out More,  Prev: The CVSROOT/ Administrative Directory,  Up: Repository Administration
+
+Commit Emails
+=============
+
+loginfo ファイルはコミットメール、すなわちコミットが発生した時にプロ
+ジェクトで作業している全員に送信される自動電子メールを設定できます。
+(commitinfo ではなく loginfo で設定するというのは直観に反するように
+見えるかもしれませんが、ポイントはメールにログメッセージを含めたいと
+いうところです) 配送プログラム(CVS のソースディストリビューション
+に入っている `contrib/log.pl')はシステム上のどこにインストール
+してもかまいません。わたしはリポジトリの CVSROOT/ サブディレクトリ内
+に置くのを週間にしていますが、それはただ好みの問題です。
+
+システム上でうまく動くようにするため、ほんの少しだけ `log.pl'
+を編集する必要があるかもしれません、おそらく Perl インタプリタを指す
+最初の行と、あとは多分この行
+
+     $mailcmd = "| Mail -s 'CVS update: $modulepath'";
+
+をお好みのメーラ(`Mail'という名前かもしれないし違うかもしれない)
+を起動するように直すくらいでしょう。好きなように設定し終わったら、
+loginfo ファイルに下記と同じ行を書き加えてください:
+
+     listerizer CVSROOT/log.pl %s -f CVSROOT/commitlog -m listerizer@red-bean.com
+     RoadMail   CVSROOT/log.pl %s -f CVSROOT/commitlog -m roadmail@red-bean.com
+     bk/*score  CVSROOT/log.pl %s -f CVSROOT/commitlog -m \
+                                             bkscore-devel@red-bean.com
+
+`%s' はコミットされたファイルの名前に展開されます。 `log.pl' の -f
+オプションはファイル名を取り、そのファイルにログ
+メッセージが追加されます(ですから CVSROOT/commitlog は永久に成長する
+ログメッセージのファイルになります)。-m フラグはメールアドレスを取り、
+`log.pl' はそのアドレスへコミットのメッセージを送信します。そこ
+に書くアドレスは通常メーリングリストですが、ひとつの log.pl コマンド
+ラインに -m オプションを必要なだけ並べることもできます。
+
+
+File: j-cvsbook.info,  Node: Finding Out More,  Prev: Commit Emails,  Up: Repository Administration
+
+Finding Out More
+================
+
+この章で CVS のインストールと管理を完全に紹介しようと思ったのですが、
+あまりにも使うことがなくて言及する価値がない事柄や、既に Cederqvist
+マニュアルで十分説明されているようなことを積み残してしまいました。後
+者に属することとしては、他のリモートアクセス方法、RSH/SSH, kserver
+(ケルベロス4), GSSAPI(ケルベロス5等を含む) の設定が挙げられます。問
+題のユーザがリポジトリマシンへ RSH か SSH でログインできることを確認
+する以外に何も特別なことをする必要がない、ということだけは言っておく
+べきでしょう。それができて、クライアントにもサーバにも CVS がインス
+トールしてあって、サーバマシンで直接リポジトリを使える正しい権限があ
+れば、:ext: メソッドを経由してリモートからリポジトリにアクセスできま
+す。
+
+CVS の機能のうち特殊ないくつかは、のちほどの章で説明してありますので、
+その機能が明らかに便利だとわかる文脈のなかで紹介します。一般的な CVS
+のトラブルシューティングのコツについては *Note Tips And
+Troubleshooting:: に書いてあります。 Cederqvist マニュアル全部を読む
+必要はありませんが、親しんでおくべきです。貴重なリファレンスツールで
+すから。もし何か理由があってあなたのマシンで Info が動かなくて、マニュ
+アルをプリントアウトするのもダメなら、オンラインで
+`http://durak.org/cvswebsites/doc/' または
+`http://www.loria.fr/~molli/cvs/doc/cvs_toc.html' で閲覧できま す。
+
+
+File: j-cvsbook.info,  Node: Advanced CVS,  Next: Tips And Troubleshooting,  Prev: Repository Administration,  Up: Top
+
+Advanced CVS
+************
+
+さて、これまでに CVS の使いかたの基礎の考えかたとリポジトリ管理につ
+いて見てきました。今度は CVS を開発プロセス全体に導入するやりかたを
+見ていきたいと思います。基本的な CVS の作業サイクル(checkout, update,
+commit, update, commit, …)は *Note An Overview of CVS:: で示
+しました。この章ではそのサイクルを改善し、開発者間のコミュニケーショ
+ンの補助・プロジェクトの活動と履歴の概要の提供・開発の別ブランチの分
+離と統一・よくある作業の自動化に対し、CVS をどう役立てていくかについ
+て議論します。テクニックの説明のなかで新しい CVS コマンドを紹介して
+いることもありますが、多くは既に知っているコマンドのより良い使い方を
+説明しているだけです。
+
+* Menu:
+
+* Watches (CVS As Telephone)::
+* Log Messages And Commit Emails::
+* Changing A Log Message After Commit::
+* Getting Rid Of A Working Copy::
+* History -- A Summary Of Repository Activity::
+* Annotations -- A Detailed View Of Project Activity::
+* Annotations And Branches::
+* Using Keyword Expansion::
+* Going Out On A Limb (How To Work With Branches And Survive)::
+* Tracking Third-Party Sources (Vendor Branches)::
+* Exporting For Public Distribution::
+* The Humble Guru::
+
+
+File: j-cvsbook.info,  Node: Watches (CVS As Telephone),  Next: Log Messages And Commit Emails,  Up: Advanced CVS
+
+Watches (CVS As Telephone)
+==========================
+
+プロジェクトを CVS で使用する場合の主な利点は、CVS がコミュニケーショ
+ン機器として、また記録係としての機能を果たすことです。この節ではプロ
+ジェクトの参加者に、プロジェクト内で何が起こっているかを通知するのに
+CVS をどう使えばよいかということを集中的に取り上げます。
+**************** As is true with other aspects of CVS, these features
+reward cooperation. **************** 参加者は通知してもらい
+たいに違いありません; コミュニケーション機能を使わないなら、CVS はそ
+れについてなにもしないこともできます。
+
+* Menu:
+
+* How Watches Work::
+* Enabling Watches In The Repository::
+* Using Watches In Development::
+* Ending An Editing Session::
+* Controlling What Actions Are Watched::
+* Finding Out Who Is Watching What::
+* Reminding People To Use Watches::
+* What Watches Look Like In The Repository::
+
+
+File: j-cvsbook.info,  Node: How Watches Work,  Next: Enabling Watches In The Repository,  Up: Watches (CVS As Telephone)
+
+How Watches Work
+----------------
+
+CVS はデフォルトでは各作業コピーを独立したサンドボックスとして扱いま
+す。あなたが変更をコミットするまでは、あなたが作業コピーで何をしてい
+るのか、誰にもわかりません。そしてあなたも、他の人が自分の作業コピー
+で何をしているのかなんてわかりません、通常のコミュニケーション方法を
+とる以外ないのです。たとえば廊下で「ねえ、いま parse.c いじろうと思
+うんだけどさ、コンフリクトすんのヤだから編集するときは教えてね!」な
+どと叫んだりするしか。
+
+このような非公式なやりかたは、誰が何を担当しているか全般について皆が
+知っているようなプロジェクトならうまくいきます。が、このやりかたでは
+大人数の開発者がコードベースの全てをいじっていて、かつコンフリクトを
+避けたいような場合にはうまくいかないでしょう。このような場合、メンバー
+が地理的に分散しているので、お互いの分担責任領域に頻繁に踏み込む必要
+があっても廊下で叫び合うわけにはいきません。
+
+CVS には`監視(watch)'と呼ばれる機能があって、ある時刻に誰がどのファ
+イルをいじっているかをお互いに通知し合うことができます。ある開発者が、
+あるファイルを監視設定すると、他のだれかがそのファイルをいじり
+始めるとその開発者に CVS から通知が来ます。その通知は普通メールで送
+信されますが、他の方法に設定することもできます。
+
+監視を使うには、リポジトリの管理エリア内のファイルを1つか2つ変更
+しなければなりません。また、開発者はチェックアウト/アップデート/コミッ
+トのサイクルに余分な手順を加えなければなりません。リポジトリ側の変更
+はごく簡単なものです: `CVSROOT/notify' ファイルを編集して、CVS
+がどのように通知すればいいかを設定します。`CVSROOT/users' ファ
+イルに電子メールアドレスの行を追加します。
+
+作業コピー側では、開発者は CVS に対し、どのファイルを監視したい かを
+CVS に指示し、他の誰かがそれらのファイルを編集し始めたら CVSが
+通知を送れるようにします。また、ファイルを編集し始めた時やし終わった
+時には CVS にそれを知らせなければなりません。CVS はそれを受けて、そ
+のファイルを監視している他の人に通知します。これらの手順
+を実現するコマンドを次に示します:
+
+   * cvs watch
+
+   * cvs edit
+
+   * cvs unedit
+
+`watch'コマンドは通常の CVS コマンドのパターンとは違い、もう一
+段階サブコマンドを必要とします。`cvs watch add...',
+`cvs watch remove...',などなど。
+
+以下の例で、リポジトリ側で監視を有効にするやりかたと、開発者側で
+の監視の使いかたを見ていきます。2人のユーザ、jrandom と qsmith
+を例にとります。同じプロジェクトの作業コピーをそれぞれが持っていて、
+それらは別のマシン上にあるかもしれません。全ての例において、 $CVSROOT
+環境変数が設定してあると仮定しますので、cvs コマンドに -d <REPOS>
+をつける必要はありません。
+

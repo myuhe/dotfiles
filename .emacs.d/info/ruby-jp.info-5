@@ -1,0 +1,1864 @@
+This is ruby-jp.info, produced by makeinfo version 3.12o (+ Japanese
+Patch 0.61) from Ruby.texi.
+
+INFO-DIR-SECTION Languages
+START-INFO-DIR-ENTRY
+* ruby-jp: (ruby-jp).           Ruby Language Reference Manual (Japanese)
+END-INFO-DIR-ENTRY
+
+     このinfoファイルは、Rubyリファレンスマニュアル(HTML版)
+
+     <http://www.netlab.co.jp/ruby/jp/man-1.3/>
+     for `Ruby' Version 1.4.0
+     written by まつもと ゆきひろ <matz@netlab.co.jp>
+     Last modified: Mon Aug 16 15:46:22 1999
+
+     を元に機械的にTexinfo形式へ変換して作成しました。したがって、本文
+     に対する著作権はまつもと ゆきひろ氏にあるものとします。
+
+
+File: ruby-jp.info,  Node: DBM,  Next: Kconv,  Up: Bundled Libraries
+
+DBM
+===
+
+  NDBMファイルをアクセスするクラス．キー，データともに文字列でなければ
+ならないという制限と，データがファイルに保存されるという点を除いては
+Dictクラスと全く同様に扱うことがでます．
+
+スーパークラス:
+...............
+
+   - `Object' (*note Object::)
+
+インクルードしているモジュール:
+...............................
+
+   - `Enumerable' (*note Enumerable::)
+
+クラスメソッド:
+...............
+
+ - Class Method on `DBM': open (DBNAME[, MODE])
+     DBNAMEで指定したデータベースをモードをMODEに設定してオープンしま
+     す．MODEの省略値は0666です．MODEとして`nil'を指定するとデータベー
+     スが存在しない時には新たなデータベースを作らず`nil'を返します．
+
+
+メソッド:
+.........
+
+ - Method on `DBM': self [KEY]
+     KEYをキーとする値を返します．
+
+
+ - Method on `DBM': self [KEY] = VALUE
+     KEYをキーとして，VALUEを格納します．VALUEとして`nil'を指定すると，
+     keyに対する項目を削除します．
+
+
+ - Method on `DBM': clear
+     DBMファイルを空にします．
+
+
+ - Method on `DBM': close
+     DBMファイルをクローズします．以後の操作は例外を発生させます．
+
+
+ - Method on `DBM': delete (KEY)
+     KEYをキーとする項目を削除します．
+
+
+ - Method on `DBM': delete_if { |KEY, VALUE| ... }
+     ブロックを評価した値が真であれば該当する項目を削除します．
+
+
+ - Method on `DBM': each {|KEY, VALUE| ... }
+ - Method on `DBM': each_pair {|KEY, VALUE| ... }
+     各要素に対するイテレータ．
+
+
+ - Method on `DBM': each_key {|KEY| ... }
+     全てのkeyに対して繰り返すイテレータ．
+
+
+ - Method on `DBM': each_value {|VALUE| ... }
+     全てのvalueに対して繰り返すイテレータ．
+
+
+ - Method on `DBM': empty? ()
+     データベースが空の時，真を返します．
+
+
+ - Method on `DBM': has_key? (KEY)
+ - Method on `DBM': key? (KEY)
+ - Method on `DBM': include? (KEY)
+     keyがデータベース中に存在する時，真を返します．
+
+
+ - Method on `DBM': has_value? (KEY)
+ - Method on `DBM': value? (VALUE)
+     valueを値とする組がデータベース中に存在する時，真を返します．
+
+
+ - Method on `DBM': indexes (KEY_1,...)
+ - Method on `DBM': indices (KEY_1,...)
+     各引数の値をキーとする要素を含む配列を返します．
+
+
+ - Method on `DBM': keys
+     データベース中に存在するキー全てを含む配列を返します．
+
+
+ - Method on `DBM': length
+ - Method on `DBM': size
+     データベース中の要素の数を返します．(注意:現在の実現では要素数を
+     数えるためにデータベースを全部検索します)
+
+
+ - Method on `DBM': shift
+     データベース中の要素を一つ取り出し，データベースから削除します．
+
+
+ - Method on `DBM': values
+     データベース中に存在する値全てを含む配列を返します．
+
+
+File: ruby-jp.info,  Node: Kconv,  Next: getopts,  Prev: DBM,  Up: Bundled Libraries
+
+Kconv module
+============
+
+  Kconv - Kanji code conversion utility module
+
+SYNOPSIS
+........
+
+     newstring = Kconv::kconv(string, Kconv::JIS, Kconv::AUTO);
+     newstring = Kconv::tojis(string);
+     newstring = Kconv::toeuc(string);
+     newstring = Kconv::tosjis(string);
+     guessed_code = Kconv::guess(string);
+
+CONSTANTS
+.........
+
+   - AUTO
+
+     Auto detection(only for INPUT mode)
+
+   - JIS
+
+     ISO-2022-JP
+
+   - EUC
+
+     EUC-Japan
+
+   - SJIS
+
+     Shifted JIS code (so called MS Kanji code)
+
+   - BINARY
+
+     Binary code (not in JIS/SJIS/EUC).
+
+   - UNKNOWN
+
+     Couldn't determin character code.  Same as AUTO.
+
+
+File: ruby-jp.info,  Node: getopts,  Next: parsearg,  Prev: Kconv,  Up: Bundled Libraries
+
+getopts
+=======
+
+  オプションを解析し，$OPT_xxx に値を設定します．
+
+書式:
+.....
+
+  `getopts(SINGLE_OPTS，*OPTS)'
+
+   - 第一引数:
+
+     `-f'や`-x(=-fx)'の様な一文字のオプションの指定をします．オプショ
+     ンが`-f'と`-x'の2つの場合は`"fx"'の様に指定します．ここでオプショ
+     ンがないときは必ず`nil'を指定して下さい．
+
+   - 第二引数:
+
+     ロングネームのオプションや，引数を伴うオプションの指定をします．
+     `--version'や`--geometry 300x400'，`-d host:0.0'等がこれに該当し
+     ます．引数を伴う指定は`":"'を必ず付ける様にします．この例の場合，
+     `"version"'，`"geometry:"'，`"d:"'の様になります．また，オプショ
+     ンを指定しなかった場合のデフォルトの値を持たせたい場合は，`":"'の
+     直後にそのデフォルト値を指定します．例えば，`"geometry:80x25"'の
+     様になります．
+
+オプション解析:
+...............
+
+  解析結果は全て "$OPT_指定した引数名" という形で処理されます．
+
+   - シングルオプションや引数を伴わないオプションが使用された場合は，
+     `TRUE'がセットされます．
+
+     `-f'→`$OPT_f = TRUE' `--version'→`$OPT_version = TRUE'
+
+   - その他はそのオプションの引数がセットされます．
+
+     `-d pengo:0.0'→`$OPT_d = pengo:0.0' `--geometry 80x25'→
+     `$OPT_geometry = 80x25'．
+
+   - `-'もしくは`--'を指定した場合，それ以降の解析を行ないません．
+
+戻り値:
+.......
+
+  実際にセットされたオプションの数を返します．また，間違ったオプション
+を指定した場合は，`nil'を返します．
+
+
+
+                                    written by <jammy@shljapan.co.jp>
+
+
+File: ruby-jp.info,  Node: parsearg,  Next: ftplib,  Prev: getopts,  Up: Bundled Libraries
+
+parseArgs
+=========
+
+  オプションを解析し，`$OPT_xxx'に値を設定します．更に指定したオプショ
+ンが条件にあっていない場合，USAGE を表示します．
+
+使用しているライブラリ:
+.......................
+
+  `getopts.rb' (*note getopts::)
+
+書式:
+.....
+
+  `parseArgs(MIN_ARGC，CHECH_OPTS，SINGLE_OPTS，*OPTS)'
+
+   - 第一引数:
+
+     `-'や`--'を伴って指定するオプション以外のオプションの最低必要数を
+     指定します．存在しない場合は0を指定します．
+
+   - 第二引数:
+
+     どのオプションが必要条件かを指定します．第三，第四引数で指定する
+     オプションのうち必要なものを'('，')'，'|'，'&' を使って並べ，全体
+     をダブルクォテーションで括ります．rubyスクリプト実行時に全てのオ
+     プションが省略可能ならば`nil'を指定して下さい．以下の例では，
+     `"-d"'と最低でも`"-x"'，`"-y"'，`"--geometry"'のどれか一つが実行
+     時に必要なオプションとなります．`parseArgs(0，"d&(x|y|geometry)"，
+     "fd"，"x:"，"y:"，"geometry:"，"version")'
+
+   - 第三，第四引数:
+
+     `getopts' (*note getopts::)の第一，第二引数と同じです．
+
+オプション解析:
+...............
+
+  `getopts' (*note getopts::)のオプション解析と同じです．
+
+USAGEの設定:
+............
+
+  `$USAGE'に`usage()'(名前は何でもよい)をセットします．
+
+             def usage()
+               printf("Usage:\n")
+                     :
+             end
+             $USAGE='usage'
+
+参照:
+.....
+
+   * `sample/getopts.test'
+
+   * `sample/biorhythm.rb'
+
+
+
+                                    written by <jammy@shljapan.co.jp>
+
+
+File: ruby-jp.info,  Node: ftplib,  Next: The Socket Library,  Prev: parsearg,  Up: Bundled Libraries
+
+FTP
+===
+
+  FTPサーバーにクライアントとしてアクセスするためのクラスです．
+
+スーパークラス:
+...............
+
+   - `Object' (*note Object::)
+
+クラスメソッド:
+...............
+
+ - Class Method on `FTP': new ([HOST, USER,PASSWD, ACCT])
+     新しいインスタンスを生成します．
+
+     HOSTが指定された場合，生成されたインスタンスに対して`connect'
+     (*note ftplib::)を呼び出し，さらにUSERが指定された場合は
+     `login' (*note ftplib::)を呼び出します．
+
+
+ - Class Method on `FTP': open (HOST[, USER,PASSWD, ACCT])
+     HOSTを省略できない以外は`new' (*note ftplib::)と同じです．
+
+
+メソッド:
+.........
+
+ - Method on `FTP': connect (HOST[, PORT])
+     HOSTで指定されたホストに接続します．
+
+
+ - Method on `FTP': sendcmd (CMD)
+     CMDで指定されたコマンドをサーバーに送り，サーバーからの応答を返
+     します．
+
+     応答コードが4xxの場合は例外FTPTermErrorが，5xxの場合は例外
+     FTPPermErrorが発生します．応答コードの最初の数字が1から5のどれで
+     もない場合は例外FTPProtoErrorが発生します．
+
+
+ - Method on `FTP': voidcmd (CMD)
+     `sendcmd' (*note ftplib::)と同様にサーバーにコマンドを送りますが，
+     `nil'を返す点と，応答コードが2xx以外の場合，例外FTPReplyErrorが
+     発生する点が異なります．
+
+
+ - Method on `FTP': login ([USER, PASSWD,ACCT])
+     ログイン処理を行ないます．
+
+     USERが省略された場合，`anonymous'でログインします．
+
+
+ - Method on `FTP': retrbinary (CMD, BLOCKSIZE,CALLBACK)
+ - Method on `FTP': retrbinary (CMD,BLOCKSIZE) {...}
+     サーバーにCMDで指定されたコマンドを送り，バイナリデータを取り寄
+     せます．BLOCKSIZEで指定されたバイト単位でデータを読み込み，
+     CALLBACKで指定された`Proc'オブジェクトまたはブロックに読み込んだ
+     データを渡します．
+
+
+ - Method on `FTP': retrlines (CMD[,CALLBACK]) [{...}]
+     サーバーにCMDで指定されたコマンドを送り，テキストデータを取り寄
+     せます．一行ずつテキストを読み込み，CALLBACKで指定されたProcオブ
+     ジェクトまたはブロックに読み込んだ行を渡します．
+
+     CALLBACKもブロックも省略された場合は読み込んだ行をprintします．
+
+
+ - Method on `FTP': storbinary (CMD, FILEBLOCKSIZE[, CALLBACK]) [{...}]
+     サーバーにCMDで指定されたコマンドを送り，バイナリデータを送りま
+     す．BLOCKSIZEで指定されたバイト単位でFILEからデータを読み込み，
+     サーバーに送ります．
+
+     CALLBACKやブロックが指定された場合はデータが送信されるごとにそれ
+     を呼び出します．
+
+
+ - Method on `FTP': storlines (CMD, FILE[,CALLBACK]) [{...}]
+     サーバーにCMDで指定されたコマンドを送り，テキストデータを送りま
+     す．一行ずつでFILEからテキストを読み込み，サーバーに送ります．
+
+     CALLBACKやブロックが指定された場合はデータが送信されるごとにそれ
+     を呼び出します．
+
+
+ - Method on `FTP': getbinaryfile (REMOTEFILE, LOCALFILE,BLOCKSIZE[,
+          CALLBACK]) [{...}]
+     サーバー上のバイナリファイルを`get'します．
+
+     CALLBACKやブロックが指定された場合はデータが送信されるごとにそれ
+     を呼び出します．
+
+
+ - Method on `FTP': gettextfile (REMOTEFILE, LOCALFILE[,CALLBACK]) [{...}]
+     サーバー上のテキストファイルを`get'します．
+
+     CALLBACKやブロックが指定された場合はデータが送信されるごとにそれ
+     を呼び出します．
+
+
+ - Method on `FTP': putbinaryfile (LOCALFILE, REMOTEFILE,BLOCKSIZE[,
+          CALLBACK]) [{...}]
+     サーバーにバイナリファイルをputします．
+
+     CALLBACKやブロックが指定された場合はデータが送信されるごとにそれ
+     を呼び出します．
+
+
+ - Method on `FTP': puttextfile (LOCALFILE, REMOTEFILE[,CALLBACK]) [{...}]
+     サーバーにテキストファイルを`put'します．
+
+     CALLBACKやブロックが指定された場合はデータが送信されるごとにそれ
+     を呼び出します．
+
+
+ - Method on `FTP': acct (ACCOUNT)
+     サーバーにアカウント情報を送ります．
+
+
+ - Method on `FTP': nlst ([DIR])
+     DIRで指定したディレクトリのファイルの配列を返します．DIRを省略し
+     た場合カレントディレクトリが指定されます．
+
+
+ - Method on `FTP': list (ARG...) [{...}]
+ - Method on `FTP': ls (ARG...) [{...}]
+ - Method on `FTP': dir (ARG...) [{...}]
+     `LIST'コマンドを送信し，結果を返します．
+
+     ブロックとともに呼び出された場合は各行に対してブロックを実行しま
+     す．
+
+
+ - Method on `FTP': rename (OLDNAME, NEWNAME)
+     ファイルをリネームします．
+
+
+ - Method on `FTP': delete (FILENAME)
+     ファイルを削除します．
+
+
+ - Method on `FTP': chdir (PATH)
+     カレントディレクトリをPATHに変更します．
+
+
+ - Method on `FTP': size (FILENAME)
+     ファイルのサイズを返します．
+
+
+ - Method on `FTP': mkdir (DIRNAME)
+     ディレクトリを作成します．
+
+
+ - Method on `FTP': rmdir (DIRNAME)
+     ディレクトリを削除します．
+
+
+ - Method on `FTP': pwd
+     カレントディレクトリを返します．
+
+
+ - Method on `FTP': system
+     サーバーのOSのタイプを返します．
+
+
+ - Method on `FTP': abort
+     データの転送を中止します．
+
+
+ - Method on `FTP': status
+     現在の状態を返します．
+
+
+ - Method on `FTP': help
+     help情報を返します．
+
+
+ - Method on `FTP': quit
+     ログアウトします．
+
+
+ - Method on `FTP': close
+     接続を切ります．
+
+
+
+
+                                   written by <shugo@po.aianet.ne.jp>
+
+
+File: ruby-jp.info,  Node: The Socket Library,  Next: The Thread Library,  Prev: ftplib,  Up: Bundled Libraries
+
+Socketライブラリ
+================
+
+* Menu:
+
+* Socket__Constants::         Socket::Constants
+* BasicSocket::               BasicSocket
+* IPSocket::                  IPSocket
+* TCPSocket::                 TCPSocket
+* TCPServer::                 TCPServer
+* UDPSocket::                 UDPSocket
+* UNIXSocket::                UNIXSocket
+* UNIXServer::                UNIXServer
+* Socket::                    Socket
+
+
+File: ruby-jp.info,  Node: Socket__Constants,  Next: BasicSocket,  Up: The Socket Library
+
+Socket::Constants
+-----------------
+
+  ソケット操作の指定のための定数を定義したモジュール．このモジュール
+をインクルードすれば，定数(AF_INETなど)を直接参照できます．
+
+
+File: ruby-jp.info,  Node: BasicSocket,  Next: IPSocket,  Prev: Socket__Constants,  Up: The Socket Library
+
+BasicSocket
+-----------
+
+  ソケットを表す抽象クラス。具体的なソケット操作はサブクラスで定義さ
+れます。例えばインターネットドメインストリームソケットの場合は
+`TCPSocket' (*note TCPSocket::)を用います。
+
+スーパークラス:
+...............
+
+   - `IO' (*note IO::)
+
+メソッド:
+.........
+
+ - Method on `BasicSocket': getsockname
+     ソケットの情報を取得します。sockaddr構造体をパックした文字列を返
+     します。`getsockname(2)'を参照のこと。
+
+
+ - Method on `BasicSocket': getsockopt (LEVEL, OPTNAME)
+     ソケットのオプションを取得します。`getsockopt(2)' を参照のこと。
+     取得したオプションのデータをパックした文字列を返します。
+
+
+ - Method on `BasicSocket': getpeername
+     接続の相手先のソケットの情報を取得します。sockaddr構造体をパック
+     した文字列を返します。`getpeername(2)'を参照のこと。
+
+
+ - Method on `BasicSocket': recv (LEN[, FLAGS])
+     ソケットからデータを受け取り，文字列として返します．LENは受け取
+     る最大の長さを指定します．FLAGSについてはrecv(2)を参照．FLAGSの
+     デフォルト値は0です．FLAGSの指定に必要な定数はSocketクラスで定義
+     されています．(例: Socket::SO_LINGER)
+
+
+ - Method on `BasicSocket': send (MESG, FLAGS[, TO])
+     ソケットを介してデータを送ります．FLAGSに関しては`send(2)'を参照
+     してください．`connect' していないソケットに対しては送り先である
+     TOを指定する必要があります．実際に送ったデータの長さを返します．
+
+
+ - Method on `BasicSocket': setsockopt (LEVEL, OPTNAME, OPTVAL)
+     ソケットのオプションを設定します．`setsockopt(2)' を参照のこと．
+
+
+ - Method on `BasicSocket': shutdown (HOW)
+     ソケットの以降の接続を終了させます．HOWが0である時，以降の受信が，
+     1である時は，以降の送信が拒否さます．HOWが2の時には，それ以降の
+     送信，受信ともに拒否されます．`shutdown(2)'を参照．
+
+
+
+File: ruby-jp.info,  Node: IPSocket,  Next: TCPSocket,  Prev: BasicSocket,  Up: The Socket Library
+
+IPSocket
+--------
+
+  インターネットドメインソケットのクラス．通常の`IO' (*note IO::)クラ
+スのサブクラスと同様の入出力ができます．
+
+スーパークラス:
+...............
+
+   - `BasicSocket' (*note BasicSocket::)
+
+クラスメソッド:
+...............
+
+ - Class Method on `IPSocket': getaddress (HOST)
+     ホスト名からホストのアドレスを返します．ホストのアドレスは文字列
+     はoctet decimalの文字列(例:127.0.0.1)です．
+
+
+メソッド:
+.........
+
+ - Method on `IPSocket': addr
+     ソケットの接続情報を表す配列を返します．配列の各要素は第1要素が
+     文字列 "AF_INET"，第2要素がport番号，第3要素がホストを表す文字列，
+     第4要素がホストのIPアドレスを表す文字列(octet decimal)です．
+
+
+ - Method on `IPSocket': peeraddr
+     接続相手先ソケットの情報を表す配列を返します．配列の各要素は
+     `addr' (*note IPSocket::)メソッドが返す配列と同じです．
+
+
+
+File: ruby-jp.info,  Node: TCPSocket,  Next: TCPServer,  Prev: IPSocket,  Up: The Socket Library
+
+TCPSocket
+---------
+
+  インターネットドメインのストリーム型ソケットのクラス．通常の`IO'
+(*note IO::)クラスのサブクラスと同様の入出力ができます．このクラスに
+よってソケットを用いたクライアントを簡単に記述できるようになります．
+ユーザの入力をそのままサーバに転送するプログラムは以下のようになりま
+す．
+
+     require "socket"
+     
+     port = if ARGV.size > 0 then ARGV.shift else 4444 end
+     print port, "\n"
+     
+     s = TCPSocket.open("localhost", port)
+     
+     while gets
+       s.write($_)
+       print(s.gets)
+     end
+     s.close
+
+スーパークラス:
+...............
+
+   - `IPSocket' (*note IPSocket::)
+
+クラスメソッド:
+...............
+
+ - Class Method on `TCPSocket': open (HOST, SERVICE)
+ - Class Method on `TCPSocket': new (HOST, SERVICE)
+     hostで指定したホストのserviceで指定したポートと接続したソケット
+     を返します．HOSTはホスト名，またはoctet decimal によるインターネッ
+     トアドレスを示す文字列，SERVICE は`/etc/services'(またはNIS)に登
+     録されているサービス名かポート番号です．
+
+
+ - Class Method on `TCPSocket': gethostbyname (HOST)
+     ホスト名またはIPアドレス(整数または`"127.0.0.1"' のような文字列
+     )からホストの情報を返します．ホスト情報は，ホスト名，ホストの別
+     名の配列，ホストのアドレスタイプ，ホストのアドレスを各要素とする
+     配列です．ホストのアドレスはoctet decimalの文字列(`"127.0.0.1"'の
+     ような文字列)です．
+
+
+メソッド:
+.........
+
+ - Method on `TCPSocket': recvfrom (LEN[, FLAGS])
+     `recv'と同様にソケットからデータを受け取りますが，戻り値は文字列
+     と相手ソケットのアドレス(形式はIPSocket#addr (*note
+     IPSocket::)参照)のペアです．引数についてはrecv (*note
+     BasicSocket::)と同様です．
+
+
+
+File: ruby-jp.info,  Node: TCPServer,  Next: UDPSocket,  Prev: TCPSocket,  Up: The Socket Library
+
+TCPServer
+---------
+
+  TCP/IPストリーム型接続のサーバ側のソケットのクラス．このクラスによっ
+て簡単にソケットを利用したサーバのプログラミングができます．例えば
+echoサーバは以下のようになります．
+
+     require "socket"
+     
+     gs = TCPServer.open(0)
+     socks = [gs]
+     addr = gs.addr
+     addr.shift
+     printf("server is on %d\n", addr.join(":"))
+     
+     while TRUE
+       nsock = select(socks)
+       next if nsock == nil
+       for s in nsock[0]
+         if s == gs
+           socks.push(s.accept)
+           print(s, " is accepted\n")
+         else
+           if s.eof?
+             print(s, " is gone\n")
+             s.close
+             socks.delete(s)
+           else
+             str = s.gets
+             s.write(str)
+           end
+         end
+       end
+     end
+
+  `Thread'を使えばもっと短くなります．
+
+     require "socket"
+     
+     gs = TCPServer.open(0)
+     addr = gs.addr
+     addr.shift
+     printf("server is on %d\n", addr.join(":"))
+     
+     while TRUE
+       ns = gs.accept
+       print(ns, " is accepted\n")
+       Thread.start do
+         s = ns                      # save to dynamic variable
+         while s.gets
+           s.write($_)
+         end
+         print(s, " is gone\n")
+         s.close
+       end
+     end
+
+スーパークラス:
+...............
+
+   - `TCPSocket' (*note TCPSocket::)
+
+クラスメソッド:
+...............
+
+ - Class Method on `TCPServer': new ([HOST, ]SERVICE)
+ - Class Method on `TCPServer': open ([HOST, ]SERVICE)
+     新しいサーバー接続をオープンします．SERVICEは`/etc/services'(ま
+     たはNIS)に登録されているサービス名かポート番号で指定します．
+     HOSTを指定した時は指定したホストからの接続だけを受け付けます．省
+     略時は全てのホストからの接続要求を受け付けることになります．
+
+
+メソッド:
+.........
+
+ - Method on `TCPServer': accept
+     クライアントからの接続要求を受け付け，接続した`TCPSocket'のイン
+     スタンスを返します．
+
+
+
+File: ruby-jp.info,  Node: UDPSocket,  Next: UNIXSocket,  Prev: TCPServer,  Up: The Socket Library
+
+UDPSocket
+---------
+
+  UDP/IPデータグラム型ソケットのクラス．
+
+スーパークラス:
+...............
+
+   - `IPSocket' (*note IPSocket::)
+
+クラスメソッド:
+...............
+
+ - Class Method on `UDPSocket': open ()
+ - Class Method on `UDPSocket': new ()
+     新しいUDPソケットを返します．
+
+
+メソッド:
+.........
+
+ - Method on `UDPSocket': bind (HOST, PORT)
+     ソケットをHOSTのPORTに結合します．
+
+
+ - Method on `UDPSocket': connect (HOST, PORT)
+     ソケットをHOSTのPORTにconnectします．
+
+
+ - Method on `UDPSocket': recvfrom (LEN[, FLAGS])
+     `recv'と同様にソケットからデータを受け取りますが，戻り値は文字列
+     と相手ソケットのアドレス(形式はIPSocket#addr (*note
+     IPSocket::)参照)のペアです．引数についてはrecv (*note
+     BasicSocket::)と同様です．
+
+
+ - Method on `UDPSocket': send (MESG, FLAGS[, HOST, PORT])
+     ソケットを介してデータを送ります．FLAGSに関しては`send(2)'を参照
+     してください．`connect' していないソケットに対しては送り先を指定
+     するためHOST とPORTを指定する必要があります．実際に送ったデータ
+     の長さを返します．
+
+
+
+File: ruby-jp.info,  Node: UNIXSocket,  Next: UNIXServer,  Prev: UDPSocket,  Up: The Socket Library
+
+UNIXSocket
+----------
+
+  UNIXドメインのストリーム型ソケットのクラス．通常の`IO' (*note
+IO::)クラスのサブクラスと同様の入出力ができます．
+
+スーパークラス:
+...............
+
+   - `BasicSocket' (*note BasicSocket::)
+
+クラスメソッド:
+...............
+
+ - Class Method on `UNIXSocket': open (PATH)
+ - Class Method on `UNIXSocket': new (PATH)
+     PATHで指定したパス名を用いて接続したソケットを返します．
+
+
+メソッド:
+.........
+
+ - Method on `UNIXSocket': addr
+     ソケットの接続情報を表す配列を返します．配列の各要素は第1要素が
+     文字列 "AF_UNIX"，第2要素がパスを表す文字列です．
+
+
+ - Method on `UNIXSocket': path
+     UNIXソケットのパスを返します．
+
+
+ - Method on `UNIXSocket': peeraddr
+     接続相手先ソケットの情報を表す配列を返します．配列の各要素は
+     `addr' (*note UNIXSocket::)メソッドが返す配列と同じです．
+
+
+ - Method on `UNIXSocket': recvfrom (LEN[, FLAGS])
+     `recv'と同様にソケットからデータを受け取りますが，戻り値は文字列
+     と相手ソケットのパスのペアです．引数についてはrecvと同様です．
+
+
+
+File: ruby-jp.info,  Node: UNIXServer,  Next: Socket,  Prev: UNIXSocket,  Up: The Socket Library
+
+UNIXServer
+----------
+
+  UNIXストリーム型接続のサーバ側のソケットのクラス．
+
+スーパークラス:
+...............
+
+   - `UNIXSocket' (*note UNIXSocket::)
+
+メソッド:
+.........
+
+ - Method on `UNIXServer': accept
+     クライアントからの接続要求を受け付け，接続した`UNIXSocket'のイン
+     スタンスを返します．
+
+
+
+File: ruby-jp.info,  Node: Socket,  Prev: UNIXServer,  Up: The Socket Library
+
+Socket
+------
+
+  ソケットそのものに対するシステムコールレベルのアクセスを提供するク
+ラス．Perlのソケットに対するアクセスと同レベルの機能を提供してます．
+このクラスではソケットアドレスはpackされた文字列で指定します．
+
+  一般的なソケットプログラミングはより高レベルの`TCPSocket' (*note
+TCPSocket::)クラスや`TCPServer' (*note TCPServer::)クラスを用いて行
+われることが多く，このクラスはあまり用いられません．
+
+スーパークラス:
+...............
+
+   - `BasicSocket' (*note BasicSocket::)
+
+クラスメソッド:
+...............
+
+ - Class Method on `Socket': open (DOMAIN, TYPE, PROTOCOL)
+ - Class Method on `Socket': new (DOMAIN, TYPE, PROTOCOL)
+     新しいソケットを生成します．DOMAIN，TYPE，PROTOCOLはインクルード
+     ファイルにある定数で指定します．ほとんどの定数は`Socket'クラス
+     でクラス定数として定義されています．DOMAINとTYPEに関しては，文字
+     列でも指定できますが，文字列ですべてを機能を指定できる保証はあり
+     ません．
+
+
+ - Class Method on `Socket': for_fd (FD)
+     ファイルディスクリプタFDに対する新しいソケットを生成します．
+
+
+ - Class Method on `Socket': pair (DOMAIN, TYPE, PROTOCOL)
+ - Class Method on `Socket': socketpair (DOMAIN, TYPE, PROTOCOL)
+     相互に結合されたソケットのペアを含む2要素の配列を返します．引数
+     の指定は`Socket.open' (*note Socket::)と同じです．
+
+
+ - Class Method on `Socket': gethostbyname (HOST)
+     ホスト名またはIPアドレス(整数または`"127.0.0.1"' のような文字列
+     )からホストの情報を返します．ホスト情報は，ホスト名，ホストの別
+     名の配列，ホストのアドレスタイプ，ホストのアドレスを各要素とする
+     配列です．ホストのアドレスはpackされた文字列で，unpack("CCCC")で
+     分解できます．
+
+
+ - Class Method on `Socket': gethostbyaddr (HOST)
+     ホスト名またはIPアドレス(整数または`"127.0.0.1"' のような文字列
+     )からホスト情報を返します．ホスト情報の構造はgethostbyname
+     (*note Socket::)と同じです．
+
+
+ - Class Method on `Socket': getservbyname (SERVICE[, PROTO])
+     SERVICE, PROTOに対応するポート番号を返します．PROTOの省略値は
+     `"tcp"'です．
+
+
+メソッド:
+.........
+
+ - Method on `Socket': accept
+     新しい接続を受け付けて，新しい接続に対するソケットとアドレスのペ
+     アを返します．`accept(2)'を参照．
+
+
+ - Method on `Socket': bind (ADDR)
+     ソケットをADDRに結合します．`bind(2)' と同じ働きをします．ADDRは
+     packされたソケットアドレス構造体です．
+
+
+ - Method on `Socket': connect (ADDR)
+     `connect(2)'と同じ働きをします．ADDRはpackされたソケットアドレス
+     構造体です．
+
+
+ - Method on `Socket': listen (BACKLOG)
+     `listen(2)'と同じ働きをします．
+
+
+ - Method on `Socket': recvfrom (LEN[, FLAGS])
+     `recv'と同様にソケットからデータを受け取りますが，戻り値は文字列
+     と相手ソケットのアドレスのペアです．引数についてはrecvと同様です．
+
+
+
+File: ruby-jp.info,  Node: hostname
+
+ホスト指定文字列
+................
+
+  AF_INETなソケットにおいてホストを指定する文字列は以下のいずれかの形
+式で指定します．
+
+   * ホスト名
+
+   * octet decimalによるIPアドレス
+
+   * 空文字列 - `INADDR_ANY'に相当
+
+   * `"<broadcast>"' - `INADDR_BROADCAST'に相当
+
+
+File: ruby-jp.info,  Node: The Thread Library,  Next: The Tk Library,  Prev: The Socket Library,  Up: Bundled Libraries
+
+Threadライブラリ
+================
+
+* Menu:
+
+* Thread::                    Thread
+* Mutex::                     Mutex
+* Queue::                     Queue
+
+  `Thread'ライブラリによって`ruby'による並行プログラミングが可能にな
+ります．スレッドはメモリ空間を共有して同時に実行される制御の流れです．
+`ruby'インタプリタは時分割でスレッドを実行しますので，スレッドを使う
+ことで実行速度が速くなることはありません．
+
+  プログラムの開始と同時に生成されるスレッドをmain threadと呼びます．
+なんらかの理由でmain threadが終了する時には，他の全てのスレッドもプロ
+グラム全体も終了します．ユーザからの割込みによって発生した例外はmain
+threadに送られます．
+
+  `Thread'ライブラリはコンパイル時の設定で外すことのできるオプション
+です．インタプリタによってはスレッドの使えない場合があります．
+
+
+File: ruby-jp.info,  Node: Thread,  Next: Mutex,  Up: The Thread Library
+
+Thread
+------
+
+  `Thread'はユーザレベルでのスレッドを表現するクラスです．
+
+  スレッドの起動時に指定したブロックの実行が終了するとスレッドの実行
+も終了します．ブロックの終了は正常な終了も例外などによる異常終了も含
+みます．
+
+スーパークラス:
+...............
+
+   - Object (*note Object::)
+
+クラスメソッド:
+...............
+
+ - Class Method on `Thread': abort_on_exception
+     いずれかのスレッドが例外によって終了した時に，インタプリタ全体を
+     中断させるかどうかのフラグの値を返します．
+
+
+ - Class Method on `Thread': abort_on_exception =(YES_NO)
+     いずれかのスレッドが例外によって終了した時に，インタプリタ全体を
+     中断させるかどうかのフラグを設定します．通常あるスレッドで起こっ
+     た例外は，Thread#join (*note Thread::)などで検出されない限りそ
+     のスレッドだけをなにも警告を出さずに終了さます．
+
+
+ - Class Method on `Thread': current
+     現在実行中のスレッドを返します．
+
+
+ - Class Method on `Thread': exit
+     カレントスレッドの実行を終了します．
+
+
+ - Class Method on `Thread': join THREAD
+     THREADで指定したスレッドの実行が終了するまで，カレントスレッドを
+     中断します．
+
+
+ - Class Method on `Thread': kill THREAD
+     指定したスレッドの実行を終了させます．
+
+
+ - Class Method on `Thread': new {...}
+ - Class Method on `Thread': start {...}
+ - Class Method on `Thread': fork {...}
+     スレッドを生成して，ブロックの評価を開始します．生成されたスレッ
+     ドを返します．
+
+
+ - Class Method on `Thread': pass
+     他のスレッドに実行権を譲ります．
+
+
+ - Class Method on `Thread': stop
+     他のスレッドから`run'メソッドで再起動されるまで，カレントスレッ
+     ドの実行を停止します．
+
+
+メソッド:
+.........
+
+ - Method on `Thread': self [NAME]
+     NAMEに対応したスレッドに固有のデータを取り出します．NAMEは文字列
+     かシンボルで指定します．
+
+
+ - Method on `Thread': self [NAME]=VAL
+     VALをNAMEに対応するスレッド固有のデータとして格納します．NAMEは
+     文字列かシンボルで指定します．
+
+
+ - Method on `Thread': abort_on_exception
+     そのスレッドが例外によって終了した時に，インタプリタ全体を中断す
+     るかどうかのフラグの値を返します．
+
+
+ - Method on `Thread': abort_on_exception =(YES_NO)
+     そのスレッドが例外によって終了した時に，インタプリタ全体を中断さ
+     せるかどうかのフラグを設定します．
+
+
+ - Method on `Thread': alive?
+ - Method on `Thread': status
+     スレッドが「生きている」時，真を返します．正常終了した時には
+     `false'，例外終了した時には`nil'を返します．
+
+
+ - Method on `Thread': exit
+     スレッドの実行を終了させます．
+
+
+ - Method on `Thread': join
+     スレッドの実行が終了するまで，カレントスレッドを中断します．
+
+
+ - Method on `Thread': raise ([ERROR_TYPE,][MESSAGE][,TRACEBACK])
+     そのスレッドで強制的に例外を発生させます．
+
+
+ - Method on `Thread': run
+     スレッドの実行を再開させます．スレッドが停止していなかった場合に
+     はなにもしません．
+
+
+ - Method on `Thread': stop?
+     スレッドが停止している時，真を返します．
+
+
+ - Method on `Thread': value
+     スレッドが停止するまで待ち，ブロックが返した値を返します．スレッ
+     ド実行中に例外が発生した場合には，その例外を再発生させます．
+
+
+ - Method on `Thread': wakeup
+     停止中のスレッドが再起動できるようにします．
+
+
+
+File: ruby-jp.info,  Node: Mutex,  Next: Queue,  Prev: Thread,  Up: The Thread Library
+
+Mutex
+-----
+
+  Mutex(相互排他ロック)は共有データを並行アクセスから保護するためにあ
+ります．Mutexの典型的な使い方は(Mを`Mutex'オブジェクトとします):
+
+     begin
+       m.lock
+       # mによって保護されたクリティカルセクション
+     ensure
+       m.unlock
+     end
+
+  または，より簡単に
+
+     m.synchronize {
+       # mによって保護されたクリティカルセクション
+     }
+
+スーパークラス:
+...............
+
+   - Object (*note Object::)
+
+クラスメソッド:
+...............
+
+ - Class Method on `Mutex': new
+     新しいmutexを生成します．
+
+
+メソッド:
+.........
+
+ - Method on `Mutex': lock
+     mutexオブジェクトをロックします．一度に一つのスレッドだけが
+     mutexをロックできます．既にロックされているmutex に対してロックを
+     行おうとしたスレッドはmutexのロックが開放されるまで，実行が停止
+     されます．
+
+
+ - Method on `Mutex': locked?
+     mutexがロックされている時，真を返します．
+
+
+ - Method on `Mutex': synchronize
+     mutexをロックし，ブロックを実行します．実行後に必ずmutexのロック
+     を開放します．
+
+
+ - Method on `Mutex': try_lock
+     mutexをロックしようとして，ロックが成功した場合，真を返します．
+     ロックできなかった場合にはブロックせず偽を返します．
+
+
+ - Method on `Mutex': unlock
+     mutexのロックを開放します．mutexのロック待ちになっていたスレッド
+     の実行は再開されます．
+
+
+
+File: ruby-jp.info,  Node: Queue,  Prev: Mutex,  Up: The Thread Library
+
+Queue
+-----
+
+  Queueはスレッド間のFIFO(first in first out)の通信路です．スレッドが
+空のqueueを読み出そうとすると停止します．queueになんらかの情報が書き
+込まれると実行は再開されます．
+
+スーパークラス:
+...............
+
+   - Object (*note Object::)
+
+クラスメソッド:
+...............
+
+ - Class Method on `Queue': new
+     新しいqueueオブジェクトを生成します．
+
+
+メソッド:
+.........
+
+ - Method on `Queue': empty?
+     queueが空の時，真を返します．
+
+
+ - Method on `Queue': length
+     queueの長さを返します．
+
+
+ - Method on `Queue': pop [NON_BLOCK]
+     queueからひとつ値を取り出します．queueが空の時，呼出元のスレッド
+     は停止します．省略可能な引数NON_BLOCKがnilでない時，`pop'は
+     queueが空の時に例外を発生します．
+
+
+ - Method on `Queue': push VALUE
+     queueの値を追加します．待っているスレッドがいれば実行を再開させ
+     ます．
+
+
+File: ruby-jp.info,  Node: The Tk Library,  Prev: The Thread Library,  Up: Bundled Libraries
+
+Tkライブラリ
+============
+
+  Ruby Tkインタフェースに関するドキュメントはまだできていません．Tk関
+連のクラス階層は以下のようになっています．
+
+   - `TkObject' (*note TkObject::)
+
+        - `TkWindow' (*note TkWindow::)
+
+             - `TkRoot' (*note TkRoot::)
+
+             - `TkToplevel' (*note TkToplevel::)
+
+             - `TkFrame' (*note TkFrame::)
+
+             - `TkLabel' (*note TkLabel::)
+
+                  - `TkButton' (*note TkButton::)
+
+                       - `TkRadioButton' (*note TkRadioButton::)
+
+                            - `TkCheckButton' (*note TkCheckButton::)
+
+
+                  - `TkMessage' (*note TkMessage::)
+
+                  - `TkMenuButton' (*note TkMenuButton::)
+
+
+             - `TkScale' (*note TkScale::)
+
+             - `TkScrollbar' (*note TkScrollbar::)
+
+             - `TkTextWin' (*note TkTextWin::)
+
+                  - `TkListbox' (*note TkListbox::)
+
+
+             - `TkMenu' (*note TkMenu::)
+
+             - `TkScale' (*note TkScale::)
+
+             - `TkScale' (*note TkScale::)
+
+             - `TkScale' (*note TkScale::)
+
+
+        - `TkcItem' (*note TkcItem::)
+
+             - `TkcArc' (*note TkcArc::)
+
+             - `TkcBitmap' (*note TkcBitmap::)
+
+             - `TkcImage' (*note TkcImage::)
+
+             - `TkcLine' (*note TkcLine::)
+
+             - `TkcOval' (*note TkcOval::)
+
+
+        - `TkImage' (*note TkImage::)
+
+             - `TkBitmapImage' (*note TkBitmapImage::)
+
+             - `TkPhotoImage' (*note TkPhotoImage::)
+
+
+
+File: ruby-jp.info,  Node: Pseudo BNF Syntax of Ruby,  Next: Ruby Glossary,  Prev: Bundled Libraries,  Up: Top
+
+疑似BNFによる*Ruby*の文法
+*************************
+
+  以下に疑似BNFによるRubyの文法を示します．より詳しくはparse.y を参照
+してください．
+
+     PROGRAM         : COMPSTMT
+     
+     COMPSTMT        : STMT (TERM EXPR)* [TERM]
+     
+     STMT            : CALL do [`|' [BLOCK_VAR] `|'] COMPSTMT end
+                     | undef FNAME
+                     | alias FNAME FNAME
+                     | STMT if EXPR
+                     | STMT while EXPR
+                     | STMT unless EXPR
+                     | STMT until EXPR
+                     | `BEGIN' `{' COMPSTMT `}'
+                     | `END' `{' COMPSTMT `}'
+                     | LHS `=' COMMAND [do [`|' [BLOCK_VAR] `|'] COMPSTMT end]
+                     | EXPR
+     
+     EXPR            : MLHS `=' MRHS
+                     | return CALL_ARGS
+                     | yield CALL_ARGS
+                     | EXPR and EXPR
+                     | EXPR or EXPR
+                     | not EXPR
+                     | COMMAND
+                     | `!' COMMAND
+                     | ARG
+     
+     CALL            : FUNCTION
+                     | COMMAND
+     
+     COMMAND         : OPERATION CALL_ARGS
+                     | PRIMARY `.' OPERATION CALL_ARGS
+                     | PRIMARY `::' OPERATION CALL_ARGS
+                     | super CALL_ARGS
+     
+     FUNCTION        : OPERATION [`(' [CALL_ARGS] `)']
+                     | PRIMARY `.' OPERATION `(' [CALL_ARGS] `)'
+                     | PRIMARY `::' OPERATION `(' [CALL_ARGS] `)'
+                     | PRIMARY `.' OPERATION
+                     | PRIMARY `::' OPERATION
+                     | super `(' [CALL_ARGS] `)'
+                     | super
+     
+     ARG             : LHS `=' ARG
+                     | LHS OP_ASGN ARG
+                     | ARG `..' ARG
+                     | ARG `...' ARG
+                     | ARG `+' ARG
+                     | ARG `-' ARG
+                     | ARG `*' ARG
+                     | ARG `/' ARG
+                     | ARG `%' ARG
+                     | ARG `**' ARG
+                     | `+' ARG
+                     | `-' ARG
+                     | ARG `|' ARG
+                     | ARG `^' ARG
+                     | ARG `&' ARG
+                     | ARG `<=>' ARG
+                     | ARG `>' ARG
+                     | ARG `>=' ARG
+                     | ARG `<' ARG
+                     | ARG `<=' ARG
+                     | ARG `==' ARG
+                     | ARG `===' ARG
+                     | ARG `!=' ARG
+                     | ARG `=~' ARG
+                     | ARG `!~' ARG
+                     | `!' ARG
+                     | `~' ARG
+                     | ARG `<<' ARG
+                     | ARG `>>' ARG
+                     | ARG `&&' ARG
+                     | ARG `||' ARG
+                     | defined? ARG
+                     | PRIMARY
+     
+     PRIMARY         : `(' COMPSTMT `)'
+                     | LITERAL
+                     | VARIABLE
+                     | PRIMARY `::' identifier
+                     | `::' identifier
+                     | PRIMARY `[' [ARGS] `]'
+                     | `[' [ARGS [`,']] `]'
+                     | `{' [(ARGS|ASSOCS) [`,']] `}'
+                     | return [`(' [CALL_ARGS] `)']
+                     | yield [`(' [CALL_ARGS] `)']
+                     | defined? `(' ARG `)'
+                     | FUNCTION
+                     | FUNCTION `{' [`|' [BLOCK_VAR] `|'] COMPSTMT `}'
+                     | if EXPR THEN
+                       COMPSTMT
+                       (elsif EXPR THEN COMPSTMT)*
+                       [else COMPSTMT]
+                       end
+                     | unless EXPR THEN
+                       COMPSTMT
+                       [else COMPSTMT]
+                       end
+                     | while EXPR DO COMPSTMT end
+                     | until EXPR DO COMPSTMT end
+                     | case COMPSTMT
+                       (when WHEN_ARGS THEN COMPSTMT)+
+                       [else COMPSTMT]
+                       end
+                     | for BLOCK_VAR in EXPR DO
+                       COMPSTMT
+                       end
+                     | begin
+                       COMPSTMT
+                       [rescue [ARGS] DO COMPSTMT]+
+                       [else COMPSTMT]
+                       [ensure COMPSTMT]
+                       end
+                     | class identifier [`<' identifier]
+                       COMPSTMT
+                       end
+                     | module identifier
+                       COMPSTMT
+                       end
+                     | def FNAME ARGDECL
+                       COMPSTMT
+                       end
+                     | def SINGLETON (`.'|`::') FNAME ARGDECL
+                       COMPSTMT
+                       end
+     
+     WHEN_ARGS       : ARGS [`,' `*' ARG]
+                     | `*' ARG
+     
+     THEN            : TERM
+                     | then
+                     | TERM then
+     
+     DO              : TERM
+                     | do
+                     | TERM do
+     
+     BLOCK_VAR       : LHS
+                     | MLHS
+     
+     MLHS            : MLHS_ITEM `,' [MLHS_ITEM (`,' MLHS_ITEM)*] [`,' `*' [LHS]]
+                     | `*' LHS
+     
+     MLHS_ITEM       : LHS
+                     | '(' MLHS ')'
+     
+     LHS             : VARIABLE
+                     | PRIMARY `[' [ARGS] `]'
+                     | PRIMARY `.' identifier
+     
+     MRHS            : ARGS [`,' `*' ARG]
+                     | `*' ARG
+     
+     CALL_ARGS       : ARGS
+                     | ARGS [`,' ASSOCS] [`,' `*' ARG] [`,' `&' ARG]
+                     | ASSOCS [`,' `*' ARG] [`,' `&' ARG]
+                     | `*' ARG [`,' `&' ARG]
+                     | `&' ARG
+                     | COMMAND
+     
+     ARGS            : ARG (`,' ARG)*
+     
+     ARGDECL         : `(' ARGLIST `)'
+                     | ARGLIST TERM
+     
+     ARGLIST         : identifier(`,'identifier)*[`,'`*'[identifier]][`,'`&'identifier]
+                     | `*'identifier[`,'`&'identifier]
+                     | [`&'identifier]
+     
+     SINGLETON       : VARIABLE
+                     | `(' EXPR `)'
+     
+     ASSOCS          : ASSOC (`,' ASSOC)*
+     
+     ASSOC           : ARG `=>' ARG
+     
+     VARIABLE        : VARNAME
+                     | nil
+                     | self
+     
+     LITERAL         : numeric
+                     | SYMBOL
+                     | STRING
+                     | STRING2
+                     | HERE_DOC
+                     | REGEXP
+     
+     TERM            : `;'
+                     | `\n'
+
+  以下のものは字句解析機で解釈されます．
+
+     OP_ASGN         : `+=' | `-=' | `*-' | `/=' | `%=' | `**='
+                     | `&=' | `|=' | `^=' | `<<=' | `>>='
+                     | `&&=' | `||='
+     
+     SYMBOL          : `:'FNAME
+                     | `:'VARNAME
+     
+     FNAME           : identifier | `..' | `|' | `^' | `&'
+                     | `<=>' | `==' | `===' | `=~'
+                     | `>' | `>=' | `<' | `<='
+                     | `+' | `-' | `*' | `/' | `%' | `**'
+                     | `<<' | `>>' | `~'
+                     | `+@' | `-@' | `[]' | `[]='
+     
+     OPERATION       : identifier
+                     | identifier'!'
+                     | identifier'?'
+     
+     VARNAME         : GLOBAL
+                     | `@'identifier
+                     | identifier
+     
+     GLOBAL          : `$'identifier
+                     | `$'any_char
+                     | `$''-'any_char
+     
+     STRING          : `"' any_char* `"'
+                     | `'' any_char* `''
+                     | ``' any_char* ``'
+     
+     STRING2         : `%'(`Q'|`q'|`x')char any_char* char
+     
+     HERE_DOC        : `<<'(identifier|STRING)
+                       any_char*
+                       identifier
+     
+     REGEXP          : `/' any_char* `/'[`i'|`o'|`e'|`s'|`u'|`n'|`p']
+                     | `%'`r' char any_char* char
+
+
+File: ruby-jp.info,  Node: Ruby Glossary,  Up: Top
+
+Ruby用語集
+**********
+
+  Last modified: Fri Nov 20 19:00:50 1998
+
+* Menu:
+
+* glossary_a::                A
+* glossary_b::                B
+* glossary_c::                C
+* glossary_d::                D
+* glossary_e::                E
+* glossary_f::                F
+* glossary_g::                G
+* glossary_h::                H
+* glossary_i::                I
+* glossary_j::                J
+* glossary_k::                K
+* glossary_l::                L
+* glossary_m::                M
+* glossary_n::                N
+* glossary_o::                O
+* glossary_p::                P
+* glossary_q::                Q
+* glossary_r::                R
+* glossary_s::                S
+* glossary_t::                T
+* glossary_u::                U
+* glossary_v::                V
+* glossary_w::                W
+* glossary_x::                X
+* glossary_y::                Y
+* glossary_z::                Z
+* glossary_aa::               あ
+* glossary_ka::               か
+* glossary_sa::               さ
+* glossary_ta::               た
+* glossary_na::               な
+* glossary_ha::               は
+* glossary_ma::               ま
+* glossary_ya::               や
+* glossary_ra::               ら
+* glossary_wa::               わ
+* glossary__symbol::          Symbol
+
+
+File: ruby-jp.info,  Node: glossary_a,  Next: glossary_b,  Up: Ruby Glossary
+
+A
+=
+
+   - AWK
+
+     エイホ(A)、ワインバーガー(W)、カーニハン(K)による小型のスクリプ
+     ト言語 (*note Ruby用語集: Ruby Glossary.)．
+
+
+
+File: ruby-jp.info,  Node: glossary_b,  Next: glossary_c,  Prev: glossary_a,  Up: Ruby Glossary
+
+B
+=
+
+
+File: ruby-jp.info,  Node: glossary_c,  Next: glossary_d,  Prev: glossary_b,  Up: Ruby Glossary
+
+C
+=
+
+   - Coerce
+
+     数値の型変換を行うメソッド．数値計算のメソッドは自分の知らないイ
+     ンスタンスが引数として渡された時には`coerce' メソッドを使って変換
+     を行うように取り決められている．`coerce'メソッドは引数として与え
+     られた値(を変換した値)と自分(必要ならば変換した値)のペアを返す．
+
+     Rubyのライブラリの数値型の変換順序は
+
+                  Fixnum -> Bignum -> Rational -> Float -> Complex
+
+     になっている．
+
+
+
+File: ruby-jp.info,  Node: glossary_d,  Next: glossary_e,  Prev: glossary_c,  Up: Ruby Glossary
+
+D
+=
+
+   - Data
+
+     CレベルのポインタをRubyオブジェクトとして見せるためのラッパー．
+     Cポインタと，mark関数，free関数から作る．Cを使ってRubyに機能を追
+     加しようとする人はぜひこのクラスの使い方をマスターする必要がある．
+     逆にいうとそういう予定のない人には用事がないクラスでもある．
+
+   - `defined?'
+
+     いろいろなもの(式)が本当に定義されているかどうか調べてくれる演算
+     子．定義されていなければ`FALSE'，定義されていればその式の種別を
+     示す文字列を返す．`defined?'はメソッドのようにみえるがRubyの文法
+     に組み込まれた演算子で，引数の評価を行わない．よって
+
+                  defined? print("abc\n")
+
+     はなにも出力しない．
+
+
+
+File: ruby-jp.info,  Node: glossary_e,  Next: glossary_f,  Prev: glossary_d,  Up: Ruby Glossary
+
+E
+=
+
+   - Eiffel
+
+     オブジェクト指向プログラミング言語．matzは昔この言語の作者の本
+     (Object-oriented Software Construction 邦訳「オブジェクト指向入
+     門」)を読んで目から鱗が落ちたらしい．その割にはRubyはEiffelに似
+     ていない．似ているのはブロックが`end'で終るところと，`rescue'と
+     いう予約語だけか．
+
+   - `end'
+
+     ブロック構造を終える予約語．ある統計によればRubyを最初に見た人の
+     33%がこれを見てPascalを連想するという(嘘)．しかし，実際には
+     beginと対にならないこの形式はPascalというよりAdaやEiffel に近い．
+
+     RubyがCやPerlで慣れ親しんだ `{}'を使わなかったのは以下の理由であ
+     る
+
+        * 単文・復文問題の回避
+
+          たとえばCでは
+
+                       if (a==b)
+                          c();
+
+          に文を追加しようとして
+
+                       if (a==b)
+                          c();
+                          d();
+
+          などとするとややこしいバグの元になる．この問題はPascalにも存
+          在する．
+
+        * ぶらぶら`else'問題の回避
+
+          上記と類似だが，
+
+                       if (a==b)
+                          if (c==d) foo();
+                       else bar();
+
+          などと書いてしまうと面倒なことになる．上のプログラムは実は
+
+                       if (a==b) {
+                          if (c==d) foo();
+                          else bar();
+                       }
+
+          という意味である．
+
+        * 可読性の向上
+
+          異論はあるようだが，endという単語でブロックを閉じた方がプロ
+          グラムが読みやすいと考えている人がいる．
+
+        * `begin', `case'の構文上の問題
+
+          正直言うと，matzはendという名前の変数を使おうとして痛い目に
+          あったことが何度かある．そこで，一度は `{ }'を使った文法に
+          しようと検討したが，`begin'と`case' の文法がきれいにまとまら
+          ずに断念した．実をいうとこれが最大の理由であったりする．
+
+
+   - `ENV'
+
+     環境変数をアクセスするための`Hash' (*note Hash::) と同様の動作を
+     するオブジェクト．実際には特異メソッドを付加した`Object' (*note
+     Object::)クラスのインスタンスである．このオブジェクトによって環
+     境変数 (*note Ruby用語集: Ruby Glossary.)を変更すると，Rubyの子
+     プロセスにも引き継がれる．
+
+
+
+File: ruby-jp.info,  Node: glossary_f,  Next: glossary_g,  Prev: glossary_e,  Up: Ruby Glossary
+
+F
+=
+
+   - FAQ, Frequently Asked Questions
+
+     よくある質問とその答え集．RubyのFAQ
+     (<http://www.aianet.ne.jp/%7Eshugo/ruby/FAQ>)はまだまだ発展途上で
+     ある．質問と答えは随時募集中．
+
+
+
+File: ruby-jp.info,  Node: glossary_g,  Next: glossary_h,  Prev: glossary_f,  Up: Ruby Glossary
+
+G
+=
+
+   - goto
+
+     Rubyにないもの．gotoがないのはそれが「あるべきでないから」ではな
+     く，「実装するのが面倒だったから」である．gotoの代りは
+     `catch/throw'や例外で実現する．
+
+
+
+File: ruby-jp.info,  Node: glossary_h,  Next: glossary_i,  Prev: glossary_g,  Up: Ruby Glossary
+
+H
+=
+
+
+File: ruby-jp.info,  Node: glossary_i,  Next: glossary_j,  Prev: glossary_h,  Up: Ruby Glossary
+
+I
+=
+
+
+File: ruby-jp.info,  Node: glossary_j,  Next: glossary_k,  Prev: glossary_i,  Up: Ruby Glossary
+
+J
+=
+
+
+File: ruby-jp.info,  Node: glossary_k,  Next: glossary_l,  Prev: glossary_j,  Up: Ruby Glossary
+
+K
+=
+
+
+File: ruby-jp.info,  Node: glossary_l,  Next: glossary_m,  Prev: glossary_k,  Up: Ruby Glossary
+
+L
+=
+
+
+File: ruby-jp.info,  Node: glossary_m,  Next: glossary_n,  Prev: glossary_l,  Up: Ruby Glossary
+
+M
+=
+
+   - `main'
+
+     トップレベルでの`self' (*note Ruby用語集: Ruby Glossary.)．
+     `self'がないわけにはいかないので，ただそこにあるためだけの単なる
+     `Object'クラスのインスタンスであるが，Objectクラスを操作するため，
+     いくつかの特異メソッドを定義してある．
+
+     定義されている特異メソッド
+
+        * private
+
+        * public
+
+        * include
+
+   - `MatchingData'
+
+     正規表現 (*note Ruby用語集: Ruby Glossary.)のマッチに関する状態を
+     表すオブジェクト．変数`$~' (*note 組込み変数と組込み定数:
+     Pre-defined variables and constants.)  の値．この変数の値を変更す
+     ると正規表現に関する変数群(`$1', `$2'...,`$&', etc)の値も変わる．
+
+   - matz
+
+     Rubyの作者．まつもと ゆきひろとも言う．cmail
+     (<http://www.st.rim.or.jp/~fuku/cmail/>) と3人の子供の父親でもあ
+     る．
+
+   - Mix-in
+
+     アイスクリームにいろんなものをまぜて新しい味を作ること．転じてモ
+     ジュール (*note Ruby用語集: Ruby Glossary.)をクラスに混ぜて機能を
+     追加すること．継承 (*note Ruby用語集: Ruby Glossary.)を参照．
+
+     Rubyでは多重継承を採用せず，is-aの関係のための継承と，機能の共有
+     のためのmix-inを用意している．これは多重継承を濫用すると関係が混
+     乱するというmatzの信念のためである．
+
+
+
+File: ruby-jp.info,  Node: glossary_n,  Next: glossary_o,  Prev: glossary_m,  Up: Ruby Glossary
+
+N
+=
+
+
+File: ruby-jp.info,  Node: glossary_o,  Next: glossary_p,  Prev: glossary_n,  Up: Ruby Glossary
+
+O
+=
+
+
+File: ruby-jp.info,  Node: glossary_p,  Next: glossary_q,  Prev: glossary_o,  Up: Ruby Glossary
+
+P
+=
+
+   - Perl
+
+     何だったっけ？
+
+   - Python
+
+     Rubyのライバル．「年を経た蛇」．matzがPythonに満足していれば
+     Rubyは生まれなかったであろう．一番気になっているのは名前の長さ
+     (6文字)である．
+
+
+
+File: ruby-jp.info,  Node: glossary_q,  Next: glossary_r,  Prev: glossary_p,  Up: Ruby Glossary
+
+Q
+=
+
+
+File: ruby-jp.info,  Node: glossary_r,  Next: glossary_s,  Prev: glossary_q,  Up: Ruby Glossary
+
+R
+=
+
+   - Ruby
+
+     オブジェクト指向スクリプト言語．Rubyの名前は「Perlに続く(pearlは
+     6月の誕生石，Rubyは7月の誕生石)」という程度の意味で名付けられた．
+     Rubyは別に何かの略ではない．
+
+

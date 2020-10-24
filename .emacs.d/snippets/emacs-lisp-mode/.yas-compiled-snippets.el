@@ -1,0 +1,40 @@
+;;; Compiled snippets and support files for `emacs-lisp-mode'
+;;; Snippet definitions:
+;;;
+(yas-define-snippets 'emacs-lisp-mode
+                     '(("when" "(when ${1:COND} \n${2:BODY} )\n$0" "when" nil nil nil "/home/yuhei/.emacs.d/snippets/emacs-lisp-mode/when" nil nil)
+                       ("unless" "(unless ${1:COND} \n${2:BODY} )\n$0" "unless" nil nil nil "/home/yuhei/.emacs.d/snippets/emacs-lisp-mode/unless" nil nil)
+                       ("setq" "(setq $0 )" "setq" nil nil nil "/home/yuhei/.emacs.d/snippets/emacs-lisp-mode/setq" nil nil)
+                       ("require" "(require '${1:SYMBOL})\n$0" "require" nil nil nil "/home/yuhei/.emacs.d/snippets/emacs-lisp-mode/require" nil nil)
+                       ("re-search-forward" "(re-search-forward REGEXP$0 &optional BOUND NOERROR COUNT)" "re-search-forward" nil nil nil "/home/yuhei/.emacs.d/snippets/emacs-lisp-mode/re-search-forward" nil nil)
+                       ("re-search-backward" "(re-search-backward REGEXP$0 &optional BOUND NOERROR COUNT)" "re-search-backward" nil nil nil "/home/yuhei/.emacs.d/snippets/emacs-lisp-mode/re-search-backward" nil nil)
+                       ("push" "(push $0 )" "push" nil nil nil "/home/yuhei/.emacs.d/snippets/emacs-lisp-mode/push" nil nil)
+                       ("progn" "(progn $0)" "progn" nil nil nil "/home/yuhei/.emacs.d/snippets/emacs-lisp-mode/progn" nil nil)
+                       ("or" "(or $0 )" "or" nil nil nil "/home/yuhei/.emacs.d/snippets/emacs-lisp-mode/or" nil nil)
+                       ("number-to-string" "(number-to-string $0)" "number-to-string" nil nil nil "/home/yuhei/.emacs.d/snippets/emacs-lisp-mode/number-to-string" nil nil)
+                       ("nth" "(nth N$0 LIST)" "nth" nil nil nil "/home/yuhei/.emacs.d/snippets/emacs-lisp-mode/nth" nil nil)
+                       ("not" "(not $0 )" "not" nil nil nil "/home/yuhei/.emacs.d/snippets/emacs-lisp-mode/not" nil nil)
+                       ("message" "(message \"FORMATSTRING$0\" &optional ARGS)\n" "message" nil nil nil "/home/yuhei/.emacs.d/snippets/emacs-lisp-mode/message" nil nil)
+                       ("memq" "(memq ELT$0 LIST)" "memq" nil nil nil "/home/yuhei/.emacs.d/snippets/emacs-lisp-mode/memq" nil nil)
+                       ("mapcar" "(mapcar $0 )" "mapcar" nil nil nil "/home/yuhei/.emacs.d/snippets/emacs-lisp-mode/mapcar" nil nil)
+                       ("mapc" "(mapc '$0 SEQUENCE)" "mapc" nil nil nil "/home/yuhei/.emacs.d/snippets/emacs-lisp-mode/mapc" nil nil)
+                       ("list" "(list $0)" "list" nil nil nil "/home/yuhei/.emacs.d/snippets/emacs-lisp-mode/list" nil nil)
+                       ("let" "(let ((${1:ARG}))\n $0\n)" "let" nil nil nil "/home/yuhei/.emacs.d/snippets/emacs-lisp-mode/let" nil nil)
+                       ("lambda" "(lambda (${1:ARG}) \n${2:$$(yas/choose-value '(\"(interactive)\" \"\"))}\n${3:BODY} \n )$0" "lambda" nil nil nil "/home/yuhei/.emacs.d/snippets/emacs-lisp-mode/lambda" nil nil)
+                       ("kbd" "(kbd \"${1:KEYBIND}\") $0" "kbd" nil nil nil "/home/yuhei/.emacs.d/snippets/emacs-lisp-mode/kbd" nil nil)
+                       ("interactive" "(interactive)" "interactive" nil nil nil "/home/yuhei/.emacs.d/snippets/emacs-lisp-mode/interactive" nil nil)
+                       ("if" "(if $0)" "if" nil nil nil "/home/yuhei/.emacs.d/snippets/emacs-lisp-mode/if" nil nil)
+                       ("function" "(function $0 )" "function" nil nil nil "/home/yuhei/.emacs.d/snippets/emacs-lisp-mode/function" nil nil)
+                       ("funcall" "(funcall $0)" "funcall" nil nil nil "/home/yuhei/.emacs.d/snippets/emacs-lisp-mode/funcall" nil nil)
+                       ("format" "(format \"$0\" &optional OBJECTS)\n" "format" nil nil nil "/home/yuhei/.emacs.d/snippets/emacs-lisp-mode/format" nil nil)
+                       ("find-file" "(find-file $0 )" "find-file" nil nil nil "/home/yuhei/.emacs.d/snippets/emacs-lisp-mode/find-file" nil nil)
+                       ("eval-after-load" "(eval-after-load \"${1:SYM}\"\n  ${2:$$(yas/choose-value '(\"'(progn\" \"'\"))}\n  ${3:BODY}\n  ${2:$(when (string= \"'(progn\" text) \")\")})\n$0" "eval-after-load" nil nil nil "/home/yuhei/.emacs.d/snippets/emacs-lisp-mode/eval-after-load" nil nil)
+                       ("dolist" "(dolist $0 )" "dolist" nil nil nil "/home/yuhei/.emacs.d/snippets/emacs-lisp-mode/dolist" nil nil)
+                       ("defvar" "(defvar $0 &optional INITVALUE \"DOCSTRING\")" "defvar" nil nil nil "/home/yuhei/.emacs.d/snippets/emacs-lisp-mode/defvar" nil nil)
+                       ("defun" "(defun ${1:NAME} (${2:ARG})\n  \"DOCSTRING\"\n  ${3:$$(yas/choose-value '(\"(interactive)\" \"\"))}\n    $0\n  )" "defun" nil nil nil "/home/yuhei/.emacs.d/snippets/emacs-lisp-mode/defun" nil nil)
+                       ("define-key" "(define-key ${1:KEYMAP} (kbd \"${2:KEY}\")  \\'${3:FUNC})$0" "define-key" nil nil nil "/home/yuhei/.emacs.d/snippets/emacs-lisp-mode/define-key" nil nil)
+                       ("concat" "(concat $0)" "concat" nil nil nil "/home/yuhei/.emacs.d/snippets/emacs-lisp-mode/concat" nil nil)
+                       ("add-hook" "(add-hook \\'${1:HOOK}  \\'${2:FUNC} )$0\n\n" "add-hook" nil nil nil "/home/yuhei/.emacs.d/snippets/emacs-lisp-mode/add-hook" nil nil)))
+
+
+;;; Do not edit! File generated at Sun Oct 25 08:03:14 2020

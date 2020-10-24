@@ -1,0 +1,1218 @@
+これは j-cvsbook.info、j-main.texi より makeinfo バージョン 4.2
+によって作成されました。
+
+START-INFO-DIR-ENTRY
+* CVS Book: (cvsbook).          A CVS tutorial and reference.
+END-INFO-DIR-ENTRY
+
+Copyright (C) 1999 Karl Fogel <kfogel@red-bean.com>
+
+This document is free software; you can redistribute and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation; either version 2, or (at your option) any
+later version.
+
+This document is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+General Public License for more details.
+
+This manual describes how to use and administer CVS (Concurrent Versions
+System).  It is part of a larger work entitled `Open Source Development
+With CVS'; please see the introduction for details.
+
+This is version 1.12 of this manual.
+
+
+File: j-cvsbook.info,  Node: CVS And Implied Arguments,  Next: Committing,  Prev: Finding Out What You (And Others) Did -- update And diff,  Up: A Day With CVS
+
+CVS And Implied Arguments
+-------------------------
+
+今まで述べてきた各 CVS コマンドでは、コマンドラインでファイルの指定をし
+ていないことに気づいたと思います。例えば
+
+     floss$ cvs diff
+
+を走らせましたね、
+
+     floss$ cvs diff hello.c
+
+ではなくて。また、
+
+     floss$ cvs update
+
+を走らせましたよね、
+
+     floss$ cvs update hello.c
+
+ではなくて。ここでの原則は、ファイルを指定しない場合、CVS はそのコマンド
+で適用できる限りの全てのファイルに対して動作する、ということです。この原
+則はカレントディレクトリ以下のサブディレクトリ内のファイルも含みます。
+CVS はカレントディレクトリ以下のツリーを自動的に降りていきます。例えば
+b-subdir/random.c と a-subdir/subsubdir/fish.c を変更したとすると、結果
+は次のようになるでしょう:
+
+     floss$ cvs update
+     cvs update: Updating .
+     M hello.c
+     cvs update: Updating a-subdir
+     cvs update: Updating a-subdir/subsubdir
+     M a-subdir/subsubdir/fish.c
+     cvs update: Updating b-subdir
+     M b-subdir/random.c
+     floss$
+
+いや、こっちのほうがいいかな:
+
+     floss$ cvs -q update
+     M hello.c
+     M a-subdir/subsubdir/fish.c
+     M b-subdir/random.c
+     floss$
+
+-q は -Q のちょっと弱いヤツです。もし -Q を使ったとしたら何も出力されな
+いでしょう。変更情報は必須でないメッセージだとみなされてしまうからです。
+小文字の -q を使うと制限が弱まります。要らないと思うようなメッセージは抑
+制されて、確かで役に立ちそうなメッセージは出力されます。
+
+アップデートでファイルを指定することもできます:
+
+     floss$ cvs update hello.c b-subdir/random.c
+     M hello.c
+     M b-subdir/random.c
+     floss$
+
+こうすると CVS は指定されたファイルだけを調べて、他のは無視します。
+
+実際のところはファイルを限定しないでコマンドを走らせるほうが普通です。
+ほとんどの場合、ディレクトリツリー全体を一度にアップデートしたいことが多
+いです。ここでやっているアップデートは、ローカルで変更されたファイルを表
+示するだけであることを思い出して下さい。リポジトリにはまだ何の変更も加え
+られていないですからね。プロジェクトで他の人と一緒に作業している場合には、
+適宜アップデートを走らせてリポジトリの変更を自分の作業コピーに取り入れて
+いくわけですが、その場合にはアップデートしたいファイル名を指定するという
+のは少しは役に立つでしょう。
+
+同じ原則が CVS のほかのコマンドにもあてはまります。例えば diff ですが、
+ひとつのファイルの変更だけ見るということができます。
+
+     floss$ cvs diff -c b-subdir/random.c
+     Index: b-subdir/random.c
+     ===================================================================
+     RCS file: /usr/local/cvs/myproj/b-subdir/random.c,v
+     retrieving revision 1.1.1.1
+     diff -c -r1.1.1.1 random.c
+     *** b-subdir/random.c   1999/04/18 18:18:22     1.1.1.1
+     --- b-subdir/random.c   1999/04/19 06:09:48
+     ***************
+     *** 1 ****
+     ! /* A completely empty C file. */
+     --- 1,8 --
+     ! /* Print out a random number. */
+     !
+     ! #include <stdio.h>
+     !
+     ! void main ()
+     ! {
+     !   printf ("a random number\n");
+     ! }
+
+また、全ての変更を一度に見るというのもできます(ちょっと大きい diff だけ
+ど、席から離れないで):
+
+     floss$ cvs -Q diff -c
+     Index: hello.c
+     ===================================================================
+     RCS file: /usr/local/cvs/myproj/hello.c,v
+     retrieving revision 1.1.1.1
+     diff -c -r1.1.1.1 hello.c
+     *** hello.c     1999/04/18 18:18:22     1.1.1.1
+     --- hello.c     1999/04/19 02:17:07
+     ***************
+     *** 4,7 ****
+     --- 4,8 --
+       main ()
+       {
+         printf ("Hello, world!\n");
+     +   printf ("Goodbye, world!\n");
+       }
+     Index: a-subdir/subsubdir/fish.c
+     ===================================================================
+     RCS file: /usr/local/cvs/myproj/a-subdir/subsubdir/fish.c,v
+     retrieving revision 1.1.1.1
+     diff -c -r1.1.1.1 fish.c
+     *** a-subdir/subsubdir/fish.c   1999/04/18 18:18:22     1.1.1.1
+     --- a-subdir/subsubdir/fish.c   1999/04/19 06:08:50
+     ***************
+     *** 1 ****
+     ! /* A completely empty C file. */
+     --- 1,8 --
+     ! #include <stdio.h>
+     !
+     ! void main ()
+     ! {
+     !   while (1) {
+     !     printf ("fish\n");
+     !   }
+     ! }
+     Index: b-subdir/random.c
+     ===================================================================
+     RCS file: /usr/local/cvs/myproj/b-subdir/random.c,v
+     retrieving revision 1.1.1.1
+     diff -c -r1.1.1.1 random.c
+     *** b-subdir/random.c   1999/04/18 18:18:22     1.1.1.1
+     --- b-subdir/random.c   1999/04/19 06:09:48
+     ***************
+     *** 1 ****
+     ! /* A completely empty C file. */
+     --- 1,8 --
+     ! /* Print out a random number. */
+     !
+     ! #include <stdio.h>
+     !
+     ! void main ()
+     ! {
+     !   printf ("a random number\n");
+     ! }
+
+とにかく、diff を見てわかるように、このプロジェクトは明らかに prime time
+の準備ができました。リポジトリに変更をコミットしてみましょう。
+
+
+File: j-cvsbook.info,  Node: Committing,  Next: Revision Numbers,  Prev: CVS And Implied Arguments,  Up: A Day With CVS
+
+Committing
+----------
+
+"commit" コマンドは、リポジトリに変更を送ります。ファイルを指定しな
+ければ、変更の全てがリポジトリに送られます。それが嫌なら、1つかそれ以上
+のファイル名を指定してコミットすることもできます(その場合他のファイルは
+無視されます)。
+
+ここでは、1つのファイルを指定してコミット、2つのファイルを推測させてコミッ
+トしてみます:
+
+     floss$ cvs commit -m "print goodbye too" hello.c
+     Checking in hello.c;
+     /usr/local/cvs/myproj/hello.c,v  <--  hello.c
+     new revision: 1.2; previous revision: 1.1
+     done
+     floss$ cvs commit -m "filled out C code"
+     cvs commit: Examining .
+     cvs commit: Examining a-subdir
+     cvs commit: Examining a-subdir/subsubdir
+     cvs commit: Examining b-subdir
+     Checking in a-subdir/subsubdir/fish.c;
+     /usr/local/cvs/myproj/a-subdir/subsubdir/fish.c,v  <--  fish.c
+     new revision: 1.2; previous revision: 1.1
+     done
+     Checking in b-subdir/random.c;
+     /usr/local/cvs/myproj/b-subdir/random.c,v  <--  random.c
+     new revision: 1.2; previous revision: 1.1
+     done
+     floss$
+
+ちょっと時間を取って、出力を注意して読んで下さい。ほとんどが自己説明的で
+す。リビジョン番号がインクリメントされていることに気づくと思います(思っ
+た通りだ)。でもオリジナルのリビジョンは 1.1 になっていて、以前 Entries
+ファイルで見た 1.1.1.1 ではないですね。
+
+ここでこの食い違いについて説明しますが、まああまり重要なことではありませ
+ん。これは、CVS が 1.1.1.1 に特別な意味を持たせていることに関係していま
+す。多くの場合、「ファイルはインポート時にリビジョン番号1.1を受け取る」
+といっても構わないのですが、初回コミットが起こるまで、Entries ファイルに
+はリビジョン番号 1.1.1.1 が示されています(その理由は CVS のみぞ知る)。
+
+
+File: j-cvsbook.info,  Node: Revision Numbers,  Next: Detecting And Resolving Conflicts,  Prev: Committing,  Up: A Day With CVS
+
+Revision Numbers
+----------------
+
+プロジェクト中の各ファイルはそれぞれリビジョン番号というのを持っています。
+ファイルがコミットされるとリビジョン番号の最後のところが1増えます。 従っ
+て、プロジェクトを構成するいろいろなファイルは、任意の時点でそれぞれ全然
+違うリビジョン番号を持つことになります。これはただ、あるファイルは他のファ
+イルよりも多く変更され(コミットされ)た、ということを意味するだけです。
+
+(あなたはきっと、変更のたびに小数点の右側が変わるとすると、じゃあ左側の
+部分は何なんだろう、と思うことでしょう。実際、CVS が左側の数字を自動的に
+増やすことはなく、ユーザのリクエストによって増やすことになります。 ほと
+んど使われない機能なのでこのツアーでは説明しません。)
+
+ここまで使ってきた例のプロジェクトで、3つのファイルの変更をコミットした
+ばかりです。それらのファイルのリビジョンは今 1.2 ですが、プロジェクトの
+他のファイルはまだ 1.1 です。プロジェクトをチェックアウトする時には、各
+ファイルのリビジョン番号の一番高いものを取ってくることになります。
+qsmith が今 myproj をチェックアウトしたとすると、トップレベルディレクト
+リのリビジョン番号は次のようになっているでしょう:
+
+     paste$ cvs -q -d :pserver:qsmith@cvs.foobar.com:/usr/local/cvs co myproj
+     U myproj/README.txt
+     U myproj/hello.c
+     U myproj/a-subdir/whatever.c
+     U myproj/a-subdir/subsubdir/fish.c
+     U myproj/b-subdir/random.c
+     paste$ cd myproj/CVS
+     paste$ cat Entries
+     /README.txt/1.1.1.1/Sun Apr 18 18:18:22 1999//
+     /hello.c/1.2/Mon Apr 19 06:35:15 1999//
+     D/a-subdir////
+     D/b-subdir////
+     paste$
+
+hello.c ファイル(他のファイルにうもれていますが)は今リビジョン 1.2 で、
+README.txt はまだ最初のリビジョンのままです。(リビジョン 1.1.1.1
+ですが、 1.1 でもあります)
+
+彼が hello.c に
+
+     printf ("between hello and goodbye\n");
+
+このような行を付け加えてコミットしたとすると、リビジョン番号はもう一度イ
+ンクリメントされます:
+
+     paste$ cvs ci -m "added new middle line"
+     cvs commit: Examining .
+     cvs commit: Examining a-subdir
+     cvs commit: Examining a-subdir/subsubdir
+     cvs commit: Examining b-subdir
+     Checking in hello.c;
+     /usr/local/cvs/myproj/hello.c,v  <--  hello.c
+     new revision: 1.3; previous revision: 1.2
+     done
+     paste$
+
+hello.c はリビジョン 1.3 になりました。fish.c と random.c はリビジョン
+1.2 のままで、その他のファイルは全部リビジョン 1.1 です。
+
+cvs commit のかわりに cvs ci
+というコマンドを使ったことに注意して下さい。 CVS
+のコマンドはほとんど、タイプしやすいように短い形式を持っています。
+checkout, update, commit の省略形はそれぞれ、co, up, ci です。省略形の一
+覧を見たければ `cvs --help-synonyms' を走らせてみましょう。
+
+Entries ファイルを見るのがリビジョン番号を知るための唯一の方法ではありま
+せん。 status コマンドも使えます。
+
+     paste$ cvs status hello.c
+     ===================================================================
+     File: hello.c           Status: Up-to-date
+     
+        Working revision:    1.3     Tue Apr 20 02:34:42 1999
+        Repository revision: 1.3     /usr/local/cvs/myproj/hello.c,v
+        Sticky Tag:          (none)
+        Sticky Date:         (none)
+        Sticky Options:      (none)
+
+ファイル名を指定しないで起動すると、プロジェクト内の全ファイルのステータ
+スを表示します:
+
+     paste$ cvs status
+     cvs status: Examining.
+     ===================================================================
+     File: README.txt        Status: Up-to-date
+     
+        Working revision:    1.1.1.1 Sun Apr 18 18:18:22 1999
+        Repository revision: 1.1.1.1 /usr/local/cvs/myproj/README.txt,v
+        Sticky Tag:          (none)
+        Sticky Date:         (none)
+        Sticky Options:      (none)
+     
+     ===================================================================
+     File: hello.c           Status: Up-to-date
+     
+        Working revision:    1.3     Tue Apr 20 02:34:42 1999
+        Repository revision: 1.3     /usr/local/cvs/myproj/hello.c,v
+        Sticky Tag:          (none)
+        Sticky Date:         (none)
+        Sticky Options:      (none)
+     
+     cvs status: Examining a-subdir
+     ===================================================================
+     File: whatever.c        Status: Up-to-date
+     
+        Working revision:    1.1.1.1 Sun Apr 18 18:18:22 1999
+        Repository revision: 1.1.1.1 /usr/local/cvs/myproj/a-subdir/whatever.c,v
+        Sticky Tag:          (none)
+        Sticky Date:         (none)
+        Sticky Options:      (none)
+     
+     cvs status: Examining a-subdir/subsubdir
+     ===================================================================
+     File: fish.c            Status: Up-to-date
+     
+        Working revision:    1.2     Mon Apr 19 06:35:27 1999
+        Repository revision: 1.2     /usr/local/cvs/myproj/
+                                     a-subdir/subsubdir/fish.c,v
+        Sticky Tag:          (none)
+        Sticky Date:         (none)
+        Sticky Options:      (none)
+     
+     cvs status: Examining b-subdir
+     ===================================================================
+     File: random.c          Status: Up-to-date
+     
+        Working revision:    1.2     Mon Apr 19 06:35:27 1999
+        Repository revision: 1.2     /usr/local/cvs/myproj/b-subdir/random.c,v
+        Sticky Tag:          (none)
+        Sticky Date:         (none)
+        Sticky Options:      (none)
+     
+     paste$
+
+よくわからないところは無視して下さい。実際これは CVS に関してはよいアド
+バイスなんです。あなたが探しているちょっとした情報に、全然関係ない情報が
+ぞろぞろついてきてわけがわからない、ということがよくあるのです。というか
+それが普通です。必要あるところだけ取り出して、残りは気にしないことです。
+
+前の例で、気にしないといけないところは各ファイルのステータス出力の最初の
+3行です(空行は数えないで)。最初の行は一番重要です。ファイル名と作業コピー
+のステータスが書いてあります。現在、ファイルは全てリポジトリと同期してい
+るので `Up-to-date' となっています。もし random.c を変更してまだコ
+ミットしていないとすると、次のようになるでしょう:
+
+     ===================================================================
+     File: random.c          Status: Locally Modified
+     
+        Working revision:    1.2     Mon Apr 19 06:35:27 1999
+        Repository revision: 1.2     /usr/local/cvs/myproj/b-subdir/random.c,v
+        Sticky Tag:          (none)
+        Sticky Date:         (none)
+        Sticky Options:      (none)
+
+Working revision と Repository revision を見ると、ファイルがリポジトリと
+同期していないかどうかがわかります。オリジナル作業コピーに戻って(jrandom
+の作業コピーはまだ hello.c の変更を知りません)、ステータスを見てみましょ
+う。
+
+     floss$ cvs status hello.c
+     ===================================================================
+     File: hello.c           Status: Needs Patch
+     
+        Working revision:    1.2     Mon Apr 19 02:17:07 1999
+        Repository revision: 1.3     /usr/local/cvs/myproj/hello.c,v
+        Sticky Tag:          (none)
+        Sticky Date:         (none)
+        Sticky Options:      (none)
+     
+     floss$
+
+これは、誰かが hello.c の変更をコミットしてリポジトリのリビジョンを 1.3
+に上げたのに、この作業コピーはまだ 1.2 のままであることを示してい
+ます。Status: Needs Patch の意味は、次のアップデートでリポジトリのその
+変更を見て、作業コピーに "patch" を当てる、ということです。
+
+ちょっと、qsmith が hello.c を変更したのを知らないつもりになってみましょ
+う。status も update も走らせません。そのかわりそのファイルを編集して、
+同じところを変更してみましょう。こうやると、初めてのコンフリクトにお目
+にかかれますよ。
+
+
+File: j-cvsbook.info,  Node: Detecting And Resolving Conflicts,  Next: Finding Out Who Did What (Browsing Log Messages),  Prev: Revision Numbers,  Up: A Day With CVS
+
+Detecting And Resolving Conflicts
+---------------------------------
+
+コンフリクトを発見するのは簡単です。 CVS は update を実行する前に、間違
+えようのない言葉で「コンフリクトがあるよ」と知らせてくれます。まずコンフ
+リクトを作ってみましょう。hello.c を編集して、次のような行を追加して下さ
+い:
+
+     printf ("this change will conflict\n");
+
+qsmith がこういう行をコミットしたその場所にです:
+
+     printf ("between hello and goodbye\n");
+
+この時点で、作業コピーの hello.c のステータスは次のようになります
+
+     floss$ cvs status hello.c
+     ===================================================================
+     File: hello.c           Status: Needs Merge
+     
+        Working revision:    1.2     Mon Apr 19 02:17:07 1999
+        Repository revision: 1.3     /usr/local/cvs/myproj/hello.c,v
+        Sticky Tag:          (none)
+        Sticky Date:         (none)
+        Sticky Options:      (none)
+     
+     floss$
+
+リポジトリも作業コピーも変更されていて、それらの変更をマージしなければな
+らない、という意味です。(CVS は変更がコンフリクトしていることはまだ気づ
+いてません、update をまだ実行していないですからね) update を走らせた時に
+はこうなります:
+
+     floss$ cvs update hello.c
+     RCS file: /usr/local/cvs/myproj/hello.c,v
+     retrieving revision 1.2
+     retrieving revision 1.3
+     Merging differences between 1.2 and 1.3 into hello.c
+     rcsmerge: warning: conflicts during merge
+     cvs update: conflicts found in hello.c
+     C hello.c
+     floss$
+
+最後の行は giveaway 。ファイル名の横にある C は変更がマージされたけれど
+もコンフリクトした、ということを示します。 hello.c の内容には両方の変更
+が示されています:
+
+     #include <stdio.h>
+     
+     void
+     main ()
+     {
+       printf ("Hello, world!\n");
+     <<<<<<< hello.c
+       printf ("this change will conflict\n");
+     =======
+       printf ("between hello and goodbye\n");
+     >>>>>>> 1.3
+       printf ("Goodbye, world!\n");
+     }
+
+コンフリクトはつねにコンフリクトマーカで区切られ、次の形式で示されます:
+
+     <<<<<<< (filename)
+       作業コピーの未コミットの変更
+       blah blah blah =======
+       リポジトリからきた新しい変更
+       blah blah blah
+       などなど (リポジトリの最新リビジョン番号など)
+     >>>>>>> (latest revision number in the repository)
+
+Entries ファイルには、ファイルが現在中途半端な状態になっていることが書い
+てあります。
+
+     floss$ cat CVS/Entries
+     /README.txt/1.1.1.1/Sun Apr 18 18:18:22 1999//
+     D/a-subdir////
+     D/b-subdir////
+     /hello.c/1.3/Result of merge+Tue Apr 20 03:59:09 1999//
+     floss$
+
+コンフリクトを解消するには、ファイルを編集して、あるべき姿にし、コンフリ
+クトマーカを取り除き、そしてコミットします。必ずしも変更のうちどちらかを
+選んでもう片方を捨てたりする必要はありません、どちらの変更もいまいちだと
+思えば、コンフリクトしているところ(ファイル全部でもかまわないんですが)を
+すっかり書き換えてしまってもいいのです。今回は最初の変更に合わせることに
+して、でもキャピタライズと句読点の打ちかたを少しだけ変えておくことにしま
+しょう。
+
+     floss$ emacs hello.c
+       (make the edits...)
+     floss$ cat hello.c
+     #include <stdio.h>
+     
+     void
+     main ()
+     {
+       printf ("Hello, world!\n");
+       printf ("BETWEEN HELLO AND GOODBYE.\n");
+       printf ("Goodbye, world!\n");
+     }
+     floss$ cvs ci -m "adjusted middle line"
+     cvs commit: Examining .
+     cvs commit: Examining a-subdir
+     cvs commit: Examining a-subdir/subsubdir
+     cvs commit: Examining b-subdir
+     Checking in hello.c;
+     /usr/local/cvs/myproj/hello.c,v  <-  hello.c
+     new revision: 1.4; previous revision: 1.3
+     done
+     floss$
+
+
+File: j-cvsbook.info,  Node: Finding Out Who Did What (Browsing Log Messages),  Next: Examining And Reverting Changes,  Prev: Detecting And Resolving Conflicts,  Up: A Day With CVS
+
+Finding Out Who Did What (Browsing Log Messages)
+------------------------------------------------
+
+ここまで、今回のこのプロジェクトはいくつかの変更を経験しました。いままで
+に起こったことをざっと見ようと思ったとき、diff を全部詳しく調べたりする
+必要はありません。ログメッセージを見るのが理想的ですね、log コマンドを使
+えば見ることができます:
+
+     floss$ cvs log
+     (pages upon pages of output omitted)
+
+ログ出力は繁雑になりがちです。1つのファイルのログメッセージだけを見ましょ
+う:
+
+     floss$ cvs log hello.c
+     RCS file: /usr/local/cvs/myproj/hello.c,v
+     Working file: hello.c
+     head: 1.4
+     branch:
+     locks: strict
+     access list:
+     symbolic names:
+             start: 1.1.1.1
+             jrandom: 1.1.1
+     keyword substitution: kv
+     total revisions: 5;     selected revisions: 5
+     description:
+     --------------
+     revision 1.4
+     date: 1999/04/20 04:14:37;  author: jrandom;  state: Exp;  lines: +1 -1
+     adjusted middle line
+     --------------
+     revision 1.3
+     date: 1999/04/20 02:30:05;  author: qsmith;  state: Exp;  lines: +1 -0
+     added new middle line
+     --------------
+     revision 1.2
+     date: 1999/04/19 06:35:15;  author: jrandom;  state: Exp;  lines: +1 -0
+     print goodbye too
+     --------------
+     revision 1.1
+     date: 1999/04/18 18:18:22;  author: jrandom;  state: Exp;
+     branches:  1.1.1;
+     Initial revision
+     --------------
+     revision 1.1.1.1
+     date: 1999/04/18 18:18:22;  author: jrandom;  state: Exp;  lines: +0 -0
+     initial import into CVS
+     =========================================================================
+     floss$
+
+いつものとおり、一番上になにかたくさん情報があるようですが、無視しましょ
+う。ダッシュの行の次に肝心なところが、読んでわかるフォーマットで書いてあ
+ります。
+
+1つのコミットでたくさんのファイルが送られるとき、それらのファイルは同じ
+メッセージを共有します。変更を追跡するとき役に立ちます。たとえば、fish.c
+と random.c を同時にコミットしたときのことを思いだしてみてください。こん
+な風にコミットしましたよね:
+
+     floss$ cvs commit -m "filled out C code"
+     Checking in a-subdir/subsubdir/fish.c;
+     /usr/local/cvs/myproj/a-subdir/subsubdir/fish.c,v  <-  fish.c
+     new revision: 1.2; previous revision: 1.1
+     done
+     Checking in b-subdir/random.c;
+     /usr/local/cvs/myproj/b-subdir/random.c,v  <-  random.c
+     new revision: 1.2; previous revision: 1.1
+     done
+     floss$
+
+ここでやったことは、同じログメッセージ「C のコードをふくらませた」で両方
+のファイルをコミットするということです(ここではたまたまどちらのファイル
+もリビジョン番号が 1.1 から 1.2 になっていますが、それは偶然一致しただけ
+です。もし random.c が 1.29 だったら、このコミットで 1.30 になって、
+fish.c のリビジョン1.2と同じログメッセージを共有することになります)。
+
+cvs log を実行すると、共有ログメッセージが見えます:
+
+     floss$ cvs log a-subdir/subsubdir/fish.c b-subdir/random.c
+     
+     RCS file: /usr/local/cvs/myproj/a-subdir/subsubdir/fish.c,v
+     Working file: a-subdir/subsubdir/fish.c
+     head: 1.2
+     branch:
+     locks: strict
+     access list:
+     symbolic names:
+             start: 1.1.1.1
+             jrandom: 1.1.1
+     keyword substitution: kv
+     total revisions: 3;     selected revisions: 3
+     description:
+     --------------
+     revision 1.2
+     date: 1999/04/19 06:35:27;  author: jrandom;  state: Exp;  lines: +8 -1
+     filled out C code
+     --------------
+     revision 1.1
+     date: 1999/04/18 18:18:22;  author: jrandom;  state: Exp;
+     branches:  1.1.1;
+     Initial revision
+     --------------
+     revision 1.1.1.1
+     date: 1999/04/18 18:18:22;  author: jrandom;  state: Exp;  lines: +0 -0
+     initial import into CVS
+     =========================================================================
+     RCS file: /usr/local/cvs/myproj/b-subdir/random.c,v
+     Working file: b-subdir/random.c
+     head: 1.2
+     branch:
+     locks: strict
+     access list:
+     symbolic names:
+             start: 1.1.1.1
+             jrandom: 1.1.1
+     keyword substitution: kv
+     total revisions: 3;     selected revisions: 3
+     description:
+     --------------
+     revision 1.2
+     date: 1999/04/19 06:35:27;  author: jrandom;  state: Exp;  lines: +8 -1
+     filled out C code
+     --------------
+     revision 1.1
+     date: 1999/04/18 18:18:22;  author: jrandom;  state: Exp;
+     branches:  1.1.1;
+     Initial revision
+     --------------
+     revision 1.1.1.1
+     date: 1999/04/18 18:18:22;  author: jrandom;  state: Exp;  lines: +0 -0
+     initial import into CVS
+     =========================================================================
+     floss$
+
+この出力を見れば、この2つのリビジョンが同じコミットだったというのがわか
+ります(2つのリビジョンのタイムスタンプが同一あるいは直近だ、というのより
+はるかにわかりやすいですね)。
+
+ログメッセージを読むというのは、あるプロジェクトにどのようなことが起こっ
+てきたかをさっとつかんだり、ある時刻に特定のファイルに何が起こったか知る
+には良い方法です。生の cvs log の出力をもっと簡明で読みやすいかたち(GNU
+の ChangeLog のスタイルみたいな)に整形するフリーのツールもあります。そう
+いうツールはこのツアーではカバーしませんが、*Note Third-Party Tools::
+で紹 介します。
+
+
+File: j-cvsbook.info,  Node: Examining And Reverting Changes,  Next: The Slow Method Of Reverting,  Prev: Finding Out Who Did What (Browsing Log Messages),  Up: A Day With CVS
+
+Examining And Reverting Changes
+-------------------------------
+
+qsmith がログを読んでいて、jrandom が hello.c に最近ほどこした変更を見た
+とします:
+
+     revision 1.4
+     date: 1999/04/20 04:14:37;  author: jrandom;  state: Exp;  lines: +1 -1
+     adjusted middle line
+
+彼は「jrandom は一体何をしとんねん」と思いました。qsmith がたずねた質問
+を正確な言葉で言うと、「hello.c のわたしのリビジョン(1.3)と、そのすぐあ
+との jrandom のリビジョン(1.4)の違いは何なのでしょう」ですね。これは
+diff
+コマンドでわかることですが、今回は過去の2つのリビジョンを比べるので、
+-r コマンドオプションを使ってそれらを指定します:
+
+     paste$ cvs diff -c -r 1.3 -r 1.4 hello.c
+     Index: hello.c
+     ===========================================================
+     RCS file: /usr/local/cvs/myproj/hello.c,v
+     retrieving revision 1.3
+     retrieving revision 1.4
+     diff -c -r1.3 -r1.4
+     *** hello.c     1999/04/20 02:30:05     1.3
+     --- hello.c     1999/04/20 04:14:37     1.4
+     ***************
+     *** 4,9 ****
+       main ()
+       {
+         printf ("Hello, world!\n");
+     !   printf ("between hello and goodbye\n");
+         printf ("Goodbye, world!\n");
+       }
+     --- 4,9 --
+       main ()
+       {
+         printf ("Hello, world!\n");
+     !   printf ("BETWEEN HELLO AND GOODBYE.\n");
+         printf ("Goodbye, world!\n");
+       }
+     paste$
+
+このように見ると変更点は明らかです。リビジョン番号を時系列順に指定したの
+で(普通はこれでいいです)、diff もその順で示されます。リビジョン番号を1つ
+だけ指定すると、CVS は現在の作業コピーを比較対象にします。
+
+qsmith
+はこの変更を見てすぐ、自分のやりかたの方がいいから、「アンドゥー」
+つまりリビジョンをひとつ戻して解決するんだ、と決めました。
+
+しかし、彼はリビジョン1.4を捨てたいというわけではありません。ですが、た
+だ技術的な問題としてどうかというと、CVS ではそういうことも可能です、たい
+がいそんなことをする理由はないですが。リビジョン1.4をそのままにしておい
+て、1.3
+にそっくりな新しいリビジョン1.5を作るほうがましです。こうすると、
+アンドゥーそのものもそのファイルの履歴に残ります。
+
+残るはどうやってリビジョン1.3を取ってきてそれを1.5とするか、という疑問だ
+けです。
+
+この場合に限って言うと、とてもシンプルな変更なので qsmith が 1.3 をうつ
+すよう手でファイルを編集して、それをコミットすれば済みます。でも、変更が
+もっと複雑になったら(実際のプロジェクトでは普通そうでしょう)、古いリビジョ
+ンを手でもう一回作るというのはどう考えても間違えそうです。ですから、
+qsmith は CVS を使って古いリビジョンを取ってきて、それを再コミットするべ
+きです。
+
+これを実現するために、同じくらい良い方法が2つあります。ゆっくりチマチマ
+やる方法と、速くてカッコイイ方法です。まずはゆっくりチマチマやる方法を先
+に見ましょう。
+
+
+File: j-cvsbook.info,  Node: The Slow Method Of Reverting,  Next: The Fast Method Of Reverting,  Prev: Examining And Reverting Changes,  Up: A Day With CVS
+
+The Slow Method Of Reverting
+----------------------------
+
+この方法では update に -p フラグと -r フラグを同時に渡します。-p
+オプショ
+ンは指定したリビジョン番号の内容を標準出力に送ります。それだけではこのオ
+プションは全然役に立ちません。ファイル内容がディスプレイ上を流れるだけ、
+作業コピーはそのままです。しかしファイルにリダイレクトすれば、そのファイ
+ルの内容は古いリビジョンになるのです。手で編集してその状態にしたかのよう
+になります。
+
+しかしまず qsmith はリポジトリの最新に追いついておく必要があります:
+
+     paste$ cvs update
+     cvs update: Updating .
+     U hello.c
+     cvs update: Updating a-subdir
+     cvs update: Updating a-subdir/subsubdir
+     cvs update: Updating b-subdir
+     paste$ cat hello.c
+     #include <stdio.h>
+     
+     void
+     main ()
+     {
+       printf ("Hello, world!\n");
+       printf ("BETWEEN HELLO AND GOODBYE.\n");
+       printf ("Goodbye, world!\n");
+     }
+     paste$
+
+次に update -p を走らせてリビジョン 1.3 が本当に彼の欲しいものかどうか確
+認します:
+
+     paste$ cvs update -p -r 1.3 hello.c
+     ===================================================================
+     Checking out hello.c
+     RCS:  /usr/local/cvs/myproj/hello.c,v
+     VERS: 1.3
+     ***************
+     #include <stdio.h>
+     
+     void
+     main ()
+     {
+       printf ("Hello, world!\n");
+       printf ("between hello and goodbye\n");
+       printf ("Goodbye, world!\n");
+     }
+
+おっと、最初の何行かが cruft ですね。これらは実際は標準出力ではなくて標
+準エラー出力に送られているので害はありません。どちらにしろ出力が読みにく
+くなるのは確かなので -Q で抑制します:
+
+     paste$ cvs -Q update -p -r 1.3 hello.c
+     #include <stdio.h>
+     
+     void
+     main ()
+     {
+       printf ("Hello, world!\n");
+       printf ("between hello and goodbye\n");
+       printf ("Goodbye, world!\n");
+     }
+     paste$
+
+どうでしょう、これは qsmith の欲しかったものですね。次はこれを作業コピー
+のファイルに置きかえます、Unix のリダイレクトを使いましょう(">" がそれで
+す):
+
+     paste$ cvs -Q update -p -r 1.3 hello.c > hello.c
+     paste$ cvs update
+     cvs update: Updating .
+     M hello.c
+     cvs update: Updating a-subdir
+     cvs update: Updating a-subdir/subsubdir
+     cvs update: Updating b-subdir
+     paste$
+
+update
+を走らせると変更ファイルとしてリストされました。これは内容が変わっ
+ているということです。はっきり言うと、これは古いリビジョン1.3の内容と同
+じです(CVS はこれが以前のリビジョンと同一だということは知りません、ただ
+ファイルが変更されたことだけがわかっています)。qsmith が特に確認したいと
+思えば、diff をとってチェックできます:
+
+     paste$ cvs -Q diff -c
+     Index: hello.c
+     ===================================================================
+     RCS file: /usr/local/cvs/myproj/hello.c,v
+     retrieving revision 1.4
+     diff -c -r1.4 hello.c
+     *** hello.c     1999/04/20 04:14:37     1.4
+     --- hello.c     1999/04/20 06:02:25
+     ***************
+     *** 4,9 ****
+       main ()
+       {
+         printf ("Hello, world!\n");
+     !   printf ("BETWEEN HELLO AND GOODBYE.\n");
+         printf ("Goodbye, world!\n");
+       }
+     --- 4,9 --
+       main ()
+       {
+         printf ("Hello, world!\n");
+     !   printf ("between hello and goodbye\n");
+         printf ("Goodbye, world!\n");
+       }
+     paste$
+
+はい、彼のしたかった復帰ができました。実際、これは以前取った diff の逆で
+す。満足して彼はコミットをかけます:
+
+     paste$ cvs ci -m "reverted to 1.3 code"
+     cvs commit: Examining .
+     cvs commit: Examining a-subdir
+     cvs commit: Examining a-subdir/subsubdir
+     cvs commit: Examining b-subdir
+     Checking in hello.c;
+     /usr/local/cvs/myproj/hello.c,v  <-  hello.c
+     new revision: 1.5; previous revision: 1.4
+     done
+     paste$
+
+
+File: j-cvsbook.info,  Node: The Fast Method Of Reverting,  Prev: The Slow Method Of Reverting,  Up: A Day With CVS
+
+The Fast Method Of Reverting
+----------------------------
+
+元に戻すのに速くてカッコイイ方法というのは、update に -j (join)フラグを
+渡すやりかたです。このフラグはリビジョン番号をとるという点で -r に似てい
+て、同時に2つまでの -j フラグを取ることもできます。CVS は指定された2つの
+リビジョンの違いを計算し、問題のファイルにパッチとして適用する(だから、
+リビジョン番号を指定する順番にはくれぐれも気をつけて)。
+
+qsmith の作業コピーが最新版だとしましょう、その場合こうします:
+
+     paste$ cvs update -j 1.4 -j 1.3 hello.c
+     RCS file: /usr/local/cvs/myproj/hello.c,v
+     retrieving revision 1.4
+     retrieving revision 1.3
+     Merging differences between 1.4 and 1.3 into hello.c
+     paste$ cvs update
+     cvs update: Updating .
+     M hello.c
+     cvs update: Updating a-subdir
+     cvs update: Updating a-subdir/subsubdir
+     cvs update: Updating b-subdir
+     paste$ cvs ci -m "reverted to 1.3 code" hello.c
+     Checking in hello.c;
+     /usr/local/cvs/myproj/hello.c,v  <--  hello.c
+     new revision: 1.5; previous revision: 1.4
+     done
+     paste$
+
+ファイルを1つだけ元に戻す場合なら、チマチマしようがすばやくしようが、そ
+んなに違いがあるわけではないです。しかしあとで出てきますが、複数のファイ
+ルを一度に元に戻そうとしたときなんかには速い方法のほうがどんなに良いかわ
+かると思います。とりあえずはやりやすい方法を使ってください。
+
+Reverting Is Not A Substitute For Communication
+===============================================
+
+たいがいの場合、qsmith が例でやったようなことというのはえらく無作法なや
+りかたです。実際のプロジェクトで他の人と一緒に作業しているときに、だれか
+が良くない変更をコミットしてるなと思ったら、まずはその人とそれについて話
+し合うのがよいでしょう。その変更にはもっともな理由があることもあるし、た
+だあんまりちゃんと考えていなかっただけのこともあります。どちらにしろ、い
+きなり元に戻したりするような理由はありません。起こったことはすべて CVS
+に永久に保存されているのですから、変更した人に相談してからもとに戻しても
+遅くはないのです。
+
+あなたが納期目前のプロジェクトのメンテナだったりあるいは無条件に変更を元
+に戻す必要も権利もあると思うのなら、そうすればいいですが、元に戻された変
+更の主にはすぐにメールでフォローを入れて、あなたが何故そんなことをしたの
+か、何が原因で変更を再コミットする必要があったのかを説明してください。
+
+
+File: j-cvsbook.info,  Node: Other Useful CVS Commands,  Next: Branches,  Prev: A Day With CVS,  Up: An Overview of CVS
+
+Other Useful CVS Commands
+=========================
+
+ここまでくれば、基本的なことなら気楽に CVS を使えるようになっていること
+と思います。ここからはツアー口調をやめて、役に立つコマンドをいくつか要約
+して紹介したいと思います。
+
+* Menu:
+
+* Adding Files::
+* Adding Directories::
+* CVS And Binary Files::
+* Removing Files::
+* Removing Directories::
+* Renaming Files And Directories::
+* Avoiding Option Fatigue::
+* Getting Snapshots (Dates And Tagging)::
+* Acceptable Date Formats::
+* Marking A Moment In Time (Tags)::
+
+
+File: j-cvsbook.info,  Node: Adding Files,  Next: Adding Directories,  Up: Other Useful CVS Commands
+
+Adding Files
+------------
+
+ファイル追加には2ステップの処理をします。add
+コマンドを実行してからコミッ
+トします。ファイルはコミットを実行するまでリポジトリには入りません:
+
+     floss$ cvs add newfile.c
+     cvs add: scheduling file 'newfile.c' for addition
+     cvs add: use 'cvs commit' to add this file permanently
+     floss$ cvs ci -m "added newfile.c" newfile.c
+     RCS file: /usr/local/cvs/myproj/newfile.c,v
+     done
+     Checking in newfile.c;
+     /usr/local/cvs/myproj/newfile.c,v  <-  newfile.c
+     initial revision: 1.1
+     done
+     floss$
+
+
+File: j-cvsbook.info,  Node: Adding Directories,  Next: CVS And Binary Files,  Prev: Adding Files,  Up: Other Useful CVS Commands
+
+Adding Directories
+------------------
+
+ファイルを追加する場合とは違い、ディレクトリを追加するのは1ステップです。
+コミットする必要はありません:
+
+     floss$ mkdir c-subdir
+     floss$ cvs add c-subdir
+     Directory /usr/local/cvs/myproj/c-subdir added to the repository
+     floss$
+
+作業コピーの新しいディレクトリ内を見ると、add コマンドが CVS サブディレ
+クトリを自動的に生成したのがわかります:
+
+     floss$ ls c-subdir
+     CVS/
+     floss$ ls c-subdir/CVS
+     Entries     Repository  Root
+     floss$
+
+これで、作業ディレクトリ中のほかのディレクトリでやっているように、中にファ
+イルや新しいディレクトリを追加したりできます。
+
+
+File: j-cvsbook.info,  Node: CVS And Binary Files,  Next: Removing Files,  Prev: Adding Directories,  Up: Other Useful CVS Commands
+
+CVS And Binary Files
+--------------------
+
+今まで黙っていましたが、CVS にはちょっとしたイヤな秘密があります。CVS は
+バイナリファイルをうまく扱えないのです(あー、ほかにもちょっとしたイヤな
+秘密はありますけど、これは一番イヤな秘密のうちのひとつに数えられるものな
+んです)。バイナリを全然扱えないというのではないんですが、いいところが全
+然ないんです。
+
+いままで扱ってきたのは全てプレーンテキストファイルです。CVS
+はテキストファ
+イル用の特別なトリックを使っています。たとえばリポジトリが Unix で作業コ
+ピーが Windows や Mac にある場合、改行コードをそれぞれの環境に合わせて適
+切に変換していたりします。改行コードというのは、Unix ではラインフィード
+(LF)のみに対し、Windowsではキャリッジリターン/ラインフィード(CRLF)になっ
+ています。従って Windows の作業コピー中のファイルは CRLF を使う一方で、
+同じプロジェクトの Unix マシン上の作業コピーは LF を使っています(リポジ
+トリではいつも LF です)。
+
+ほかに、CVS は RCS キーワードと呼ばれる特別な文字列を認識するトリックが
+あって、これはテキストファイルのその文字列を認識したら、リビジョンや他の
+便利な情報に置換するというものです。例えば、ファイルがこういう文字列を含
+んでいたとすると:
+
+     $Revision$
+
+CVS はコミットのたびにリビジョン番号を含むようにこの文字列を展開します。
+こんな風に:
+
+     $Revision: 1.3 $
+
+CVS はファイルが改良されるのに合わせてこの文字列を最新に保ちます。
+(*Note Advanced CVS:: と *Note Third-Party Tools::
+に、こういうキーワード文 字列についていろいろと説明してあります)
+
+文字列展開は、ファイルを編集しているときにリビジョン番号やほかの情報を見
+ることができたりするのでとても便利な機能です、テキストファイルについては
+ね。でもファイルが JPG の画像だったら? コンパイル済みの実行ファイルだっ
+たら? そういう種類のファイルで、CVS がキーワードを見つけて展開するような
+ことがあったら、深刻なダメージを与えるかもしれません。バイナリではそうい
+う文字列が偶然現われることがあるからです。
+
+ですから、バイナリファイルを追加するときには、CVS に対してキーワード展開
+と改行コード変換をやめるように教えてやる必要があります。その場合 -kb オ
+プションを使ってください:
+
+     floss$ cvs add -kb filename
+     floss$ cvs ci -m "added blah" filename
+       (etc)
+
+また、ときどき(テキストファイル中に擬似キーワード文字列を含んでいるよう
+な場合など) キーワード展開をしたくない場合もあるでしょう。そういう場合は
+-ko オプションを使います:
+
+     floss$ cvs add -ko filename
+     floss$ cvs ci -m "added blah" filename
+       (etc)
+
+(実際、この章はそのようなドキュメントのひとつですね、ここでも例のなかに
+`$Revision$' だとか書いてありますし)
+
+バイナリファイルのリビジョン間で `cvs diff' を走らせても意味が
+ないことに注意してください。diff
+はテキストを前提としたアルゴリズムを使っ
+ているので、バイナリファイルの場合はただ違っているということが報告される
+だけで違いの内容まではわかりません。CVS
+の将来のバージョンではバイナリファ イルの diff
+をとる方法も提供するかもしれません。
+
+
+File: j-cvsbook.info,  Node: Removing Files,  Next: Removing Directories,  Prev: CVS And Binary Files,  Up: Other Useful CVS Commands
+
+Removing Files
+--------------
+
+ファイルの削除は追加と同様、ひとつ余分な手順を踏みます。まずは作業コピー
+からそのファイルを削除しなければなりません:
+
+     floss$ rm newfile.c
+     floss$ cvs remove newfile.c
+     cvs remove: scheduling 'newfile.c' for removal
+     cvs remove: use 'cvs commit' to remove this file permanently
+     floss$ cvs ci -m "removed newfile.c" newfile.c
+     Removing newfile.c;
+     /usr/local/cvs/myproj/newfile.c,v  <-  newfile.c
+     new revision: delete; previous revision: 1.1
+     done
+     floss$
+
+2つめと3つめのコマンドでは、作業コピーにすでに newfile.c が存在しないに
+もかかわらずファイル名を明示的に指定していることに注意してください。もち
+ろん、コミット時にはファイル名を必ずしも指定する必要はありませんが、こう
+しておけば作業コピー中の他のファイルの変更をまきこんでコミットしてしまう
+心配がなくなります。
+
+
+File: j-cvsbook.info,  Node: Removing Directories,  Next: Renaming Files And Directories,  Prev: Removing Files,  Up: Other Useful CVS Commands
+
+Removing Directories
+--------------------
+
+前にも言ったとおり、CVS はディレクトリのバージョン管理はしてくれません。
+そのかわりお手軽な代替手段として、ほとんどの場合に「正しい動作」をする、
+ちょっと変な動作を提供しています。空のディレクトリを特別扱いする、という
+のは、そういう変な動作のうちのひとつです。プロジェクトからディレクトリを
+削除するときには、まずそれの中身を全部削除しないといけません:
+
+     floss$ cd dir
+     floss$ rm file1 file2 file3
+     floss$ cvs remove file1 file2 file3
+       (output omitted)
+     floss$ cvs ci -m "removed all files" file1 file2 file3
+       (output omitted)
+
+次に、ひとつ上のディレクトリで -P フラグ付きの update を 実行します:
+
+     floss$ cd ..
+     floss$ cvs update -P
+       (output omitted)
+
+-P オプションは空のディレクトリを刈り込む(prune)よう update
+に指示します。
+こうすると作業コピーから空のディレクトリが削除されます。それが終わって初
+めて、そのディレクトリは削除されたと言えます。中のファイルが削除され、ディ
+レクトリ自身も削除されました(少なくとも作業コピーからは。リポジトリ内で
+はまだ空のディレクトリが存在したままですが)。
+
+素の update を走らせた場合、CVSは新しいディレクトリをリポジトリから作業
+コピーへ自動的に持ってこないのですが、これは上記の動作と対になるおもしろ
+い動作です。これには2つの理由があるんですが、ここで説明するような価値は
+ないのでやめておきます。ときどき、リポジトリから新しいディレクトリを取っ
+てくるよう -d フラグで指示して update を実行してみるとわかると思います。
+
+
+File: j-cvsbook.info,  Node: Renaming Files And Directories,  Next: Avoiding Option Fatigue,  Prev: Removing Directories,  Up: Other Useful CVS Commands
+
+Renaming Files And Directories
+------------------------------
+
+あるファイルの名前を変えるということは、新しい名前でファイルを作って、古
+いのを消すというのと等価です。 Unix で言うと次のようなコマンドです:
+
+     floss$ cp oldname newname
+     floss$ rm oldname
+
+同じことを CVS で実行するとすると:
+
+     floss$ mv oldname newname
+     floss$ cvs remove oldname
+       (output omitted)
+     floss$ cvs add newname
+       (output omitted)
+     floss$ cvs ci -m "renamed oldname to newname" oldname newname
+       (output omitted)
+     floss$
+
+ファイルに関してはこれでおしまいです。ディレクトリの名前を変えるのもだい
+たい同じです。新しいディレクトリを作って、cvs add して、古いディレクトリ
+から新しいディレクトリへファイルを全部移し、古いディレクトリでそれらを
+cvs remove してから新しいディレクトリで cvs add、cvs commit して実際にコ
+ミットしたら、cvs update -P で空のディレクトリを作業コピーからなくせばい
+いのです。
+
+     floss$ mkdir newdir
+     floss$ cvs add newdir
+     floss$ mv olddir/* newdir
+     mv: newdir/CVS: cannot overwrite directory
+     floss$ cd olddir
+     floss$ cvs rm foo.c bar.txt
+     floss$ cd ../newdir
+     floss$ cvs add foo.c bar.txt
+     floss$ cd ..
+     floss$ cvs commit -m "moved foo.c and bar.txt from olddir to newdir"
+     floss$ cvs update -P
+
+3つめのコマンドの warning に注意してください。olddir の CVS/ サブディレ
+クトリを newdir に移せない、という意味のことを言われます。同じ名前のディ
+レクトリが newdir にありますからね。olddir に CVS/ サブディレクトリを置
+いたままにしておきたいでしょうから、これでいいんですけど。
+
+見てのとおり、ディレクトリを移すのはちょっと面倒です。一番いいのは最初に
+プロジェクトをインポートする時点で適切な配置にしておくことです。そうすれ
+ばそうそうディレクトリを移したりする必要もないでしょう。あとで、リポジト
+リ内のディレクトリを直接変えてディレクトリを移す思い切った方法を紹介しま
+すが、その方法は緊急のとき以外やらないほうがいいと思います。なにを取り扱
+うのでも、できるかぎり作業コピーのなかで CVS の操作で行うのが一番いいの
+です。
+
+
+File: j-cvsbook.info,  Node: Avoiding Option Fatigue,  Next: Getting Snapshots (Dates And Tagging),  Prev: Renaming Files And Directories,  Up: Other Useful CVS Commands
+
+Avoiding Option Fatigue
+-----------------------
+
+普通の人なら、コマンドを打つたびに同じオプションフラグをタイプするのは面
+倒くさいだろうと思います。いつも -Q グローバルオプションを指定するとか、
+diff を取るときにはいつも -c を指定するというのがわかっているのに、なん
+で毎回タイプしなくちゃいけないんでしょう。
+
+幸い、策はあります。CVS はホームディレクトリの .cvsrc
+を探します。そのファ イルの中でデフォルトオプションを指定すれば、CVS
+の起動のたびにそれが適用 されます。.cvsrc の例を示します:
+
+     diff -c
+     update -P
+     cvs -q
+
+行の一番左の単語が CVS コマンド(省略形でないほう)に一致したら、その行の
+オプションがそのコマンドに毎回適用されます。グローバルオプションを指定す
+るには cvs を使ってください(上記では最後の行)。この例では cvs diff の実
+行には毎回自動的に -c フラグがつきます。
+

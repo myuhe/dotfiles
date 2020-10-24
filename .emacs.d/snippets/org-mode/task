@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+#name : TASK
+#key : task
+#contributor : Yuhei Maeda 
+# --
+** TODO [#D] $0 :${1:$$(yas/choose-value '("@work" "@personal" "@home" "@errands"))}:

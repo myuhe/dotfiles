@@ -1,0 +1,1049 @@
+これは j-cvsbook.info、j-main.texi より makeinfo バージョン 4.2
+によって作成されました。
+
+START-INFO-DIR-ENTRY
+* CVS Book: (cvsbook).          A CVS tutorial and reference.
+END-INFO-DIR-ENTRY
+
+Copyright (C) 1999 Karl Fogel <kfogel@red-bean.com>
+
+This document is free software; you can redistribute and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation; either version 2, or (at your option) any
+later version.
+
+This document is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+General Public License for more details.
+
+This manual describes how to use and administer CVS (Concurrent Versions
+System).  It is part of a larger work entitled `Open Source Development
+With CVS'; please see the introduction for details.
+
+This is version 1.12 of this manual.
+
+
+File: j-cvsbook.info,  Node: Creating A Tag Or Branch Without A Working Copy,  Prev: Multiple Merges,  Up: Branches
+
+Creating A Tag Or Branch Without A Working Copy
+-----------------------------------------------
+
+前にも述べたとおり、タグ付けというのは作業コピーでなくリポジトリに影響を
+与えます。では、タグをつけるときに作業コピーはいらないんじゃないか、とい
+う疑問が出てくると思います。作業コピーは、どのプロジェクトが対象で、各ファ
+イルがどのリビジョンかというのを指定するために必要なだけです。作業コピー
+に関係なくプロジェクトとリビジョンを指定できたとしたら、作業コピーは必要
+ないのです。
+
+こんな方法があります: rtag コマンドです("repository tag")。これは tag コ
+マンドととても似たものなので、例を2つだけ示して使いかたの説明にかえます。
+最初のバグレポートが来たときに戻りましょう。最後のリリースに根を下ろすブ
+ランチを作らなければなりません。リリースのタグを指定して作業コピーをチェッ
+クアウトし、`tag -b' を実行しました:
+
+     floss$ cvs tag -b Release-1999_05_01-bugfixes
+
+こうすると `Release-1999_05_01' に根を下ろすブランチが作成されます。
+しかし、リリースのタグを知っているなら、それを使ってブランチの根の場所を
+指定して rtag コマンドを実行すればいいのです、作業コピーを作る必要はあり
+ません:
+
+     floss$ cvs rtag -b -r Release-1999_05_01 Release-1999_05_01-bugfixes myproj
+
+これだけでおわりです。このコマンドは作業コピーの中でも外でも、どちらで実
+行してもしてもかまいません。ただし、CVSROOT 環境変数にリポジトリの場所を
+設定しておくか、-d グローバルオプションで指定する必要があります。このコ
+マンドでブランチでないタグをつけることもできますが、各ファイルのリビジョ
+ン番号をひとつひとつ指定しなければならないので、あまり便利とは言えません。
+(それをタグで参照することも可能ですが、ということはもうタグがついている
+わけで、同じリビジョンに2つもタグをつけても仕方ないですよね)
+
+さて、CVS でいろいろできるくらいに知識がつき、プロジェクトで他の人と作業
+できるくらいにはなったと思います。あまり重要でない機能いくつかと、ここま
+でに見てきた機能につける便利なオプションいくつかをまだ説明していません。
+このあと適切な章のなかで、どのように、どういう時につかえば良いかを実地例
+で説明します。よくわからない時には迷わず Cederqvist マニュアルを読んでみ
+ること、本気で CVS を使う人には不可欠なものですから。
+
+
+File: j-cvsbook.info,  Node: Repository Administration,  Next: Advanced CVS,  Prev: An Overview of CVS,  Up: Top
+
+Repository Administration
+*************************
+
+*Note An Overview of CVS:: ではプロジェクトの一参加者として CVS を使う方
+法を学びました。が、プロジェクト管理者になる場合にはそれに加え、CVS の
+インストールとリポジトリ管理の方法を知る必要があります。この章では、リ
+ポジトリがどういう構造になっていて CVS がそれをどう使っているかを、カー
+テンを取って詳しく見ます。また、アップデートやコミットの際に CVS が通
+過する主なステップと、その動作の変更のしかたを学びます。CVS がどのよう
+に動いているかを理解すれば、問題が起こった時に原因を調べて、保守性のよ
+いやりかたで解決することもできます。
+
+とても involved に聞こえるかもしれませんが、CVS は長生きすることは間違
+いなく、何年も使うことになるでしょう。今から勉強することは長い間役に立
+つことになるのです。CVS は使えば使うほど不可欠になります。何かに頼ろう
+とする時には(絶対そうなるって)、それを知る価値があるのです。
+
+ということを心に留めておいて、始めましょう。まずは CVS をあなたのシス
+テムに導入するところから。
+
+* Menu:
+
+* Getting And Installing CVS::             Putting CVS on your system.
+* Anatomy Of A CVS Distribution::          What's in the CVS distribution.
+* Starting A Repository::                  Setting up a repository.
+* The Password-Authenticating Server::     One method of remote access.
+* Anonymous Access::                       Granting access to the public.
+* Repository Structure::                   How the repository is arranged.
+* RCS Format::                             How repository storage works.
+* What Happens When You Remove A File::    CVS keeps an Attic for old files.
+* The CVSROOT/ Administrative Directory::  Run-time server configuration files.
+* Commit Emails::                          Arranging automatic commit notices.
+* Finding Out More::                       Other sources of information.
+
+
+File: j-cvsbook.info,  Node: Getting And Installing CVS,  Next: Anatomy Of A CVS Distribution,  Up: Repository Administration
+
+Getting And Installing CVS
+==========================
+
+既にシステムに入っていて、わざわざ CVS を取りに行ったり必要はないこと
+が多いです。主な Linux や FreeBSD のディストリビューションを使っている
+場合には、/usr/bin とかにインストールされていると思います。インストー
+ル済みでなくても、Red Hat Linux ユーザなら最新またはほとんど最新の CVS
+の RPM (Red Hat Package) がディストリビューションにあります。Debian ユー
+ザなら以下のコマンドでインストールできます:
+
+     floss$ apt-get update
+     floss$ apt-get install cvs
+
+CVS がマシン上にない場合はソースから作ります。Unix ユーザでない場合は
+その OS 用のバイナリが見つかると思います。幸い CVS は "autoconfiscated"
+で、GNU autoconf を使ってソースのコンパイルが非常に簡単になっています。
+
+* Menu:
+
+* Getting And Building CVS Under Unix::
+* Getting And Installing CVS Under Windows::
+* Getting And Installing CVS On A Macintosh::
+* Limitations Of The Windows And Macintosh Versions::
+
+
+File: j-cvsbook.info,  Node: Getting And Building CVS Under Unix,  Next: Getting And Installing CVS Under Windows,  Up: Getting And Installing CVS
+
+Getting And Building CVS Under Unix
+-----------------------------------
+
+これを書いている時点で、CVS の正規ダウンロードサイトが2つあります。ひ
+とつはフリーソフトウェアファウンデーション(FSF)のFTPサイト `ftp:/
+/ftp.gnu.org/gnu/cvs/' で、公式な GNU ツールとして CVS を提供していま
+す。Cyclic Software は CVS のメンテナ、じゃなくて「メンテナのメンテナ」
+で、ユーザと開発者向けにリポジトリサーバとダウンロードサイトを提供して
+います。`http://download.cyclic.com/pub/' でリリースを配布してい ます。
+
+どちらでもかまいません。下の例では Cyclic Software のサイトを利用しま
+した。FTP クライアント(ウェブブラウザかもしれません)でそこへアクセスす
+るとディレクトリ一覧が見えます、こんな感じ:
+
+     Index of /pub
+         cvs-1.10.5/            18-Feb-99 21:36      -
+         cvs-1.10.6/            17-May-99 10:34      -
+         cvs-1.10/              09-Dec-98 17:26      -
+         macintosh/             23-Feb-99 00:53      -
+         os2/                   09-Dec-98 17:26      -
+         packages/              09-Dec-98 17:26      -
+         rcs/                   09-Dec-98 17:26      -
+         tkcvs/                 09-Dec-98 17:26      -
+         training/              09-Dec-98 17:26      -
+         unix/                  09-Dec-98 17:26      -
+         vms/                   09-Dec-98 17:26      -
+
+「cvs-」で始まるディレクトリに注意して下さい(ほかのは無視して構いませ
+ん)。cvs- ではじまるディレクトリは3つあって、ここで選択せねばなりませ
+ん: 安定した(stable)リリースがいいか、新しい(けどテストの少ない)暫定バー
+ジョンを追いかけるか。安定したリリースは「cvs-1.10」のように小数点が1
+つだけで、暫定リリースは "1.10.5" のように最後にマイナーバージョンをつ
+けてあってその数字が増えていきます。
+
+GNU のサイトは通常メジャーリリースだけを提供して暫定のは提供しませんか
+ら、GNU のほうから CVS を取ってくる場合はこれら全部が見えるわけではあ
+りません。一般に、暫定リリースは大抵安全で、メジャーリリースで見つかっ
+たバグのバグフィクスが入っています。一番いいのは暫定リリースを追いかけ
+て、問題があったら必要なだけ前のリリースに戻すというやりかたです。さき
+ほどの例で一番新しい暫定リリースは cvs-1.10.6 です。ディレクトリに入ると
+
+     Index of /pub/cvs-1.10.6
+         cvs-1.10.6.tar.gz      17-May-99 08:44   2.2M
+
+というのが見えます。これが CVS のソースコードです。これをダウンロード
+し、コンパイルします。GNU ツールのコンパイルに慣れていれば何をするかわ
+かるでしょうから、ここから *Note Anatomy Of A CVS Distribution:: の節ま
+で飛ばしてもかまいません。慣れていなければ何をしていいかわからないでし
+ょうから、読みつづけて下さい…
+
+ここからのコンパイル方法と例では、標準の Unix ディストリビューションを
+前提にしています。フリーの Unix (FreeBSD や Linux) や、主な商業 Unix
+(SunOS/Solaris, AIX, HP-UX, Ultrix など)ならば問題ないと思います。もし
+書いてある通りのやり方でうまくいかなくても諦めないで下さい。各 OS のコ
+ンパイルの詳しいところまではこの本の範囲ではありませんが、この章の最後
+に参考になるリソースへのポインタを示します。
+
+とにかくコンパイルを進めましょう、まず GNU gunzip と tar を使って tar
+ファイルをほどきます(これらがインストールされていない場合、gunzip は
+`ftp://ftp.gnu.org/gnu/gzip/' で、GNU の tar は
+`ftp://ftp.gnu.org/gnu/tar/' で手に入ります)。
+
+     floss$ gunzip cvs-1.10.6.tar.gz
+     floss$ tar xvf cvs-1.10.6.tar
+
+スクリーン上をファイル名がたくさん流れるのが見えると思います。
+
+これで新しいディレクトリ cvs-1.10.6 ができ、その中に CVS のコードがあ
+ります。ディレクトリの中に移り、そこにある configure スクリプトで CVS
+をそのシステム用に合わせましょう:
+
+     floss$ cd cvs-1.10.6
+     floss$  ./configure
+     creating cache ./config.cache
+     checking for gcc... gcc
+     checking whether we are using GNU C... yes
+     checking whether gcc accepts -g... yes
+     checking how to run the C preprocessor... gcc -E
+       (etc)
+
+configure コマンドが終わると、ソースツリーはそのマシンでコンパイルする
+ために必要なことをすべて知っている状態になります。次はこうします:
+
+     floss$ make
+
+出力がたくさん流れるのが見えると思います。その次はこうです:
+
+     floss$ make install
+
+(最後のステップではスーパユーザになる必要があります)
+また出力が流れます、 これが終わると、CVS
+はマシンにインストールされています。
+
+デフォルトでは CVS の実行ファイルは `/usr/local/bin/cvs' となりま
+す。それなりの make プログラムがシステムにインストールされていればの話
+です(持っていなければ GNU プロジェクトの make を
+`ftp://ftp.gnu.org/gnu/make/' から持っていって下さい)
+
+CVS を /usr/local/bin 以外の場所にインストールしたければ、最初のコンフ
+ィギュレーションのやりかたを変えます。例えば
+
+     floss$ ./configure --prefix=/usr
+
+とすると、CVS は /usr/bin/cvs としてインストールされます(PREFIX/bin/cvs
+になるわけです)。デフォルトの prefix は /usr/local になっていて、たい
+ていのインストールではこれでよいと思います。
+
+今までのユーザのかたへ、以前のバージョンでは CVS は1つの実行ファイルに
+なっておらず、また、RCS がインストールされていることに依存していました
+が、バージョン 1.10 ではそうなっていません。ですから、cvs 以外のライブ
+ラリや実行ファイルのことを気にかけなくてもよくなりました。
+
+リモートリポジトリにアクセスするためだけに CVS を使う場合は、ここまで
+でおしまいです。リポジトリを提供しようとしている場合には、ステップがあ
+といくつか残っています。この章のなかで、あとで説明します。
+
+
+File: j-cvsbook.info,  Node: Getting And Installing CVS Under Windows,  Next: Getting And Installing CVS On A Macintosh,  Prev: Getting And Building CVS Under Unix,  Up: Getting And Installing CVS
+
+Getting And Installing CVS Under Windows
+----------------------------------------
+
+ソースコードから実行ファイルを作ることについてこだわっているのでなけれ
+ば、 CVS を Windows 上でソースコードからコンパイルする必要はありません。
+Unix とは違ってコンパイルツールがない場合が多いので、ソースから作ろう
+と思えばそのようなツールを持ってくることから始めなければならなくなりま
+す。そういうことはこの本の範囲ではありませんので、前もってコンパイルさ
+れた CVS バイナリをインストールする方法を教えます。
+
+CVS の Windows バイナリディストリビューションは通常、メジャーリリース
+の分についてのみ作られることに注意して下さい、暫定リリースの分はありま
+せん。また、GNU FTP のほうには置いてありません。Cyclic Software のダウ
+ンロードサイトのメジャーバージョンディレクトリ
+`http://download.cyclic.com/pub/cvs-1.10/' にアクセスしてください。
+そうすると特別なサブディレクトリが見えます:
+
+     Index of /pub/cvs-1.10
+         cvs-1.10.tar.gz        14-Aug-98 09:35   2.4M
+         windows/
+
+この中には ZIP ファイルがあります:
+
+     Index of /pub/cvs-1.10/windows
+         cvs-1.10-win.zip       14-Aug-98 10:10   589k
+
+この ZIP ファイルは CVS のバイナリディストリビューションを含んでいます。
+その ZIP ファイルをダウンロードしてほどいてください:
+
+     floss$ unzip cvs-1.10-win.zip
+     
+     Archive:  cvs-1.10-win.zip
+       inflating: cvs.html
+       inflating: cvs.exe
+       inflating: README
+       inflating: FAQ
+       inflating: NEWS
+       inflating: patch.exe
+       inflating: win32gnu.dll
+
+README に詳しいインストール方法が書いてあります。インストールはだいた
+い次のような手順になります: EXE と DLL ファイルを PATH の通ったディレ
+クトリに置きます。リモートのリポジトリに pserver アクセスするつもりな
+ら `C:\AUTOEXEC.BAT' に次のように書いてください:
+
+     set HOME=C:
+
+これは .cvspass をどこに置くか指示するものです。そしてリブートします。
+
+Windows 上で CVS を動かしても、現時点ではリモートのマシンにリポジトリ
+を提供できません。クライアントになれる(リモートのリポジトリに接続でき
+る)のと、ローカルモードで作業できる(同じマシンのリポジトリを使う)だけ
+です。この本では大部分で Windows で動く CVS はクライアントだと仮定して
+います。しかし、この章の残りの Unix 向けのところを読めば、Windows でロー
+カルリポジトリを設定することも難しくはありません。
+
+リモートリポジトリにアクセスしているだけなら、CVS を走らせる必要さえあ
+りません。クライアントの機能を実装した WinCvs というツールがあります。
+CVS そのものとは別に、それだけで配布されていますが、CVS と同様 GNU GPL
+ライセンス下で使用できます。詳しい情報は `http://www.wincvs.org'
+にてご覧ください。
+
+
+File: j-cvsbook.info,  Node: Getting And Installing CVS On A Macintosh,  Next: Limitations Of The Windows And Macintosh Versions,  Prev: Getting And Installing CVS Under Windows,  Up: Getting And Installing CVS
+
+Getting And Installing CVS On A Macintosh
+-----------------------------------------
+
+CVS は Macintosh でも利用できますが、メインのディストリビューションに
+は入っていません。今のところ、それぞれ異なる3つの Macintosh 用 CVS ク
+ライアントが存在します:
+
+   * MacCvs - `http://www.wincvs.org'
+
+   * MacCVSClient - `http://www.glink.net.hk/~jb/MacCVSClient'       or
+     `http://www.cyclic.com/maccvsclient/'
+
+   * MacCVS Pro - `http://www.maccvs.org'
+
+正直に言うと、どれが一番いいかわからないです。全部使ってみて(上の順番
+通りに試す必要はありません)、いいと思うものを選んで下さい。MacCVS は
+WinCVS と同じホームページですし明らかに兄弟プロジェクトですね(これを書
+いている今、WinCVS のページに「MacCvs の開発はまもなく再開されます」と
+いう意味のお知らせがあります)。
+
+
+File: j-cvsbook.info,  Node: Limitations Of The Windows And Macintosh Versions,  Prev: Getting And Installing CVS On A Macintosh,  Up: Getting And Installing CVS
+
+Limitations Of The Windows And Macintosh Versions
+-------------------------------------------------
+
+CVS の Windows 及び Macintosh ディストリビューションは機能に制限があり
+ます。これらはクライアントとしては動きます。つまりリポジトリサーバに接
+続して作業コピーを取得し、コミット、アップデートなどを実行できます。し
+かしリポジトリを提供することはできません。正しく設定すれば Windows 用
+のはローカルディスクリポジトリを使えますが、他のマシンへプロジェクトの
+リポジトリを提供することはできないのです。一般に、ネットワーク経由でア
+クセスできる CVS リポジトリを作りたい場合には Unix マシン上で CVS サー
+バを動かす必要があります。
+
+
+File: j-cvsbook.info,  Node: Anatomy Of A CVS Distribution,  Next: Starting A Repository,  Prev: Getting And Installing CVS,  Up: Repository Administration
+
+Anatomy Of A CVS Distribution
+=============================
+
+ここまで説明してきた方法は、とにかく始められるよう、早く動かすことが目
+的でした。しかし、CVS のソースディストリビューションにはコードだけでな
+くいろいろ入っています。ここではソースツリーの早わかりロードマップをお
+見せします。便利なものがいろいろあるので無視できないと思いますよ。
+
+* Menu:
+
+* Informational Files::             NEWS, BUGS, FAQ, etc.
+* Subdirectories::                  How the distribution is laid out.
+* The Cederqvist Manual::           The CVS Online Manual.
+* Other Sources Of Information::    Where else to find help.
+
+
+File: j-cvsbook.info,  Node: Informational Files,  Next: Subdirectories,  Up: Anatomy Of A CVS Distribution
+
+Informational Files
+-------------------
+
+ディストリビューションツリーのトップレベルにファイルがいくつかあります
+が、これには有用な情報が書いてあります(あるいはより詳しい情報へのポイ
+ンタが書いてあります)。以下、重要な順に説明します:
+
+   * `NEWS' - あるリリースから次のリリースへの変更点を、時系列逆順(新
+     しいのが最初に来る順)に一覧してあります。しばらく CVS
+     を使ってから新し
+     いバージョンにアップグレードした場合、どんな新しい機能があるか
+     NEWS フ ァイルを見ればわかります。また、CVS
+     はたいてい下位互換性を保って変更さ
+     れるのですが、たまに互換性のない変更がされることがあります。CVS
+     が予期
+     しない動きをしてびっくりするより、これを読んでおいたほうがよいと思いま
+     す。
+
+   * `BUGS' - このファイルに書いてあることは、きっとあなたの考えた通
+     りです: CVS
+     の既知のバグの一覧です。ここには何もスバラシイことは書いて
+     ありませんが、新しいリリースをインストール時には読んでおくべきです。
+
+   * `DEVEL-CVS' - CVS の「体制」が書いてあります。変更が CVS のメイ
+     ンディストリビューションに受け入れられるためのプロセスと、CVS
+     開発者に なるための手続きを説明しています。ただ CVS
+     を使いたいだけなら読む必要
+     はありませんが、世界に散らばった人々の調整もされていない作業をどうやっ
+     てひとつの有用なソフトウェア作品にまとめるかを知りたければ、これはとて
+     も興味深いものだと思います。また、CVS
+     のパッチ(バグフィクスであろうが
+     新機能であろうが)を提供したいというのであれば当然読まねばなりません。
+
+   * `HACKING' - こういう名前にもかかわらず、ここには CVS の設計実装
+     についてはあまり述べられていません。主にコーディング標準と、CVS
+     のパッ
+     チを書く時の技術的な考え方について案内してあります。DEVEL-CVS
+     ファイル の付録と言ってもいいでしょう。CVS
+     開発の基本的な考え方を理解したら、HACKING
+     ファイルを読んで実際のコーディングに生かして下さい。
+
+   * `FAQ' - このドキュメントは CVS の「よくある質問集」"Frequently
+     Asked Questions" です。不運にもこのファイルは spotty
+     メンテナンスされ てきた歴史があります。1995 年までは David Grubbs
+     がメンテしていました
+     が、彼は(多分)忙しくなってしばらくメンテされていませんでした。1997
+     年 になって、 Pascal Molli がメンテナンスを引き継ぎました。Molli
+     も手でメ ンテする時間は取れなかったのですが、自動 FAQ-O-Matic
+     システムに割く時 間は何とか見つけました。それで FAQ
+     のメンテは分散手法で公開されたので す(誰でもウェブのフォームから
+     FAQ のエントリを編集あるいは追加できまし た)。これで少なくとも FAQ
+     のメンテは再開されましたが、全体の構成と品質
+     管理についてはひとりがメンテしていた時のようなレベルには達しませんでし
+     た。
+
+     FAQ のマスタバージョンは Molli のウェブサイト(
+     `http://www.loria.fr/~molli/cvs-index.html' の "Documentation" と
+     いうリンクの下)でいつでも見ることができます。CVS
+     ディストリビューショ ンとともに配布される FAQ は FAQ-O-Matic
+     データベースから自動生成された
+     もので、リリースされる頃には少しだけですが最新ではなくなっています。
+
+     しかしそうは言っても何かしようとしたときにはヒントと例がとても役に立ち
+     ます(そうですね、大きなブランチをトランクにマージさせるときとか、削除
+     したファイルを復活させたい時とか)。リファレンスドキュメントのように使
+     うのがよいでしょう、お好きなエディタで開いて興味のある単語で検索できま
+     す。チュートリアルとして使うのはよくないですね、重要なことが抜けすぎて
+     いて、完全なガイドとして提供できるようなものではありません。
+
+
+
+File: j-cvsbook.info,  Node: Subdirectories,  Next: The Cederqvist Manual,  Prev: Informational Files,  Up: Anatomy Of A CVS Distribution
+
+Subdirectories
+--------------
+
+CVS ディストリビューションにはたくさんのサブディレクトリがあります。通
+常のインストールではその中を見たりしませんが、それぞれが何なのか知って
+おいても良いでしょう。
+
+     contrib/
+     diff/
+     doc/
+     emx/
+     lib/
+     man/
+     os2/
+     src/
+     tools/
+     vms/
+     windows-NT/
+     zlib/
+
+大半は無視してかまいません。emx/, os2/, vms/, windows-NT/ には OS 依存
+のコードがおさめてあって、CVS のコードレベルでデバッグするときくらいし
+か必要ないでしょう(あんまりありそうもない状況です、聞かないわけではな
+いですが)。diff/, zlib/ サブディレクトリはそれぞれ CVS の内部実装の diff
+プログラムとGNU gzip 圧縮ライブラリ部分です。(ネットワーク越しにリモー
+トリポジトリにアクセスする際にビット数を減らすため、後者を使っています)
+
+contrib/, tools/ サブディレクトリに CVS とともに使用するフリーのサード
+パーティーソフトウェアをおさめてあります。contrib/ には特定の用途に専
+門化された小さなシェルスクリプトの一群があります(contrib/README に何を
+するものか書いてあります)。tools/ サブディレクトリにはコントリビュート
+されたソフトウェアがあって、README にはこうあります:
+
+     以前このサブディレクトリには CVS とともに使用するツールがおさめてあり
+     ました。特に pcl-cvs バージョン1.xがおさめてありました。pcl-cvs は CVS
+     の Emacs インタフェースです。
+     
+     pcl-cvs をお探しの場合、こちらにある pcl-cvs バージョン2.xをお勧めします:
+     
+         ftp://ftp.weird.com/pub/local/
+
+ここで述べられている PCL-CVS パッケージはとても使いやすいです、のちほ
+ど *Note Third-Party Tools:: でもう少し説明します。
+
+src/, lib/ サブディレクトリには CVS の内部を含むソースコード一式がおさ
+めてあります。主なデータ構造とコマンドの実装は src/ にあって、lib/ に
+は CVS が一般的に使用する小さなコードモジュールがあります。
+
+man/ サブディレクトリに CVS の man page があります(Unix のオンラインマ
+ニュアルシステム用)。ここにある man page は make install を実行したと
+きにシステムの man page におさめられているので
+
+     floss$ man cvs
+
+とタイプすると簡潔な紹介と CVS のサブコマンドのリファレンスが読めます。
+これはクイックリファレンスとしては便利ですが、Cederqvist マニュアル(次
+の節参照のこと)ほどには最新でもないし完璧でもありません。しかし間違っ
+ているわけではなくて不完全なだけですから、何かの足しになればと思います。
+
+
+File: j-cvsbook.info,  Node: The Cederqvist Manual,  Next: Other Sources Of Information,  Prev: Subdirectories,  Up: Anatomy Of A CVS Distribution
+
+The Cederqvist Manual
+---------------------
+
+残りは doc/ サブディレクトリですが、このディレクトリの中の一番重要な住
+人はあの有名な "Cederqvist" です。最近では "the Cederqvist" と呼ば
+れるようです。Per Cederqvist(Signum Support, Linkoping
+Sweden,www.signum.se) が 1992
+年頃最初のバージョンを書き、それ以来たくさんの人々によって更新
+されてきました。例えば、コントリビュータが新しい機能を CVS
+に追加したら、 Cederqvist にもドキュメントを残す、というかたちで。
+
+Cederqvist マニュアルは GNU project でも使用されている Texinfo 形式で
+書かれています。この形式にしておくと、オンライン出力もプリントアウト出
+力も比較的容易に生成できるのです(それぞれ、Info と PostScript)。
+doc/cvs.texinfo がマスタファイルですが、 CVS ディストリビューションには
+Info と PostScript 形式も入っていますから、自前で Texinfo ツールを走ら
+せる必要はありません。
+
+Cederqvist は導入とチュートリアルとしても使用できますが、リファレンス
+ドキュメントとして使うのが一番便利です。そのため、多くの人はこれをプリ
+ントアウトせずにオンラインで閲覧しています(紙に印刷しておきたい人のた
+めに、PostScript ファイルは `doc/cvs.ps' です)。もし今回初めて CVS
+をインストールしたのなら、マニュアルにアクセスできるようにするために
+あとひと手間必要です。
+
+Info ファイル (doc/cvs.info, doc/cvs.info-1, doc/cvs.info-2, など) は
+make install した時にインストールされました。しかしそれは Info ツリー
+にコピーされただけなので、Info の目次("Top" ノード)に1行追加する必要が
+あるのです。(これは最初にインストールした時だけ必要なことです、2回目以
+降なら以前のインストールの時に追加したエントリがありますから)
+
+もし今までに Info ドキュメントをシステムに追加したことがあるならこの手
+順には慣れていると思います。まず Info ページがどこにインストールされて
+いるか探して下さい。デフォルトのインストールを使っていれば(/usr/local/)、
+Info ファイルは /usr/local/info/cvs.info* です。次のようにインストール
+したのであれば
+
+     floss$ ./configure --prefix=/usr
+
+Info ファイルは /usr/info/cvs.* になります。ファイルの場所が分かったら、
+Info の目次に行を追加して下さい。そのディレクトリの dir という名前のフ
+ァイルです(後者の例では /usr/info/dir です)。root 権限がない場合はシス
+テム管理者にそれをしてくれるよう頼んで下さい。以下は CVS ドキュメント
+が追加される前の dir からの抜粋です:
+
+     * Bison: (bison).         The Bison parser generator.
+     * Cpp: (cpp).             The GNU C preprocessor.
+     * Flex: (flex).           A fast scanner generator
+
+追加後の同じところは次の通り:
+
+     * Bison: (bison).         The Bison parser generator.
+     * Cpp: (cpp).             The GNU C preprocessor.
+     * Cvs: (cvs).             Concurrent Versions System
+     * Flex: (flex).           A fast scanner generator
+
+追加する行の形式はとても重要です。`* Cvs:' にはアスタリスク、
+スペース、コロンがあって、そのあとの `(cvs).' は括弧とピリオドが
+あります。どれが欠けても Info dif
+のフォーマットとして間違いで、Cederqvist が読めません。
+
+マニュアルがインストールされ、目次から参照されるようになったら、Info
+互換ブラウザで読めるようになります。典型的な Unix システムにインストー
+ルされているのは、以下のように起動すれば CVS のページへ直接行けるコマ
+ンドライン Info リーダか、
+
+     floss$ info cvs
+
+Emacs 中で
+
+     M-x info
+
+あるいは
+
+     C-h i
+
+とタイプすることによって起動されるものです。
+
+CVS インストール時には、Cederqvist をきちんと読めるよう設定するために
+時間を取って下さい。何度も調べる必要ができてくるのですから、その分の時
+間の節約ができます。
+
+
+File: j-cvsbook.info,  Node: Other Sources Of Information,  Prev: The Cederqvist Manual,  Up: Anatomy Of A CVS Distribution
+
+Other Sources Of Information
+----------------------------
+
+ディストリビューション中の Cederqvist, FAQ 他のファイルに加え、インター
+ネット上にも CVS に関するリソースがあります。CVS サーバを管理しようと
+している場合、info-cvs メーリングリストに参加したいなと思うかもしれま
+せん。購読するには、<info-cvs-request@gnu.org> にメールを送って
+下さい(メーリングリスト本体は <info-cvs@gnu.org> です)。流量は
+中から多量、1日に約20通程度で、大半が質問のメールです。たいがいは読ま
+ずに削除しても構わないですが(質問に回答する時は別です、素敵なことです
+ね)、時々、バグを発見したという報告や、ずっと欲しかった新しい機能を実
+装するパッチのアナウンスがあるかもしれません。
+
+正式なバグレポートメーリングリストに参加することもできます。ここにはバ
+グレポートがすべて送られます。バグをフィクスしたい人(素晴らしいことで
+すね)か、偏執狂気味で CVS について他の人が見つけた問題を全部知っておか
+ないと気が済まない人以外には必要ないと思います。参加したければ
+<bug-cvs-request@gnu.org> までメールを送って下さい。
+
+Usenet ニュースグループもあります、`comp.software.config-mgmt' と
+いうものです。これはバージョン管理と設定管理一般のニュースグループで、
+CVS についても少なからず議論されているようです。
+
+最後に CVS
+関連のウェブサイトを。少なくとも3つあります。ここ数年間、Cyclic
+Software の `http://www.cyclic.com' は CVS の非公式なホームサイト
+であり、多分近い未来についてもそうでありつづけると思います。Cyclic
+Software はサーバスペースと、CVS
+のソースが入ったリポジトリのネットワークアクセ
+スを提供しています。また、Cyclic のウェブページには広範囲にわたるリン
+クがあります。CVS の実験的パッチあり、CVS とともに使用するサードパーテ
+ィーツールあり、ドキュメントやメーリングリストアーカイブあり。他にもい
+ろいろあります。分散したリソースの中で、必要なものが見つからない時は、
+`http://www.cyclic.com' から見始めるのがよいでしょう。
+
+ステキなサイトをあと2つ紹介しましょう。Pascal Molli の
+`http://www.loria.fr/~molli/cvs-index.html' と、Sean Dreilinger の
+`http://durak.org/cvswebsites/' です。Molli のサイトの一番の目玉
+はもちろん FAQ ですが、CVS 関連ツールへのリンクや、メーリングリストの
+アーカイブなどもあります。Dreilinger のサイトはウェブドキュメントを管
+理する場合の CVS の使い方の情報に詳しく、また、CVS に特化したサーチエ
+ンジンがあります。
+
+
+File: j-cvsbook.info,  Node: Starting A Repository,  Next: The Password-Authenticating Server,  Prev: Anatomy Of A CVS Distribution,  Up: Repository Administration
+
+Starting A Repository
+=====================
+
+CVS の実行ファイルがシステムにインストールできたら、まずは *Note An
+Overview of CVS:: に従って、リモートリポジトリにアクセスするク
+ライアントとして使ってみましょう。しかし、自分のマシンからリビジョンを
+提供したいのであれば、そこにリポジトリをつくらねばなりません。それを実
+現するコマンドは以下のとおり、
+
+     floss$ cvs -d /usr/local/newrepos init
+
+`/usr/local/newrepos' はリポジトリになって欲しいディレクトリへの
+パスです(当然そこへ書込める権限がなければなりません、コマンドを root
+権限で実行しても構いません)。init サブコマンドの後ではなく、前に新しい
+リポジトリの場所を指定するのは直感に反するような気がするかもしれません
+が、-d オプションの使い方に関して言えば、他の CVS コマンドと一貫してい
+ます。
+
+このコマンドを走らせると、黙って終わります。新しいディレクトリを調べて
+みましょう:
+
+     floss$ ls -ld /usr/local/newrepos
+     drwxrwxr-x   3 root     root         1024 Jun 19 17:59 /usr/local/newrepos/
+     floss$ cd /usr/local/newrepos
+     floss$ ls
+     CVSROOT
+     floss$ cd CVSROOT
+     floss$ ls
+     checkoutlist     config,v        history     notify     taginfo,v
+     checkoutlist,v   cvswrappers     loginfo     notify,v   verifymsg
+     commitinfo       cvswrappers,v   loginfo,v   rcsinfo    verifymsg,v
+     commitinfo,v     editinfo        modules     rcsinfo,v
+     config           editinfo,v      modules,v   taginfo
+     
+     floss$
+
+新しいディレクトリにはサブディレクトリがひとつだけあり(CVSROOT/)、CVS
+の動作をコントロールするいろいろな管理ファイルがおさまっています。今後、
+これらのファイルをひとつひとつ見ていく予定です。今のところはリポジトリ
+がちゃんと動くことが目標です。ここで「ちゃんと動く」とは、ユーザがプロ
+ジェクトをインポート、チェックアウト、アップデート、コミットできるとい
+う意味です。
+
+*Note An Overview of CVS:: で述べた CVSROOT 環境変数と、リポジトリの中に
+あるこの CVSROOT サブディレクトリを混同しないように。全然関係ないです。
+不運にも偶然一致してしまい、同じ名前がついているだけです。前者は、CVS
+を使うときにいちいち `-d <repository-location>' とタイプする
+のがイヤなユーザ向けのもので、後者はリポジトリの管理用サブディレクトリ
+です。
+
+リポジトリが作成できたら、そのパーミッションに注意して下さい。CVS は特
+別な統一されたパーミッションやファイルの所有権の計画(?)は要求しません。
+リポジトリへ書き込める権限が必要なだけです。しかし、一部セキュリティー
+上の理由ですがどちらかというと主に管理者のまっとうな分別として、次の手
+順を踏むことを強く推奨します。
+
+  1. システムに `cvs' というグループを追加し、リポジトリにアクセスする
+     必要のあるユーザはそのグループに加えます。例として筆者のマシンの
+     `/etc/group' ファイルの関連する行をお見せしましょう:
+
+          cvs:*:105:kfogel,sussman,jimb,noel,lefty,fitz,craig,anonymous,jrandom
+
+  2.
+     リポジトリのオーナグループとグループパーミッションを変えて、そのグルー
+     プを反映するようにします:
+
+          floss$ cd /usr/local/newrepos
+          floss$ chgrp -R cvs .
+          floss$ chmod ug+rwx . CVSROOT
+
+
+これで、グループにいるユーザは誰でも `cvs import' を実行すれ
+ば(このへんのことは *Note An Overview of CVS:: に説明があります)プロジェ
+クトを始めることができるようになりました。checkout, update, commit も
+同様に動きます。リポジトリマシンに rsh または sh アクセスができるなら、
+`:ext:' を使ってリモートからアクセスすることもできます。( 上の例の
+chgrp と chmod コマンドだと、誰だかもわからない `anonymous'
+ユーザに書込み権限を与えてしまうことにお気づきでしょうか。こうしている
+理由は、リポジトリを読むだけの anonymous ユーザであろうとも、CVS プロ
+セスがリポジトリ内に一時ロックファイルを作れるようにしておかなければな
+らないので、システムレベルでの書込み権限が必要だからなのです。CVS は
+read-only 制限を実現するのに Unix ファイルシステムの権限は使っておらず、
+別の方法を使っているのです。これについては *Note Anonymous Access:: で述
+べます。)
+
+コントリビュータがリポジトリマシン上のアカウントを持つ必要がないような
+プロジェクトを一般に公開するリポジトリの場合は、パスワード認証サーバを
+設定するべきです(*note The Password-Authenticating Server::)。これは匿
+名の読み出し専用アクセスに必要ですし、マシンのフルアカウントを与えるこ
+となしに特定の人々にコミットアクセスを許可する一番簡単な方法でもありま
+す。
+
+
+File: j-cvsbook.info,  Node: The Password-Authenticating Server,  Next: Anonymous Access,  Prev: Starting A Repository,  Up: Repository Administration
+
+The Password-Authenticating Server
+==================================
+
+パスワードサーバのセットアップに必要な手順を実行する前に、このような接
+続がどのように動いているのか大雑把に見ておきましょう。リモートの CVS
+クライアントが `:pserver:' メソッドを使ってリポジトリに接続すると
+き、クライアントは実際にはサーバマシンの特定のポート番号、明確に言うと
+2401 番(49の2乗と言ってもいいです、そういうのがお好きなら)に接続しに行き
+ます。2401番ポートは CVS pserver 用に指定されたデフォルトポートですが、
+クライアントとサーバの共通了解さえあれば別のポートに設定することも可能
+です。
+
+CVS サーバはそのポートで接続をずっと待っているわけではなく、実際に接続
+要求があるまで起動されません。かわりに Unix の inted (InterNET Daemon)
+プログラムがそのポートを listen しています。接続要求を受け取ったときに
+どうするかを教えておく必要がありますが、そうすると inetd が CVS サーバ
+を起動して、入って来たクライアントと接続してくれます。
+
+これを実現するには inetd の設定ファイル、`/etc/services' と
+`/etc/inetd.conf' を変更します。services ファイルは生のポート番号とサー
+ビス名を対応づけ、inetd.conf には inetd が各サービス名に対して何をすれ
+ばよいかを書いてあります。
+
+まず /etc/services に次の1行を追加して下さい(この行がファイルにないこ
+とを確認してからですよ)
+
+     cvspserver	2401/tcp
+
+次に /etc/inetd.conf にこれを追加してください:
+
+     cvspserver stream tcp nowait root /usr/local/bin/cvs cvs \
+        --allow-root=/usr/local/newrepos pserver
+
+(上記は実際のファイルではバックスラッシュなしの1つの長い行にしてくださ
+い) ただし、tcpwrapper が導入されたシステムにおいては次のようにしてく
+ださい:
+
+     cvspserver stream tcp nowait root /usr/sbin/tcpd /usr/local/bin/cvs \
+        --allow-root=/usr/local/newrepos pserver
+
+inetd を再起動して、設定ファイルの変更を反映して下さい。(inetd の再起
+動の仕方を知らない場合はマシンをリブートしてください、それで動くように
+なります)
+
+接続を許可するためにはこれだけでいいのですが、ユーザの通常のログインパ
+スワードとは別に、CVS 用のパスワードを設定したいでしょう。そうすればシ
+ステム全体のセキュリティについて妥協することなくリポジトリにアクセスさ
+せることができるようになります。
+
+リポジトリ内の CVSROOT/passwd が CVS のパスワードファイルです。このフ
+ァイルは cvs init を実行したときにデフォルトで生成されたりはしません。
+CVS を pserver で提供するとは限らないからです。パスワードファイルが生
+成されたとしても、CVS ではユーザ名とパスワードを生成できません。自分で
+作る必要があります。CVSROOT/passwd ファイルのサンプルを示します:
+
+     kfogel:rKa5jzULzmhOo
+     anonymous:XR4EZcEs0szik
+     melissa:tGX1fS8sun6rY:pubcvs
+
+フォーマットはご覧の通りごく簡単です。各行次のようにしてください:
+
+     <USERNAME>:<ENCRYPTED_PASSWORD>:<OPTIONAL_SYSTEM_USERNAME>
+
+余分にコロンとオプショナルシステムユーザ名をつけると、CVS は USERNAME
+として認証した接続を SYSTEM_USERNAME というシステムアカウントの権限で
+実行します。言い換えると そのセッションでは SYSTEM_USERNAME としてログ
+インしたときと同様のことがリポジトリ内で実行できる、ということです。
+
+システムユーザ名が指定されていない場合、USERNAME はシステム上に実際に
+存在するログインアカウントと一致しなければならず、セッションはそのユー
+ザの権限で実行されます。どちらの場合でも、ENCRYPTED_PASSWORD はシステ
+ムの実際のログインパスワードと一致しなくても構いません。それは CVS の
+pserver 接続にのみ用いられる、他と関係ないパスワードです。
+
+パスワードは /etc/passwd にパスワードを保存するときに使われているのと
+同じアルゴリズムで暗号化されます。ここで「どうやって暗号化したパスワー
+ドを持ってくればいいの?」という疑問が出てきます。Unix のシステムパスワー
+ドなら、passwd コマンドが /etc/passwd の暗号化を面倒見てくれます。しか
+し、それに対応するような cvs passwd コマンドはありません(これは何度か
+提案されていますが、まだ誰も書いていないんですよ。あなたがやってくれま
+すか?)。
+
+不便でしょうもない方法がひとつあります。他にどうしようもなければ、通常
+のシステムパスワードを passwd コマンドで変えて、暗号化されたものを
+/etc/passwd から CVSROOT/passwd へカットアンドペーストし、元のパスワード
+に戻す、というのでなんとかなります(暗号化されたパスワードが /etc/shadows
+にあって、root 権限がないと読めない場合もあります)。
+
+この方法はしかしかなり厄介です。暗号化されていないパスワードを引数で渡
+せば暗号化されたものを出力してくれるような、コマンドラインユーティリテ
+ィを作るほうが簡単でしょう。Perl で書いたそういうツールをお見せしまし
+ょう:
+
+     #!/usr/bin/perl
+     
+     srand (time());
+     my $randletter = "(int (rand (26)) + (int (rand (1) + .5) % 2 ? 65 : 97))";
+     my $salt = sprintf ("%c%c", eval $randletter, eval $randletter);
+     my $plaintext = shift;
+     my $crypttext = crypt ($plaintext, $salt);
+     
+     print "${crypttext}\n";
+
+わたしはこのスクリプトを `/usr/local/bin/cryptout.pl' に置いてい ます。
+
+     floss$ ls -l /usr/local/bin/cryptout.pl
+     
+     -rwxr-xr-x   1   root   root   265  Jun 14 20:41 /usr/local/bin/cryptout.pl
+     floss$ cryptout.pl "some text"
+     sB3A79YDX5L4s
+     
+     floss$
+
+この例の出力を CVSROOT/passwd のエントリ作成に使ったとします:
+
+     jrandom:sB3A79YDX5L4s:craig
+
+で、誰かが次のコマンドを使ってリポジトリに接続するとすると:
+
+     remote$ cvs -d :pserver:jrandom@floss.red-bean.com:/usr/local/newrepos login
+
+ここでパスワードに `some text' とタイプすれば、以降は `craig'
+のアクセス権限で CVS コマンドを実行することができます。
+
+CVSROOT/passwd にないユーザ名とパスワードでログインしようとした場合、
+CVS は /etc/passwd のユーザ名とパスワードをチェックします。もし存在す
+れば(そして当然ですがパスワードが一致すれば)、CVS はアクセスを許可しま
+す。この振舞いは管理者の便宜のため、つまり通常のシステムユーザの分まで
+いちいち CVSROOT/passwd のエントリを設定しなくてもよいようにするための
+ものです。しかしこれはセキュリティホールにもなります。なぜなら、そのよ
+うなユーザが CVS に接続しようとすると、通常のログインパスワードが暗号
+化されずにネットワーク上に流れてしまい、パスワード盗み屋に見られてしま
+うかもしれないからです。このあとでこの「fallback」な振舞いを無効にする
+方法を述べます。有効にするにしろ無効にするにしろ、ログインアカウントも
+持っている CVS ユーザに対しては、それぞれを違うパスワードにするように、
+おそらく強制すべきです。
+
+passwd ファイルでの認証はリポジトリ全体に対して有効なのですが、少し工
+夫すればプロジェクトごとのアクセス許可を設定するために使用することもで
+きます。一方法を示します:
+
+次のように仮定します。リモートの開発者にプロジェクト `foo' へのア
+クセスを許可し、また別のリモートの開発者にプロジェクト `bar' への
+アクセスを許可するが、一方のプロジェクトの開発者には、もう一方のプロジ
+ェクトにコミットさせたくない。この場合、プロジェクト別のユーザアカウン
+トとグループをシステム上に作成し、CVSROOT/passwd ファイルで対応させる
+ことによって実現できます。
+
+/etc/passwd から関連部分の抜粋:
+
+     cvs-foo:*:600:600:Public CVS Account for Project Foo:/usr/local/cvs:/bin/false
+     cvs-bar:*:601:601:Public CVS Account for Project Bar:/usr/local/cvs:/bin/false
+
+/etc/group からの抜粋:
+
+     cvs-foo:*:600:cvs-foo
+     cvs-bar:*:601:cvs-bar
+
+最後に CVSROOT/passwd からの抜粋です:
+
+     kcunderh:rKa5jzULzmhOo:cvs-foo
+     jmankoff:tGX1fS8sun6rY:cvs-foo
+     brebard:cAXVPNZN6uFH2:cvs-foo
+     xwang:qp5lsf7nzRzfs:cvs-foo
+     dstone:JDNNF6HeX/yLw:cvs-bar
+     twp:glUHEM8KhcbO6:cvs-bar
+     ffranklin:cG6/6yXbS9BHI:cvs-bar
+     yyang:YoEqcCeCUq1vQ:cvs-bar
+
+CVS ユーザ名のうちいくつかはシステムユーザアカウント `cvs-foo' と
+対応しており、いくつかは `cvs-bar' に対応しています。CVS はシステ
+ムアカウントのユーザIDの権限で動作しますので、リポジトリのうち関連する
+部分には適切なユーザとグループの書込み権限を与えておいて下さい。ユーザ
+アカウントをきちんとロックしておけば(ログインパスワードを無効にし、シ
+ェルには `/bin/false' を設定)、このシステムは十分セキュアです(こ
+の章で後ほど述べる CVSROOT のパーミッションについて読んでおいて下さい
+ね!)。また、CVS ではレコードやログメッセージの変更をシステムユーザ名で
+はなく CVS ユーザ名で行うので、ある変更が誰の責任なのかというのもわか
+ります。
+
+
+File: j-cvsbook.info,  Node: Anonymous Access,  Next: Repository Structure,  Prev: The Password-Authenticating Server,  Up: Repository Administration
+
+Anonymous Access
+================
+
+ここまでパスワード認証サーバを使って、リポジトリに対し通常のフルアクセ
+スを許可するやりかたを見てきました(Unix ファイルパーミッションを巧みに
+利用してアクセス制限をすることは可能ですが)。一方、匿名の読み出し専用
+アクセスを実現するにはワンステップで済みます: CVSROOT/ の下に新しいフ
+ァイルを1つか、もしかしたら2つ、追加するだけでいいのです。ファイル名は
+`readers' と `writers'、前者はリポジトリを読めるユーザ名の、
+後者は読み書きできるユーザ名のリストです。
+
+CVSROOT/readers にユーザ名を書くと、そのユーザはリポジトリ内の全てのプ
+ロジェクトに対する読み出しアクセスのみ可能になります。CVSROOT/writers
+にユーザ名を書くと、そのユーザは書込み権限を得、writers ファイルに書か
+れていない他の pserver ユーザは読み出しアクセスのみ可能になります(つま
+り、writers ファイルが存在するということは、そこに書かれていないユーザ
+を読み出しアクセスのみに制限するという意味になります)。両方のファイル
+に同じユーザ名が書かれている場合、CVS はその矛盾を保守的な方法で解決し
+ます: そのユーザは読み出しアクセスのみ可能になります。
+
+ファイルの形式は非常に単純で、各行1ユーザです(最後のユーザの後に改行を
+入れるのを忘れないで)。readers ファイルのサンプルを示します:
+
+     anonymous
+     splotnik
+     guest
+     jbrowse
+
+それらのファイルは CVS ユーザ名に適用されます。システムユーザ名ではあ
+りません。CVSROOT/passwd のユーザエイリアス機能を使っている場合(2番目
+のコロンの後にシステムユーザ名を書いている場合)、readers または writers
+ファイルに使用するのは一番左側のユーザ名です。
+
+Just to be painfully accurate about it, 許可するのが読み出しアクセスか
+読み書きアクセスかを決定する時のサーバの動作を正式に説明するとこうなり
+ます:
+
+readers ファイルが存在し、その中にそのユーザが書いてあれば、読み出しア
+クセス。writers ファイルが存在し、その中にそのユーザがなければ、読み出
+しアクセス(これは readers ファイルが存在していてそのユーザがその中にな
+い場合にも真)。そのユーザが両方に書いてあれば、読み出しアクセス。その
+他の場合、読み書きアクセス。
+
+従って、典型的な匿名 CVS アクセスのリポジトリは CVSROOT/passwd には次
+のような行があります
+
+     anonymous:XR4EZcEs0szik
+
+/etc/passwd には次のような行
+
+     anonymous:!:1729:105:Anonymous CVS User:/usr/local/newrepos:/bin/false
+
+CVSROOT/readers には次のような行
+
+     anonymous
+
+当然 /etc/services と /etc/inetd.conf には以前言ったような設定を。これ
+で全部です。
+
+古めの Unix システムでは8文字以上のユーザ名をサポートしていないことに
+注意して下さい。これに対応するひとつの方法は、CVSROOT/passwd ファイル
+とシステムファイルでそのユーザを `anonymous' ではなく `anon'
+にしておくことです。anonymous の短縮形は anon だろう、と思う人は多いで
+すから。しかし、 CVSROOT/passwd ファイルにこのような行を書くほうがよい
+かもしれません:
+
+     anonymous:XR4EZcEs0szik:cvsanon
+
+(もちろんシステムファイルでは `cvsanon' を使って下さい)。こうすれ
+ば、多少標準的な `anonymous' を使ったリポジトリアドレスを公開でき
+ます。リポジトリに
+
+     cvs -d :pserver:anonymous@cvs.foobar.com:/usr/local/newrepos (etc...)
+
+でアクセスしてくる人は、サーバ上では cvsanon (かなんか)の権限で実行さ
+れますが、その人たちはサーバ側でどう設定されているかなんて知る必要はな
+く、ただ公開されたアドレスだけ見ていればいいのです。
+
+
+File: j-cvsbook.info,  Node: Repository Structure,  Next: RCS Format,  Prev: Anonymous Access,  Up: Repository Administration
+
+Repository Structure
+====================
+
+新しく作られたリポジトリにはプロジェクトはありません。*Note An Overview
+of CVS:: の最初のインポートのところからやりなおして、リポジトリに何が起
+こるかを見ていきましょう。(単純のため、全てのコマンドで CVSROOT 環境変
+数が /usr/local/newrepos が設定されていると仮定します、インポートやチ
+ェックアウトの際 -d でリポジトリを指定しなくてもいいように)
+
+     floss$ ls /usr/local/newrepos
+     CVSROOT/
+     floss$ pwd
+     /home/jrandom/src/
+     floss$ ls
+     myproj/
+     floss$ cd myproj
+     floss$ cvs import -m "initial import into CVS" myproj jrandom start
+     N myproj/README.txt
+     N myproj/hello.c
+     cvs import: Importing /usr/local/newrepos/myproj/a-subdir
+     N myproj/a-subdir/whatever.c
+     cvs import: Importing /usr/local/newrepos/myproj/a-subdir/subsubdir
+     N myproj/a-subdir/subsubdir/fish.c
+     cvs import: Importing /usr/local/newrepos/myproj/b-subdir
+     N myproj/b-subdir/random.c
+     
+     No conflicts created by this import
+     
+     floss$ ls /usr/local/newrepos
+     CVSROOT/  myproj/
+     floss$ cd /usr/local/newrepos/myproj
+     floss$ ls
+     README.txt,v  a-subdir/     b-subdir/	  hello.c,v
+     floss$ cd a-subdir
+     floss$ ls
+     subsubdir/    whatever.c,v
+     floss$ cd ..
+     
+     floss$
+
+インポート前、リポジトリ内には管理領域しかありません。インポート後、新
+しいディレクトリ(`myproj')が出現しています。新しいディレクトリの
+中のファイルとサブディレクトリはインポートしたプロジェクトに見えなくは
+ないですが、なんだかファイル名に `,v' というサフィックスがついて
+います。これらは RCS 形式のバージョン管理ファイルで(`,v' は "version"
+という意味です)、リポジトリの大黒柱になるものです。各 RCS ファイルはプ
+ロジェクト内の対応するファイルの、ブランチやタグも含めたリビジョン履歴
+を保持しています。
+

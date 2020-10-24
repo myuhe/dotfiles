@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+#contributor: myuhe
+#name: kbd
+#key: kbd
+# --
+(kbd "${1:KEYBIND}") $0

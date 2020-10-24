@@ -1,0 +1,485 @@
+Info file: emacs-lisp-intro-ja.info,    -*-Text-*-
+produced by `texinfo-format-buffer'
+from file `emacs-lisp-intro.texi'
+using `texinfmt.el' version 2.38 of 3 July 1998.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+INFO-DIR-SECTION Emacs
+START-INFO-DIR-ENTRY
+* Emacs Lisp Intro: (eintr).
+  			A simple introduction to Emacs Lisp programming.
+END-INFO-DIR-ENTRY
+
+
+これはプログラマではない人のための `Emacs Lisp プログラミング' 解説書
+である．
+
+Edition 2.04, 2001 Dec 17
+
+Copyright (C) 1990, '91, '92, '93, '94, '95, '97, 2001 Free Software
+Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.1 or
+any later version published by the Free Software Foundation; with the
+Invariant Section being the Preface, with the Front-Cover Texts being
+no Front-Cover Texts, and with the Back-Cover Texts being no
+Back-Cover Texts.  A copy of the license is included in the section
+entitled "GNU Free Documentation License".
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+File: emacs-lisp-intro-ja.info, Node: Index, Next: About the Author, Prev: GNU Free Documentation License, Up: Top
+
+索引
+****
+
+
+
+* Menu:
+
+* Accumulate, type of recursive pattern: Accumulate.    4.
+* Anonymous function:           lambda.                 4.
+* 潜在的なバグ:                 Another Bug.            4.
+* 関数へ渡す情報:               Arguments.              4.
+* 引数:                         Arguments.              4.
+* モード（Auto Fill）:          Text and Auto-fill.     52.
+* Auto Fillモード:              Text and Auto-fill.     52.
+* バッファ:                     Buffer Names.           44.
+* ポイントの位置:               Buffer Size & Locations.  4.
+* バッファサイズ:               Buffer Size & Locations.  4.
+* Building robots:              Building Robots.        4.
+* バイトコンパイル:             Byte Compiling.         4.
+* Cへ回り道:                    Digression into C.      4.
+* C, a digression into:         Digression into C.      4.
+* 注釈:                         Change a defun.         19.
+* 関数定義の変更:               Change a defun.         4.
+* Chest of Drawers, metaphor for a symbol: Symbols as Chest.  4.
+* Common Lisp:                  Lisp History.           9.
+* スペシャルフォーム:           Complications.          10.
+* 剰余関数`%':                  Compute a Remainder.    5.
+* % （剰余関数）:               Compute a Remainder.    5.
+* Conditional 'twixt two versions of Emacs: Simple Extension.  34.
+* 数え上げ:                     Counting.               4.
+* 単語の数え上げ（繰り返し）:   Counting Words.         4.
+* 正規表現（単語の数え上げ）:   Counting Words.         4.
+* 繰り返し（単語の数え上げ）:   Counting Words.         4.
+* テキストの削除:               Cutting & Storing Text.  4.
+* テキストのキル:               Cutting & Storing Text.  4.
+* テキストの保存:               Cutting & Storing Text.  4.
+* テキストのカット:             Cutting & Storing Text.  4.
+* カット（テキスト）:           Cutting & Storing Text.  4.
+* 引数のデータ型:               Data types.             4.
+* データ型:                     Data types.             4.
+* デバッグ:                     Debugging.              4.
+* 引数（ローカル変数）:         Dec Example altogether.  25.
+* Deferment in recursion:       No Deferment.           4.
+* Defermentless solution:       No deferment solution.  4.
+* Digression into C:            Digression into C.      4.
+* Drawers, Chest of, metaphor for a symbol: Symbols as Chest.  4.
+* Else:                         else.                   4.
+* 初期化ファイル:               Emacs Initialization.   4.
+* Emacs Lispの真偽値:           Truth & Falsehood.      4.
+* Emacs のバージョンを選択:     Simple Extension.       34.
+* Emacsのソースのタグ:          etags.                  70.
+* Emacs のソースのタグテーブルを作る: etags.            70.
+* Emacs version, choosing:      Simple Extension.       34.
+* Error for symbol without function: Void Function.     4.
+* 評価、内側のリスト:           Evaluating Inner Lists.  4.
+* 内側のリストの評価:           Evaluating Inner Lists.  4.
+* 評価:                         Evaluation.             4.
+* Every, type of recursive pattern: Every.              4.
+* Example variable, `fill-column': fill-column Example.  5.
+* FDL, GNU Free Documentation License: GNU Free Documentation License.  5.
+* ファイルを探す:               Find a File.            4.
+* 関数のソース:                 Finding More.           11.
+* タグテーブル:                 Finding More.           32.
+* 関数の説明:                   Finding More.           5.
+* ライブラリ:                   Finding More.           53.
+* Flowers in a field:           Lisp Lists.             16.
+* バッファの取得:               Getting Buffers.        4.
+* <= （小さいか等しい）:        Inc Example parts.      36.
+* タブの保存:                   Indent Tabs Mode.       4.
+* 関数定義のインストール:       Install.                4.
+* 対話的関数:                   Interactive.            4.
+* Keep, type of recursive pattern: Keep.                4.
+* キー設定（グローバル）:       Keybindings.            17.
+* グローバルなキー設定:         Keybindings.            17.
+* キーバインドの解除:           Keybindings.            52.
+* リバインド（キー）:           Keymaps.                4.
+* キーマップ:                   Keymaps.                4.
+* キルリングの扱い方:           Kill Ring.              4.
+* 除算:                         Large buffer case.      26.
+* / （除算）:                   Large buffer case.      26.
+* `空リスト'（定義）:           Lisp Atoms.             14.
+* シンボリック式（紹介）:       Lisp Atoms.             20.
+* アトム:                       Lisp Atoms.             4.
+* 二重引用符のあいだのテキスト: Lisp Atoms.             51.
+* インタープリタの動作:         Lisp Interpreter.       4.
+* Lispの歴史:                   Lisp History.           4.
+* Lispインタープリタの動作:     Lisp Interpreter.       4.
+* リスト:                       Lisp Lists.             4.
+* Lispインタープリタ（説明）:   Run a Program.          35.
+* Lisp macro:                   delete-and-extract-region.  40.
+* リストの実装方法:             List Implementation.    4.
+* ロード（ファイル）:           Loading Files.          4.
+* ファイルのロード:             Loading Files.          4.
+* 繰り返し（ループ）:           Loops & Recursion.      4.
+* 再帰:                         Loops & Recursion.      4.
+* ループ:                       Loops & Recursion.      4.
+* Maclisp:                      Lisp History.           9.
+* Macro, lisp:                  delete-and-extract-region.  40.
+* メールの別名:                 Mail Aliases.           14.
+* エラーメッセージの生成:       Making Errors.          4.
+* モード行の形式:               Mode Line.              4.
+* シンボル名:                   Names & Definitions.    4.
+* ワイドニング:                 Narrowing & Widening.   4.
+* ナロイング:                   Narrowing & Widening.   4.
+* 待機なしでの再帰:             No Deferment.           4.
+* 待機なしの解決:               No deferment solution.  4.
+* No deferment solution:        No deferment solution.  4.
+* キーワード:                   Optional Arguments.     9.
+* 引数（省略可能）:             Optional Arguments.     9.
+* Parts of a Recursive Definition: Recursive Definition Parts.  7.
+* コードの恒久的インストール:   Permanent Installation.  4.
+* 評価の練習:                   Practicing Evaluation.  4.
+* 基本操作関数:                 Primitive Functions.    4.
+* 基本操作関数:                 Primitive Functions.    5.
+* グラフ全体の表示:             Print Whole Graph.      4.
+* 表示（グラフ全体）:           Print Whole Graph.      4.
+* * 読み出し専用バッファ用:     Read-only buffer.       4.
+* アスタリスク（読み出し専用バッファ）: Read-only buffer.  4.
+* 読み出し専用バッファ:         Read-only buffer.       4.
+* グラフの本体:                 Readying a Graph.       4.
+* プロトタイプ（グラフ）:       Readying a Graph.       4.
+* グラフのプロトタイプ:         Readying a Graph.       4.
+* グラフの準備:                 Readying a Graph.       4.
+* 再帰:                         Recursion.              4.
+* Recursion without Deferments: No Deferment.           4.
+* 再帰関数の定義:               Recursive Definition Parts.  7.
+* Recursive Definition Parts:   Recursive Definition Parts.  7.
+* 再帰関数の典型例:             Recursive Patterns.     4.
+* Recursive Patterns:           Recursive Patterns.     4.
+* Recursive pattern: accumulate: Accumulate.            4.
+* Recursive pattern: every:     Every.                  4.
+* Recursive pattern: keep:      Keep.                   4.
+* 段落単位の移動:               Regexp Search.          4.
+* 移動（段落単位）:             Regexp Search.          4.
+* 文単位の移動:                 Regexp Search.          4.
+* 移動（文単位）:               Regexp Search.          4.
+* パターン（探索）:             Regexp Search.          4.
+* 正規表現の探索:               Regexp Search.          4.
+* 探索の例:                     Regexp Search.          4.
+* Robots, building:             Building Robots.        4.
+* プログラムの実行:             Run a Program.          4.
+* 簡単な拡張:                   Simple Extension.       4.
+* Solution without deferment:   No deferment solution.  4.
+* バッファの切り替え:           Switching Buffers.      4.
+* Symbol without function error: Void Function.         4.
+* Symbols as a Chest of Drawers: Symbols as Chest.      4.
+* シンタックステーブル:         Syntax.                 4.
+* シンタックスカテゴリ:         Syntax.                 4.
+* `TAGS'ファイルの作成:         etags.                  4.
+* Tags in the Emacs sources:    etags.                  70.
+* Text Mode turned on:          Text and Auto-fill.     40.
+* モード（Text）:               Text and Auto-fill.     40.
+* Textモード:                   Text and Auto-fill.     40.
+* モード選択:                   Text and Auto-fill.     22.
+* ローカル変数（バッファごと）: Text and Auto-fill.     22.
+* バッファごとのローカル変数:   Text and Auto-fill.     22.
+* 真偽値:                       Truth & Falsehood.      4.
+* 字下げ:                       Typing Lists.           4.
+* リスト入力補佐機能:           Typing Lists.           4.
+* 引数（可変個数）:             Variable Number of Arguments.  4.
+* 可変個数の引数:               Variable Number of Arguments.  4.
+* Variable, example of, `fill-column': fill-column Example.  5.
+* 変数:                         Variables.              4.
+* Version of Emacs, choosing:   Simple Extension.       34.
+* エラー（値のないシンボル）:   Void Variable.          4.
+* リスト内の空白:               Whitespace in Lists.    4.
+* Words, duplicated:            the-the.                4.
+* 関数定義の書き方:             Writing Defuns.         4.
+* 引数（型の誤り）:             Wrong Type of Argument.  4.
+* X-axis-element:               X Axis Tic Marks.       101.
+* X軸の表示:                    print-X-axis.           4.
+* Y-axis-column 最終版:         The final version.      13.
+* Y-axis-column:                Y-axis-column.          8.
+* Y-axis-label-spacing:         Compute a Remainder.    68.
+* Y-axis-tic:                   Y Axis Element.         29.
+* Y軸の表示:                    print-Y-axis.           4.
+* 再帰のパターン: accumulate:   Accumulate.             4.
+* add-hook:                     Text and Auto-fill.     52.
+* and:                          fwd-para let.           32.
+* and, introduced:              kill-new function.      165.
+* and:                          kill-new function.      165.
+* 字下げ:                       append save-excursion.  12.
+* append-to-buffer:             append-to-buffer.       4.
+* apply:                        Columns of a graph.     117.
+* apropos:                      Columns of a graph.     30.
+* `引数（argument）'（定義）:   Arguments.              13.
+* `引数リスト（argument list）'（定義）: defun.         49.
+* autoload:                     Autoload.               4.
+* beginning-of-buffer:          beginning-of-buffer.    4.
+* `束縛（bind）'（定義）:       set & setq.             5.
+* `本体（body）'（定義）:       defun.                  35.
+* buffer-file-name:             Buffer Names.           4.
+* buffer-menu, バインド:        Keybindings.            63.
+* buffer-name:                  Buffer Names.           4.
+* `呼び出し（call）'（定義）:   Switching Buffers.      56.
+* cancel-debug-on-entry:        debug-on-entry.         83.
+* car, 紹介:                    car cdr & cons.         4.
+* cdr, 紹介:                    car cdr & cons.         4.
+* `コマンド（command）'（定義）: How to Evaluate.       9.
+* compare-windows:              Keybindings.            10.
+* concat:                       Data types.             9.
+* cond:                         Recursion with cond.    4.
+* condition-case:               condition-case.         4.
+* cons, 紹介:                   cons.                   4.
+* cons, example:                kill-new function.      88.
+* copy-region-as-kill:          copy-region-as-kill.    4.
+* copy-to-buffer:               copy-to-buffer.         4.
+* count-words-in-defun:         count-words-in-defun.   82.
+* count-words-region:           count-words-region.     4.
+* current-buffer:               Getting Buffers.        4.
+* debug:                        debug.                  4.
+* `(debug)'（コード内）:        debug-on-quit.          12.
+* debug-on-entry:               debug-on-entry.         4.
+* debug-on-quit:                debug-on-quit.          8.
+* `default.el'初期化ファイル:   Site-wide Init.         5.
+* 初期化ファイル（`default.el'）: Site-wide Init.       5.
+* default-mode-line-format:     Mode Line.              4.
+* defcustom:                    defcustom.              4.
+* * （乗算）:                   defun.                  82.
+* defun内の単語とシンボル:      Words and Symbols.      4.
+* `defun'内の単語の数え上げ:    Words in a defun.       4.
+* 単語の数え上げ（`defun'）:    Words in a defun.       4.
+* `defun'内の単語の数え上げ:    count-words-in-defun.   4.
+* `defun'スペシャルフォーム:    defun.                  4.
+* defun:                        defun.                  4.
+* 変数の初期化:                 defvar.                 4.
+* defvar:                       defvar.                 4.
+* defvar for a user customizable variable: defvar and asterisk.  4.
+* defvar with an asterisk:      defvar and asterisk.    4.
+* delete-and-extract-region:    Digression into C.      4.
+* delete-and-extract-region:    delete-and-extract-region.  4.
+* describe-function, 紹介:      Finding More.           5.
+* describe-function:            simplified-beginning-of-buffer.  69.
+* directory-files:              Files List.             11.
+* dolist:                       dolist.                 4.
+* dotimes:                      dotimes.                4.
+* デバッガ（ソースレベル）:     edebug.                 4.
+* edebug:                       edebug.                 4.
+* edit-options:                 defvar and asterisk.    23.
+* `.emacs'ファイル:             Beginning a .emacs File.  4.
+* カスタマイズ（`.emacs'ファイル）: Emacs Initialization.  4.
+* `.emacs'ファイルのカスタマイズ: Emacs Initialization.  4.
+* `.emacs'ファイル:             Emacs Initialization.   4.
+* `.emacs'ファイル（簡単な拡張）: Simple Extension.     4.
+* `empty string' defined:       Review.                 142.
+* eobp:                         fwd-para between paragraphs.  11.
+* eq:                           Review.                 107.
+* eq （使用例）:                last-command & this-command.  24.
+* equal  :                      Review.                 107.
+* error:                        rotate-yk-ptr body.     14.
+* タグファイルの作成:           etags.                  4.
+* タグファイルを作成する:       etags.                  70.
+* etags:                        etags.                  4.
+* `評価（evaluate）'（定義）:   Run a Program.          5.
+* 再帰のパターン: every:        Every.                  4.
+* `式（expression）'（定義）:   Lisp Atoms.             20.
+* files-in-below-directory:     Files List.             22.
+* fill-column, an example variable: fill-column Example.  5.
+* find-tags:                    Finding More.           32.
+* `フォーム（form）'（定義）:   Lisp Atoms.             20.
+* forward-paragraph:            forward-paragraph.      4.
+* forward-sentence:             forward-sentence.       4.
+* `関数（function）'（定義）:   Making Errors.          96.
+* `function' defined:           Making Errors.          46.
+* `function' defined:           Making Errors.          70.
+* `関数定義（function definition）'（定義）: defun.     5.
+* global-set-key:               Keybindings.            17.
+* global-unset-key:             Keybindings.            52.
+* graph-body-print 最終版:      The final version.      51.
+* graph-body-print:             graph-body-print.       4.
+* `if'による判定:               if.                     4.
+* if:                           if.                     4.
+* > (より大きい):               if in more detail.      26.
+* `判定条件（if-part）'（定義）: if in more detail.     5.
+* indent-tabs-mode:             Indent Tabs Mode.       4.
+* insert-buffer:                insert-buffer.          4.
+* insert-buffer-substring:      append-to-buffer overview.  5.
+* interactive:                  Interactive.            4.
+* `interactive'のオプション:    Interactive Options.    4.
+* `対話的関数（interactive function）'（定義）: How to Evaluate.  9.
+* interactive, 使用例:          insert-buffer interactive.  4.
+* 再帰のパターン: keep:         Keep.                   4.
+* kill-append:                  kill-append function.   4.
+* kill-new:                     kill-new function.      4.
+* kill-region:                  kill-region.            4.
+* 関数（無名）:                 lambda.                 4.
+* 無名関数:                     lambda.                 4.
+* lambda:                       lambda.                 4.
+* length:                       length.                 4.
+* lengths-list-file:            lengths-list-file.      9.
+* lengths-list-many-files:      lengths-list-many-files.  25.
+* `let'式の構造:                Parts of let Expression.  4.
+* `let'式の例:                  Sample let Expression.  4.
+* `let'式の非初期化変数:        Uninitialized let Variables.  4.
+* let:                          let.                    4.
+* line-to-top-of-window:        Simple Extension.       4.
+* list-buffers, リバインド:     Keybindings.            63.
+* load-library:                 Loading Files.          51.
+* load-path:                    Loading Files.          36.
+* `local variable' defined:     Prevent confusion.      5.
+* looking-at:                   fwd-para between paragraphs.  11.
+* make-string:                  Y Axis Element.         66.
+* make tags:                    etags.                  70.
+* mapcar:                       mapcar.                 4.
+* mark:                         save-excursion.         4.
+* mark-whole-buffer:            mark-whole-buffer.      4.
+* match-beginning:              fwd-para no fill prefix.  31.
+* max:                          Columns of a graph.     107.
+* message:                      message.                4.
+* min:                          Columns of a graph.     107.
+* `ナロイング（narrowing）'（定義）: Buffer Size & Locations.  37.
+* `nil'、単語の歴史:            Buffer Names.           60.
+* nil:                          Truth & Falsehood.      4.
+* nreverse:                     Counting function definitions.  84.
+* nth:                          nth.                    4.
+* nthcdr:                       copy-region-as-kill.    4.
+* nthcdr, example:              kill-new function.      121.
+* nthcdr:                       nthcdr.                 4.
+* number-to-string:             Y Axis Element.         12.
+* occur:                        Keybindings.            48.
+* optional:                     Optional Arguments.     9.
+* or:                           Insert or.              10.
+* other-buffer:                 Getting Buffers.        4.
+* `ポイント（point）'（定義）:  Buffer Size & Locations.  17.
+* point:                        save-excursion.         4.
+* 表示（水平軸）:               print-X-axis.           4.
+* 水平軸の表示:                 print-X-axis.           4.
+* print-X-axis:                 X Axis Tic Marks.       141.
+* print-X-axis-numbered-line:   X Axis Tic Marks.       112.
+* print-X-axis-tic-line:        X Axis Tic Marks.       79.
+* 表示（垂直軸）:               print-Y-axis.           4.
+* 垂直軸の表示:                 print-Y-axis.           4.
+* print-Y-axis:                 print-Y-axis Penultimate.  8.
+* print-elements-of-list:       print-elements-of-list.  4.
+* print-elements-recursively:   Recursion with list.    20.
+* print-graph 最終版:           The final version.      73.
+* `print-graph'の変数リスト:    print-graph Varlist.    4.
+* prog1:                        fwd-para between paragraphs.  11.
+* progn:                        progn.                  7.
+* re-search-forward:            re-search-forward.      4.
+* 単語の数え上げ（再帰）:       recursive-count-words.  4.
+* 再帰（単語の数え上げ）:       recursive-count-words.  4.
+* recursive-count-words:        recursive-count-words.  223.
+* recursive-graph-body-print:   recursive-graph-body-print.  4.
+* recursive-lengths-list-many-files: Several files recursively.  14.
+* regexp-quote:                 fwd-para let.           55.
+* reverse:                      Counting function definitions.  98.
+* rotate-yank-pointer:          rotate-yank-pointer.    4.
+* ポイント、マーク、バッファの保存: save-excursion.     4.
+* リージョン:                   save-excursion.         4.
+* save-excursion:               save-excursion.         4.
+* save-restriction:             save-restriction.       4.
+* `*scratch*'バッファ:          print-elements-of-list.  7.
+* search-forward:               search-forward.         4.
+* sentence-end:                 sentence-end.           4.
+* set:                          Using set.              4.
+* set-buffer:                   Switching Buffers.      4.
+* 変数（値の設定）:             set & setq.             4.
+* 変数への値の設定:             set & setq.             4.
+* setcar:                       setcar.                 4.
+* setcdr, example:              kill-new function.      124.
+* setcdr:                       setcdr.                 4.
+* setq:                         Using setq.             4.
+* `副作用（side effect）'（定義）: Evaluation.          18.
+* simplified-beginning-of-buffer: simplified-beginning-of-buffer.  4.
+* `site-init.el'初期化ファイル: Site-wide Init.         5.
+* 初期化ファイル（`site-init.el'）: Site-wide Init.     5.
+* `site-load.el'初期化ファイル: Site-wide Init.         5.
+* sort:                         Sorting.                4.
+* `文字列（string）'（定義）:   Lisp Atoms.             54.
+* switch-to-buffer:             Switching Buffers.      4.
+* 単語の重複:                   the-the.                4.
+* the-the:                      the-the.                4.
+* `真の場合の動作（then-part）'（定義）: if in more detail.  5.
+* top-of-ranges:                Counting function definitions.  15.
+* triangle-bugged:              debug.                  11.
+* triangle-recursively:         Recursive triangle function.  4.
+* `変数リスト（varlist）'（定義）: Parts of let Expression.  5.
+* ワイドニングの例:             what-line.              4.
+* what-line:                    what-line.              4.
+* ループ:                       while.                  4.
+* while:                        while.                  4.
+* yank-pop:                     yank-pop.               4.
+* yank:                         yank.                   4.
+* zap-to-char:                  zap-to-char.            4.
+* zerop:                        rotate-yk-ptr body.     14.
+
+
+
+
+File: emacs-lisp-intro-ja.info, Node: About the Author, Prev: Index, Up: Top
+
+著者について
+************
+
+     Robert J. Chassellは、1985年以来GNU Emacsの仕事をしている。執筆や
+     編集、EmacsとEmacs Lispを教えており、世界中でソフトウェアの自由に
+     関する講演を行っている．Chassellは Free Software Foundation,
+     Inc. の理事、幹事／会計でもある。彼は，Texinfo マニュアルの共著者
+     であり，1ダース以上の本を執筆している．彼はイギリスのケンブリッジ
+     大学を卒業した．社会史や経済史に興味を持っており、自家用飛行機を
+     操縦する。
+
+ 
+
+
+
+

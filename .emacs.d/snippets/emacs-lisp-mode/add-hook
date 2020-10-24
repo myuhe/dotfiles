@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+#contributor: myuhe
+#name: add-hook
+#key: add-hook
+# --
+(add-hook \'${1:HOOK}  \'${2:FUNC} )$0
+

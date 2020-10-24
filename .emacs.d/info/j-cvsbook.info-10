@@ -1,0 +1,1504 @@
+これは j-cvsbook.info、j-main.texi より makeinfo バージョン 4.2
+によって作成されました。
+
+START-INFO-DIR-ENTRY
+* CVS Book: (cvsbook).          A CVS tutorial and reference.
+END-INFO-DIR-ENTRY
+
+Copyright (C) 1999 Karl Fogel <kfogel@red-bean.com>
+
+This document is free software; you can redistribute and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation; either version 2, or (at your option) any
+later version.
+
+This document is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+General Public License for more details.
+
+This manual describes how to use and administer CVS (Concurrent Versions
+System).  It is part of a larger work entitled `Open Source Development
+With CVS'; please see the introduction for details.
+
+This is version 1.12 of this manual.
+
+
+File: j-cvsbook.info,  Node: editors,  Next: export,  Prev: edit,  Up: Commands And Options
+
+editors
+-------
+
+Synopsis: editors [OPTIONS] [FILES]
+
+   * Alternate names - None
+
+   * Requires - Working copy, repository
+
+   * Changes - Nothing
+
+監視中のファイルを現在誰が編集しているか表示します。(*Note watch::,
+*Note watchers::, *Note edit::, *Note unedit:: を参照のこと。)
+
+Options:
+
+   * -l -
+     ローカル。カレントディレクトリ内のファイルの編集者のみを表示しま
+     す。
+
+   * -R -
+     再帰的(リカーシブ)。このディレクトリ及びサブディレクトリのファイ
+     ルの編集者を表示します(デフォルト)。.cvsrc ファイルの -l
+     指定を打ち消 す必要のあるときに -R を指定します。
+
+
+
+File: j-cvsbook.info,  Node: export,  Next: gserver,  Prev: editors,  Up: Commands And Options
+
+export
+------
+
+Synopsis: export [OPTIONS] PROJECT(S)
+
+   * Alternate names - exp, ex
+
+   * Requires - Repository
+
+   * Changes - Current directory
+
+リポジトリからファイルを取り出して、プロジェクトのファイルツリー(作業
+コピーではなく、CVS/ 管理サブディレクトリも存在しない)を作ります。主に
+ディストリビューションパッケージを作るために使われます。
+
+Options:
+
+   * -D DATE - DATE 時点で最新のリビジョンをエクスポートします。
+
+   * -d DIR - DIR
+     にエクスポートします(このオプションがない場合にはデフォ
+     ルトでモジュール名のディレクトリにエクスポートされます)。
+
+   * -f -
+     指定のタグ名や日付が見つからなかった場合に、強制的に最新リビジョ
+     ンを使用します(-D, -r と組み合わせて使います)。
+
+   * -k MODE - RCS キーワードを MODE
+     に従って展開します。(この章でのちほど 出てくる *Note Keyword
+     Substitution (RCS Keywords):: 節を参照のこと)
+
+   * -l -
+     ローカル。そのプロジェクトのトップレベルのみをエクスポートし、サ
+     ブディレクトリを作りません。
+
+   * -N - 空の中間ディレクトリを省略しません。このオプションは checkout
+     (*note checkout::) の -N オプションと同様です。
+
+   * -n - `CVSROOT/modules' 中で指定された module プログラムを実行し
+     ません。(これについて詳しくはのちほどこの章に出てくる *Note
+     Repository Administrative Files:: をご参照下さい。)
+
+   * -P - 空ディレクトリを削除します(checkout や update の -P
+     オプションと 同様です)。
+
+   * -R -
+     再帰的(リカーシブ)。プロジェクト中のすべてのサブディレクトリをエ
+     クスポートします(デフォルト)。-R を指定するのは `.cvsrc' ファイル
+     の -l 指定を打ち消す場合くらいでしょう。
+
+   * -r REV - リビジョン REV をエクスポートします。REV
+     は大抵タグ名で指定
+     し、リビジョン番号で指定することはほとんどありません。
+
+
+
+File: j-cvsbook.info,  Node: gserver,  Next: import,  Prev: export,  Up: Commands And Options
+
+gserver
+-------
+
+Synopsis: gserver
+
+これは GSSAPI (Generic Security Services API) サーバです。このコマンド
+がユーザによって直接起動されることは通常ありません。ユーザが
+`:gserver:' アクセスメソッド経由のクライアントから接続しようとし
+た時点でサーバ側で起動されるものです。
+
+     cvs -d :gserver:floss.red-bean.com:/usr/local/newrepos checkout myproj
+
+GSSAPI はケルベロスバージョン5用です。ケルベロスバージョン4には
+`:kserver:' を使用してください。
+
+GSSAPI ライブラリの設定、使用についてはこの本の範囲の外です。
+(Cederqvist マニュアルの `GSSAPI Authenticated' に有用なヒントが
+あります。)
+
+Options: None.
+
+history [OPTIONS] [FILENAME_SUBSTRING(S)]
+
+   * Alternate names - hi, his
+
+   * Requires - Repository, CVSROOT/history
+
+   * Changes - Nothing
+
+リポジトリ内での活動履歴を表示します。具体的には、checkout, commit,
+rtags, update, release についての記録を表示します。このオプションはデ
+フォルトで checkout のみを表示します(ただし、-x オプションを参照してく
+ださい)。CVSROOT/history ファイルが存在しない場合このコマンドは動作し
+ません。
+
+history コマンドは他の CVS コマンドとはいくつかの点で異なっています。
+まず、何らかの意味のあることをしようとするとオプションを指定せねばなら
+ないという点(加えて、history のいくつかのオプションは他の CVS コマンド
+とは違う意味を持ちます)。次に、引数としてファイル名全体を指定するので
+はなく、ファイル名の一部にマッチする部分文字列を1つ以上指定する点(その
+部分文字列のうち少なくとも1つにマッチする記録はすべて表示されます)。
+3つめに、history の出力は読み方を覚えるまで雑音のようにしか見えない点
+です。出力の形式については、オプションの説明のあとに特別な節を設けて解
+説します。(*Note log::を参照のこと)
+
+Options:
+
+   * -a -
+     全ユーザの履歴を表示します(指定しない場合は自分の履歴のみがデフ
+     ォルトです)。
+
+   * -b STR - モジュール名、ファイル名、リポジトリパス中に文字列 STR
+     を含 むレコードを表示します。
+
+   * -c - commit について表示します。
+
+   * -D DATE - DATE 以来のデータを表示します(通常の CVS
+     の日付形式が使用で きます)。
+
+   * -e - すべて(everything)。すべてのレコードを表示します。
+
+   * -f FILE - FILE に関する直近のレコードを表示します。このオプションは
+     複数回指定できます。これは CVS コマンドの通常の -f
+     の意味、「最後の手
+     段として強制的に最新リビジョンを使う」とは異なっています。
+
+   * -l -
+     各プロジェクトの最新(直近)のイベントのレコードを表示します。これ
+     は CVS コマンドの通常の -l
+     の意味、「再帰的ではなくローカルで動作する」 とは異なっています。
+
+   * -m MODULE - モジュール MODULE
+     (プロジェクト名)のフルレポートを表示し
+     ます。このオプションは複数回指定できます。
+
+   * -n MODULE - MODULE
+     に関する直近のイベントを表示します。たとえば、モジ
+     ュールをチェックアウトするのはそのモジュール自体に関することですが、そ
+     のモジュール中のファイルを変更したりアップデートしたりするのはそのファ
+     イルに関することであって、モジュールに関することではありません。このオ
+     プションは複数回指定できます。これは CVS コマンドの通常の -n
+     の意味、 「CVSROOT/modules
+     のプログラムを実行しない」とは異なっています。
+
+   * -o - checkout の記録を表示します(デフォルト)。
+
+   *  -p REPOS -
+     リポジトリ中の特定のディレクトリについてのデータを表示しま
+     す。このオプションは複数回指定できます。これは CVS
+     コマンドの通常の -p
+     の意味、「データをファイルに出力するのではなく標準出力へパイプする」と
+     は異なっています。
+
+     このオプションは 1999 年夏時点では一部うまく動かないようです。
+
+   *  -r REV - 各 RCS
+     ファイル中で、指定されたリビジョン/タグ名以降のリビジ
+     ョンについての記録を表示します。このコマンドは各 RCS
+     ファイル中のリビ ジョンまたはタグ名を検索します。
+
+   * -T - tag イベントすべてを表示します。
+
+   * -t TAG - TAG が history
+     ファイルに加えられて以来の記録を表示します。 -r
+     オプションとの違いは、このコマンドは CVSROOT/history ファイルを読む
+     だけで RCS ファイルは読まないので動作が非常に速いという点です。
+
+   * -u USER - USER
+     に関係するイベントを表示します。このオプションは複数回
+     指定できます。
+
+   * -w - history
+     コマンドを起動した作業ディレクトリと同じ作業ディレクトリ
+     に関係する記録を表示します。
+
+   * -X HISTORYFILE - CVSROOT/history の代わりに HISTORYFILE
+     を使用します。
+     このオプションは主にデバッグのためにしようされ、公式にサポートされたも
+     のではありません。そうは言っても便利ではあります(とっておいた古い
+     history ファイルから人間が読めるレポートを生成する時など)。
+
+   * -x TYPES - TYPES
+     で指定されたイベントを表示します。各タイプはアルファ
+     ベット1文字で表現され、`TOEFWUCGMAR' のうちのいずれかです。任意の
+     数の文字を組み合わせて指定できます。各文字の意味は次の通りです:
+
+        * T - Tag
+
+        * O - Checkout
+
+        * E - Export
+
+        * F - Release
+
+        * W - Update (newly obsolete file removed from working copy)
+
+        * U - Update (file was checked out over user file)
+
+        * C - Update (merge, with conflicts)
+
+        * G - Update (merge, no conflicts)
+
+        * M - Commit (file was modified)
+
+        * A - Commit (file was added)
+
+        * R - Commit (file was removed)
+
+     デフォルトでは、つまり -x オプションが指定されていない場合は
+     checkout を表示します(`-x O' と同様)。
+
+   * -z ZONE - 出力中の時刻表示のタイムゾーンを ZONE に設定する。ZONE
+     はタ イムゾーンの省略形で、たとえば UTC, GMT, BST, CDT, CCT
+     などです。指定 できるタイムゾーンの一覧は CVS
+     ソースディストリビューションのファイル lib/getdate.c の
+     TimezoneTable にあります。
+
+
+History 出力
+
+history コマンドの出力は、行の連なったものです。各行が1つの「履歴イベ
+ント」を示し、イベントの種類を表わすアルファベットの1文字(コード文字)
+で始まります。例を示します:
+
+     floss$ cvs history -D yesterday -x TMO
+     M 08/21 20:19 +0000 jrandom 2.2              baar       myproj == <remote>
+     M 08/22 04:18 +0000 jrandom 1.2              README     myproj == <remote>
+     O 08/22 05:15 +0000 jrandom myproj =myproj= ~/src/*
+     M 08/22 05:33 +0000 jrandom 2.18             README.txt myproj == ~/src/myproj
+     O 08/22 14:25 CDT jrandom myproj =myproj= ~/src/*
+     O 08/22 14:26 CDT jrandom [99.08.23.19.26.03] myproj =myproj= ~/src/*
+     O 08/22 14:28 CDT jrandom [Exotic_Greetings-branch] myproj =myproj= ~/src/*
+
+コード文字はさきほど説明した -x と同じです。コード文字のあとに、そのイ
+ベントの日時、そのイベントの責任者(ユーザ)、と続きます。
+
+ユーザの次にリビジョン番号かタグか日時のうち、適切なものいずれかが表示
+されます(上の例に見えるように、日時かタグの場合は角カッコで囲んであり
+ます)。コミットの場合は新しいリビジョン番号が表示されます。-D か -r で
+チェックアウトを行うと、スティッキー日付かタグが角カッコで囲まれて表示
+されます。通常のチェックアウトでは何も表示されません。
+
+次に対象のファイルの名前、モジュールについてのイベントならばモジュール
+名が表示されます。前者の場合、その次の2つはモジュール/プロジェクト名、
+そのユーザのホームディレクトリ内での作業コピーの場所、になります。後者
+の場合はチェックアウトされた作業コピーのモジュール名(イコールで囲まれ
+ます)、そのユーザのホームディレクトリ内での作業コピーの場所、が続きま
+す。(-d オプションを使用した場合には、チェックアウトされた作業コピーの
+名前はモジュールの名前とは違うものになります。)
+
+
+File: j-cvsbook.info,  Node: import,  Next: init,  Prev: gserver,  Up: Commands And Options
+
+import
+------
+
+Synopsis: import [OPTIONS] REPOSITORY VENDOR_TAG RELEASE_TAG(S)
+
+   * Alternate names - im, imp
+
+   * Requires - Repository, current directory (the source directory)
+
+   * Changes - Repository
+
+リポジトリに新しいソースをインポートします。新規のプロジェクトを生成す
+るか、または既存のプロジェクトのベンダブランチに新しいベンダリビジョン
+を生成します。(インポートにおけるベンダブランチの基本的な説明は *Note
+Advanced CVS:: をご覧ください、以下の説明がわかりやすくなると思い ます)
+
+一度にたくさんのファイルやディレクトリを追加するときや、新しいプロジェ
+クトを作成するときには通常 import を使います。ファイルを1つだけ追加し
+たい場合には add を使います。
+
+Options:
+
+   * -b BRANCH - ベンダブランチ BRANCH へインポートします。(BRANCH
+     は実際 のブランチ番号で、タグではありません。)
+     めったに使いませんが、同じプロ
+     ジェクトのソースを違うベンダから取得する場合に役に立ちます。通常のイン
+     ポートコマンドは、ソースをデフォルトのベンダブランチ(1.1.1)にインポー
+     トする、と仮定します。これがデフォルトであるために、普通はわざわざ
+     -b オプションで指定したりしません:
+
+          floss$ cvs import -m "importing from vendor 1" theirproj THEM1 THEM1-0
+
+     デフォルト以外のベンダブランチにインポートするには、別のブランチを明示
+     的に指定してやらなければなりません:
+
+          floss$ cvs import -b 1.1.3 -m "from vendor 2" theirproj THEM2 THEM2-0
+
+     1.1.3
+     ブランチは将来のインポートを吸収することもできますし、他のベンダ
+     ブランチとマージすることもできます。The 1.1.3 branch can absorb
+     future imports and be merged like any other vendor branch. しかし、
+     将来 `-b 1.1.3' を指定してインポートする場合は同じベンダタグ
+     (`THEM2')も指定していることを確認してください。CVS はベンダブラン
+     チとベンダタグが一致しているかどうかチェックしません。しかしもし不一致
+     だった場合は、妙な、予測しなかったようなことが起こります。
+
+     ベンダブランチは通常のブランチとは違い、奇数です。
+
+   * -d -
+     そのファイルの変更時刻を現在時刻ではなくインポート時点の時刻にし
+     ます。これはクライアント/サーバ型の CVS では動作しません。
+
+   * -I NAME -
+     インポート時に無視するファイルのファイル名を指定します。こ
+     のオプションは1度のインポートで複数回指定できます。ワイルドカードが使
+     えます。`*.foo' は `.foo' で終わるファイルを無視します。(ワ
+     イルドカードについて詳しくは *Note Repository Administrative
+     Files:: の *Note cvsignore:: 節をご参照下さい。)
+
+     デフォルトで、次のファイル及びディレクトリ名が無視されます:
+
+          	.
+          	..
+          	.#*
+          	#*
+          	,*
+          	_$*
+          	*~
+          	*$
+          	*.a
+          	*.bak
+          	*.BAK
+          	*.elc
+          	*.exe
+          	*.ln
+          	*.o
+          	*.obj
+          	*.olb
+          	*.old
+          	*.orig
+          	*.rej
+          	*.so
+          	*.Z
+          	.del-*
+          	.make.state
+          	.nse_depinfo
+          	core
+          	CVS
+          	CVS.adm
+          	cvslog.*
+          	RCS
+          	RCSLOG
+          	SCCS
+          	tags
+          	TAGS
+
+     これらのファイル名パターン、及び `.cvsignore',
+     `CVSROOT/cvsignore', `$CVSIGNORE' 環境変数で指定されているフ
+     ァイルを無視をしたくないときには、`-I !' を使用してください。
+
+          floss$ cvs import -I ! -m "importing the universe" proj VENDOR VENDOR_0
+
+     カレントディレクトリツリー内のファイルを、無視されるようなものも含めて
+     すべてインポートします。
+
+     `-I !' を使用すると、その時点までに作成された無視リストがすべ
+     て消去されます。ですから、-I
+     オプションより前にあるものは全部破棄され
+     ますが、それよりもあとに指定されたものは有効です。従ってこのコマンドは
+
+          floss$ cvs import -I ! -I README.txt -m "some msg" theirproj THEM THEM_0
+
+     以下のコマンドとは同じではありません。
+
+          floss$ cvs import -I README.txt -I ! -m "some msg" theirproj THEM THEM_0
+
+     前者は README.txt
+     を無視します(インポートしません)が、後者はインポート します。
+
+   * -k MODE -インポートするファイルの デフォルトの RCS
+     キーワード展開のモ
+     ードを設定します。(指定できるモードについてはこの章でのちほど出てくる
+     *Note Keyword Substitution (RCS Keywords):: をご参照下さい。)
+
+   * -m MESSAGE - インポート時ログメッセージとして MESSAGE を記録する。
+
+   * -W SPEC -
+     ファイル名に基づくインポート時のフィルタ(ラッパー)を指定し
+     ます。このオプションは複数回指定できます。(ラッパーの仕様について詳し
+     くは *Note Repository Administrative Files:: の *Note
+     cvswrappers:: をご参 照下さい。)
+
+
+
+File: j-cvsbook.info,  Node: init,  Next: kserver,  Prev: import,  Up: Commands And Options
+
+init
+----
+
+Synopsis: init NEW_REPOSITORY
+
+   * Alternate names - None
+
+   * Requires - Location for new repository
+
+   * Creates - Repository
+
+新規のリポジトリ(いろいろなプロジェクトをおさめるためのルートリポジト
+リのことです)を作成します。大抵はグローバルオプション -d をつけて使
+うと思います:
+
+     floss$ cvs -d /usr/local/yet_another_repository init
+
+CVSROOT 環境変数を設定してあったとしても、それは多分既存のリポジトリを
+指していると思われますし、もし実際そうだった場合、このコマンドに関して
+は意味がないですし危険でさえあります。(新規のリポジトリを初期化した後
+の手順については *Note Repository Administration:: をご覧ください。)
+
+Options: None.
+
+
+File: j-cvsbook.info,  Node: kserver,  Next: log,  Prev: init,  Up: Commands And Options
+
+kserver
+-------
+
+Synopsis: kserver
+
+これはケルベロスサーバです。(ケルベロスライブラリがバージョン4以下の場
+合に使います。バージョン5では GSSAPI を使います、*Note gserver:: を参照
+のこと。) このコマンドは通常ユーザが直接起動したりはせず、クライアント
+側から `:kserver:' メソッドでユーザが接続してきたときに、サーバ側
+で起動されます。
+
+     cvs -d :kserver:floss.red-bean.com:/usr/local/newrepos checkout myproj
+
+ケルベロスの設定と使用法についてはこの本の範囲外です。(Cederqvist マニ
+ュアルの `Kerberos Authenticated' ノードに役に立つヒントがあると
+思います。)
+
+Options: None.
+
+
+File: j-cvsbook.info,  Node: log,  Next: login,  Prev: kserver,  Up: Commands And Options
+
+log
+---
+
+Synopsis: log [OPTIONS] [FILES]
+
+   * Alternate names - lo, rlog
+
+   * Requires - Working copy, repository
+
+   * Changes - Nothing
+
+あるプロジェクトについて、またはプロジェクト中のファイルについてのログ
+メッセージを出力します。log コマンドの出力は、古い RCS プログラム(rlog)
+をもとにしているので、他の CVS コマンドの出力形式とは少々違います。ま
+ずヘッダとして、そのファイル自体についてリビジョンに関係のない情報を出
+力し、次にログメッセージを出力します(リビジョン順)。各リビジョン部分は
+リビジョン番号とログメッセージに加え、著者(変更したユーザ)、変更日時、
+追加・削除された行数からなります。時刻は地方時ではなくすべて UTC (GMT)
+で表示されます。
+
+log コマンドの出力はファイル単位なので、複数ファイルを含む1回のコミッ
+トについて、そのまとまりが1回の変更であるというようなことは直接表示さ
+れません。しかし、ログメッセージと日時をきちんと読めば、何が起こったか
+を再構成できると思います。(複数のログ出力を読みやすい形に整形し直すツ
+ールについて、詳しくは *Note Third-Party Tools:: の *Note cvs2cl --
+Generate GNU-Style ChangeLogs:: を参照してください。) (*Note
+history::も参照のこと)
+
+Options:
+
+以下のフィルタリングオプションをすべて読んでも、組み合わせたときにどの
+ような動作をするかはわからないと思います。正確に言うと、log コマンドの
+動作は次のようになります。-d, -s, -w 各々で選択されたリビジョンの集合
+の共通部分(intersection)と、-b, -r 各々で選択されたリビジョンの集合を
+合わせたもの(union)の、共通部分(intersection)が対象になります。
+
+   * -b -
+     デフォルトブランチのログ情報のみを表示します(通常はトランク上の
+     一番大きい番号のブランチです)。このオプションは開発の脇のブランチのロ
+     グメッセージを出力しないようにするために使用されます。
+
+   * -dDATES - DATES
+     (セミコロンで区切ったリスト)で指定した日付または日付
+     範囲にマッチするリビジョンのログ情報のみ表示します。日付は通常の日付形
+     式(この章で既に述べた *Note Date Formats::
+     節を参照のこと)で、範囲を指定
+     する場合の組み合わせかたは次の通りです:
+
+        * DATE1<DATE2 - DATE1 と DATE2
+          の間のリビジョンが対象になります。DATE1 が DATE2
+          より後の場合は何も出力されなくなります、代わりに `>' を
+          使ってください。
+
+        * <DATE DATE> - DATE 以前のリビジョンが対象になります。
+
+        * >DATE DATE< - DATE 以降のリビジョンが対象になります。
+
+        * DATE - DATE まででもっとも最近の1リビジョンが対象になります。
+
+
+     範囲指定には `<' と `>' の代わりに `<=' と `>=' も
+     使えて、こちらは端を含みます(そうでない場合端を含みません)。セミコロン
+     で区切って複数の範囲を指定することもできます。下の例では:
+
+          floss$ cvs log -d"1999-06-01<1999-07-01;1999-08-01<1999-09-01"
+
+     1999
+     年の6月か8月にコミットされたリビジョンのログメッセージを表示しま
+     す(7月は飛ばします)。-d と引数の間に空白があってはいけません。
+
+   * -h -
+     各ファイルのヘッダ情報、つまりファイル名・作業ディレクトリ・ヘッ
+     ドリビジョン・デフォルトブランチ・アクセスリスト・ロック・シンボル名
+     (タグ)・そのファイルのデフォルトキーワード展開モード、のみを出力します。
+     ログメッセージは出力されません。
+
+   * -l -
+     ローカル。カレントディレクトリ内のファイルのみが対象になります。
+
+   * -N -
+     ヘッダのシンボル名(タグ)一覧を省略します。タグがたくさんついてい
+     るプロジェクトのログメッセージだけを見たい場合に便利です。
+
+   * -R - リポジトリ中にある RCS ファイルのファイル名を表示します。
+
+     これは通常の -R
+     オプションの意味「再帰的(リカーシブ)」とは異なっていま
+     す。このコマンドに関しては -l
+     をオーバライドする方法がありませんので、 .cvsrc に log -l
+     は書かないでください。
+
+   * -rREVS - REVS
+     で指定したリビジョン(カンマで区切ったリスト)のログ情報
+     を表示します。REVS
+     にはリビジョン番号もタグ名も使用できます。範囲の指
+     定方法は次の通りです:
+
+        * REV1:REV2 - REV1 から REV2
+          までのリビジョン(同一ブランチ上に存在する 必要があります)。
+
+        * :REV - REV のブランチの最初から REV までのリビジョン(REV
+          含む)。
+
+        * REV: - REV から REV のブランチの端までのリビジョン。
+
+        * BRANCH - そのブランチの根元から端まですべてのリビジョン。
+
+        * BRANCH1:BRANCH2 -
+          ブランチ範囲、その範囲のすべてのブランチ上にあるす
+          べてのリビジョン。
+
+        * BRANCH. - The latest (tip) revision on BRANCH.
+
+
+     最後に、引数無しの -r
+     はデフォルトブランチ(通常はトランク)の最新リビジ
+     ョンを指します。-r と引数の間に空白を入れてはいけません。
+
+     -r の引数がリストの場合、カンマで区切ってください。-d
+     のようにセミコロ ンで区切ったりはしないでください。
+
+   * -sSTATES - 状態属性が STATES
+     (カンマで区切ったリスト)で指定したものに
+     マッチするリビジョンが対象になります。-s
+     と引数の間に空白を入れてはい けません。
+
+     -s の引数がリストの場合、カンマで区切ってください。-d
+     のようにセミコロ ンで区切ったりはしないでください。
+
+   * -t - -h
+     と同様ですが、それに加えてファイルの説明(生成時メッセージ)も
+     出力します。
+
+   * -wUSERS - コミットしたユーザのユーザ名が USERS
+     (カンマで区切ったリス
+     ト)で指定したものにマッチするリビジョンが対象になります。USERS
+     引数な しで -w 単独で指定した場合には、 cvs log
+     を起動したユーザ名を指定した のと同じ意味になります。
+
+     ユーザの別名を使用している場合、CVS
+     はコミット時にシステムユーザ名では なく CVS
+     のユーザ名を記録する、ということに注意してください。-w と引数
+     の間に空白を入れてはいけません。
+
+     -w の引数がリストの場合、カンマで区切ってください。-d
+     のようにセミコロ ンで区切ったりはしないでください。
+
+
+
+File: j-cvsbook.info,  Node: login,  Next: logout,  Prev: log,  Up: Commands And Options
+
+login
+-----
+
+Synopsis: login
+
+   * Alternate names - logon, lgn
+
+   * Requires - Repository
+
+   * Changes - ~/.cvspass file
+
+CVS サーバに接続し、特定のリポジトリについて認証情報を確認します。この
+コマンドは作業コピーにもリポジトリにも影響を及ぼしません。あるリポジト
+リについてパスワードを確認し、以後のためにホームディレクトリの.cvspass
+ファイルにパスワードを保存するだけです。これ以降、同じユーザ名で同じリ
+ポジトリにアクセスするコマンドを使用しても、login を再度要求されること
+はありません。クライアント側の CVS は .cvspass ファイルからパスワード
+を取ってくるからです。
+
+このコマンドを使うときは、pserver 接続方法を使用してリポジトリを指定し
+てください。こんな感じです:
+
+     floss$ cvs -d :pserver:jrandom@floss.red-bean.com:/usr/local/newrepos
+
+または CVSROOT 環境変数を設定しておいてください。
+
+サーバ側のパスワードを変更したら、再度 login を実行してください。
+
+Options: None.
+
+
+File: j-cvsbook.info,  Node: logout,  Next: pserver,  Prev: login,  Up: Commands And Options
+
+logout
+------
+
+Synopsis: logout
+
+   * Alternate names - None
+
+   * Requires - ~/.cvspass file
+
+   * Changes - ~/.cvspass file
+
+login の反対です。このリポジトリのパスワードを .cvspass から削除します。
+
+Options: None.
+
+
+File: j-cvsbook.info,  Node: pserver,  Next: rdiff,  Prev: logout,  Up: Commands And Options
+
+pserver
+-------
+
+Synopsis: pserver
+
+   * Alternate names - None
+
+   * Requires - Repository
+
+   * Changes - Nothing
+
+これはパスワード認証サーバです。このコマンドは通常ユーザが直接起動した
+りはせず、クライアント側から `:pserver:' メソッドでユーザが接続し
+てきたときに、サーバ側で `/etc/inetd.conf' から起動されます。 (*Note
+login::, *Note logout:: コマンドや、この章の *Note Run Control Files::
+節の `.cvspass' ファイルについてを参照のこと。パスワード認証のCVS
+サーバを設定する際の詳細については *Note Repository Administration:: を
+参照のこと。)
+
+Options: None.
+
+
+File: j-cvsbook.info,  Node: rdiff,  Next: release,  Prev: pserver,  Up: Commands And Options
+
+rdiff
+-----
+
+Synopsis: rdiff [OPTIONS] PROJECTS
+
+   * Alternate names - patch, pa
+
+   * Requires - Repository
+
+   * Changes - Nothing
+
+diff コマンドと同様ですが、直接リポジトリで動きますので作業コピーが必
+要ありません。このコマンドでは、あるリリースから別のリリースまでの間の
+相違を、patch プログラムへの入力に使える形式で取得できます(アップグレ
+ードを行いたいユーザ用のパッチファイルを配布することができます)。
+
+patch プログラムの操作はこの本の範囲外です。が、パッチファイルにサブデ
+ィレクトリ中のファイルの diff も含まれている場合、違いを正しく適用する
+ためには patch に -p オプションをつける必要があるかもしれないことに注
+意してください。(詳しくは patch のドキュメントを参照してください。)
+(*Note diff:: も参照のこと)
+
+Options:
+
+   * -c - コンテキスト diff 形式で出力します(デフォルト)。
+
+   * -D DATE or -D DATE1 -D DATE2 -
+     日付が1つの場合、指定した日付とヘッド
+     リビジョンの相違を出力します。日付が2つの場合、その2つの日付間の相違を
+     表示します。
+
+   * -f - -D や -r
+     での指定にマッチするリビジョンがない場合、強制的にヘッ
+     ドリビジョンを使用します(そうでない場合、rdiff
+     はそのファイルを無視し ます)。
+
+   * -l - ローカル。サブディレクトリを降りません。
+
+   * -R - 再帰的(リカーシブ)。サブディレクトリを降ります(デフォルト)。
+     .cvsrc で -l を指定した場合にそれを打ち消すときに使うくらいです。
+
+   * -r REV -r REV1 -r REV2 -
+     リビジョンが1つの場合、指定したリビジョンと
+     ヘッドリビジョンの相違を出力します。リビジョンが2つの場合、その2つのリ
+     ビジョン間の相違を表示します。
+
+   * -s -
+     相違の概要を表示すします。どのファイルが追加され、変更され、削除
+     されたかを表示し、中身の変更は表示しません。出力は次のようになります:
+
+          floss$ cvs -Q rdiff -s -D 1999-08-20 myproj
+          File myproj/Random.txt is new; current revision 1.4
+          File myproj/README.txt changed from revision 2.1 to 2.20
+          File myproj/baar is new; current revision 2.3
+
+   * -t -
+     各ファイルのトップ2リビジョン間の相違を表示します。プロジェクト
+     への最近の変更をみる際に便利なショートカットです。このオプションは
+     -D, -r と互換性はありません。
+
+   * -u - Prints output in unidiff format.  Older versions of patch
+     can't handle unidiff format; therefore, don't use -u if you're
+     trying to generate a distributable patch file - use -c instead.
+
+   * -V (Obsolete) - CVS reports an error if you try to use this option
+     now.  I've included it here only in case you see some old script
+     trying to use it.
+
+
+
+File: j-cvsbook.info,  Node: release,  Next: remove,  Prev: rdiff,  Up: Commands And Options
+
+release
+-------
+
+Synopsis: release [OPTIONS] DIRECTORY
+
+   * Alternate names - re, rel
+
+   * Requires - Working copy
+
+   * Changes - Working copy, CVSROOT/history
+
+チェックアウトを取り消します(作業コピーがもう使用されていないと表示し
+ます)。CVS コマンドの多くが作業コピーで実行されるのに対し、このコマン
+ドは作業コピー内ではなく、その直上のディレクトリ(親ディレクトリ)で実行
+します。作業コピーからリポジトリの場所の情報を得ることができませんので、
+CVSROOT 環境変数をセットするか、-d グローバルオプションでリポジトリを
+指定する必要があります。
+
+リリースは必ずしも使用する必要はありません。CVS はロックをかけませんの
+で作業コピーをただ削除するだけでもよいのです。
+
+しかし、作業コピー中に未コミットの変更があったり、CVSROOT/history ファ
+イルに作業の停止を記録したい場合には release を使うべきです。CVS はま
+ず未コミットの変更がないかどうかをチェックします。もしあればその旨警告
+し、続けてよいかどうか訊ねます。作業コピーが実際にリリースされたら、
+リポジトリの CVSROOT/history ファイルにそのことが記録されます。
+
+Options:
+
+   * -d - release が成功したら作業コピーを削除します。-d
+     を指定しない場合、
+     作業コピーはリリース後もディスクに残ったままになります。
+
+
+作業コピー中に新しいディレクトリを作り、それをリポジトリに追加しなかっ
+た場合に -d フラグを指定すると、作業コピーと一緒にそのディレクトリも削
+除されてしまいます。
+
+
+File: j-cvsbook.info,  Node: remove,  Next: rtag,  Prev: release,  Up: Commands And Options
+
+remove
+------
+
+Synopsis: remove [OPTIONS] [FILES]
+
+   * Alternate names - rm, delete
+
+   * Requires - Working copy
+
+   * Changes - Working copy
+
+プロジェクトからファイルを削除します。通常、このコマンドを起動したとき
+に、そのファイルそのものがディスクから削除されます(ただし -f を参照の
+こと)。このコマンドはデフォルトで再帰的に動作しますが、削除するファイ
+ルの名前を明示的に指定するのが普通です。Note the odd implication of the
+previous sentence: 普通は自分の作業コピー中にもう存在しないファイ
+ルに対し cvs remove を実行します。 Removes a file from a project.
+Normally, the file itself is removed from disk when you invoke this
+command (but see -f).  Although this command operates recursively by
+default, it is common to explicitly name the files being removed.  Note
+the odd implication of the previous sentence: Usually, you run cvs
+remove on files that don't exist anymore in your working copy.
+
+確認のためにリポジトリに接続しますが、この後に commit が実行されるまで
+そのファイルは実際に削除されたりはしません。また、RCS ファイルはリポジ
+トリから本当に削除されるわけではありません。トランクから削除された場合、
+Attic/ サブディレクトリに移動するだけで、ブランチ上ではまだ存在します。
+ブランチから削除された場合は、場所は変わりませんが状態が dead の新しい
+リビジョンがブランチ上に追加されます。(*Note add:: を参照のこと)
+
+Options:
+
+   * -f - 強制。そのファイルを CVS
+     から削除する前に、ディスクから削除しま す。このオプションは他の
+     CVS コマンドの通常の -f オプションの意味「強
+     制的にヘッドリビジョンを使用する」とは異なります。
+
+   * -l - ローカル。カレントディレクトリでのみ動作します。
+
+   * -R -
+     再帰的(リカーシブ)。サブディレクトリを降ります(デフォルト)。この
+     オプションは .cvsrc に -l
+     が指定してある場合、それを打ち消したいときの ためにあります。
+
+
+
+File: j-cvsbook.info,  Node: rtag,  Next: server,  Prev: remove,  Up: Commands And Options
+
+rtag
+----
+
+Synopsis: rtag [OPTIONS] TAG PROJECT(S)
+
+   * Alternate names - rt, rfreeze
+
+   * Requires - Repository
+
+   * Changes - Repository
+
+リポジトリ内のモジュールに直接タグをつけます(作業コピーは不要です)。
+このコマンドを動作させるためには、CVSROOT 環境変数を指定するか、-d グ
+ローバルオプションを指定する必要があると思います。(*Note tag:: を参照の
+こと)
+
+Options:
+
+   * -a -
+     削除されたファイルのタグをクリアします。削除されたファイルは履歴
+     のためにリポジトリ内にありますが、現在生きているプロジェクトの一部では
+     ないからです。既に使用されているタグ名でタグ付けするのは不正なことなの
+     ですが、その名前が削除されたファイル(プロジェクトの現時点で見てもう存
+     在しないもの)にしか使用されていないのなら、それをしてはいけない理由は
+     ないのです。
+
+   * -b - TAG という名前の新しいブランチを作成します。
+
+   * -D DATE - DATE 時点で最新のリビジョンにタグをつけます。
+
+   * -d -
+     タグを削除します。この変更は一切記録されません。ただタグがなくな
+     るだけです。CVS はタグに関する履歴を保存しません。
+
+   * -F -
+     指定したタグ名がそのファイル中の別のリビジョンに存在する場合でも、
+     強制的にそのタグ名を再割当します。
+
+   * -f -
+     指定されたタグや日付が見つからない場合には強制的にヘッドリビジョ
+     ンを使用します。(-r や -D 参照のこと)
+
+   * -l - ローカル。カレントディレクトリでのみ動作します。
+
+   * -n - CVSROOT/modules の tag
+     プログラムを実行しません。(そのようなプロ
+     グラムについて詳しくはこの章でのちほど出てくる *Note Repository
+     Administrative Files:: 節をご参照下さい)
+
+   * -R - 再帰的(リカーシブ)。サブディレクトリを降ります(デフォルト)。
+     .cvsrc で -l を指定した場合にそれを打ち消すためのオプションです。
+
+   * -r REV - リビジョン REV にタグ付けします(REV
+     はタグ名の場合もあります)。
+
+
+
+File: j-cvsbook.info,  Node: server,  Next: status,  Prev: rtag,  Up: Commands And Options
+
+server
+------
+
+Synopsis: server
+
+CVS サーバを起動します。このコマンドをユーザが起動することはありません
+(クライアント/サーバプロトコルをデバッグするような時以外は)。ですから
+これについて触れたことは忘れてください。
+
+Options: None.
+
+
+File: j-cvsbook.info,  Node: status,  Next: tag,  Prev: server,  Up: Commands And Options
+
+status
+------
+
+Synopsis: status [OPTIONS] [FILES]
+
+   * Alternate names - st, stat
+
+   * Requires - Working copy
+
+   * Changes - Nothing
+
+作業コピー中のファイルの状態を表示します。
+
+Options:
+
+   * -l - ローカル。カレントディレクトリでのみ動作します。
+
+   * -R - 再帰的(リカーシブ)。サブディレクトリを降ります(デフォルト)。
+     .cvsrc で -l を指定した場合にそれを打ち消すためのオプションです。
+
+   * -v - そのファイルのタグ情報を表示します。
+
+
+
+File: j-cvsbook.info,  Node: tag,  Next: unedit,  Prev: status,  Up: Commands And Options
+
+tag
+---
+
+Synopsis: tag [OPTIONS] TAG [FILES]
+
+   * Alternate names - ta, freeze
+
+   * Requires - Working copy, repository
+
+   * Changes - Repository
+
+プロジェクトの特定のリビジョンまたはリビジョンの集合に名前をつけます。
+プロジェクトの「スナップショットを取る」とも言います。このコマンドは
+CVS のブランチを作成するときにも使用されます。(-b オプションを参照のこ
+と。*Note rtag:: も)
+
+Options:
+
+   * -b - TAG という名前のブランチを作成する。
+
+   * -c -
+     作業コピーに未コミットの変更がないかどうかチェックする。もしあれ
+     ば警告を表示して終了し、タグは作成されません。
+
+   * -D DATE - DATE 時点で最新のリビジョンにタグをつけます。
+
+   * -d -
+     タグを削除します。この変更については一切記録されません、ただタグ
+     がなくなるだけです。CVS はタグについて変更履歴を保存しません。
+
+   * -F -
+     指定したタグ名がそのファイル中の別のリビジョンに存在する場合でも、
+     強制的にそのタグ名を再割当します。
+
+   * -f -
+     指定されたタグや日付が見つからない場合には強制的にヘッドリビジョ
+     ンを使用します。(-r や -D 参照のこと)
+
+   * -l - ローカル。カレントディレクトリでのみ動作します。
+
+   * -R - 再帰的(リカーシブ)。サブディレクトリを降ります(デフォルト)。
+     .cvsrc で -l を指定した場合にそれを打ち消すためのオプションです。
+
+   * -r REV - リビジョン REV にタグ付けします(REV
+     はタグ名の場合もあります)。
+
+
+
+File: j-cvsbook.info,  Node: unedit,  Next: update,  Prev: tag,  Up: Commands And Options
+
+unedit
+------
+
+Synopsis: unedit [OPTIONS] [FILES]
+
+   * Alternate names - None
+
+   * Requires - Working copy, repository
+
+   * Changes - edit/watch lists in the repository
+
+監視者に対し、ファイルの編集が終わったことを合図します。 (*Note
+watch::, *Note watchers::, *Note edit::, *Note editors:: を参照のこと)
+
+Options:
+
+   * -l -
+     ローカル。カレントディレクトリのファイルについてのみ合図します。
+
+   * -R - 再帰的(リカーシブ)。デフォルト。-l の反対です。.cvsrc
+     ファイルの -l 指定を打ち消す必要のあるときに -R を指定します。
+
+
+
+File: j-cvsbook.info,  Node: update,  Next: watch,  Prev: unedit,  Up: Commands And Options
+
+update
+------
+
+Synopsis: update [OPTIONS] [FILES]
+
+   * Alternate names - up, upd
+
+   * Requires - Working copy, repository
+
+   * Changes - Working copy
+
+リポジトリの変更を自分の作業コピーへマージします。副作用として、自分の
+作業コピー中で変更のあるファイルを表示します(但し、-Q グローバルオプシ
+ョンが指定されている場合はこの表示はありません)。(*Note checkout:: も参
+照のこと)
+
+Options:
+
+   * -A -
+     スティッキーなタグ、日付、キーワード展開モードをリセットします。
+     ついていたスティッキーリビジョンとトランクのヘッドリビジョンが違う場合
+     にこれを実行するとファイルの内容が変わります。(-A
+     はプロジェクトのトラ
+     ンクをチェックアウトするのと同様だと考えてください)
+
+   * -D DATE - DATE
+     時点で最新であるリビジョンにアップデートします。このオ
+     プションはスティッキーであり、-P
+     を含んでいます。作業コピーがスティッ
+     キー日付を含む場合にはその作業コピーからコミットを行うことはできません。
+
+   *  -d -
+     欠けディレクトリも取得する。欠けディレクトリというのは、リポジト
+     リ中に存在するが作業コピー中に存在しないディレクトリのことです。そのよ
+     うなディレクトリは作業ディレクトリをチェックアウトしたあとにリポジトリ
+     内に作成されたものです。このオプションをつけないでアップデートすると、
+     作業ディレクトリ内に存在するディレクトリについてのみ実行されます。リポ
+     ジトリの新しいファイルは取得しますが、新しいディレクトリは取得しません。
+     (-P も参照のこと)
+
+   * -f - -D や -r で
+     指定したタグ名や日付が見つからなかった場合に最新リビ
+     ジョンをチェックアウトするよう強制します。
+
+   * -I NAME - import の -I オプションと同様です。 import.
+
+   *  -j REV[:DATE] or -j REV1[:DATE] -j REV2[:DATE] -
+     開発のライン2つを合 流、またはマージします。とりあえず今のところ
+     DATE 引数を無視すると(あ とで説明します)、-j
+     オプションは次のように動作します: -j を1つだけ指定
+     した場合、作業コピーと REV との共通の祖先から REV
+     までの変更すべてを取
+     得し、それを作業コピーにマージします。"共通の祖先"とは作業コピー中
+     のリビジョン及び REV
+     の両方にとって祖先であるもののうち最新のリビジョ ンのことです。-j
+     を2つ指定した場合、REV1 から REV2 までの変更を作業コ
+     ピーにマージします。
+
+     -j の引数には特別なタグ名として HEAD と BASE
+     を使うことができます。そ
+     れぞれ、リポジトリ内の最新のリビジョン、作業コピーのベースリビジョンを
+     指します。
+
+     オプショナルの DATE 引数について。REV
+     がブランチの場合は通常そのブラン
+     チ上の最新リビジョンを意味しますが、DATE
+     以前の最新リビジョンに限定す
+     ることができます。日付はリビジョンとコロンで区切り、空白無しで書いてく
+     ださい、たとえば:
+
+          floss$ cvs update -j ABranch:1999-07-01 -j ABranch:1999-08-01
+
+     この例では同一のブランチ上で違う日付を使っていますので、そのブランチの
+     7月から8月までの変更を取得し、それを作業コピーにマージします。しかし、
+     必ずしも2つの -j オプションが同じブランチ上である必要はありません。
+
+   * -k MODE - RCS キーワード展開を MODE
+     に従って行います。(この章でのちほ ど出てくる *Note Keyword
+     Substitution (RCS Keywords):: をご参照下さい)
+     指定したモードは作業コピー中においてスティッキーですので将来の
+     update でも有効です(ただし -A を参照のこと)。
+
+   * -l - ローカル。カレントディレクトリのみアップデートします。
+
+   * -P - 空ディレクトリを削除します。 CVS
+     の管理下にあるディレクトリのう
+     ち、アップデートの終了時にファイルを持っていないものは、作業コピーから
+     削除されます。(-d も参照のこと)
+
+   *  -p -
+     ファイルの内容を、ファイルではなく標準出力へ出力します。主に、作
+     業コピーにスティッキータグをつけずに以前のリビジョンに戻す際に使用され
+     ます。たとえば:
+
+          floss$ cvs update -p -r 1.3 README.txt > README.txt
+
+     この時点で作業コピー中の README.txt
+     は、手で編集してその状態にしたよう
+     な感じで以前のリビジョン1.3の内容になっています。
+
+   * -R - 再帰的(リカーシブ)。サブディレクトリを降りてアップデートします
+     (デフォルト)。.cvsrc で -l
+     を指定した場合にそれを打ち消すためのオプシ ョンです。
+
+   * -r REV -
+     アップデート(またはダウンデート、クロスデート)してリビジョン REV
+     にします。作業コピー全体をアップデートする場合は大抵、REV をタグ
+     (レギュラーまたはブランチ)で指定します。個別のファイルをアップデートす
+     る場合は、タグでなくリビジョン番号で指定することも多いかもしれません。
+
+     このオプションはスティッキーです。
+
+     ファイルをブランチタグでないタグか、スティッキーリビジョンに切り替えた
+     場合、スティッキーを取り除くまでコミット不可能になります。(-A
+     を参照の こと) ただし、REV
+     がブランチタグの場合はコミットできます。単にそのブラ
+     ンチに新しいリビジョンをコミットすることになします。
+
+   * -WSPEC -
+     アップデート中にラッパー形式のフィルタを使用するよう指定しま
+     す。このオプションは複数回指定できます。(ラッパーについては詳しくはこ
+     の章の *Note Repository Administrative Files:: の *Note
+     cvswrappers:: をご 参照下さい。)  -W
+     と引数の間に空白を入れてはいけません。
+
+
+
+File: j-cvsbook.info,  Node: watch,  Next: watchers,  Prev: update,  Up: Commands And Options
+
+watch
+-----
+
+Synopsis: watch on|off|add|remove [OPTIONS] [FILES]
+
+   * Alternate names - None
+
+   * Requires - Working copy, repository
+
+   * Changes - Watch list in repository
+
+1つ以上のファイルを監視するよう設定します。他の CVS コマンドとは違い、
+watch で意味のあることをしようとすると、さらにもうひとつサブコマンドを
+指定する必要があります。(*Note watchers::, *Note edit::, *Note
+editors::, *Note unedit::, *Note users:: を参照のこと)
+
+Subcommands:
+
+   * on -
+     指定したファイルを監視することを宣言します。これを実行すると、チ
+     ェックアウト時に読み出し専用でファイルが作成され、それらのファイルを読
+     み書きできるようにするには cvs edit
+     することになります(また、現在編集
+     中のファイルの監視者に通知が行きます)。監視をオンにしても、監視者リス
+     トに加わるわけではありません。(これについては `watch add' と
+     `watch remove' を参照のこと。)
+
+   * off - watch on
+     の反対です。そのファイルを監視しないことを宣言します。
+
+   * add -
+     このファイルの監視者リストに自分を加えます。誰かがコミットした
+     り、 cvs edit, cvs unedit
+     を実行したときに通知が来るようになります(た だし -a も参照のこと)。
+
+   * remove - watch add
+     の反対です。このファイルの監視者リストから自分を取 り除きます。
+
+
+オプション(すべての watch サブコマンドに使用できるものです)。オプショ
+ンは3つあって、すべて edit のオプションと同様の意味です:
+
+   * -a ACTIONS
+
+   * -l
+
+   * -R
+
+
+
+File: j-cvsbook.info,  Node: watchers,  Prev: watch,  Up: Commands And Options
+
+watchers
+--------
+
+Synopsis: watchers [OPTIONS] [FILES]
+
+   * Alternate names - None
+
+   * Requires - Working copy, repository
+
+   * Changes - Nothing
+
+どのファイルを誰が監視しているかを表示します。
+
+Options - これらは *Note edit:: の同じオプションと同様の意味です:
+
+   * -l
+
+   * -R
+
+
+
+File: j-cvsbook.info,  Node: Keyword Substitution (RCS Keywords),  Next: Repository Administrative Files,  Prev: Commands And Options,  Up: CVS Reference
+
+Keyword Substitution (RCS Keywords)
+===================================
+
+CVS はファイル中のテキスト置換を行うことができ、ファイル中のある種の情
+報を自動的に最新に保てます。置換はすべてドルマークで括った特定のキーワ
+ードパターンにより起動されます。All of the substitutions are triggered
+by a certain keyword pattern, surrounded by dollar signs. たとえばファ
+イル中の
+
+     $Revision$
+
+は、こんな風に展開されます:
+
+     $Revision: 1.5 $
+
+新しいリビジョンがコミットされても CVS はリビジョン文字列を最新のもの
+に保ち続けます。
+
+* Menu:
+
+* Controlling Keyword Expansion::          How to use keywords in your files.
+* List Of Keywords::                       All the keywords.
+
+
+File: j-cvsbook.info,  Node: Controlling Keyword Expansion,  Next: List Of Keywords,  Up: Keyword Substitution (RCS Keywords)
+
+Controlling Keyword Expansion
+-----------------------------
+
+CVS はデフォルトでキーワード展開を行い、止めるよう指示しなければ止めま
+せん。あるファイルのキーワード展開をずっとやめようと思えば、そのファイ
+ルをプロジェクトに追加する際に -k オプション付きにします。追加したあと
+でやめようと思えば admin コマンドを -k オプション付きで実行します。キ
+ーワード制御のモードはいくつかあって、-k オプションで指定できます。通
+常は o か b モードを使用します。たとえば
+
+     floss$ cvs add -ko chapter-9.sgml
+
+このコマンドは `chapter-9.sgml' というファイルを、キーワード展開
+なしでプロジェクトに追加します。ファイルのデフォルトキーワード展開モー
+ドを `o' 、つまり展開なしのモードにセットしています。(実際は「o」
+というのは「古い」(old)の略で、文字列を古い値、つまりその文字列自体と
+置換する、という意味です。結果として何も変わらないことになります。 I'm
+sure this logic made sense to somebody at the time.)
+
+各ファイルのデフォルトキーワード展開モードはリポジトリに保存してありま
+す。が、各作業コピーごとにその作業コピーローカルのキーワード展開モード
+を設定することも可能です。チェックアウトかアップデートの際に -k オプシ
+ョンをつければ設定できます。コマンド1回を実行する間だけモードを有効に
+したい場合には diff コマンドの -k オプションを使えます。
+
+指定できるモードを、その前に -k オプションをつけた形で(コマンドライン
+でタイプするような形で)ここに一覧します。これらのオプションはキーワー
+ド展開モードとして、デフォルトでもローカルでも使用できます。
+
+   * -kkv -
+     キーワードと値に展開する。これはデフォルトのキーワード展開モー
+     ドなので、新規のファイルについてこれをセットしたりする必要はありません。
+     ただし、別のモードにした後でこれに変更することはあるかもしれません。
+
+   * -kkvl - -kkv
+     と同様ですが、リビジョンが現在ロックされている場合にはロ
+     ックしているユーザ名も展開します。(これについて詳しくは admin
+     コマンド の -l オプションをご参照下さい)
+
+   * -kk -
+     キーワード文字列中の値を展開せず、キーワード名のみを展開します。
+     このオプションを使った場合たとえば
+
+          $Revision: 1.5 $
+
+     と
+
+          $Revision$
+
+     はどちらも次のように「展開」(ハイ、「縮退」ですね)されます:
+
+          $Revision$
+
+   * -ko -
+     ファイル中のキーワード文字列を再利用しますので(「o」は「old」で
+     す)、コミット前の作業コピーと同じままになります。
+
+   * -kb - -ko
+     と同様ですが、加えてプラットフォームをまたがる場合の改行コ
+     ード変換も行わないようにします。「b」は「バイナリ(binary)」の略で、こ
+     のモードはバイナリファイルに対して使用されます。
+
+   * -kv - キーワードを値で置換します、たとえば
+
+          $Revision$
+
+     は
+
+          1.5
+
+     のようになります。当然一度実行したらそれ以降置換されなくなってしまいま
+     す、このオプションを使う場合は注意してください。
+
+
+
+File: j-cvsbook.info,  Node: List Of Keywords,  Prev: Controlling Keyword Expansion,  Up: Keyword Substitution (RCS Keywords)
+
+List Of Keywords
+----------------
+
+CVS が解釈する、ドルマークで囲まれたキーワードの一覧を記します。キーワ
+ード、短い説明、展開後の例の一覧です:
+
+   * $Author$ - 変更したユーザ:
+
+          $Author: jrandom $
+
+   * $Date$ - 変更した日付と時刻、タイムゾーンは UTC(GMT) です:
+
+          $Date: 1999/08/23 18:21:13 $
+
+   * $Header$ - 役に立つだろうと思われる情報いくつか─リポジトリ内の RCS
+     ファイルのフルパス、リビジョン、日時(UTC)、変更者、状態、ロックしてい
+     るユーザ─に展開します。(ロックしているユーザはめったにありませんが、
+     下の例では qsmith がロックしているとします)
+
+          $Header: /usr/local/newrepos/myproj/hello.c,v 1.1 1999/06/01 \
+          03:21:13 jrandom Exp qsmith $
+
+   * $Id$ - $Header$ と同様ですが、RCS ファイルのフルパスを省略します:
+
+          $Id: hello.c,v 1.1 1999/06/01 03:21:13 jrandom Exp qsmith $
+
+   * $Log$ -
+     このリビジョンのログメッセージを、リビジョン番号、日時、変更
+     者つきで。他のキーワードと違い、それまでの展開結果と置き換えられません。
+     代わりに以前のものを下に追いやり、新しい展開結果を、成長する $Log$
+     の スタックの一番上に展開します:
+
+          $Log: hello.c,v $    Revision 1.12  1999/07/19 06:12:43  jrandom
+              say hello in Aramaic
+
+     $Log$
+     キーワードと同じ行でそれより前にあるテキストは、下へ伸びる展開結
+     果より前に来ます。プログラムのソースファイル中にこれを使った場合、展開
+     結果もコメントされた状態になります。
+
+   * $Locker$ -
+     このリビジョンをロックしている人の名前(通常はありません):
+
+          $Locker: qsmith $
+
+   * $Name$ - スティッキータグ名:
+
+          $Name: release_1_14 $
+
+   * $RCSfile$ - リポジトリ内の RCS ファイル名:
+
+          $RCSfile: hello.c,v $
+
+   * $Revision$ - リビジョン番号:
+
+          $Revision: 1.1 $
+
+   * $Source$ - リポジトリ内の RCS ファイルのフルパス:
+
+          $Source: /usr/local/newrepos/myproj/hello.c,v $
+
+   * $State$ - このリビジョンの状態:
+
+          $State: Exp $
+
+
+
+File: j-cvsbook.info,  Node: Repository Administrative Files,  Next: Run Control Files,  Prev: Keyword Substitution (RCS Keywords),  Up: CVS Reference
+
+Repository Administrative Files
+===============================
+
+リポジトリ管理ファイルはリポジトリの CVSROOT サブディレクトリにありま
+す。これらのファイルは CVS の動作をさまざまな面からコントロールします
+(もちろんそのリポジトリでの動作だけをです)。
+
+*Note Repository Administration:: の管理ファイルの議論も見てみるとよいで
+しょう、例があります。
+
+* Menu:
+
+* Storage And Editing::      How to make changes to the administrative files.
+* Shared Syntax::            Most administrative files share a common syntax.
+* Shared Variables::         Some administrative files can expand variables.
+* User Variables::           How to expand run-time variables set by users.
+* checkoutlist::             The `checkoutlist' file.
+* commitinfo::               The `commitinfo' file.
+* config::                   The `config' file.
+* cvsignore::                The `cvsignore' file.
+* cvswrappers::              The `cvswrappers' file.
+* editinfo::                 The `editinfo' file.
+* history::                  The `history' file.
+* loginfo::                  The `loginfo' file.
+* modules::                  The `modules' file.
+* notify::                   The `notify' file.
+* passwd::                   The `passwd' file.
+* rcsinfo::                  The `rcsinfo' file.
+* taginfo::                  The `taginfo' file.
+* users::                    The `users' file.
+* val-tags::                 The `val-tags' file.
+* verifymsg::                The `verifymsg' file.
+
+
+File: j-cvsbook.info,  Node: Storage And Editing,  Next: Shared Syntax,  Up: Repository Administrative Files
+
+Storage And Editing
+-------------------
+
+管理ファイルは一般に、リポジトリ内にある他のファイルと同様、リビジョン
+管理下にあります(例外は後で述べます)。ただし他のファイルと違って、管理
+ファイルのチェックアウトコピーがリポジトリの `CVSROOT' サブディレ
+クトリ中の対応する RCS のすぐ隣に保存されています。これらのチェックア
+ウトコピーが実際に CVS の動作を支配しているのです。
+
+通常、管理ファイルを変更する際には CVSROOT モジュールの作業コピーをチ
+ェックアウトし、変更してコミットします。CVS は自動的にリポジトリ中のチ
+ェックアウトコピーを更新します。(*Note checkoutlist:: を参照のこと) ただ
+し緊急の場合にはリポジトリ中のチェックアウトコピーを直接編集することも
+可能ではあります。
+
+
+File: j-cvsbook.info,  Node: Shared Syntax,  Next: Shared Variables,  Prev: Storage And Editing,  Up: Repository Administrative Files
+
+Shared Syntax
+-------------
+
+すべての管理ファイルにおいて、行頭の `#' はコメントを意味します。 CVS
+はその行を無視します。改行直前にバックスラッシュがあると、その改行
+はなかったことになります。
+
+いくつかのファイル(commitinfo, loginfo, taginfo, rcsinfo)に共通する文
+法がもう少しあります。これらのファイルの形式は、各行の左端がファイルま
+たはディレクトリ名にマッチする正規表現で、行の残りはその正規表現にマッ
+チしたファイルを対象に起動されるプログラム(たいてい引数つき)です。この
+プログラムの起動時の作業ディレクトリはリポジトリのトップディレクトリに
+なります。
+
+これらのファイルで使用できる特殊な正規表現が2つあります。ALL と DEFAULT
+です。ALL は、そのファイルまたはディレクトリ名が他の正規表現と
+マッチしたか否かにかかわらず、すべてにマッチします。 DEFAULT は他の正
+規表現にマッチしなかった場合にマッチします。
+

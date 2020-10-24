@@ -1,0 +1,9 @@
+# -*- mode: snippet -*-
+#contributor: myuhe
+#name: lambda
+#key: lambda
+# --
+(lambda (${1:ARG}) 
+${2:$$(yas/choose-value '("(interactive)" ""))}
+${3:BODY} 
+ )$0

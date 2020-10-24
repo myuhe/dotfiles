@@ -1,0 +1,2370 @@
+
+This file FAQ Meadow.
+
+このファイルは Meadow に関する FAQ です。
+
+Copyright (C) 1998, 1999 Yoshiki Hayashi.
+Copyright (C) 2000 TAKAHASHI Kaoru.
+Copyright (C) 2001 Keiichiro Nagano.
+
+This edition is for Meadow version 1.15.
+
+この版は Meadow version 1.15 に対応します。
+
+This document is free document; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or (at
+your option) any later version.
+
+本文書はフリー文書です。あなたは、Free Software Foundation が公表した
+GNU 一般公有使用許諾の「バージョン２」或いはそれ以降の各バージョンの中
+からいずれかを選択し、そのバージョンが定める条項に従って本プログラムを
+再頒布または変更することができます。
+
+This program is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+General Public License for more details.
+
+本プログラムは有用とは思いますが、頒布にあたっては、市場性及び特定目的
+適合性についての暗黙の保証を含めて、いかなる保証も行ないません。詳細に
+ついてはGNU 一般公有使用許諾書をお読みください。
+
+
+
+
+File: meadow-faq-ja.info, Node: Top, Next: Around, Prev: (dir), Up: (dir)
+
+Meadow-FAQ-ja
+*************
+
+これは Meadow に対する良くある質問と、それに対する回答集です。もしあな
+たがウェブブラウザーを持っているなら、ハイパーテキスト版が
+`http://meadow-faq.sourceforge.net/' で手に入ります。おそらくあなたが
+これを受け取ってから更新されているでしょう。
+
+* Menu:
+
+* Around::			一般的な情報
+* Install::			インストール
+* Multilingual::		各言語に関する情報
+* Configuration::		個人環境設定
+* Windows::			Windows 関連
+* Display::			画面表示
+* Elisp::			Emacs Lisp
+* Elisp Package::		Emacs Lisp Package
+* Ange-ftp::			ange-ftp 関連
+* UN*X tools::			UN*X ツールの移植
+* Japanese::			日本語に関する情報
+
+ -- The Detailed Node Listing ---
+
+一般的な情報
+
+* What::			Meadow とはなんですか？
+* Where::			Meadow はどこから入手できますか？
+* Lastest Version::		Meadow の最新バージョンはいくつですか？
+* Mailing List::		Meadow のメーリングリストはありますか？
+* Search Mailing List Archives::  メーリングリストの過去のメールはどうやって検索できますか?
+* Unsubscribe::			Meadow のメーリングリストをやめるにはどうしたら良いですか？
+* Send Bug Report::		Meadow のバグ報告はどこにすれば良いですか？
+* Bug Report Format::		バグ報告はどのようにすれば良いでしょうか？
+* Meadow Develop::		meadow-develop というメーリングリストがあるようですが、何でしょうか？
+* Mule for Win32::		Meadow を使うと、Mule for win32 に比べて何が嬉しいですか？
+* Compatibility::		Meadow は Mule for win32 の上位互換では無いのですか？
+* Home Directory::		
+* What .emacs::			emacs とは何ですか？
+* Where .emacs::		どこに .emacs ファイルを置けば良いのですか？
+* Share .emacs::		Mule for win32 と Meadow で .emacs を共有できますか？
+* Caps & Ctrl::			どうすれば CapsLock を Ctrl にする事ができますか？
+* Naming::			Meadow という名前の由来は？
+* Next Version::		Meadow で未対応の機能を教えて下さい。
+* Option::			どのようなコマンドラインのオプションが使えますか？
+* Print::			Meadow から印刷ができますか？
+* Recycle Bin::			Meadow が消したファイルはごみ箱には入らないのですか？
+* Timezone::			current-time-zone が PST を返すのですが。
+* Uninstall::			Meadow をアンインストールするにはどうすれば良いですか？
+* System Name::			Meadow はどうやって私のコンピューターの名前を決定しているのですか？
+* Sub Process::			Meadow でサブプロセスを使うことができますか？
+* Shell::			どうすれば Meadow からシェルを使う事ができますか？
+* Save DeskTop::		どうすれば最後に Meadow を終了した状態を保存できますか？
+* BS and DEL::			Back Space が DEL になっているのですが。
+* Man::				どうすれば man ページを読む事ができますか？
+* One Line Scroll::		カーソルが画面から出たときに一行だけスクロールしたいのですが。
+* Find File on Desktop::	どうすればデスクトップにあるファイルを C-x C-f (find-file) で開けますか?
+* Shell Mode::			Meadow で shell mode を使うと、行の最後に ^Mがついてしまうのですがどうしてでしょうか？
+* Shell Echo::			shell mode で、シェルがエコーをして2回表示されるのが鬱陶しいのですが。
+* Shell History::		shell mode では C-n や C-p でコマンド履歴を使用できないのですが、どうすれば良いのでしょうか。
+* High Light::			C 言語の予約語やコメントなどに色を付けるにはどうしたらいいのでしょうか？
+* hilit19::			hilit19.el を使うにはどうしたらいいのでしょうか？
+* font-lock::			font-lock.el はどのように使うのでしょうか？
+* Version Control::		自動的に RCS を使うようにするパッケージはないのですか？
+* Grep::			どうすれば grep を使う事ができますか？
+* grep-find::			どうすれば grep-find を使う事ができますか？
+* Second Shell Buffer::		どうすれば2つめのシェルバッファを作る事ができますか？
+* Second Info Buffer::		info を2つ立ち上げる事ができますか？
+* New Info Dir::		どうすれば info に新しいディレクトリーを加える事ができますか？
+
+インストール
+
+* Melt::			パッケージの解凍 (展開) の仕方がわかりません。
+* Compile::			ソースの compile 環境は？
+* Boot Failed::			Meadow が起動しません。
+
+各言語に関する情報
+
+* Coding::			文字化けして読めないのですがどうすれば良いでしょう？
+* TOFU::			四角い豆腐のようなものが表示されるのですが、これは何ですか？
+* What Language::		Meadow でサポートされている言語は？
+* R2l::				世界には文を右から左に書く言語もありますが、Meadow はそのような言語に対応できますか？
+* Rel Code::			Meadow と関連しているコード系はどんなものがありますか？
+* EUC::				EUC で日本、中国、韓国など 各言語を同時表示できるようにしたいのですが？
+* Isearch No ASCII::		インクリメンタルサーチ中に ASCII 文字以外を入力するには？
+* I18N Font::			各言語の表示方法を教えて下さい。
+* M17N Print::			各言語の入ったテキストを印刷するには？
+* EOL::				ファイルを読み込んだ時に、eol-type がファイル本来のものと異なったものに自動判別されてしまうのですが。
+
+個人環境設定
+
+* Alt and Meta::		Alt キーを Meta ではなく、Alt キーそのものとして使いたいのですが。
+* Highlight Region::		どうすればリージョンをハイライトする事ができますか？
+* Matching Paren::		どうすれば対応する括弧をハイライトする事ができますか？
+* Menu and Scroll::		メニューバーやスクロールバーが欝陶しいのですが。
+* Scroll Left::			スクロールバーの表示を切り替えると、スクロールバーが左に現われてしまいます。
+* whatline::			カーソルの位置が何行目かを表示するにはどうしたらいいのでしょうか？
+* whatcolumn::			カーソルの位置が何桁目かを表示するにはどうしたらいいのでしょうか？
+* Auto Indent::			インデント時に、自動的に前の行と同じインデントになるようにするには、 どうしたらいいのでしょうか？
+* IME Cursor Color::		IME の on と off でカーソルの色を変えたいのですが。
+* Like Windows::		どうすれば Meadow をもっと Windows のアプリケーションのようにできますか？
+* Message Buffer::		どうすれば *Message* バッファをなくす事ができますか？
+* Kill Whole Line::		カーソルが行頭にあるときに、C-k を1回打つだけで その行全体が削除されるようにするにはどうしたらいいのでしょうか？
+* Modeline Font::		どうすればモード行のフォントを変える事ができますか？
+* Display Time::		どうすれば時間をモード行に表示する事ができますか？
+* Modeline Color::		どうすればモード行の色を変える事ができますか？
+* Color Name::			フェイスで使用可能な色の名前は何処にありますか？
+* No Next Line::		バッファの最後で next-line を実行しても、 新しい行が挿入されないようにして欲しいのですが。
+* Line Scroll::			どうすれば C-, と C-. を画面の一行スクロールにバインドする事ができますか？
+* Prev Line::			buffer の先頭で previous-line を実行すると、 beginning-of-buffer といってうるさいのですが。
+* add-hook::			
+* Minibuffer Frame::		minibuffer だけ独立した frame を作るには どうしたらいいのでしょうか？
+* Visible Bell::		ビープ音が鳴るのがうるさいのですが。
+* Change Beep::			ビープ音を変える事ができますか？
+
+Windows 関連
+
+* Intelli Mouse::		Intellimouse はサポートされているのですか？
+* Fiber::			どうすれば Meadow のファイルから Windows のアプリケーションを起動する事ができますか？
+* gnuserv::			どうすれば Meadow にファイルを関連付ける事ができますか？
+
+画面表示
+
+* BDF Display::			BDF font が正しく表示されないのですが、どうしたらよいのでしょうか
+* Visible Bell Bug::		
+* Init Frame::			起動したときに、一度縦長の画面が出てきてから設定した大きさに変わるのですが。
+* Change Font::			どうすればフォントを変更する事ができますか？
+* Face::			face とは何ですか？
+* W32 Use Full Screen Buffer::	
+
+Emacs Lisp
+
+* Elisp Manual::		elisp の説明文書はありますか?
+* Key::				この FAQ で書かれている C-c や M-x とは何ですか？
+* Meadow Version::		どのバージョンの Meadow であるかがわかりますか？
+* Eval LISP Expression::	どうやって lisp の式を評価する事ができますか？
+* Buffer Local Variable::	
+* Custom::			Customize とは何ですか？
+* Describe Function and Variable::  どうすれば関数や変数の説明文を読む事ができますか？
+* Describe Key::		どのキーがどの関数に割り当てられているかがわかりますか？
+* Where is::			関数がどのキーに割り当てられているかがわかりますか？
+* Patch::			パッチを当てたのですが、反映されていないようです。
+* Byte Compile::		バイトコンパイルとは何ですか？
+
+Emacs Lisp Package
+
+* Mail User Agent::		Meadow で動く MUA (mailer) News Reader は何がありますか？
+* MH-e::			mh-e は使えますか？
+* AUC TeX::			AUC TeX
+* YaTeX::			YaTeX
+* Perl Mode::			perl-mode の最新版はどこから手に入りますか？
+* Hexl Mode::			hexl-mode は使えますか?
+* Python Mode::			python-mode はどこから手に入りますか？
+* Telnet::			telnet は使えますか？
+* Browse-url::			browse-url を使うにはどうすれば良いですか？
+* EDT::				EDT emulation mode はどうやれば使う事ができますか？
+* Windows Specific::		Windows 特有のファイルを編集するモードはありますか？
+* Java::			Java 関連パッケージはありますか？
+* Visual Basic::		visual basic を編集するモードはありますか？
+* HTML Helper::			html-helper-mode はどこから手に入りますか？
+* Source Safe::			source safe を編集するモードはありますか？
+* Delphi::			Delphi を編集するモードはありますか？
+* CSS::				CSS style-sheets を編集するモードはありますか？
+* SQL::				sql-mode はどこで手に入れる事ができますか？
+* Spread Sheet::		elisp で表計算ができますか？
+* Latest CC Mode::		どこから最新の cc mode を手に入れる事ができますか？
+* X-Face::			Meadow のバージョンを上げたら、X-Face のインライン表示でエラーが発生するようになったのですが。
+
+ange-ftp 関連
+
+* Use ange-ftp::		ange-ftp を使うにはどうすれば良いでしょうか？
+* Over Proxy::			ange-ftp を使って、proxy サーバタイプのファイアウォールを越えてアクセスしたい場合、どのように設定すればよいでしょうか?
+* NAT::				ange-ftp で、NAT(IP-masquerade)の機能を持つファイアウォールまたはダイアルアップルータを越えてアクセスすると、エラーが出てしまうことがあります
+* Passive Mode::		ange-ftp で Passive mode が使えますか?
+* Dired ange-ftp::		ange-ftp を使って dired をすると、ファイルを選んでも"No file on this line" というエラーがでてしまいます。
+* Directory List ange-ftp::	ange-ftp で、ログインした直後のディレクトリに
+* Hangup after ange-ftp::	ange-ftp 使用後に Meadow を終了させると、Windows 95 がハングアップしてしまいます。
+* ange_binary::			ange-ftp を使ってバイナリファイルに開くと、ファイルの内容が壊れてしまいます。あるいは転送途中でエラーが起こります。
+* ange_completion::		ange-ftp でホスト名等を補完
+
+UN*X ツールの移植
+
+* Ispell::			ispell はどこにありますか？
+* RCS and CVS::			Windows で動作する RCS や CVS はどこにありますか？
+* Diff and Patch::		Windows で動作する diff や patch はどこにありますか？
+
+日本語に関する情報
+
+* Input Japanese::		日本語を入力するためにはどうすれば良いですか？
+
+
+
+
+File: meadow-faq-ja.info, Node: Around, Next: Install, Prev: Top, Up: Top
+
+一般的な情報
+************
+
+
+* Menu:
+
+* What::			Meadow とはなんですか？
+* Where::			Meadow はどこから入手できますか？
+* Lastest Version::		Meadow の最新バージョンはいくつですか？
+* Mailing List::		Meadow のメーリングリストはありますか？
+* Search Mailing List Archives::  メーリングリストの過去のメールはどうやって検索できますか?
+* Unsubscribe::			Meadow のメーリングリストをやめるにはどうしたら良いですか？
+* Send Bug Report::		Meadow のバグ報告はどこにすれば良いですか？
+* Bug Report Format::		バグ報告はどのようにすれば良いでしょうか？
+* Meadow Develop::		meadow-develop というメーリングリストがあるようですが、何でしょうか？
+* Mule for Win32::		Meadow を使うと、Mule for win32 に比べて何が嬉しいですか？
+* Compatibility::		Meadow は Mule for win32 の上位互換では無いのですか？
+* Home Directory::		
+* What .emacs::			emacs とは何ですか？
+* Where .emacs::		どこに .emacs ファイルを置けば良いのですか？
+* Share .emacs::		Mule for win32 と Meadow で .emacs を共有できますか？
+* Caps & Ctrl::			どうすれば CapsLock を Ctrl にする事ができますか？
+* Naming::			Meadow という名前の由来は？
+* Next Version::		Meadow で未対応の機能を教えて下さい。
+* Option::			どのようなコマンドラインのオプションが使えますか？
+* Print::			Meadow から印刷ができますか？
+* Recycle Bin::			Meadow が消したファイルはごみ箱には入らないのですか？
+* Timezone::			current-time-zone が PST を返すのですが。
+* Uninstall::			Meadow をアンインストールするにはどうすれば良いですか？
+* System Name::			Meadow はどうやって私のコンピューターの名前を決定しているのですか？
+* Sub Process::			Meadow でサブプロセスを使うことができますか？
+* Shell::			どうすれば Meadow からシェルを使う事ができますか？
+* Save DeskTop::		どうすれば最後に Meadow を終了した状態を保存できますか？
+* BS and DEL::			Back Space が DEL になっているのですが。
+* Man::				どうすれば man ページを読む事ができますか？
+* One Line Scroll::		カーソルが画面から出たときに一行だけスクロールしたいのですが。
+* Find File on Desktop::	どうすればデスクトップにあるファイルを C-x C-f (find-file) で開けますか?
+* Shell Mode::			Meadow で shell mode を使うと、行の最後に ^Mがついてしまうのですがどうしてでしょうか？
+* Shell Echo::			shell mode で、シェルがエコーをして2回表示されるのが鬱陶しいのですが。
+* Shell History::		shell mode では C-n や C-p でコマンド履歴を使用できないのですが、どうすれば良いのでしょうか。
+* High Light::			C 言語の予約語やコメントなどに色を付けるにはどうしたらいいのでしょうか？
+* hilit19::			hilit19.el を使うにはどうしたらいいのでしょうか？
+* font-lock::			font-lock.el はどのように使うのでしょうか？
+* Version Control::		自動的に RCS を使うようにするパッケージはないのですか？
+* Grep::			どうすれば grep を使う事ができますか？
+* grep-find::			どうすれば grep-find を使う事ができますか？
+* Second Shell Buffer::		どうすれば2つめのシェルバッファを作る事ができますか？
+* Second Info Buffer::		info を2つ立ち上げる事ができますか？
+* New Info Dir::		どうすれば info に新しいディレクトリーを加える事ができますか？
+
+
+
+File: meadow-faq-ja.info, Node: What, Next: Where, Prev: Around, Up: Around
+
+Meadow とはなんですか？
+=======================
+Meadow (Multilingual Enhancement to gnu Emacs with ADvantages Over
+Windows) は Windows 95/98/Me/NT/2000 上で動作する、Emacs 20.X を基に機
+能を強化したエディタです。
+
+
+
+File: meadow-faq-ja.info, Node: Where, Next: Lastest Version, Prev: What, Up: Around
+
+Meadow はどこから入手できますか？
+=================================
+Meadow は、以下のところから Anonymous FTP で入手できます。
+`ftp://ftp.m17n.org/pub/mule/Windows/'
+
+その他に、ミラーサイトがたくさんありますので、一番近いところからダウン
+ロードするのが良いでしょう。Netscape Navigator や Internet Explorer な
+どでダウンロードすると、ファイル名に複数含まれるピリオドが最後の一つを
+除いてアンダースコアに変換 (「.」→「_」) されてしまうようです。
+
+
+
+File: meadow-faq-ja.info, Node: Lastest Version, Next: Mailing List, Prev: Where, Up: Around
+
+Meadow の最新バージョンはいくつですか？
+=======================================
+
+現在の最新の安定バージョンは Meadow 1.15 (SHOUBU:63) です。
+
+
+
+File: meadow-faq-ja.info, Node: Mailing List, Next: Search Mailing List Archives, Prev: Lastest Version, Up: Around
+
+Meadow のメーリングリストはありますか？
+=======================================
+
+Meadow のみのメーリングリストとしては、meadow-users-jp (日本語) と、
+meadow-users-en (英語) があります。これらのメーリングリストに加入する
+ためには、それぞれmeadow-users-jp-help@meadowy.org,
+meadow-users-en-help@meadowy.org に空のメールを送り、指示にしたがって
+下さい。
+
+
+
+File: meadow-faq-ja.info, Node: Search Mailing List Archives, Next: Unsubscribe, Prev: Mailing List, Up: Around
+
+メーリングリストの過去のメールはどうやって検索できますか?
+=========================================================
+
+`http://www.ysnb.net/meadow/' に meadow-users-jp, meadow-develop のメー
+ルアーカイブと検索エンジンが公開されています。
+
+メールの“X-ML-COUNT番号”があらかじめわかっている場合は*
+http://www.ysnb.net/meadow/meadow-users-jp/x/[X-ML-COUNT番号] *
+http://www.ysnb.net/meadow/meadow-develop/x/[X-ML-COUNT番号] で直接参
+照できます。
+
+
+
+File: meadow-faq-ja.info, Node: Unsubscribe, Next: Send Bug Report, Prev: Search Mailing List Archives, Up: Around
+
+Meadow のメーリングリストをやめるにはどうしたら良いですか？
+===========================================================
+
+日本語版、英語版それぞれ、meadow-users-jp-help@meadowy.org,
+meadow-users-en-help@meadowy.org に空のメールを送って指示にしたがって
+下さい。
+
+
+
+File: meadow-faq-ja.info, Node: Send Bug Report, Next: Bug Report Format, Prev: Unsubscribe, Up: Around
+
+Meadow のバグ報告はどこにすれば良いですか？
+===========================================
+
+日本語の場合は meadow-users-jp@meadowy.org に、英語の場合は
+meadow-users-en@meadowy.org に送って下さい。メニューの Help -> Send
+Bug Report を選択すると、bug-gnu-emacs@prep.ai.mit.edu 宛になりますが、
+これは使用しないでください。
+
+
+
+File: meadow-faq-ja.info, Node: Bug Report Format, Next: Meadow Develop, Prev: Send Bug Report, Up: Around
+
+バグ報告はどのようにすれば良いでしょうか？
+==========================================
+
+まず、そのバグと思われるものが再現するかどうかを確かめて下さい。それか
+ら、最低限 OS の種類、バージョン、Meadow のバージョンを書いて、何をし
+ているときにどうなったかを書いて下さい。エラーが起こっているときは、
+
+     (setq debug-on-error t)
+
+を評価した後でそれを実行し、backtrace を送る事も重要です。また、
+`.emacs' の関連すると思われる部分も書くと解決が早くなるでしょう。
+
+
+
+File: meadow-faq-ja.info, Node: Meadow Develop, Next: Mule for Win32, Prev: Bug Report Format, Up: Around
+
+meadow-develop というメーリングリストがあるようですが、何でしょうか？
+=====================================================================
+
+meadow-develop は Meadow の開発に関するメーリングリストで、主に日本語
+で議論されています。Meadowの将来の方向性に関する意見、将来に対する貢献
+に関することは、こちらで議論してください。他の Meadow に関する議論は 
+meadow-users-jp, meadow-users-en を使ってください。尚、このメーリング
+リストは手動登録です。登録を希望される方はmeadow-control@meadowy.org 
+に人間の読める形式のメールを送って下さい。その他、登録内容の変更、メー
+リングリストからの脱退等も上記のアドレスに送ってください。
+
+
+
+File: meadow-faq-ja.info, Node: Mule for Win32, Next: Compatibility, Prev: Meadow Develop, Up: Around
+
+Meadow を使うと、Mule for win32 に比べて何が嬉しいですか？
+==========================================================
+
+   * Mule for win32 は既にメンテナンスされていません。
+   * Meadow を使うと、OS がどの国の版であるかに関わらず各言語を使用する事ができます。
+   * また、各言語を混在させる事も可能です。
+   * Meadow は Emacs20.x を基にしていますので、最新の Elisp パッケージが動作します。
+   * Mule for win32 の方が良い点としては、Meadow より動作が軽快という事があります。
+
+
+
+File: meadow-faq-ja.info, Node: Compatibility, Next: Home Directory, Prev: Mule for Win32, Up: Around
+
+Meadow は Mule for win32 の上位互換では無いのですか？
+=====================================================
+
+Mule for win32 は Emacs 19.28 を、Meadow は Emacs 20.x を基にしていま
+すので、この間の変更により、いくつかの elisp コードは動かなくなってい
+ます。
+
+
+
+File: meadow-faq-ja.info, Node: Home Directory, Next: What .emacs, Prev: Compatibility, Up: Around
+
+~/ って何ですか？
+=================
+
+ホームディレクトリーです。インストール時にホームディレクトリーとして指
+定したディレクトリーが使われますが、環境変数 `HOME' があるとそれが使わ
+れます。
+
+
+
+File: meadow-faq-ja.info, Node: What .emacs, Next: Where .emacs, Prev: Home Directory, Up: Around
+
+.emacs とは何ですか？
+=====================
+
+Meadow を自分の好きなようにカスタマイズするためのファイルです。
+
+
+
+File: meadow-faq-ja.info, Node: Where .emacs, Next: Share .emacs, Prev: What .emacs, Up: Around
+
+どこに .emacs ファイルを置けば良いのですか？
+============================================
+
+$HOME に置いて下さい。
+
+これは、環境変数 `HOME' が存在すればその値に、それが存在しなければイン
+ストール時に指定したホームディレクトリーになります。`.emacs' をつくる
+には、`C-x C-f' (find-file) .emacs としてから `C-x C-s' (save-buffer)
+として下さい。日本語を使うためには、コードを iso-2022-jp にして下さい。
+モードラインの左の方に `[O]J:--' と表示されていれば、既に iso-2022-jp 
+になっています。Jでない場合は、`C-x RET f iso-2022-jp-dos'としてから保
+存して下さい。
+
+
+
+File: meadow-faq-ja.info, Node: Share .emacs, Next: Caps & Ctrl, Prev: Where .emacs, Up: Around
+
+Mule for win32 と Meadow で .emacs を共有できますか？
+=====================================================
+
+以下のコードを使う事により可能です。
+
+     (cond
+      ((boundp 'MULE)
+       ;; mule for win32 特有の設定
+       )
+      ((featurep 'meadow)
+       ;; Meadow 特有の設定
+       ))
+
+バイトコンパイルされたファイルは共有できないので、その場合は別ファイル
+にしてload して下さい。
+
+
+
+File: meadow-faq-ja.info, Node: Caps & Ctrl, Next: Naming, Prev: Share .emacs, Up: Around
+
+どうすれば CapsLock を Ctrl にする事ができますか？
+==================================================
+
+システム全体で変更するときは、Windows95 の場合は、Windows 95 Kernel
+Toys Set
+(http://www.microsoft.com/Windows95/downloads/contents/WUToys/W95KernelToy/Default.asp) 
+を使う方法があります。
+
+Windows NT の場合は、レジストリを書き換える事で実現できます。Meadow だ
+けで変更するためには、`.emacs' に
+
+     (w32-set-modifier-key 20 'ctrl)
+
+と設定して下さい。
+
+ただし、日本語 106 キーボードの [Caps Lock/英数] キーは、[Shift] キー
+と同時押しで [Caps Lock] になり、単独では [英数] キーなので、[英数] キー
+の Key Code 240 を指定して、
+
+     (w32-set-modifier-key 240 'ctrl)
+
+としてください。ただし、常に Ctrl キーが押された状態になってしまう事が
+あります。その場合でも、キーボードドライバーを英語 101 キーボードに変
+えて上記の設定をすると動作するようです。
+
+
+
+File: meadow-faq-ja.info, Node: Naming, Next: Next Version, Prev: Caps & Ctrl, Up: Around
+
+Meadow という名前の由来は？
+===========================
+
+Meadow は Multilingual Enhancement to gnu emacs with Advantages Over
+Windows の略です。
+
+Meadow は牧草地と言う意味です。Mule は ラバ という意味ですので、それと
+の対応が良い事と、語感が良いため選ばれたようです。長い名前は Meadow と
+いう名称ができてから考えられましたので、少々苦しいかもしれません。
+
+
+
+File: meadow-faq-ja.info, Node: Next Version, Next: Option, Prev: Naming, Up: Around
+
+Meadow で未対応の機能を教えて下さい。
+=====================================
+
+Mule 4.1 が未対応の Mule 2.3 の機能は使えません。
+   * アラビア語などの右から左への文字に対応していません。
+
+その他の機能
+   * Meadow そのものからの印刷機能
+
+
+
+File: meadow-faq-ja.info, Node: Option, Next: Print, Prev: Next Version, Up: Around
+
+どのようなコマンドラインのオプションが使えますか？
+==================================================
+
+`$MEADOW/$VERSION/lisp/term/w32-win.el' で定義されている変数
+`x-option-alist' のオプションが使えます。詳しくは、Info ファイルの 
+Node: Command Arguments を参照してください。
+
+
+
+File: meadow-faq-ja.info, Node: Print, Next: Recycle Bin, Prev: Option, Up: Around
+
+Meadow から印刷ができますか？
+=============================
+
+Meadow 自体はまだサポートしていません。多言語対応 ps-print.el
+(ftp://ftp.m17n.org/pub/mule/.notready/ps-print.tar.gz) を使って、
+Postscript ファイルを作り、Ghostscript を使っておそらく印刷ができると
+思います。Ghostscript ホームページ 
+(http://www.cs.wisc.edu/%7Eghost/index.html)
+
+また、GNU Enscript を使ってもできるでしょう。Windows で動く版は
+`http://www.cs.wisc.edu/~ghost/index.html' で手に入ります。
+
+
+
+File: meadow-faq-ja.info, Node: Recycle Bin, Next: Timezone, Prev: Print, Up: Around
+
+Meadow が消したファイルはごみ箱には入らないのですか？
+=====================================================
+
+はい、Meadow が消去したファイルはごみ箱には入らず、そのまま削除されま
+す。
+
+
+
+
+File: meadow-faq-ja.info, Node: Timezone, Next: Uninstall, Prev: Recycle Bin, Up: Around
+
+current-time-zone が PST を返すのですが。
+=========================================
+
+環境変数 `TZ' を望む値に設定して下さい。日本であると、`JST-9' にします。
+他のプログラムでも必要な事がありますので、Windows 95/98/Me では
+`AUTOEXEC.BAT' に
+
+     SET TZ=JST-9
+
+を加えるとよいでしょう。NT4 であれば 「コントロールパネル」→「システ
+ム」→「環境」に、Windows 2000 であれば 「コントロールパネル」→「詳細」
+→「環境変数」に、変数名 `TZ' 値 `JST-9' を加えるのが良いでしょう。ま
+た、Windows のコントロールパネルでもタイムゾーンを正しく設定しておく必
+要があります。
+
+
+
+File: meadow-faq-ja.info, Node: Uninstall, Next: System Name, Prev: Timezone, Up: Around
+
+Meadow をアンインストールするにはどうすれば良いですか？
+=======================================================
+Meadow はシステムには何もインストールしませんので、$MEADOW の下のディ
+レクトリーと、レジストリの\HKEY_LOCAL_MACHINE\SOFTWARE\GNU\Meadow 以下
+を削除するだけです。
+
+
+
+
+File: meadow-faq-ja.info, Node: System Name, Next: Sub Process, Prev: Uninstall, Up: Around
+
+Meadow はどうやって私のコンピューターの名前を決定しているのですか？
+===================================================================
+
+変数 `system-name' をコンピューターの名前として使います。FQDN について
+は、README.Meadow を参照して下さい。
+
+
+
+File: meadow-faq-ja.info, Node: Sub Process, Next: Shell, Prev: System Name, Up: Around
+
+Meadow でサブプロセスを使うことができますか？
+=============================================
+
+Meadow は UNIX 上の Emacs と同じように、サブプロセスを扱う事ができます。
+Meadow 上のサブプロセスはパイプ扱いになるため、shell-mode での ls の表
+示が単独のシェルで使ったときと違うと言う事が報告されています。
+
+
+
+File: meadow-faq-ja.info, Node: Shell, Next: Save DeskTop, Prev: Sub Process, Up: Around
+
+どうすれば Meadow からシェルを使う事ができますか？
+==================================================
+
+Cygwin (http://sources.redhat.com/cygwin/) に含まれている bash.exe を
+使う場合。
+     (setq explicit-shell-file-name "bash.exe")
+     (setq shell-file-name "bash.exe")
+     (setq shell-command-switch "-c")
+
+Virtually UN*X! (http://virtunix.itribe.net/) にある tcsh.exe を使う場
+合。
+     (setq explicit-shell-file-name "tcsh.exe")
+     (setq shell-file-name "tcsh.exe")
+     (setq shell-command-switch "-c")
+
+Windows NT に付属の CMD.EXE を使う場合。(setq explicit-shell-file-name
+"CMD.EXE") (setq shell-file-name "CMD.EXE") (setq shell-command-switch
+"\\/c") Windows95 に付属の COMMAND.COM は使えません。
+
+
+
+File: meadow-faq-ja.info, Node: Save DeskTop, Next: BS and DEL, Prev: Shell, Up: Around
+
+どうすれば最後に Meadow を終了した状態を保存できますか？
+========================================================
+付属の bookmark.el または、desktop.el を使えばできます。
+
+
+
+File: meadow-faq-ja.info, Node: BS and DEL, Next: Man, Prev: Save DeskTop, Up: Around
+
+Back Space が DEL になっているのですが。
+========================================
+Back Space は、Windows の Delete キーになっているのではなく、Meadow の
+DEL というキーに束縛されています。Delete キーは初期設定では`?\C-d' と
+同じです。
+
+
+
+File: meadow-faq-ja.info, Node: Man, Next: One Line Scroll, Prev: BS and DEL, Up: Around
+
+どうすれば man ページを読む事ができますか？
+===========================================
+WoMan を使うか、man マクロをコンパイルして動くようにすれば可能です。
+WoMan は、`http://www.maths.qmw.ac.uk/~fjw/public_emacs/' より取得可能
+です。woman.el をバイトコンパイルしてパスの通ったディレクトリーに置き、
+以下のコードを `.emacs' に書いて下さい。
+
+     (autoload 'woman "woman" "Decode and browse a UN*X man page." t)
+(autoload 'woman-find-file "woman" "Find, decode and browse a specific
+UN*X man-page file." t) (setq woman-manpath '("/usr/man/man1"
+"usr/man/man5")) `woman-manpath' の値は自分のディレクトリー構成にあわ
+せて変更して下さい。
+
+
+
+File: meadow-faq-ja.info, Node: One Line Scroll, Next: Find File on Desktop, Prev: Man, Up: Around
+
+カーソルが画面から出たときに一行だけスクロールしたいのですが。
+==============================================================
+     (setq scroll-conservatively 1) を `.emacs' に書いて下さい。元に戻
+すときには、(setq scroll-conservatively 0) を評価して下さい。
+
+
+
+File: meadow-faq-ja.info, Node: Find File on Desktop, Next: Shell Mode, Prev: One Line Scroll, Up: Around
+
+どうすればデスクトップにあるファイルを C-x C-f (find-file) で開けますか?
+========================================================================
+
+デスクトップ上のファイルは、Windows95 の日本語版は `$WINDOWS\デスクトッ
+プ'にあります。英語版は `$WINDOWS\desktop' です。
+
+Windows NT4 は、日本語版は `$WINNT\profiles\(user)\デスクトップ' に、
+英語版は`$WINNT\profiles\(user)\desktop' にあります。
+
+Windows 2000 日本語版は、起動ドライブの`\Documents and
+Settings\(user)\デスクトップ' にあります。
+
+(Win95, WinNT4 の日本語版における「デスクトップ」は、実際には半角カナ
+です。)
+
+
+
+File: meadow-faq-ja.info, Node: Shell Mode, Next: Shell Echo, Prev: Find File on Desktop, Up: Around
+
+Meadow で shell mode を使うと、行の最後に ^Mがついてしまうのですがどうしてでしょうか？
+======================================================================================
+
+shell モードでの coding system の指定が違っているか、特定のコマンドの
+改行コードが他のものと違う可能性があります。特定のコマンドだけで ^M が
+付いてしまい、その場でそれを取り除きたい場合は、`M-x
+shell-strip-ctrl-m' と打って下さい。全ての命令で ^M が付くようなときは、
+`.emacs' に
+
+     (modify-coding-system-alist 'process ".*sh\\.exe"
+                                 '(undecided-dos . undecided-unix))
+
+を書いて下さい。また、
+     (add-hook 'comint-output-filter-functions 'shell-strip-ctrl-m nil t)
+
+でも良いでしょう。
+
+
+
+File: meadow-faq-ja.info, Node: Shell Echo, Next: Shell History, Prev: Shell Mode, Up: Around
+
+shell mode で、シェルがエコーをして2回表示されるのが鬱陶しいのですが。
+======================================================================
+
+     (add-hook 'comint-mode-hook (lambda () (setq comint-process-echoes t)))
+
+を `.emacs' に書いて下さい。
+
+
+
+File: meadow-faq-ja.info, Node: Shell History, Next: High Light, Prev: Shell Echo, Up: Around
+
+shell mode では C-n や C-p でコマンド履歴を使用できないのですが、どうすれば良いのでしょうか。
+=============================================================================================
+
+shell mode では、コマンド履歴を使用するキーは `M-n', `M-p' です。
+
+
+
+File: meadow-faq-ja.info, Node: High Light, Next: hilit19, Prev: Shell History, Up: Around
+
+C 言語の予約語やコメントなどに色を付けるにはどうしたらいいのでしょうか？
+========================================================================
+
+hilit19.el もしくは、font-lock.el を使って下さい。
+
+
+
+File: meadow-faq-ja.info, Node: hilit19, Next: font-lock, Prev: High Light, Up: Around
+
+hilit19.el を使うにはどうしたらいいのでしょうか？
+=================================================
+特定のモード以外で使うときは、次のコードを `.emacs' に書いて下さい。
+     (cond (window-system
+             (setq hilit-mode-enable-list  '(not text-mode)
+                   hilit-background-mode   'light
+                   hilit-inhibit-hooks     nil
+                   hilit-inhibit-rebinding nil)
+     	(require 'hilit19)
+             ))
+
+特定のモードだけで使うときは、`(not text-mode)' のところを、`(c-mode
+c++-mode)' のように、使いたいモードだけを列挙して下さい。入力したもの
+を表示に反映させるには、`C-S-l' (Control-Shift-l)
+(hilit-repaint-command) と打って下さい。`C-l' (hilit-recenter) でも反
+映させることができます。
+
+
+
+File: meadow-faq-ja.info, Node: font-lock, Next: Version Control, Prev: hilit19, Up: Around
+
+font-lock.el はどのように使うのでしょうか？
+===========================================
+font-lock を使いたいモードの hook に、
+     (add-hook 'c-mode-hook (lambda () (font-lock-mode 1)))
+
+というようなものを書いて下さい。font-lock を使用可能な全てのモードで使
+いたいときは、
+     (global-font-lock-mode t)
+
+として下さい。
+
+
+
+File: meadow-faq-ja.info, Node: Version Control, Next: Grep, Prev: font-lock, Up: Around
+
+自動的に RCS を使うようにするパッケージはないのですか？
+=======================================================
+
+vc.el と言うものがあり、Meadow の配布に含まれています。詳しくは Info 
+を見て下さい。また、CVS を使うためには、pcl-cvs というパッケージがあり
+ます。これは、CVS の配布と共に入っています。
+
+
+
+File: meadow-faq-ja.info, Node: Grep, Next: grep-find, Prev: Version Control, Up: Around
+
+どうすれば grep を使う事ができますか？
+======================================
+
+外部コマンドの grep.exe が必要です。そうすれば、`M-x grep' で使う事が
+できます。grep は、Virtually UN*X! (http://virtunix.itribe.net/) から
+取ってくるか、Cygwin (http://sources.redhat.com/cygwin/) から手に入れ
+て下さい。
+
+また、igrep と言うものもあります。
+`ftp://archive.cis.ohio-state.edu/pub/gnu/emacs-lisp/misc/igrep.el.gz' 
+から手に入ります。
+
+
+
+File: meadow-faq-ja.info, Node: grep-find, Next: Second Shell Buffer, Prev: Grep, Up: Around
+
+どうすれば grep-find を使う事ができますか？
+===========================================
+
+UNIX で使われている形式の外部コマンドの find.exe が必要です。Windows 
+にも find.exe がありますので、パスを正しく設定しないと、そちらが使われ
+てしまうかもしれません。
+
+
+
+File: meadow-faq-ja.info, Node: Second Shell Buffer, Next: Second Info Buffer, Prev: grep-find, Up: Around
+
+どうすれば2つめのシェルバッファを作る事ができますか？
+=====================================================
+
+まず、`M-x shell' でひとつ目のシェルバッファを開きます。次に、`M-x
+rename-buffer' をして、*shell* バッファを何か別の名前にします。それか
+ら、`M-x shell' とすると、もう一つシェルバッファを開く事ができます。
+
+
+
+File: meadow-faq-ja.info, Node: Second Info Buffer, Next: New Info Dir, Prev: Second Shell Buffer, Up: Around
+
+info を2つ立ち上げる事ができますか？
+====================================
+残念ながらできません。
+
+
+
+File: meadow-faq-ja.info, Node: New Info Dir, Prev: Second Info Buffer, Up: Around
+
+どうすれば info に新しいディレクトリーを加える事ができますか？
+==============================================================
+変数 `Info-directory-list' を設定します。
+     (setq Info-directory-list
+           (list "c:/usr/local/info"
+                 "c:/Cygnus/B19/info"
+                 (expand-file-name (getenv "INFOPATH"))))
+
+
+
+File: meadow-faq-ja.info, Node: Install, Next: Multilingual, Prev: Around, Up: Top
+
+インストール
+************
+
+* Menu:
+
+* Melt::			パッケージの解凍 (展開) の仕方がわかりません。
+* Compile::			ソースの compile 環境は？
+* Boot Failed::			Meadow が起動しません。
+
+
+
+File: meadow-faq-ja.info, Node: Melt, Next: Compile, Prev: Install, Up: Install
+
+パッケージの解凍 (展開) の仕方がわかりません。
+==============================================
+
+INSTALL.Meadow または、INSTALL.Meadow.ja をよく読んで下さい。Windows 
+上で動作する tar.exe, gzip.exe は
+`ftp://ftp.m17n.org/pub/mule/Windows/tools' から手に入ります。
+
+
+
+File: meadow-faq-ja.info, Node: Compile, Next: Boot Failed, Prev: Melt, Up: Install
+
+ソースの compile 環境は？
+=========================
+
+現在の Meadow 1.15 は Microsoft Visual C/C++ 6.0 にてコンパイルされて
+います。それ以前の Microsoft Visual C++ 4.x や 5.0 でもコンパイルでき
+ると思いますが、定かではありません。
+
+現在のソースは Cygwin (http://sources.redhat.com/cygwin/) 上の GCC,
+Mingw 等で compile することはできません。
+
+
+
+File: meadow-faq-ja.info, Node: Boot Failed, Prev: Compile, Up: Install
+
+Meadow が起動しません。
+=======================
+
+インストールに失敗していると考えられます。INSTALL.Meadow をよく読んで
+もう一度インストールからやり直して下さい。よくある問題は、Winzip 等の
+ツールによって解凍した際に、LF が CR+LF に変換されてしまって、正しく動
+かなくなるというものです。
+
+インストールが成功しているのに動かないという場合は、`EMACSLOADPATH' 等
+の環境変数の値を確認すると良いでしょう。Meadow をインストールするとレ
+ジストリーに正しい値を書き込みますが、`AUTOEXEC.BAT' 等で環境変数を設
+定しているとそちらが優先されてしまって起動しないことがあります。環境変
+数を設定しないか、正しい値に設定するか、どちらかを実行してください。
+
+
+
+
+File: meadow-faq-ja.info, Node: Multilingual, Next: Configuration, Prev: Install, Up: Top
+
+各言語に関する情報
+******************
+
+* Menu:
+
+* Coding::			文字化けして読めないのですがどうすれば良いでしょう？
+* TOFU::			四角い豆腐のようなものが表示されるのですが、これは何ですか？
+* What Language::		Meadow でサポートされている言語は？
+* R2l::				世界には文を右から左に書く言語もありますが、Meadow はそのような言語に対応できますか？
+* Rel Code::			Meadow と関連しているコード系はどんなものがありますか？
+* EUC::				EUC で日本、中国、韓国など 各言語を同時表示できるようにしたいのですが？
+* Isearch No ASCII::		インクリメンタルサーチ中に ASCII 文字以外を入力するには？
+* I18N Font::			各言語の表示方法を教えて下さい。
+* M17N Print::			各言語の入ったテキストを印刷するには？
+* EOL::				ファイルを読み込んだ時に、eol-type がファイル本来のものと異なったものに自動判別されてしまうのですが。
+
+
+
+File: meadow-faq-ja.info, Node: Coding, Next: TOFU, Prev: Multilingual, Up: Multilingual
+
+文字化けして読めないのですがどうすれば良いでしょう？
+====================================================
+
+コーディングシステムを指定してファイルを開いて下さい。`C-x RET c コー
+ディングシステム 命令'例えば、euc-jp を指定してファイルを開きたいとき
+は、`C-x RET c euc-jp C-x C-f ファイル名' とします。既にファイルが開か
+れている場合は、`C-x C-f' の代わりに`C-x C-v'を使うのも良いかもしれま
+せん。(*Note Rel Code::)
+
+
+
+File: meadow-faq-ja.info, Node: TOFU, Next: What Language, Prev: Coding, Up: Multilingual
+
+四角い豆腐のようなものが表示されるのですが、これは何ですか？
+============================================================
+これは、フォントが設定されていないために表示されていない文字です。適切
+なフォント設定をすれば表示されるようになります。
+
+
+
+File: meadow-faq-ja.info, Node: What Language, Next: R2l, Prev: TOFU, Up: Multilingual
+
+Meadow でサポートされている言語は？
+===================================
+   * 英語
+   * 日本語
+   * 中国語
+   * 韓国語
+   * ヨーロッパ諸言語
+   * タイ語
+   * ベトナム語
+
+
+
+File: meadow-faq-ja.info, Node: R2l, Next: Rel Code, Prev: What Language, Up: Multilingual
+
+世界には文を右から左に書く言語もありますが、Meadow はそのような言語に対応できますか？
+=====================================================================================
+
+Mule 2.3 では部分的に対応されていたのですが、MULE 3.0 から MULE 4.1 で
+は対応されていないため、Meadow では使う事はできません。
+
+
+
+File: meadow-faq-ja.info, Node: Rel Code, Next: EUC, Prev: R2l, Up: Multilingual
+
+Meadow と関連しているコード系はどんなものがありますか？
+=======================================================
+
+命令 `list-coding-systems' を実行すると、Meadow で使用できるコード系を
+知ることができます。また、Meadow 1.01 以降では、Mule-UCS により、UTF-8 
+や UTF-16 を使うこともできます。
+
+
+
+File: meadow-faq-ja.info, Node: EUC, Next: Isearch No ASCII, Prev: Rel Code, Up: Multilingual
+
+EUC で日本、中国、韓国など 各言語を同時表示できるようにしたいのですが？
+=======================================================================
+
+EUC コードは、それぞれ全く同じコード系ですから 混在させることは不可能
+です。多言語を同時表示させる必要があるなら、iso-2022-jp-2 や ctext の
+コードを使用するようにしてください。
+
+
+
+File: meadow-faq-ja.info, Node: Isearch No ASCII, Next: I18N Font, Prev: EUC, Up: Multilingual
+
+インクリメンタルサーチ中に ASCII 文字以外を入力するには？
+=========================================================
+
+残念ながら今のところ IME ではできませんが、GNU のミラーから取得できる 
+Meadow の emacs-version に対応した LEIM を使えばできます。Meadow 1.10 
+からは、LEIM は Meadow 本体とともに配布されます。
+
+IME を使った場合でも、以下のようにすればできます。まず、`.emacs' に
+
+     (define-key isearch-mode-map "\C-k" 'isearch-edit-string)
+
+を追加します。そうすると、`C-s' (isearch-forward) や `C-r'
+(isearch-backward) の後で`C-k' を入力する事により、IME を使って非 
+ASCII 文字を入力できるようになります。
+
+
+
+File: meadow-faq-ja.info, Node: I18N Font, Next: M17N Print, Prev: Isearch No ASCII, Up: Multilingual
+
+各言語の表示方法を教えて下さい。
+================================
+各言語対応のフォントを手にいれる必要があります。主に True Type フォン
+トを使う方法と、BDF フォントを使う方法があります。
+
+   * True Type フォントを使う方法
+
+     Meadow は起動時に自動的に Windows に登録されているフォントを検出
+     してフォントセットに登録しますので、Windows Update
+     (http://windowsupdate.microsoft.com/) などからフォントを入手して
+     インストールすると使えるようになります。表示できる言語は、中国語
+     (GB, big5)・日本語・韓国語・汎ヨーロッパ諸語です。
+
+   * BDF フォントを使う方法
+
+     BDFは X Window System で用いられているフォントです。
+     ftp.gnu.org/pub/gnu/ もしくは tron.um.u-tokyo.ac.jp/pub/GNU/prep/ 
+     などの GNU のミラーからintlfonts-1.1.tar.gz
+     (ftp://tron.um.u-tokyo.ac.jp/pub/GNU/prep/intlfonts-1.1.tar.gz) 
+     もしくは、その下のディレクトリーのintlfonts-1.1-split から入手す
+     るか、ftp.m17n.org/pub/mule/fonts/ にあるフォントを入手してくださ
+     い。どのようなフォントがあるかは、
+     `ftp://tron.um.u-tokyo.ac.jp/pub/GNU/prep/intlfonts-1.1-split/README' 
+     もしくは`ftp://ftp.m17n.org/pub/mule/fonts/README' を読んでくださ
+     い。*Note Display::
+
+
+
+File: meadow-faq-ja.info, Node: M17N Print, Next: EOL, Prev: I18N Font, Up: Multilingual
+
+各言語の入ったテキストを印刷するには？
+======================================
+Meadow 1.10以降に付属する多言語対応の ps-print と、それと BDF フォント
+を使って作成した PostScript ファイルを Ghostscript で処理することで印
+刷することができます。Windows Native の印刷はできません。Meadow からの
+印刷の項も参照してください。*Note Print::.
+
+
+
+File: meadow-faq-ja.info, Node: EOL, Prev: M17N Print, Up: Multilingual
+
+ファイルを読み込んだ時に、eol-type がファイル本来のものと異なったものに自動判別されてしまうのですが。
+=====================================================================================================
+
+Meadow では、最初に現われた CR/LF/CR+LF により自動的に改行の型を決定す
+るようになっています。そのため、一行目が CR で終わっていると、残りが 
+LF でも、-dos と判断されます。このようなファイルを正しく読み込むために
+は、`C-x RET c CODING-SYSTEM C-x C-f' (`M-x
+universal-coding-system-argument CODING-SYSTEM M-x find-file')で、
+CODING-SYSTEM にそれぞれ junet-dos/junet-unix/junet-mac 等としてファイ
+ルを読み込んで下さい。
+
+
+
+File: meadow-faq-ja.info, Node: Configuration, Next: Windows, Prev: Multilingual, Up: Top
+
+個人環境設定
+************
+
+* Menu:
+
+* Alt and Meta::		Alt キーを Meta ではなく、Alt キーそのものとして使いたいのですが。
+* Highlight Region::		どうすればリージョンをハイライトする事ができますか？
+* Matching Paren::		どうすれば対応する括弧をハイライトする事ができますか？
+* Menu and Scroll::		メニューバーやスクロールバーが欝陶しいのですが。
+* Scroll Left::			スクロールバーの表示を切り替えると、スクロールバーが左に現われてしまいます。
+* whatline::			カーソルの位置が何行目かを表示するにはどうしたらいいのでしょうか？
+* whatcolumn::			カーソルの位置が何桁目かを表示するにはどうしたらいいのでしょうか？
+* Auto Indent::			インデント時に、自動的に前の行と同じインデントになるようにするには、 どうしたらいいのでしょうか？
+* IME Cursor Color::		IME の on と off でカーソルの色を変えたいのですが。
+* Like Windows::		どうすれば Meadow をもっと Windows のアプリケーションのようにできますか？
+* Message Buffer::		どうすれば *Message* バッファをなくす事ができますか？
+* Kill Whole Line::		カーソルが行頭にあるときに、C-k を1回打つだけで その行全体が削除されるようにするにはどうしたらいいのでしょうか？
+* Modeline Font::		どうすればモード行のフォントを変える事ができますか？
+* Display Time::		どうすれば時間をモード行に表示する事ができますか？
+* Modeline Color::		どうすればモード行の色を変える事ができますか？
+* Color Name::			フェイスで使用可能な色の名前は何処にありますか？
+* No Next Line::		バッファの最後で next-line を実行しても、 新しい行が挿入されないようにして欲しいのですが。
+* Line Scroll::			どうすれば C-, と C-. を画面の一行スクロールにバインドする事ができますか？
+* Prev Line::			buffer の先頭で previous-line を実行すると、 beginning-of-buffer といってうるさいのですが。
+* add-hook::			
+* Minibuffer Frame::		minibuffer だけ独立した frame を作るには どうしたらいいのでしょうか？
+* Visible Bell::		ビープ音が鳴るのがうるさいのですが。
+* Change Beep::			ビープ音を変える事ができますか？
+
+
+
+File: meadow-faq-ja.info, Node: Alt and Meta, Next: Highlight Region, Prev: Configuration, Up: Configuration
+
+Alt キーを Meta ではなく、Alt キーそのものとして使いたいのですが。
+==================================================================
+
+     (w32-set-modifier-key 18 nil)
+     (w32-set-modifier-key 18 'none)
+
+を `.emacs' に書いて下さい。ちなみに、一行目だけを書くと Alt キーは 
+M-x になります。
+
+
+
+File: meadow-faq-ja.info, Node: Highlight Region, Next: Matching Paren, Prev: Alt and Meta, Up: Configuration
+
+どうすればリージョンをハイライトする事ができますか？
+====================================================
+
+     (transient-mark-mode 1)
+
+を `.emacs' に書いて下さい。
+
+
+
+File: meadow-faq-ja.info, Node: Matching Paren, Next: Menu and Scroll, Prev: Highlight Region, Up: Configuration
+
+どうすれば対応する括弧をハイライトする事ができますか？
+======================================================
+
+
+     (show-paren-mode 1)
+
+を `.emacs' に書いて下さい。
+
+
+
+File: meadow-faq-ja.info, Node: Menu and Scroll, Next: Scroll Left, Prev: Matching Paren, Up: Configuration
+
+メニューバーやスクロールバーが欝陶しいのですが。
+================================================
+
+   * default-frame-alist に追加する方法:
+          (setq default-frame-alist
+                '(append (list '(menu-bar . nil)
+                                (vertical-scroll-bars . nil))
+                         default-frame-alist))
+
+   * 別個にやる方法:
+          (menu-bar-mode -1)
+          (scroll-bar-mode -1)
+
+のどちらかを `.emacs' に書いて下さい。
+
+メニューバーを消してからもう一度表示すると、Meadow の画面が一行小さく
+なってしまうようです。これは Meadow 1.10 では修正されています。
+
+
+
+
+File: meadow-faq-ja.info, Node: Scroll Left, Next: whatline, Prev: Menu and Scroll, Up: Configuration
+
+スクロールバーの表示を切り替えると、スクロールバーが左に現われてしまいます。
+============================================================================
+スクロールバーを右に出すためには、
+     (setq scroll-bar-mode 'right)
+
+を `.emacs' に書いて下さい。
+
+
+
+File: meadow-faq-ja.info, Node: whatline, Next: whatcolumn, Prev: Scroll Left, Up: Configuration
+
+カーソルの位置が何行目かを表示するにはどうしたらいいのでしょうか？
+==================================================================
+     (line-number-mode 1)
+
+を `.emacs' に書いて下さい。
+
+
+
+File: meadow-faq-ja.info, Node: whatcolumn, Next: Auto Indent, Prev: whatline, Up: Configuration
+
+カーソルの位置が何桁目かを表示するにはどうしたらいいのでしょうか？
+==================================================================
+
+     (column-number-mode 1)
+
+を `.emacs' に書いて下さい。
+
+
+
+
+File: meadow-faq-ja.info, Node: Auto Indent, Next: IME Cursor Color, Prev: whatcolumn, Up: Configuration
+
+インデント時に、自動的に前の行と同じインデントになるようにするには、 どうしたらいいのでしょうか？
+=================================================================================================
+     (setq indent-line-function
+           'indent-relative-maybe)
+
+を `.emacs' に入れて下さい。そうすれば、`indent-line-function' を再バ
+インドしないモードでは、`C-j' で前の行と同じインデントにする事ができま
+す。
+
+
+
+File: meadow-faq-ja.info, Node: IME Cursor Color, Next: Like Windows, Prev: Auto Indent, Up: Configuration
+
+IME の on と off でカーソルの色を変えたいのですが。
+===================================================
+以下のコードを `.emacs' に入れて下さい。
+
+     (add-hook 'mw32-ime-on-hook
+     	  (function (lambda () (set-cursor-color "red"))))
+     (add-hook 'mw32-ime-off-hook
+     	  (function (lambda () (set-cursor-color "black"))))
+
+
+
+
+File: meadow-faq-ja.info, Node: Like Windows, Next: Message Buffer, Prev: IME Cursor Color, Up: Configuration
+
+どうすれば Meadow をもっと Windows のアプリケーションのようにできますか？
+=========================================================================
+
+CUA-mode (http://eolicom.olicom.dk/%7Estorm/cua-mode.el)を使えば、
+`C-c', `C-v', `C-x' 等を Windows と同じように使う事ができます。また、
+Meadow に付属している pc-bindings-mode や pc-selection-mode を使う事が
+できます。こちらの詳細は、`C-h f' (describe-function) でそれぞれのモー
+ドの説明を見て下さい。
+
+
+
+File: meadow-faq-ja.info, Node: Message Buffer, Next: Kill Whole Line, Prev: Like Windows, Up: Configuration
+
+どうすれば *Message* バッファをなくす事ができますか？
+=====================================================
+*Message* バッファが増えなくするためには、(setq message-log-max nil) 
+を `.emacs' に入れて下さい。*Message* バッファそのものもなくすためには、
+(kill-buffer *Message*) も `.emacs' に書いて下さい。
+
+
+
+File: meadow-faq-ja.info, Node: Kill Whole Line, Next: Modeline Font, Prev: Message Buffer, Up: Configuration
+
+カーソルが行頭にあるときに、C-k を1回打つだけで その行全体が削除されるようにするにはどうしたらいいのでしょうか？
+================================================================================================================
+
+     (setq kill-whole-line t)
+
+を `.emacs' に書いて下さい。
+
+
+
+File: meadow-faq-ja.info, Node: Modeline Font, Next: Display Time, Prev: Kill Whole Line, Up: Configuration
+
+どうすればモード行のフォントを変える事ができますか？
+====================================================
+
+`set-face-font' に modeline を指定して下さい。
+     (set-face-font 'modeline "FONTSET-NAME")
+
+
+
+File: meadow-faq-ja.info, Node: Display Time, Next: Modeline Color, Prev: Modeline Font, Up: Configuration
+
+どうすれば時間をモード行に表示する事ができますか？
+==================================================
+`.emacs' に(display-time) `M-x display-time-mode' で表示を切り替える事
+ができます。
+
+
+
+
+File: meadow-faq-ja.info, Node: Modeline Color, Next: Color Name, Prev: Display Time, Up: Configuration
+
+どうすればモード行の色を変える事ができますか？
+==============================================
+     (set-face-foreground 'modeline "black")
+     (set-face-background 'modeline "white")
+
+
+
+File: meadow-faq-ja.info, Node: Color Name, Next: No Next Line, Prev: Modeline Color, Up: Configuration
+
+フェイスで使用可能な色の名前は何処にありますか？
+================================================
+$MEADOW/$VERSION/etc/rgb.txt にあります。
+
+
+
+File: meadow-faq-ja.info, Node: No Next Line, Next: Line Scroll, Prev: Color Name, Up: Configuration
+
+バッファの最後で next-line を実行しても、 新しい行が挿入されないようにして欲しいのですが。
+==========================================================================================
+
+     (setq next-line-add-newlines nil)
+
+を `.emacs' に書いて下さい。
+
+
+
+File: meadow-faq-ja.info, Node: Line Scroll, Next: Prev Line, Prev: No Next Line, Up: Configuration
+
+どうすれば C-, と C-. を画面の一行スクロールにバインドする事ができますか？
+==========================================================================
+次のコードを `.emacs' に書いて下さい。
+     (defun scroll-up-one-line ()
+       (interactive)
+       (scroll-up 1))
+
+     (defun scroll-down-one-line ()
+       (interactive)
+       (scroll-down 1))
+
+     (global-set-key [?\C-,] 'scroll-up-one-line)
+     (global-set-key [?\C-.] 'scroll-down-one-line)
+
+
+
+File: meadow-faq-ja.info, Node: Prev Line, Next: add-hook, Prev: Line Scroll, Up: Configuration
+
+buffer の先頭で previous-line を実行すると、 beginning-of-buffer といってうるさいのですが。
+===========================================================================================
+次のコードを `.emacs' に入れて下さい。
+
+     (defun previous-line (arg)
+       (interactive "p")
+       (if (interactive-p)
+           (condition-case nil
+     	  (line-move (- arg))
+     	((beginning-of-buffer end-of-buffer)))
+         (line-move (- arg)))
+       nil)
+
+
+
+File: meadow-faq-ja.info, Node: add-hook, Next: Minibuffer Frame, Prev: Prev Line, Up: Configuration
+
+(setq xxx-hook yyyy) とやってもうまく hook が設定されないのですが。
+===================================================================
+別の hook で上書きされてしまった事が考えられます。hook を設定するとき
+には、add-hook を使って下さい。(add-hook 'c-mode-hook '(lambda ()
+(setq tab-width 4))) のようにするのが良いです。上の式を実行すると、
+hook の最初に付け加えられますが、3つめの引数に t を指定すると、hook の
+最後に付け加えられます。
+
+
+
+File: meadow-faq-ja.info, Node: Minibuffer Frame, Next: Visible Bell, Prev: add-hook, Up: Configuration
+
+minibuffer だけ独立した frame を作るには どうしたらいいのでしょうか？
+=====================================================================
+     (setq default-minibuffer-frame
+           (make-frame '((name . "Minibuffer")
+                         (minibuffer . only)
+                         (width . 95)
+                         (height . 1)
+                         (left . 0)
+                         (top . -1)
+                         (auto-raise . t)))
+           default-frame-alist
+           '((minibuffer . nil)
+             (width . 80)
+             (height . 40)
+             (auto-raise . t)))
+
+
+
+File: meadow-faq-ja.info, Node: Visible Bell, Next: Change Beep, Prev: Minibuffer Frame, Up: Configuration
+
+ビープ音が鳴るのがうるさいのですが。
+====================================
+
+     (setq visible-bell t)
+
+を `.emacs' に書くと、画面の1/4位が一瞬反転表示してエラーを知らせるよ
+うになります。注: Meadow 1.00, Meadow 1.01 では動作しないようです。
+
+
+
+File: meadow-faq-ja.info, Node: Change Beep, Prev: Visible Bell, Up: Configuration
+
+ビープ音を変える事ができますか？
+================================
+
+     (set-message-beep SOUND)
+
+で変える事ができます。SOUND は 'asterisk, 'exclamation, 'hand,
+'question, 'ok を使う事ができます。nil の場合は普通のビープ音になりま
+す。
+
+
+
+
+File: meadow-faq-ja.info, Node: Windows, Next: Display, Prev: Configuration, Up: Top
+
+Windows 関連
+************
+
+* Menu:
+
+* Intelli Mouse::		Intellimouse はサポートされているのですか？
+* Fiber::			どうすれば Meadow のファイルから Windows のアプリケーションを起動する事ができますか？
+* gnuserv::			どうすれば Meadow にファイルを関連付ける事ができますか？
+
+
+
+File: meadow-faq-ja.info, Node: Intelli Mouse, Next: Fiber, Prev: Windows, Up: Windows
+
+Intellimouse はサポートされているのですか？
+===========================================
+はい、サポートされています。真中のボタンをまわすと画面がスクロールした
+り、モードラインを移動したりする事ができます。
+
+
+
+File: meadow-faq-ja.info, Node: Fiber, Next: gnuserv, Prev: Intelli Mouse, Up: Windows
+
+どうすれば Meadow のファイルから Windows のアプリケーションを起動する事ができますか？
+=====================================================================================
+
+ファイルがアプリケーションに関連付けされている場合、fiber を使って起動
+することができます。Meadow 1.00 に付属の fiber の場合、一度、fiber -i 
+を行なう必要があります。Meadow 1.10 以降に付属の fiber の場合はこれは
+必要ありません。例えば、fiber FAQ-Meadow-ja.html とすると、HTML に関連
+付けられたアプリケーションで閲覧することができます。
+
+これを使って、バッファに関連付けられたファイルから Windows のアプリケー
+ションを起動することができます。
+
+     (defun my-fiber-from-buffer ()
+       (interactive)
+       (if buffer-file-name
+           (start-process "fiber" nil "fiber.exe" buffer-file-name)
+         (error "This buffer is not visiting a file")))
+
+として、例えば C-c v に割り当てるなら、(global-set-key "\C-cv"
+'my-fiber-from-buffer) とします。
+
+
+
+File: meadow-faq-ja.info, Node: gnuserv, Prev: Fiber, Up: Windows
+
+どうすれば Meadow にファイルを関連付ける事ができますか？
+========================================================
+
+しもおくさん版のgnuserv
+(http://www.netlaputa.ne.jp/~cymouque/gnuserv-latest.zip) を持ってきま
+す。gnuserv.zip を展開し、gnuserv.el をパスの通っているディレクトリー 
+(変数 `load-path' の値) にコピーし、バイトコンパイルします。
+gnuserv.exe, gnuclient.exe, gnuclientw.exe, gnudoit.exe, gnudoitw.exe
+をパスの通っているディレクトリー(MS-DOS プロンプトで path として出てく
+るもの) にコピーします。
+
+     (require 'gnuserv)
+     (gnuserv-start)
+
+を `.emacs' に書きます。新たな frame を開きたくないときは、
+     (setq gnuserv-frame (selected-frame))
+
+も `.emacs' に書きます。AUTOEXEC.BAT に
+
+     SET RUNEMACS=あなたの Meadow95.exe もしくは MeadowNT.exe への絶対パス
+     SET EMACS=Meadow
+     SET GNUCLIENTW=-F
+
+を書きます。
+
+これで、ファイルを gnuclientw.exe にドラッグ＆ドロップするとMeadow で
+ファイルを開く事ができます。また、ファイルを gnuclientw.exe に関連付け
+ると、ファイルをダブルクリックで開く事ができます。
+
+
+
+
+File: meadow-faq-ja.info, Node: Display, Next: Elisp, Prev: Windows, Up: Top
+
+画面表示
+********
+
+* Menu:
+
+* BDF Display::			BDF font が正しく表示されないのですが、どうしたらよいのでしょうか
+* Visible Bell Bug::		
+* Init Frame::			起動したときに、一度縦長の画面が出てきてから設定した大きさに変わるのですが。
+* Change Font::			どうすればフォントを変更する事ができますか？
+* Face::			face とは何ですか？
+* W32 Use Full Screen Buffer::	
+
+
+
+File: meadow-faq-ja.info, Node: BDF Display, Next: Visible Bell Bug, Prev: Display, Up: Display
+
+BDF font が正しく表示されないのですが、どうしたらよいのでしょうか
+=================================================================
+
+ディスプレイドライバのバージョンを更新すると直る可能性があります。また、
+アクセラレータを下げると修正されるという報告もなされています。
+
+
+
+File: meadow-faq-ja.info, Node: Visible Bell Bug, Next: Init Frame, Prev: BDF Display, Up: Display
+
+(setq visible-bell t) として visible-bell にしても、画面のフラッシュが起こらないのですが。
+==========================================================================================
+
+Meadow 1.00 のバグです。最新の Meadow では修正されています。
+
+
+
+File: meadow-faq-ja.info, Node: Init Frame, Next: Change Font, Prev: Visible Bell Bug, Up: Display
+
+起動したときに、一度縦長の画面が出てきてから設定した大きさに変わるのですが。
+============================================================================
+
+そういうものです。最初のフレームができたときは `.emacs' は読み込まれて
+おらず、それからフレームの大きさが変更されるためです。
+
+
+
+File: meadow-faq-ja.info, Node: Change Font, Next: Face, Prev: Init Frame, Up: Display
+
+どうすればフォントを変更する事ができますか？
+============================================
+
+US-ASCII 以外を表示させるためには、フォントセットという機構を使います。
+フォントセットは、各文字集合に対してフォントを割当てたものです。ですか
+ら、フォントを変更して後にフォントセットに登録する必要があります。これ
+を自動的に行うのが high level API であり、手動で行うのがlow level API 
+です。詳しくは README.Meadow.ja を参照してください。
+
+
+
+File: meadow-faq-ja.info, Node: Face, Next: W32 Use Full Screen Buffer, Prev: Change Font, Up: Display
+
+face とは何ですか？
+===================
+
+Emacs 上で、文字に色やフォントの属性を付ける機構です。
+
+
+
+File: meadow-faq-ja.info, Node: W32 Use Full Screen Buffer, Prev: Face, Up: Display
+
+"MeadowNT -nw" が Windows NT console の window size に収まるようにするにはどうすればいいですか?
+===============================================================================================
+
+以下のコードを `.emacs' に書いて下さい:
+     (setq w32-use-full-screen-buffer nil)
+
+(meadow-users-ja:4087)
+
+
+
+
+File: meadow-faq-ja.info, Node: Elisp, Next: Elisp Package, Prev: Display, Up: Top
+
+Emacs Lisp
+**********
+
+* Menu:
+
+* Elisp Manual::		elisp の説明文書はありますか?
+* Key::				この FAQ で書かれている C-c や M-x とは何ですか？
+* Meadow Version::		どのバージョンの Meadow であるかがわかりますか？
+* Eval LISP Expression::	どうやって lisp の式を評価する事ができますか？
+* Buffer Local Variable::	
+* Custom::			Customize とは何ですか？
+* Describe Function and Variable::  どうすれば関数や変数の説明文を読む事ができますか？
+* Describe Key::		どのキーがどの関数に割り当てられているかがわかりますか？
+* Where is::			関数がどのキーに割り当てられているかがわかりますか？
+* Patch::			パッチを当てたのですが、反映されていないようです。
+* Byte Compile::		バイトコンパイルとは何ですか？
+
+
+
+File: meadow-faq-ja.info, Node: Elisp Manual, Next: Key, Prev: Elisp, Up: Elisp
+
+elisp の説明文書はありますか?
+=============================
+
+
+邦訳されたONLINE文書としては以下のものがあります。
+
+   * 日本語 elisp マニュアル (ftp://ftp.m17n.org/pub/mule/elisp-manual-19-2.4-jp2.0.tar.gz)
+   * 日本語 elisp 入門 (ftp://ftp.m17n.org/pub/mule/elispj.ps.gz)
+
+Meadow の基になっている Emacs 20.x の elisp を説明したONLINE文書は英語
+版は、Emacs 20.3 elisp マニュアル 
+(ftp://tron.um.u-tokyo.ac.jp/pub/GNU/prep/emacs/elisp-manual-20-2.5.tar.gz) 
+がありますが、日本語版はありません。
+
+出版物としては emacs 20.6 のマニュアルがASCII出版より発行されています。
+   * GNU Emacs マニュアル 20.6 (http://www.ascii.co.jp/books/detail/4-7561/4-7561-3413-0.html)
+   * Emacs Lisp リファレンスマニュアル (http://www.ascii.co.jp/books/detail/4-7561/4-7561-3414-9.html)
+
+またEmacs LISPの学習に役立ついくつかの書籍もあります。
+   * Emacs Lisp プログラミング入門 (http://www.ascii.co.jp/books/detail/4-7561/4-7561-1805-4.html)
+   * GNU Emacs 拡張ガイド -- Emacs Lisp プログラミング (http://www.oreilly.co.jp/BOOK/gnuex/)
+
+
+
+
+File: meadow-faq-ja.info, Node: Key, Next: Meadow Version, Prev: Elisp Manual, Up: Elisp
+
+この FAQ で書かれている C-c や M-x とは何ですか？
+=================================================
+
+`C-c' は、Control キーを押しながら c を押すことを、`M-x' は Meta キー
+を押しながら x を押すことを表します。初期設定では、Meadow は Alt キー
+をMeta キーとして使います。Meta キーが無い場合は、ESC キーを押した後に 
+x を押すことで `M-x' の代用をすることができます。
+
+
+
+File: meadow-faq-ja.info, Node: Meadow Version, Next: Eval LISP Expression, Prev: Key, Up: Elisp
+
+どのバージョンの Meadow であるかがわかりますか？
+================================================
+
+     (Meadow-version) 変数 `mule-version' で MULE のバージョンを、変数 
+`emacs-version' で基となっている Emacs のバージョンを知る事ができます。
+
+
+
+File: meadow-faq-ja.info, Node: Eval LISP Expression, Next: Buffer Local Variable, Prev: Meadow Version, Up: Elisp
+
+どうやって lisp の式を評価する事ができますか？
+==============================================
+以下の方法があります。
+   * *scratch* バッファで `C-j' (eval-print-last-sexp)
+   * 式の直後で `C-x C-e' (eval-last-sexp)
+   * `M-:' (eval-expression) の後で、lisp の式を入力
+   * 評価したい式をリージョンに指定して `M-x eval-region'
+
+
+
+
+File: meadow-faq-ja.info, Node: Buffer Local Variable, Next: Custom, Prev: Eval LISP Expression, Up: Elisp
+
+(setq buffer-file-coding-system 'sjis-dos) が上手く動作しないのですが。
+=======================================================================
+
+変数 `buffer-file-coding-system' はバッファ固有です。全てのバッファに
+適用したいときは、`setq' の代わりに `setq-default' を使って下さい。
+
+
+
+File: meadow-faq-ja.info, Node: Custom, Next: Describe Function and Variable, Prev: Buffer Local Variable, Up: Elisp
+
+Customize とは何ですか？
+========================
+視覚的に Meadow の設定を変更できるようにするパッケージです。`M-x
+customize' として使う事ができます。
+
+
+
+File: meadow-faq-ja.info, Node: Describe Function and Variable, Next: Describe Key, Prev: Custom, Up: Elisp
+
+どうすれば関数や変数の説明文を読む事ができますか？
+==================================================
+関数の説明文を読むときは、`C-h f' もしくは、`M-x describe-function' を、
+変数の説明文を読むときは、`C-h v' もしくは、`M-x describe-variable' を
+使います。
+
+
+
+File: meadow-faq-ja.info, Node: Describe Key, Next: Where is, Prev: Describe Function and Variable, Up: Elisp
+
+どのキーがどの関数に割り当てられているかがわかりますか？
+========================================================
+`C-h k' もしくは、`M-x describe-key' を使います。
+
+
+
+File: meadow-faq-ja.info, Node: Where is, Next: Patch, Prev: Describe Key, Up: Elisp
+
+関数がどのキーに割り当てられているかがわかりますか？
+====================================================
+`C-h w' もしくは、`M-x where-is' を使います。
+
+
+
+File: meadow-faq-ja.info, Node: Patch, Next: Byte Compile, Prev: Where is, Up: Elisp
+
+パッチを当てたのですが、反映されていないようです。
+==================================================
+
+パッチを当てたファイルが dump されている場合、それは反映されません。
+dump95.bat や dumpNT.bat を使って再 dump する必要があります。
+
+
+
+File: meadow-faq-ja.info, Node: Byte Compile, Prev: Patch, Up: Elisp
+
+バイトコンパイルとは何ですか？
+==============================
+
+Emacs が elisp ファイルを高速に実行できる形式に変換することです。Elisp 
+ファイルは .el で終わり、バイトコンパイルされたものは .elc で終わりま
+す。1つのファイルをバイトコンパイルするときは、`byte-compile-file'、現
+在のバッファをバイトコンパイルするときは `emacs-lisp-byte-compile'を使
+います。`byte-recompile-directory' を使うと、.el ファイルが .elc ファ
+イルより新しいときにバイトコンパイルを実行したり、強制的に全ファイルを
+再バイトコンパイルしたりすることができます。
+
+
+
+File: meadow-faq-ja.info, Node: Elisp Package, Next: Ange-ftp, Prev: Elisp, Up: Top
+
+Emacs Lisp Package
+******************
+
+elisp パッケージ
+
+* Menu:
+
+* Mail User Agent::		Meadow で動く MUA (mailer) News Reader は何がありますか？
+* MH-e::			mh-e は使えますか？
+* AUC TeX::			AUC TeX
+* YaTeX::			YaTeX
+* Perl Mode::			perl-mode の最新版はどこから手に入りますか？
+* Hexl Mode::			hexl-mode は使えますか?
+* Python Mode::			python-mode はどこから手に入りますか？
+* Telnet::			telnet は使えますか？
+* Browse-url::			browse-url を使うにはどうすれば良いですか？
+* EDT::				EDT emulation mode はどうやれば使う事ができますか？
+* Windows Specific::		Windows 特有のファイルを編集するモードはありますか？
+* Java::			Java 関連パッケージはありますか？
+* Visual Basic::		visual basic を編集するモードはありますか？
+* HTML Helper::			html-helper-mode はどこから手に入りますか？
+* Source Safe::			source safe を編集するモードはありますか？
+* Delphi::			Delphi を編集するモードはありますか？
+* CSS::				CSS style-sheets を編集するモードはありますか？
+* SQL::				sql-mode はどこで手に入れる事ができますか？
+* Spread Sheet::		elisp で表計算ができますか？
+* Latest CC Mode::		どこから最新の cc mode を手に入れる事ができますか？
+* X-Face::			Meadow のバージョンを上げたら、X-Face のインライン表示でエラーが発生するようになったのですが。
+
+
+
+File: meadow-faq-ja.info, Node: Mail User Agent, Next: MH-e, Prev: Elisp Package, Up: Elisp Package
+
+Meadow で動く MUA (mailer), News Reader には何がありますか？
+============================================================
+
+MUA としては、RMAIL, cmail (http://www.st.rim.or.jp/%7Efuku/cmail),
+Mew (http://www.Mew.org/),が、MUA 兼 News Reader としてはWanderlust
+(http://www.gohome.org/wl/), Semi-gnus, Gnus (http://www.gnus.org/) 等
+があります。
+
+
+
+File: meadow-faq-ja.info, Node: MH-e, Next: AUC TeX, Prev: Mail User Agent, Up: Elisp Package
+
+mh-e は使えますか？
+===================
+
+mh-e が下請けとして使っている MH が Windows 上では動作しないため、残念
+ながら、使えません。何とかコンパイルして動かせるかもしれないという報告
+がありますが、すばらしいMUA がたくさんあるので、乗り換えをお勧めします。
+
+
+
+File: meadow-faq-ja.info, Node: AUC TeX, Next: YaTeX, Prev: MH-e, Up: Elisp Package
+
+AUC TeX
+=======
+AUC TeX は`http://sunsite.auc.dk/auctex' から手に入ります。
+
+
+
+File: meadow-faq-ja.info, Node: YaTeX, Next: Perl Mode, Prev: AUC TeX, Up: Elisp Package
+
+YaTeX
+=====
+YaTeX は`http://www.yatex.org/' から手に入ります。
+
+
+
+File: meadow-faq-ja.info, Node: Perl Mode, Next: Hexl Mode, Prev: YaTeX, Up: Elisp Package
+
+perl-mode の最新版はどこから手に入りますか？
+============================================
+CPAN (http://www.perl.com/CPAN) から手に入りますが、cperl-mode を使う
+ほうが良いでしょう。ともに CPAN/misc/emacs/
+(http://www.cpan.org/misc/emacs/) より手に入ります。
+
+
+
+File: meadow-faq-ja.info, Node: Hexl Mode, Next: Python Mode, Prev: Perl Mode, Up: Elisp Package
+
+hexl-mode は使えますか?
+=======================
+はい、使えます。hexl-find-file 等として使って下さい。
+
+
+
+File: meadow-faq-ja.info, Node: Python Mode, Next: Telnet, Prev: Hexl Mode, Up: Elisp Package
+
+python-mode はどこから手に入りますか？
+======================================
+
+`http://www.python.org/emacs/python-mode/' の記述を読んで下さい。
+
+
+
+File: meadow-faq-ja.info, Node: Telnet, Next: Browse-url, Prev: Python Mode, Up: Elisp Package
+
+telnet は使えますか？
+=====================
+
+Meadow にはコンソールアプリケーションの telnet.exe が付属していますの
+で、使う事ができます。使い方は、`M-x telnet' です。
+
+
+
+File: meadow-faq-ja.info, Node: Browse-url, Next: EDT, Prev: Telnet, Up: Elisp Package
+
+browse-url を使うにはどうすれば良いですか？
+===========================================
+
+   * Netscape Navigator を使う場合は、以下のものを `.emacs' に入れて下さい。
+
+          (setq browse-url-browser-function 'browse-url-netscape)
+          (setq browse-url-netscape-program "netscape.exe の絶対パス")
+          (defun browse-url-netscape (url &optional args)
+            (interactive (browse-url-interactive-arg "URL: "))
+            (if browse-url-netscape-program
+                (let ((w32-start-process-show-window t))
+          	(start-process (concat browse-url-netscape-program url)
+          		       nil browse-url-netscape-program url))))
+
+   * Internet Explorer を使う場合は同様に、以下のようにできます。
+          (setq browse-url-browser-function 'browse-url-msie)
+          (setq browse-url-msie-program "IEXPLORE.EXE の絶対パス")
+          (defun browse-url-msie (url &optional args)
+            (interactive (browse-url-interactive-arg "URL: "))
+            (if browse-url-msie-program
+                (let ((w32-start-process-show-window t))
+          	(start-process (concat browse-url-msie-program url)
+          		       nil browse-url-msie-program url))))
+
+
+
+File: meadow-faq-ja.info, Node: EDT, Next: Windows Specific, Prev: Browse-url, Up: Elisp Package
+
+EDT emulation mode はどうやれば使う事ができますか？
+===================================================
+
+以下のコードを `.emacs' に書いて下さい。
+     (setenv "TERM" "pc")
+     (setq term-setup-hook 'edt-emulation-on)
+
+EDT emulation に関する説明文書 (英語) は、
+$MEADOW/$VERSION/etc/edt-user.doc にあります。
+
+
+
+File: meadow-faq-ja.info, Node: Windows Specific, Next: Java, Prev: EDT, Up: Elisp Package
+
+Windows 特有のファイルを編集するモードはありますか？
+====================================================
+
+Windows 特有の `*.bat', `*.ini', `*.pif' 等を編集するのにgeneric.el
+(http://pbreton.ne.mediaone.net/emacs/generic.el) generic-x.el
+(http://pbreton.ne.mediaone.net/emacs/generic-x.el) が使えます。
+
+
+
+File: meadow-faq-ja.info, Node: Java, Next: Visual Basic, Prev: Windows Specific, Up: Elisp Package
+
+Java 関連パッケージはありますか？
+=================================
+
+Meadow では、java-mode を使う事ができます。また、JDE
+(http://sunsite.auc.dk/jde/) と言うものもあります。font-lock mode での
+ハイライトを増やしたいのであれば、
+`http://www.csd.uu.se/%7Eandersl/emacs.shtml' に、
+andrsl-java-font-lock.el と言うものがあります。
+
+
+
+File: meadow-faq-ja.info, Node: Visual Basic, Next: HTML Helper, Prev: Java, Up: Elisp Package
+
+visual basic を編集するモードはありますか？
+===========================================
+
+visual-basic-mode.el (http://www.gest.unipd.it/~saint/visual-basic-mode.el.gz) と言うものがあります。
+
+
+
+File: meadow-faq-ja.info, Node: HTML Helper, Next: Source Safe, Prev: Visual Basic, Up: Elisp Package
+
+html-helper-mode はどこから手に入りますか？
+===========================================
+
+`http://www.gest.unipd.it/~saint/hth.html' が1次配布元です。
+
+
+
+File: meadow-faq-ja.info, Node: Source Safe, Next: Delphi, Prev: HTML Helper, Up: Elisp Package
+
+source safe を編集するモードはありますか？
+==========================================
+
+source-safe.el
+(http://www.gnu.org/software/emacs/windows/ntemacs/contrib/source-safe.el) 
+があります。また、メニューコードがsource-safe-menu.el
+(http://www.gnu.org/software/emacs/windows/ntemacs/contrib/source-safe-menu.el) 
+にあります。
+
+
+
+File: meadow-faq-ja.info, Node: Delphi, Next: CSS, Prev: Source Safe, Up: Elisp Package
+
+Delphi を編集するモードはありますか？
+=====================================
+
+delphi.el (http://www.infomatch.com/~blaak/) をどうぞ。
+
+
+
+File: meadow-faq-ja.info, Node: CSS, Next: SQL, Prev: Delphi, Up: Elisp Package
+
+CSS style-sheets を編集するモードはありますか？
+===============================================
+css-mode.el (http://tech.irt.org/articles/js148/el/css-mode.el) と言う
+ものがあります。
+
+
+
+File: meadow-faq-ja.info, Node: SQL, Next: Spread Sheet, Prev: CSS, Up: Elisp Package
+
+sql-mode はどこで手に入れる事ができますか？
+===========================================
+
+`http://www.stanford.edu/~riepel/SQL-mode.html' です。Oracle の 
+SQL*Plus, SQL*Forms を編集する際には、sql-modes.zip
+(http://paddington.ic.uva.nl/public/sql-modes.zip) が有用かもしれませ
+ん。
+
+
+
+File: meadow-faq-ja.info, Node: Spread Sheet, Next: Latest CC Mode, Prev: SQL, Up: Elisp Package
+
+elisp で表計算ができますか？
+============================
+はい、できます。`ftp://cs.nyu.edu/pub/local/fox/dismal/' にあります。
+詳細はパッケージの説明文書 (英語) を読んで下さい。
+
+
+
+File: meadow-faq-ja.info, Node: Latest CC Mode, Next: X-Face, Prev: Spread Sheet, Up: Elisp Package
+
+どこから最新の cc mode を手に入れる事ができますか？
+===================================================
+`http://cc-mode.sourceforge.net/' です。
+
+
+
+File: meadow-faq-ja.info, Node: X-Face, Prev: Latest CC Mode, Up: Elisp Package
+
+Meadow のバージョンを上げたら、X-Face のインライン表示でエラーが発生するようになったのですが。
+==============================================================================================
+
+bitmap-mule のバージョンを上げてください。最新のバージョンは、
+`ftp://ftp.jpl.org/pub/elisp/bitmap/' から入手できます。
+
+
+
+
+File: meadow-faq-ja.info, Node: Ange-ftp, Next: UN*X tools, Prev: Elisp Package, Up: Top
+
+ange-ftp 関連
+*************
+
+* Menu:
+
+* Use ange-ftp::		ange-ftp を使うにはどうすれば良いでしょうか？
+* Over Proxy::			ange-ftp を使って、proxy サーバタイプのファイアウォールを越えてアクセスしたい場合、どのように設定すればよいでしょうか?
+* NAT::				ange-ftp で、NAT(IP-masquerade)の機能を持つファイアウォールまたはダイアルアップルータを越えてアクセスすると、エラーが出てしまうことがあります
+* Passive Mode::		ange-ftp で Passive mode が使えますか?
+* Dired ange-ftp::		ange-ftp を使って dired をすると、ファイルを選んでも"No file on this line" というエラーがでてしまいます。
+* Directory List ange-ftp::	ange-ftp で、ログインした直後のディレクトリに
+* Hangup after ange-ftp::	ange-ftp 使用後に Meadow を終了させると、Windows 95 がハングアップしてしまいます。
+* ange_binary::			ange-ftp を使ってバイナリファイルに開くと、ファイルの内容が壊れてしまいます。あるいは転送途中でエラーが起こります。
+* ange_completion::		ange-ftp でホスト名等を補完
+
+
+
+File: meadow-faq-ja.info, Node: Use ange-ftp, Next: Over Proxy, Prev: Ange-ftp, Up: Ange-ftp
+
+ange-ftp を使うにはどうすれば良いでしょうか？
+=============================================
+
+Meadow にはコンソールアプリケーションの ftp.exe が付属していますので、
+ange-ftp を使う事ができます。使い方は、`C-x C-f' (find-file) もしくは、
+`C-x d' (dired) として、`/username@hostname:/directory'
+
+
+
+File: meadow-faq-ja.info, Node: Over Proxy, Next: NAT, Prev: Use ange-ftp, Up: Ange-ftp
+
+ange-ftp を使って、proxy サーバタイプのファイアウォールを越えてアクセスしたい場合、どのように設定すればよいでしょうか?
+======================================================================================================================
+
+proxy サーバを越えて ange-ftp を使用する場合は、以下のような設定を
+`.emacs' に追加して、各変数の値をお使いのネットワーク環境に合わせて修
+正して下さい。
+
+     (setq ange-ftp-gateway-host "proxy-server"
+           ange-ftp-smart-gateway-port "21"
+           ange-ftp-local-host-regexp ".*"
+           ange-ftp-smart-gateway t
+           )
+
+ここで proxy-server の部分には、proxy サーバのホスト名を指定します。
+ange-ftp-smart-gateway-port には proxy サーバのポート番号を指定します
+("21" はデフォルト値です)。この設定を行ったあとは、以下のような指定で
+外部のマシンにange-ftp できます(user がユーザ名、somewhere.outside.com 
+が外部にあるホスト名です)。
+
+     Find file : /user@somewhere.outside.com:
+
+`ange-ftp-local-host-regexp' には、proxy サーバを「通さずに」アクセス
+したいホストを正規表現で指定します(".*" はデフォルト値で、全て proxy 
+サーバを通さずに直接接続をします)。例えば、以下のような値を設定した場
+合、
+
+     (setq ange-ftp-local-host-regexp
+            "\\.hoge\\.co\\.jp$\\|\\.xxx$\\|^[^.]*$")
+
+ドメイン名が .hoge.co.jp であるホスト、.xxx というローカルドメイン内に
+あるホスト、ドメイン名のついていないホストに対しては、proxy サーバを通
+さずにアクセスするようになります。正規表現がよくわからなければ直接ホス
+ト名を指定しても良いでしょう。
+
+
+
+File: meadow-faq-ja.info, Node: NAT, Next: Passive Mode, Prev: Over Proxy, Up: Ange-ftp
+
+ange-ftp で、NAT(IP-masquerade)の機能を持つファイアウォールまたはダイアルアップルータを越えてアクセスすると、エラーが出てしまうことがあります
+=============================================================================================================================================
+
+Meadow 1.00 および Mule for W32 に付属している ftp.exe では、NAT の機
+能を持つファイアウォールあるいはダイアルアップルータの種類によって誤動
+作することがあります。`http://virtunix.itribe.net/' から入手できる 
+ftp.exe を、Meadow(Mule for W32) に付属のものと入れ替えてください。
+
+具体的な機種名として、NTT-TE MN128-SOHO、OMRON MT128-NET/D でこの問題
+が起こるということが報告されています。
+
+
+
+File: meadow-faq-ja.info, Node: Passive Mode, Next: Dired ange-ftp, Prev: NAT, Up: Ange-ftp
+
+ange-ftp で Passive mode が使えますか? あるいは SSH の port forwarding を使ってアクセスできますか?
+==================================================================================================
+
+ftp-for-win32.zip
+(ftp://ftp.ring.gr.jp/pub/GNU/windows/emacs/contrib/ftp-for-win32.zip) 
+を使えば passive mode を使えるという情報があります。SSH の port
+forwarding 経由でも利用できるようです。
+
+また、ange-ftp ではありませんが、rsh や ssh を使ってリモートファイルア
+クセスをするための TRAMP (http://tramp.sourceforge.net/) というproduct 
+があります。
+
+
+
+File: meadow-faq-ja.info, Node: Dired ange-ftp, Next: Directory List ange-ftp, Prev: Passive Mode, Up: Ange-ftp
+
+ange-ftp を使って dired をすると、ファイルを選んでも"No file on this line" というエラーがでてしまいます。
+=========================================================================================================
+
+ファイルのリストの日付が日本語が表示されていませんか?  これは日本語版 
+Solaris などのホストに対して ange-ftp を行った場合によく発生します。こ
+の場合は、以下のような設定を `.emacs' に追加してください。
+
+     (setq dired-move-to-filename-regexp
+           (let* ((l "[A-Za-z\xa0-\xff]")
+     	     (k "[^\x00-\xff]")
+     	     (s " ")
+     	     (yyyy "[0-9][0-9][0-9][0-9]")
+     	     (mm "[ 0-1][0-9]")
+     	     (dd "[ 0-3][0-9]")
+     	     (HH:MM "[ 0-2][0-9]:[0-5][0-9]")
+     	     (western (concat l l l s dd s "\\(" HH:MM "\\|" s yyyy "\\)"))
+     	     (japanese (concat mm k " " dd k s
+     			       "\\(" s HH:MM "\\|" yyyy k "\\)")))
+     	(concat s "\\(" western "\\|" japanese "\\)" s)))
+     (eval-after-load 
+      "ange-ftp"
+      '(progn
+         (setq ange-ftp-date-regexp
+     	 (let* ((l "[A-Za-z\xa0-\xff]")
+     		(k "[^\x00-\xff]")
+     		(s " ")
+     		(mm "[ 0-1][0-9]")
+     		(dd "[ 0-3][0-9]")
+     		(western (concat l l l s dd))
+     		(japanese (concat mm k s dd k)))
+     	   (concat s "\\(" western "\\|" japanese "\\)" s)))))
+
+また、サーバー側で、LANG=C としてから ftpd を再起動し、英語環境にする
+ことでも対処することができます。
+
+
+
+
+File: meadow-faq-ja.info, Node: Directory List ange-ftp, Next: Hangup after ange-ftp, Prev: Dired ange-ftp, Up: Ange-ftp
+
+ange-ftp で、ログインした直後のディレクトリにあるファイルしかアクセスできません。
+=================================================================================
+
+ftp サーバの種類によっては、ange-ftp の実行する ls が正常に動作しない
+サーバがあります。このようなサーバに対しては、以下のような設定を 
+`.emacs' に追加してください。具体例として、ASAHI ネットの ftp サーバ 
+netftp.asahi-net.or.jp でこの問題が発生するそうですので、このサーバを
+例にとります。
+
+     (setq ange-ftp-dumb-unix-host-regexp "^netftp\\.asahi-net\\.or\\.jp$")
+
+
+
+File: meadow-faq-ja.info, Node: Hangup after ange-ftp, Next: ange_binary, Prev: Directory List ange-ftp, Up: Ange-ftp
+
+ange-ftp 使用後に Meadow を終了させると、Windows 95 がハングアップしてしまいます。
+==================================================================================
+
+根本的な原因と対処方法はまだわかっていませんが、以下の設定を`.emacs' 
+に書いておくことで、このトラブルの発生する頻度を少なくさせることができ
+るようです。
+
+     (if (fboundp 'org:delete-process)
+         nil
+       (fset 'org:delete-process (symbol-function 'delete-process))
+       (defun delete-process (proc)
+         (sit-for 1)
+         (org:delete-process proc)))
+
+
+
+File: meadow-faq-ja.info, Node: ange_binary, Next: ange_completion, Prev: Hangup after ange-ftp, Up: Ange-ftp
+
+ange-ftp を使ってバイナリファイルに開くと、ファイルの内容が壊れてしまいます。あるいは転送途中でエラーが起こります。
+===================================================================================================================
+
+`ange-ftp-binary-file-name-regexp' に変な値を設定していないでしょうか。
+`.emacs' に以下の設定を追加することで、全てのファイルをバイナリモード
+で転送するようになります。
+
+     (setq ange-ftp-binary-file-name-regexp ".*")
+
+ただしこの問題は初期設定では Mule for W32 のみで発生し、Meadow では発
+生しません (Meadow では、ftp サーバが UNIX である限り、常にバイナリモー
+ドで転送するようになっています)。
+
+
+
+File: meadow-faq-ja.info, Node: ange_completion, Prev: ange_binary, Up: Ange-ftp
+
+ange-ftp でホスト名等を補完
+===========================
+
+ange-ftp には、リモートホストにアクセスするための /username@hostname: 
+の補完候補を、.netrc というファイルから自動で作成する機能があります。
+詳細は ange-ftp.el 冒頭のコメントを参照してください。また、.netrc ファ
+イルの書式についてはftp コマンドのマニュアルを参照してください。
+
+FreeBSD 日本語マニュアル検索 
+(http://www.jp.freebsd.org/man-jp/search.html) のftp(1) .netrc
+(http://www.jp.freebsd.org/cgi/mroff.cgi?subdir=man&lc=1&man=ftp&dir=jpman-4.3.0%2Fman&sect=0#sect7)
+(リンク切れになっていたら再検索してください)
+
+
+
+
+File: meadow-faq-ja.info, Node: UN*X tools, Next: Japanese, Prev: Ange-ftp, Up: Top
+
+UN*X ツールの移植
+*****************
+
+* Menu:
+
+* Ispell::			ispell はどこにありますか？
+* RCS and CVS::			Windows で動作する RCS や CVS はどこにありますか？
+* Diff and Patch::		Windows で動作する diff や patch はどこにありますか？
+
+
+
+File: meadow-faq-ja.info, Node: Ispell, Next: RCS and CVS, Prev: UN*X tools, Up: UN*X tools
+
+ispell はどこにありますか？
+===========================
+
+ispell 4.0 の移植版と ispell 3.1 の移植版があります。
+   * Brian Tibbetts's GNU Ispell Port Page
+     (http://mohawk.cat.rpi.edu/%7Etibbetts/ispell_port.html) ispell
+     4.0
+   * International Ispell
+     (http://fmg-www.cs.ucla.edu/geoff/ispell.html) ispell 3.1
+   * Ispell.el International spelling checker for emacs
+     (http://kdstevens.com/%7Estevens/ispell-page.html) ispell 3.1 用
+     の ispell.el
+
+
+
+
+File: meadow-faq-ja.info, Node: RCS and CVS, Next: Diff and Patch, Prev: Ispell, Up: UN*X tools
+
+Windows で動作する RCS や CVS はどこにありますか？
+==================================================
+
+rcs (ci, co), cvs は Cygwin (http://sources.redhat.com/cygwin/) に含ま
+れています。以下の記述は古いかも知れません。
+
+     RCS の公的な移植は以下のところで手に入ります。
+        * `ftp://ftp.leo.org/pub/comp/os/os2/leo/devtools/gnu/rcs57pc1.zip'
+        * `ftp://ftp.leo.org/pub/comp/os/os2/leo/devtools/gnu/rcs57pc2.zip'
+
+     CVS は、Cyclic Software (http://www.cyclic.com/)から手に入れる事
+     ができます。また、ftp.m17n.org
+     (ftp://ftp.m17n.org/pub/mule/Windows/tools/)から手に入れる事もで
+     きます。
+
+
+
+File: meadow-faq-ja.info, Node: Diff and Patch, Prev: RCS and CVS, Up: UN*X tools
+
+Windows で動作する diff や patch はどこにありますか？
+=====================================================
+
+Cygwin (http://sources.redhat.com/cygwin/) に含まれています。以下の記
+述は古いかも知れません。
+
+     `ftp://ftp.m17n.org/pub/mule/Windows/tools/' にあります。
+
+
+
+File: meadow-faq-ja.info, Node: Japanese, Prev: UN*X tools, Up: Top
+
+日本語に関する情報
+******************
+
+まず、フォントが必要です。(当然 日本語Windows にはフォントはあります。)
+True Type フォントを手に入れるか、BDF フォントを使う事ができます。
+
+intlfonts-1.0.tar の Japanese ディレクトリーの中身
+   * 
+日本語のローマ字とかな (JISX0201)
+   * 
+8x16rk.bdf
+   * 
+12x24rk.bdf
+   * 
+a18rk.bdf
+ @end itemize@refill
+@item 日本語の漢字 (JISX0208.1978)
+ @itemize @bullet
+ @item jiskan16-1978.bdf
+ @end itemize@refill
+@item 日本語の漢字 (JISX0208.1983)
+ @itemize @bullet
+ @item k14.bdf
+ @item jiskan16.bdf
+ @item jiskan24.bdf
+ @item kanji18.bdf
+ @end itemize@refill
+@item 日本語の漢字 (JISX0208.1990)
+ @itemize @bullet
+ @item k16-1990.bdf
+ @end itemize@refill
+@item 日本語補助漢字 (JISX0212)
+ @itemize @bullet
+ @item jisksp16.bdf
+ @end itemize@refill
+@end itemize
+
+これが c:/usr/fonts にあるとしたときの設定例@refill
+@lisp
+@group
+(w32-auto-regist-bdf-font "bdf16-japanese-jisx0201" "c:/usr/fonts/8x16rk.bdf")
+(w32-auto-regist-bdf-font "bdf16-japanese-jisx0208.1983" "c:/usr/fonts/jiskan16-1983.bdf")
+@end group
+@end lisp
+
+特に設定しなくても、iso-2022-jp は自動判別で表示することができます。
+sjis や euc-jp を自動判別して表示させたいときは、@refill
+@lisp
+(set-language-environment 'Japanese)
+@end lisp
+@noindent
+を @file{.emacs} に書いて下さい。@refill
+
+@menu
+* Input Japanese::		日本語を入力するためにはどうすれば良いですか？
+@end menu
+
+@node Input Japanese,  , Japanese, Japanese
+@section 日本語を入力するためにはどうすれば良いですか？
+
+日本語 Windows であれば、IME を使った入力が可能です。
+日本語版でない場合でも、leim、SKK を使えば可能です。@refill
+
+IME を使う場合の設定@refill
+@lisp
+@group
+(mw32-ime-initialize)
+(setq default-input-method "MW32-IME")
+@end group
+@end lisp
+
+SKK を使う場合は、@uref{http://openlab.ring.gr.jp/skk/index-j.html}から
+SKK 10.62a または Daredevil SKK 11.4 以降を取得してください。@refill
+
+
+@c @node Index,  , Japanese, Top
+@c @unnumbered 索引
+@c 
+@c @menu
+@c * Concept Index::       概念索引
+@c * Program Index::       プログラム索引
+@c * Key Index::           キーバインド索引
+@c * Variable Index::      変数索引
+@c * Function Index::      関数索引
+@c @end menu
+@c 
+@c @node Concept Index, Program Index, Index, Index
+@c @unnumberedsec 概念索引
+@c @printindex cp
+@c 
+@c @node Program Index, Key Index, Concept Index, Index
+@c @unnumberedsec プログラム索引
+@c @printindex pg
+@c 
+@c @node Key Index, Variable Index, Program Index, Index
+@c @unnumberedsec キーバインド索引
+@c @printindex ky
+@c 
+@c @node Variable Index, Function Index, Key Index, Index
+@c @unnumberedsec 変数索引
+@c @printindex vr
+@c 
+@c @node Function Index,  , Variable Index, Index
+@c @unnumberedsec 関数索引
+@c @printindex fn
+
+@summarycontents
+@contents

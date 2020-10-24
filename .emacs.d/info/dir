@@ -1,0 +1,251 @@
+This is the file .../info/dir, which contains the
+topmost node of the Info hierarchy, called (dir)Top.
+The first time you invoke Info you start off looking at this node.
+
+File: dir,	Node: Top	This is the top of the INFO tree
+
+  This (the Directory node) gives a menu of major topics.
+  Typing "q" exits, "?" lists all Info commands, "d" returns here,
+  "h" gives a primer for first-timers,
+  "mEmacs<Return>" visits the Emacs manual, etc.
+
+  In Emacs, you can click mouse button 2 on a menu item or cross reference
+  to select it.
+
+* Menu:
+
+GNU Emacs Lisp
+* SKK: (skk).           Simple Kana to Kanji conversion program.
+* eieio: (eieio-j). eieio(in Japanese)
+* monky: (monky). monky
+Emacs
+* Emacs FAQ JA: (efaq-ja).	Frequently Asked Questions about Emacs.
+* Meadow-FAQ-ja: (meadow-faq-ja.info).  Meadow FAQ (in Japanese)
+* Org Mode: (org).              Outline-based notes management and organizer
+* Org Mode(ja): (org-ja).       Outline-based notes management and organizer(in Japanese)
+* TRAMP-ja: (tramp_ja).          Transparent Remote Access, Multiple Protocol
+                                 Emacs remote file access via rsh and rcp
+                                 (Japanese).
+* jabber.el: (jabber).          Emacs Jabber client
+* yahtml: (yahtmlj). Yet Another HTML-mode for Emacs. (Japanese).
+* yatexj: (yatexj).		Yet Another LaTeX mode  (in Japanese).
+* SLIME: (slime.info). SLIME manual (in japanese)
+* SLIME(en): (slime-en.info). SLIME manual
+* CL: (cl-j). CL extention(in japanese)
+
+Editors
+* Elisp-ja: (elisp-ja).	The Emacs Lisp Reference Manual.
+* Emacs-ja: (emacs-ja).	The extensible self-documenting text editor.
+* emacs-lisp-intro-jp: (emacs-lisp-intro-ja.info).		Programming in Emacs Lisp  (in Japanese).
+* hustler: (hustler).		Writing Major Modes  (in Japanese).
+
+Miscellaneous
+* DVC: (dvc.info).         DVC.
+* BBDB: (bbdb.info). Big brother database.
+* Binutils(ja): (binutils-ja).         The GNU binary utilities.
+* CVS Book: (j-cvsbook).          A CVS tutorial and reference.
+* CVS-JA: (cvs-ja).        Concurrent Versions System (Japanese)
+* File utilities(ja): (fileutils-ja).  GNU file utilities.
+* Finding Files(ja): (find-ja). Listing and operating on files
+                                that match certain criteria.
+* Shell utilities(ja): (sh-utils-ja).             GNU shell utilities.
+* Standards: (standards-ja).     GNU coding standards.
+* Text utilities(ja): (textutils-ja).           GNU text utilities.
+* addr2line(ja): (binutils-ja)addr2line. Convert addresses to file and line
+* ar(ja): (binutils-ja)ar.               Create, modify, and extract from archives
+* basename(ja): (sh-utils-ja)basename invocation. Strip directory and suffix.
+* c++filt(ja): (binutils-ja)c++filt.     Filter to demangle encoded C++ symbols
+* cat(ja): (textutils-ja)cat invocation.        Concatenate and write files.
+* chgrp(ja): (fileutils-ja)chgrp invocation.         Change file groups.
+* chmod(ja): (fileutils-ja)chmod invocation.         Change file permissions.
+* chown(ja): (fileutils-ja)chown invocation.         Change file owners/groups.
+* chroot(ja): (sh-utils-ja)chroot invocation.     Specify the root directory.
+* cksum(ja): (textutils-ja)cksum invocation.    Print POSIX CRC checksum.
+* comm(ja): (textutils-ja)comm invocation.      Compare sorted files by line.
+* cp(ja): (fileutils-ja)cp invocation.               Copy files.
+* csplit(ja): (textutils-ja)csplit invocation.  Split by context.
+* cut(ja): (textutils-ja)cut invocation.        Print selected parts of lines.
+* cxxfilt(ja): (binutils-ja)c++filt.     MS-DOS name for c++filt
+* date(ja): (sh-utils-ja)date invocation.         Print/set system date and time.
+* dd(ja): (fileutils-ja)dd invocation.               Copy and convert a file.
+* df(ja): (fileutils-ja)df invocation.               Report filesystem disk usage.
+* dir(ja): (fileutils-ja)dir invocation.             List directories briefly.
+* dircolors(ja): (fileutils-ja)dircolors invocation. Color setup for ls.
+* dirname(ja): (sh-utils-ja)dirname invocation.   Strip non-directory suffix.
+* dlltool(ja): (binutils-ja)dlltool.     Create files needed to build and use DLLs
+* du(ja): (fileutils-ja)du invocation.               Report on disk usage.
+* eblook: (eblook.info).             Interactive EB interface command.
+* echo(ja): (sh-utils-ja)echo invocation.         Print a line of text.
+* env(ja): (sh-utils-ja)env invocation.           Modify the environment.
+* expand(ja): (textutils-ja)expand invocation.  Convert tabs to spaces.
+* expr(ja): (sh-utils-ja)expr invocation.         Evaluate expressions.
+* factor(ja): (sh-utils-ja)factor invocation.     Print prime factors
+* false(ja): (sh-utils-ja)false invocation.       Do nothing, unsuccessfully.
+* fmt(ja): (textutils-ja)fmt invocation.        Reformat paragraph text.
+* fold(ja): (textutils-ja)fold invocation.      Wrap long input lines.
+* grep(ja): (grep-ja).                   print lines matching a pattern.
+* groups(ja): (sh-utils-ja)groups invocation.     Print group names a user is in.
+* head(ja): (textutils-ja)head invocation.      Output the first part of files.
+* hostname(ja): (sh-utils-ja)hostname invocation. Print or set system name.
+* id(ja): (sh-utils-ja)id invocation.             Print real/effective uid/gid.
+* install(ja): (fileutils-ja)install invocation.     Copy and change attributes.
+* join(ja): (textutils-ja)join invocation.      Join lines on a common field.
+* ln(ja): (fileutils-ja)ln invocation.               Make links between files.
+* logname(ja): (sh-utils-ja)logname invocation.   Print current login name.
+* ls(ja): (fileutils-ja)ls invocation.               List directory contents.
+* m4-ja: (m4-ja).		A powerful macro processor.
+* md5sum(ja): (textutils-ja)md5sum invocation.  Print or check message-digests.
+* mkdir(ja): (fileutils-ja)mkdir invocation.         Create directories.
+* mkfifo(ja): (fileutils-ja)mkfifo invocation.       Create FIFOs (named pipes).
+* mknod(ja): (fileutils-ja)mknod invocation.         Create special files.
+* mv(ja): (fileutils-ja)mv invocation.               Rename files.
+* nice(ja): (sh-utils-ja)nice invocation.         Modify scheduling priority.
+* nl(ja): (textutils-ja)nl invocation.          Number lines and write files.
+* nlmconv(ja): (binutils-ja)nlmconv.     Converts object code into an NLM
+* nm(ja): (binutils-ja)nm.               List symbols from object files
+* nohup(ja): (sh-utils-ja)nohup invocation.       Immunize to hangups.
+* objcopy(ja): (binutils-ja)objcopy.     Copy and translate object files
+* objdump(ja): (binutils-ja)objdump.     Display information from object files
+* od(ja): (textutils-ja)od invocation.          Dump files in octal, etc.
+* paste(ja): (textutils-ja)paste invocation.    Merge lines of files.
+* pathchk(ja): (sh-utils-ja)pathchk invocation.   Check file name portability.
+* pr(ja): (textutils-ja)pr invocation.          Paginate or columnate files.
+* printenv(ja): (sh-utils-ja)printenv invocation. Print environment variables.
+* printf(ja): (sh-utils-ja)printf invocation.     Format and print data.
+* ptx(ja): (textutils-ja)ptx invocation.        Produce permuted indexes.
+* pwd(ja): (sh-utils-ja)pwd invocation.           Print working directory.
+* ranlib(ja): (binutils-ja)ranlib.       Generate index to archive contents
+* readelf(ja): (binutils-ja)readelf.     Display the contents of ELF format files.
+* rm(ja): (fileutils-ja)rm invocation.               Remove files.
+* rmdir(ja): (fileutils-ja)rmdir invocation.         Remove empty directories.
+* seq(ja): (sh-utils-ja)seq invocation.           Print numeric sequences
+* shred(ja): (fileutils-ja)shred invocation.         Remove files more securely.
+* size(ja): (binutils-ja)size.           List section sizes and total size
+* sleep(ja): (sh-utils-ja)sleep invocation.       Delay for a specified time.
+* sort(ja): (textutils-ja)sort invocation.      Sort text files.
+* split(ja): (textutils-ja)split invocation.    Split into fixed-size pieces.
+* strings(ja): (binutils-ja)strings.     List printable strings from files
+* strip(ja): (binutils-ja)strip.         Discard symbols
+* stty(ja): (sh-utils-ja)stty invocation.         Print/change terminal settings.
+* su(ja): (sh-utils-ja)su invocation.             Modify user and group id.
+* sum(ja): (textutils-ja)sum invocation.        Print traditional checksum.
+* sync(ja): (fileutils-ja)sync invocation.           Synchronize memory and disk.
+* tac(ja): (textutils-ja)tac invocation.        Reverse files.
+* tail(ja): (textutils-ja)tail invocation.      Output the last part of files.
+* tee(ja): (sh-utils-ja)tee invocation.           Redirect to multiple files.
+* test(ja): (sh-utils-ja)test invocation.         File/string tests.
+* touch(ja): (fileutils-ja)touch invocation.         Change file timestamps.
+* tr(ja): (textutils-ja)tr invocation.          Translate characters.
+* true(ja): (sh-utils-ja)true invocation.         Do nothing, successfully.
+* tsort(ja): (textutils-ja)tsort invocation.    Topological sort.
+* tty(ja): (sh-utils-ja)tty invocation.           Print terminal name.
+* uname(ja): (sh-utils-ja)uname invocation.       Print system information.
+* unexpand(ja): (textutils-ja)unexpand invocation.  Convert spaces to tabs.
+* uniq(ja): (textutils-ja)uniq invocation.      Uniquify files.
+* users(ja): (sh-utils-ja)users invocation.       Print current user names.
+* vdir(ja): (fileutils-ja)vdir invocation.           List directories verbosely.
+* wc(ja): (textutils-ja)wc invocation.          Byte, word, and line counts.
+* who(ja): (sh-utils-ja)who invocation.           Print who is logged in.
+* whoami(ja): (sh-utils-ja)whoami invocation.     Print effective user id.
+* windres(ja): (binutils-ja)windres.     Manipulate Windows resources
+* yes(ja): (sh-utils-ja)yes invocation.           Print a string indefinitely.
+
+Message User Agent
+* Emacs MIME: (emacs-mime).	The MIME de/composition library.
+* FLIM-en: (mime-en.info).	Internet Message Libraries.
+* FLIM-ja: (mime-ja.info).	Internet Message Libraries.
+* Gnus: (gnus).			The newsreader Gnus.
+* Gnus Coding-ja: (gnus-coding-ja).  Gnus Coding Style and Maintainance Guide
+* Gnus-ja: (gnus-ja).		The newsreader gnus (Japanese).
+* Message: (message).	Mail and news composition mode that goes with Gnus.
+* Message-ja: (message-ja).	Mail and news composition with Gnus.
+* Mew: (mew.info).           Messaging in the Emacs World.
+* Mew-J: (mew.jis.info).     Messaging in the Emacs World.
+* PGG: (pgg).   Emacs interface to various PGP implementations.
+* SASL: (sasl).   The Emacs SASL library.
+* SEMI-en: (mime-ui-en).    MIME user interface for GNU Emacs.
+* SEMI-ja: (mime-ui-ja).    MIME user interface for GNU Emacs.
+* Sieve: (sieve).		Managing Sieve scripts in Emacs.
+* Wanderlust: (wl).         Yet Another Message Interface On Emacsen
+* Wanderlust-ja: (wl-ja).  Yet Another Message Interface On Emacsen
+* auth-source: (auth).   The Emacs auth-source library.
+* auth-source-ja: (auth-ja).   The Emacs auth-source library (Japanese).
+
+Individual utilities
+* autoconf(ja): (autoconf-ja)autoconf Invocation.
+                                How to create configuration scripts
+* autoheader(ja): (autoconf-ja)autoheader Invocation.
+                                How to create configuration templates
+* autom4te(ja): (autoconf-ja)autom4te Invocation.
+                                The Autoconf executables backbone
+* autoreconf(ja): (autoconf-ja)autoreconf Invocation.
+                                Remaking multiple `configure' scripts
+* autoscan(ja): (autoconf-ja)autoscan Invocation.
+                                Semi-automatic `configure.ac' writing
+* autoupdate(ja): (autoconf-ja)autoupdate Invocation.
+                                Automatic update of `configure.ac'
+* cmp(ja): (diff-ja)Invoking cmp.      Compare 2 files byte by byte.
+* config.status(ja): (autoconf-ja)config.status Invocation.
+                                Recreating configurations.
+* configure(ja): (autoconf-ja)configure Invocation.
+                                Configuring a package.
+* diff(ja): (diff-ja)Invoking diff.    Compare 2 files line by line.
+* diff3(ja): (diff-ja)Invoking diff3.  Compare 3 files line by line.
+* ifnames(ja): (autoconf-ja)ifnames Invocation.
+                                Listing conditionals in source.
+* libtoolize(ja): (libtool-ja)Invoking libtoolize.     Adding libtool support.
+* patch(ja): (diff-ja)Invoking patch.  Apply a patch to a file.
+* sdiff(ja): (diff-ja)Invoking sdiff.  Merge 2 files side-by-side.
+* testsuite(ja): (autoconf-ja)testsuite Invocation.
+                                Running an Autotest test suite.
+
+Software development
+* Autoconf(ja): (autoconf-ja).         Create source code configuration scripts.
+
+GNU packages
+* Diff(ja): (diff-ja).               Comparing and merging files.
+* Libc: (libc).                 C library.
+* Make: (make).            Remake files automatically.
+* Perl: (perl-ja).            Perl.
+* ruby-jp: (ruby-jp).           Ruby Language Reference Manual (Japanese)
+
+Python Standard Documentation
+
+* What's New: (python-whatsnew25).         What's New in Python 2.5?
+* Python Library: (python-lib-jp).         Python ライブラリリファレンス
+* Python Mac Modules: (python-mac-jp).     Python Macintosh モジュール群
+* Python Reference: (python-ref-jp).       Python リファレンスマニュアル
+* Python API: (python-api-jp).             Python/C API リファレンスマニュアル
+* Python Extending: (python-ext-jp).       Python の拡張と埋め込み
+* Python Tutorial: (python-tut-jp).        Python チュートリアル
+* Distributing Modules: (python-dist-jp).  Python モジュールの配布
+
+
+Kernel
+* Hurd: (hurd).                 Using and programming the Hurd kernel servers.
+
+GNU programming tools
+* Libtool(ja): (libtool-ja).           Generic shared library support script.
+
+Texinfo documentation system
+* Texinfo(ja): (texinfo-ja).           The GNU documentation format.
+* install-info(ja): (texinfo-ja)Invoking install-info. Update info/dir entries.
+* makeinfo(ja): (texinfo-ja)Invoking makeinfo.         Translate Texinfo source.
+* texi2dvi(ja): (texinfo-ja)Format with texi2dvi.      Print Texinfo documents.
+* texindex(ja): (texinfo-ja)Format with tex/texindex.  Sort Texinfo index files.
+
+Network Applications
+* Wget(ja): (wget-ja).         The non-interactive network downloader.
+
+Emacs Lisp Packages
+* Lookup: (lookup).		Lookup, a Search Interface.
+* Lookup Guide: (lookup-guide).	The Lookup User's Guide.
+* Navi2ch: (navi2ch).		Navigator for 2ch for Emacsen.
+* SDIC: (sdic).		Simple, Small, Speedy, Smart Dictionary Interface.
+
+Emacs
+* Org Mode: (org).              Outline-based notes management and organizer
+
+The Emacs editor and associated tools
+* Lookup: (lookup).             Lookup, a Search Interface.
+* Lookup Guide: (lookup-guide). The Lookup User's Guide.

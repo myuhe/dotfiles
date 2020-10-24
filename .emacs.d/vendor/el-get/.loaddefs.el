@@ -3108,6 +3108,291 @@ Display weather report.
 
 ;;;***
 
+;;;### (autoloads nil "expand-region/cc-mode-expansions" "expand-region/cc-mode-expansions.el"
+;;;;;;  (0 0 0 0))
+;;; Generated autoloads from expand-region/cc-mode-expansions.el
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "expand-region/cc-mode-expansions" '("er/")))
+
+;;;***
+
+;;;### (autoloads nil "expand-region/clojure-mode-expansions" "expand-region/clojure-mode-expansions.el"
+;;;;;;  (0 0 0 0))
+;;; Generated autoloads from expand-region/clojure-mode-expansions.el
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "expand-region/clojure-mode-expansions" '("er/")))
+
+;;;***
+
+;;;### (autoloads nil "expand-region/cperl-mode-expansions" "expand-region/cperl-mode-expansions.el"
+;;;;;;  (0 0 0 0))
+;;; Generated autoloads from expand-region/cperl-mode-expansions.el
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "expand-region/cperl-mode-expansions" '("er/")))
+
+;;;***
+
+;;;### (autoloads nil "expand-region/css-mode-expansions" "expand-region/css-mode-expansions.el"
+;;;;;;  (0 0 0 0))
+;;; Generated autoloads from expand-region/css-mode-expansions.el
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "expand-region/css-mode-expansions" '("er/")))
+
+;;;***
+
+;;;### (autoloads nil "expand-region/enh-ruby-mode-expansions" "expand-region/enh-ruby-mode-expansions.el"
+;;;;;;  (0 0 0 0))
+;;; Generated autoloads from expand-region/enh-ruby-mode-expansions.el
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "expand-region/enh-ruby-mode-expansions" '("er/add-enh-ruby-mode-expansions")))
+
+;;;***
+
+;;;### (autoloads nil "expand-region/er-basic-expansions" "expand-region/er-basic-expansions.el"
+;;;;;;  (0 0 0 0))
+;;; Generated autoloads from expand-region/er-basic-expansions.el
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "expand-region/er-basic-expansions" '("er--" "er/mark-")))
+
+;;;***
+
+;;;### (autoloads nil "expand-region/erlang-mode-expansions" "expand-region/erlang-mode-expansions.el"
+;;;;;;  (0 0 0 0))
+;;; Generated autoloads from expand-region/erlang-mode-expansions.el
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "expand-region/erlang-mode-expansions" '("er/add-erlang-mode-expansions")))
+
+;;;***
+
+;;;### (autoloads nil "expand-region/expand-region" "expand-region/expand-region.el"
+;;;;;;  (0 0 0 0))
+;;; Generated autoloads from expand-region/expand-region.el
+
+(autoload 'er/expand-region "expand-region/expand-region" "\
+Increase selected region by semantic units.
+
+With prefix argument expands the region that many times.
+If prefix argument is negative calls `er/contract-region'.
+If prefix argument is 0 it resets point and mark to their state
+before calling `er/expand-region' for the first time.
+
+\(fn ARG)" t nil)
+
+;;;***
+
+;;;### (autoloads nil "expand-region/expand-region-core" "expand-region/expand-region-core.el"
+;;;;;;  (0 0 0 0))
+;;; Generated autoloads from expand-region/expand-region-core.el
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "expand-region/expand-region-core" '("er--" "er/")))
+
+;;;***
+
+;;;### (autoloads nil "expand-region/expand-region-custom" "expand-region/expand-region-custom.el"
+;;;;;;  (0 0 0 0))
+;;; Generated autoloads from expand-region/expand-region-custom.el
+
+(let ((loads (get 'expand-region 'custom-loads))) (if (member '"expand-region/expand-region-custom" loads) nil (put 'expand-region 'custom-loads (cons '"expand-region/expand-region-custom" loads))))
+
+(defvar expand-region-preferred-python-mode 'python "\
+The name of your preferred python mode")
+
+(custom-autoload 'expand-region-preferred-python-mode "expand-region/expand-region-custom" t)
+
+(defvar expand-region-guess-python-mode t "\
+If expand-region should attempt to guess your preferred python mode")
+
+(custom-autoload 'expand-region-guess-python-mode "expand-region/expand-region-custom" t)
+
+(defvar expand-region-autocopy-register "" "\
+If set to a string of a single character (try \"e\"), then the
+contents of the most recent expand or contract command will
+always be copied to the register named after that character.")
+
+(custom-autoload 'expand-region-autocopy-register "expand-region/expand-region-custom" t)
+
+(defvar expand-region-skip-whitespace t "\
+If expand-region should skip past whitespace on initial expansion")
+
+(custom-autoload 'expand-region-skip-whitespace "expand-region/expand-region-custom" t)
+
+(defvar expand-region-fast-keys-enabled t "\
+If expand-region should bind fast keys after initial expand/contract")
+
+(custom-autoload 'expand-region-fast-keys-enabled "expand-region/expand-region-custom" t)
+
+(defvar expand-region-contract-fast-key "-" "\
+Key to use after an initial expand/contract to contract once more.")
+
+(custom-autoload 'expand-region-contract-fast-key "expand-region/expand-region-custom" t)
+
+(defvar expand-region-reset-fast-key "0" "\
+Key to use after an initial expand/contract to undo.")
+
+(custom-autoload 'expand-region-reset-fast-key "expand-region/expand-region-custom" t)
+
+(defvar expand-region-exclude-text-mode-expansions '(html-mode nxml-mode) "\
+List of modes which derive from `text-mode' for which text mode expansions are not appropriate.")
+
+(custom-autoload 'expand-region-exclude-text-mode-expansions "expand-region/expand-region-custom" t)
+
+(defvar expand-region-smart-cursor nil "\
+Defines whether the cursor should be placed intelligently after expansion.
+
+If set to t, and the cursor is already at the beginning of the new region,
+keep it there; otherwise, put it at the end of the region.
+
+If set to nil, always place the cursor at the beginning of the region.")
+
+(custom-autoload 'expand-region-smart-cursor "expand-region/expand-region-custom" t)
+
+(define-obsolete-variable-alias 'er/enable-subword-mode\? 'expand-region-subword-enabled "2019-03-23")
+
+(defvar expand-region-subword-enabled nil "\
+Whether expand-region should use subword expansions.")
+
+(custom-autoload 'expand-region-subword-enabled "expand-region/expand-region-custom" t)
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "expand-region/expand-region-custom" '("expand-region-")))
+
+;;;***
+
+;;;### (autoloads nil "expand-region/feature-mode-expansions" "expand-region/feature-mode-expansions.el"
+;;;;;;  (0 0 0 0))
+;;; Generated autoloads from expand-region/feature-mode-expansions.el
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "expand-region/feature-mode-expansions" '("er--block-between-keywords" "er/")))
+
+;;;***
+
+;;;### (autoloads nil "expand-region/html-mode-expansions" "expand-region/html-mode-expansions.el"
+;;;;;;  (0 0 0 0))
+;;; Generated autoloads from expand-region/html-mode-expansions.el
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "expand-region/html-mode-expansions" '("er--" "er/")))
+
+;;;***
+
+;;;### (autoloads nil "expand-region/js-mode-expansions" "expand-region/js-mode-expansions.el"
+;;;;;;  (0 0 0 0))
+;;; Generated autoloads from expand-region/js-mode-expansions.el
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "expand-region/js-mode-expansions" '("er/")))
+
+;;;***
+
+;;;### (autoloads nil "expand-region/js2-mode-expansions" "expand-region/js2-mode-expansions.el"
+;;;;;;  (0 0 0 0))
+;;; Generated autoloads from expand-region/js2-mode-expansions.el
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "expand-region/js2-mode-expansions" '("er/add-js2-mode-expansions" "js2-mark-parent-statement")))
+
+;;;***
+
+;;;### (autoloads nil "expand-region/jsp-expansions" "expand-region/jsp-expansions.el"
+;;;;;;  (0 0 0 0))
+;;; Generated autoloads from expand-region/jsp-expansions.el
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "expand-region/jsp-expansions" '("er/")))
+
+;;;***
+
+;;;### (autoloads nil "expand-region/latex-mode-expansions" "expand-region/latex-mode-expansions.el"
+;;;;;;  (0 0 0 0))
+;;; Generated autoloads from expand-region/latex-mode-expansions.el
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "expand-region/latex-mode-expansions" '("er/")))
+
+;;;***
+
+;;;### (autoloads nil "expand-region/nxml-mode-expansions" "expand-region/nxml-mode-expansions.el"
+;;;;;;  (0 0 0 0))
+;;; Generated autoloads from expand-region/nxml-mode-expansions.el
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "expand-region/nxml-mode-expansions" '("er/")))
+
+;;;***
+
+;;;### (autoloads nil "expand-region/octave-expansions" "expand-region/octave-expansions.el"
+;;;;;;  (0 0 0 0))
+;;; Generated autoloads from expand-region/octave-expansions.el
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "expand-region/octave-expansions" '("er/")))
+
+;;;***
+
+;;;### (autoloads nil "expand-region/python-el-expansions" "expand-region/python-el-expansions.el"
+;;;;;;  (0 0 0 0))
+;;; Generated autoloads from expand-region/python-el-expansions.el
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "expand-region/python-el-expansions" '("er--python-string-delimiter" "er/")))
+
+;;;***
+
+;;;### (autoloads nil "expand-region/python-el-fgallina-expansions"
+;;;;;;  "expand-region/python-el-fgallina-expansions.el" (0 0 0 0))
+;;; Generated autoloads from expand-region/python-el-fgallina-expansions.el
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "expand-region/python-el-fgallina-expansions" '("er--python-" "er/")))
+
+;;;***
+
+;;;### (autoloads nil "expand-region/python-mode-expansions" "expand-region/python-mode-expansions.el"
+;;;;;;  (0 0 0 0))
+;;; Generated autoloads from expand-region/python-mode-expansions.el
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "expand-region/python-mode-expansions" '("er--" "er/" "py-goto-beyond-clause")))
+
+;;;***
+
+;;;### (autoloads nil "expand-region/ruby-mode-expansions" "expand-region/ruby-mode-expansions.el"
+;;;;;;  (0 0 0 0))
+;;; Generated autoloads from expand-region/ruby-mode-expansions.el
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "expand-region/ruby-mode-expansions" '("er/")))
+
+;;;***
+
+;;;### (autoloads nil "expand-region/sml-mode-expansions" "expand-region/sml-mode-expansions.el"
+;;;;;;  (0 0 0 0))
+;;; Generated autoloads from expand-region/sml-mode-expansions.el
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "expand-region/sml-mode-expansions" '("er/")))
+
+;;;***
+
+;;;### (autoloads nil "expand-region/subword-mode-expansions" "expand-region/subword-mode-expansions.el"
+;;;;;;  (0 0 0 0))
+;;; Generated autoloads from expand-region/subword-mode-expansions.el
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "expand-region/subword-mode-expansions" '("er/")))
+
+;;;***
+
+;;;### (autoloads nil "expand-region/text-mode-expansions" "expand-region/text-mode-expansions.el"
+;;;;;;  (0 0 0 0))
+;;; Generated autoloads from expand-region/text-mode-expansions.el
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "expand-region/text-mode-expansions" '("er/")))
+
+;;;***
+
+;;;### (autoloads nil "expand-region/the-org-mode-expansions" "expand-region/the-org-mode-expansions.el"
+;;;;;;  (0 0 0 0))
+;;; Generated autoloads from expand-region/the-org-mode-expansions.el
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "expand-region/the-org-mode-expansions" '("er/")))
+
+;;;***
+
+;;;### (autoloads nil "expand-region/web-mode-expansions" "expand-region/web-mode-expansions.el"
+;;;;;;  (0 0 0 0))
+;;; Generated autoloads from expand-region/web-mode-expansions.el
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "expand-region/web-mode-expansions" '("er/add-web-mode-expansions")))
+
+;;;***
+
 ;;;### (autoloads nil "f/f" "f/f.el" (0 0 0 0))
 ;;; Generated autoloads from f/f.el
 
@@ -3119,6 +3404,85 @@ Display weather report.
 ;;; Generated autoloads from fuzzy/fuzzy.el
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "fuzzy/fuzzy" '("fuzzy-" "turn-o")))
+
+;;;***
+
+;;;### (autoloads nil "gist/gist" "gist/gist.el" (0 0 0 0))
+;;; Generated autoloads from gist/gist.el
+
+(autoload 'gist-region "gist/gist" "\
+Post the current region as a new paste at gist.github.com
+Copies the URL into the kill ring.
+
+With a prefix argument, makes a private paste.
+
+\(fn BEGIN END &optional PRIVATE CALLBACK)" t nil)
+
+(autoload 'gist-region-private "gist/gist" "\
+Post the current region as a new private paste at gist.github.com
+Copies the URL into the kill ring.
+
+\(fn BEGIN END)" t nil)
+
+(autoload 'gist-buffer "gist/gist" "\
+Post the current buffer as a new paste at gist.github.com.
+Copies the URL into the kill ring.
+
+With a prefix argument, makes a private paste.
+
+\(fn &optional PRIVATE)" t nil)
+
+(autoload 'gist-buffer-private "gist/gist" "\
+Post the current buffer as a new private paste at gist.github.com.
+Copies the URL into the kill ring." t nil)
+
+(autoload 'gist-region-or-buffer "gist/gist" "\
+Post either the current region, or if mark is not set, the
+  current buffer as a new paste at gist.github.com
+
+Copies the URL into the kill ring.
+
+With a prefix argument, makes a private paste.
+
+\(fn &optional PRIVATE)" t nil)
+
+(autoload 'gist-region-or-buffer-private "gist/gist" "\
+Post either the current region, or if mark is not set, the
+  current buffer as a new private paste at gist.github.com
+
+Copies the URL into the kill ring." t nil)
+
+(autoload 'gist-list-user "gist/gist" "\
+Displays a list of a user's gists in a new buffer.  When called from
+  a program, pass 'current-user as the username to view the user's own
+  gists, or nil for the username and a non-nil value for force-reload to
+  reload the gists for the current buffer.
+
+\(fn USERNAME &optional FORCE-RELOAD BACKGROUND)" t nil)
+
+(autoload 'gist-list "gist/gist" "\
+Displays a list of all of the current user's gists in a new buffer.
+
+\(fn &optional FORCE-RELOAD BACKGROUND)" t nil)
+
+(autoload 'gist-fetch "gist/gist" "\
+
+
+\(fn ID)" t nil)
+
+(autoload 'gist-star "gist/gist" nil t nil)
+
+(autoload 'gist-unstar "gist/gist" nil t nil)
+
+(autoload 'gist-list-starred "gist/gist" "\
+List your starred gists.
+
+\(fn &optional BACKGROUND)" t nil)
+
+(autoload 'gist-fork "gist/gist" "\
+Fork a gist." t nil)
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "gist/gist" '("dired-do-gist" "gist-")))
 
 ;;;***
 
@@ -10495,6 +10859,25 @@ See `wrap-region-mode' for more information on Wrap-Region mode.
 
 ;;;***
 
+;;;### (autoloads nil "yaml-mode/yaml-mode" "yaml-mode/yaml-mode.el"
+;;;;;;  (0 0 0 0))
+;;; Generated autoloads from yaml-mode/yaml-mode.el
+
+(let ((loads (get 'yaml 'custom-loads))) (if (member '"yaml-mode/yaml-mode" loads) nil (put 'yaml 'custom-loads (cons '"yaml-mode/yaml-mode" loads))))
+
+(autoload 'yaml-mode "yaml-mode/yaml-mode" "\
+Simple mode to edit YAML.
+
+\\{yaml-mode-map}
+
+\(fn)" t nil)
+
+(add-to-list 'auto-mode-alist '("\\.\\(e?ya?\\|ra\\)ml\\'" . yaml-mode))
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "yaml-mode/yaml-mode" '("yaml-")))
+
+;;;***
+
 ;;;### (autoloads nil "yasnippet/yasnippet" "yasnippet/yasnippet.el"
 ;;;;;;  (0 0 0 0))
 ;;; Generated autoloads from yasnippet/yasnippet.el
@@ -10589,10 +10972,10 @@ With ARG, turn zlc on if arg is positive, off otherwise.
 ;;;### (autoloads nil nil ("auto-complete/auto-complete-pkg.el" "el-get/el-get-install.el"
 ;;;;;;  "emacs-async/async-pkg.el" "emacs-jabber/jabber-autoloads.el"
 ;;;;;;  "emacs-jabber/jabber-festival.el" "emacs-jabber/jabber-notifications.el"
-;;;;;;  "emacs-jabber/jabber-osd.el" "helm-migemo/helm-migemo-test.el"
-;;;;;;  "image+/image+-test.el" "japanese-holidays/japanese-holidays-tests.el"
-;;;;;;  "magit/lisp/magit-autoloads.el" "magit/lisp/magit-core.el"
-;;;;;;  "magit/lisp/magit-pkg.el" "metaweblog/metaweblog-pkg.el"
+;;;;;;  "emacs-jabber/jabber-osd.el" "expand-region/expand-region-pkg.el"
+;;;;;;  "helm-migemo/helm-migemo-test.el" "image+/image+-test.el"
+;;;;;;  "japanese-holidays/japanese-holidays-tests.el" "magit/lisp/magit-autoloads.el"
+;;;;;;  "magit/lisp/magit-core.el" "magit/lisp/magit-pkg.el" "metaweblog/metaweblog-pkg.el"
 ;;;;;;  "org-mode/contrib/lisp/org-contribdir.el" "org-mode/lisp/ob-core.el"
 ;;;;;;  "org-mode/lisp/ob-lob.el" "org-mode/lisp/ob-matlab.el" "org-mode/lisp/ob-tangle.el"
 ;;;;;;  "org-mode/lisp/ob.el" "org-mode/lisp/ol-bbdb.el" "org-mode/lisp/ol-irc.el"

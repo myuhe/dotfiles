@@ -81,12 +81,22 @@
                     ("sh" "./configure")
                     ("make"))
                    :info "doc"))
+ (expand-region status "installed" recipe
+                (:name expand-region :type github :pkgname "magnars/expand-region.el" :description "Expand region increases the selected region by semantic units. Just keep pressing the key until it selects what you want." :website "https://github.com/magnars/expand-region.el#readme"))
  (f status "installed" recipe
     (:name f :website "https://github.com/rejeep/f.el" :description "Modern API for working with files and directories in Emacs" :depends
            (s dash)
            :type github :pkgname "rejeep/f.el"))
  (fuzzy status "installed" recipe
         (:name fuzzy :website "https://github.com/auto-complete/fuzzy-el" :description "Fuzzy matching utilities for GNU Emacs" :type github :pkgname "auto-complete/fuzzy-el"))
+ (gh status "installed" recipe
+     (:name gh :description "Github API client libraries" :type github :pkgname "sigma/gh.el" :depends
+            (pcache logito request marshal s)
+            :autoloads nil))
+ (gist status "installed" recipe
+       (:name gist :type github :pkgname "defunkt/gist.el" :depends
+              (gh tabulated-list)
+              :description "Emacs integration for gist.github.com" :website "http://github.com/defunkt/gist.el"))
  (helm status "installed" recipe
        (:name helm :description "Emacs incremental completion and narrowing framework" :type github :pkgname "emacs-helm/helm" :autoloads "helm-autoloads" :build
               `(("make" ,(concat "ASYNC_ELPA_DIR="
@@ -338,6 +348,8 @@
                        (autoload 'wrap-region-global-mode "wrap-region" nil t))))
  (xml-rpc-el status "installed" recipe
              (:name xml-rpc-el :description "An elisp implementation of clientside XML-RPC" :type github :pkgname "emacsmirror/xml-rpc"))
+ (yaml-mode status "installed" recipe
+            (:name yaml-mode :description "Simple major mode to edit YAML file for emacs" :type github :pkgname "yoshiki/yaml-mode"))
  (yasnippet status "installed" recipe
             (:name yasnippet :website "https://github.com/capitaomorte/yasnippet.git" :description "YASnippet is a template system for Emacs." :type github :pkgname "capitaomorte/yasnippet" :compile "yasnippet.el" :submodule nil))
  (yaxception status "installed" recipe
